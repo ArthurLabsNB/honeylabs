@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🍯 HoneyLabs – Plataforma Integral de Gestión de Laboratorios y Almacenes
 
-## Getting Started
+---
 
-First, run the development server:
+## 🚩 Objetivo del Proyecto
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+HoneyLabs busca ser la **plataforma líder** en gestión digital de laboratorios, inventarios y almacenes para el sector educativo, institucional y empresarial. Queremos facilitar la administración, control de insumos, préstamos, seguimiento de entradas y salidas, así como la comunicación y transparencia entre todos los usuarios involucrados.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Nuestro objetivo es ofrecer una herramienta **segura, ágil, intuitiva y adaptable**, que permita digitalizar procesos tradicionales, mejorar la trazabilidad y optimizar recursos tanto en escuelas como en empresas.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📝 Descripción del Proyecto
 
-## Learn More
+**HoneyLabs** es una aplicación web de nueva generación diseñada para modernizar la administración de laboratorios y almacenes:
 
-To learn more about Next.js, take a look at the following resources:
+- Centraliza el inventario, préstamos y seguimiento de materiales.
+- Ofrece dashboards adaptados según el tipo de usuario (estudiante, empleado, encargado, administrador).
+- Permite la conexión entre instituciones y empresas mediante códigos de acceso, gestión de roles y permisos personalizados.
+- Brinda notificaciones, calendarios de eventos y registro de movimientos en tiempo real.
+- Pensada para ser **multiplataforma, responsiva y escalable**.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🌟 Características principales (en desarrollo / planeadas)
 
-## Deploy on Vercel
+- **Registro y autenticación de usuarios** (con validación avanzada para empresas/instituciones)
+- **Panel personalizado según tipo de cuenta**
+- **Gestión avanzada de almacenes e inventarios**
+- **Control de préstamos y devoluciones**
+- **Notificaciones y novedades automáticas**
+- **Calendario inteligente con eventos y recordatorios**
+- **Exportación y respaldo de datos**
+- **Soporte offline con sincronización local/remota**
+- **Integración multimedia (manuales, tutoriales, videos, documentación)**
+- **Centro de ayuda y contacto integrado**
+- **Sistema de roles y permisos avanzado**
+- **Interfaz moderna, profesional, inspirada en UX empresarial y educativa**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 💻 Tecnologías utilizadas / stack principal
+
+| Tecnología      | Rol / Uso                                            | ¿Por qué se eligió?                                     |
+|-----------------|-----------------------------------------------------|---------------------------------------------------------|
+| **Next.js**     | Framework principal frontend + SSR                  | Escalabilidad, velocidad, soporte empresarial            |
+| **React**       | Interfaz de usuario                                 | Componentización, reactividad, comunidad amplia          |
+| **TypeScript**  | Lenguaje para frontend/backend                      | Seguridad de tipos, mantenimiento a largo plazo          |
+| **TailwindCSS** | Estilizado rápido, adaptativo y profesional         | Consistencia visual, rapidez, soporte para dark/light    |
+| **Prisma**      | ORM para manejo de base de datos                    | Migraciones seguras, compatibilidad multi-db             |
+| **PostgreSQL**  | Base de datos principal (nuevo desarrollo)          | Robustez, integridad, features avanzados                 |
+| **MySQL**       | Base de datos heredada o interoperabilidad inicial  | Compatibilidad con sistemas existentes                   |
+| **Vercel**      | Despliegue y hosting (CI/CD)                        | Integración directa con Next.js, rendimiento global      |
+| **Node.js**     | Backend (APIs, lógica de servidor)                  | Ecosistema JS completo, fácil despliegue                 |
+| **Git/GitHub**  | Control de versiones y colaboración                 | Transparencia, trabajo colaborativo                      |
+| **Docker** (futuro) | Contenerización y despliegue reproducible       | Facilidad para desarrollo, testing y producción          |
+| **PWA/Service Workers** | Soporte offline y sincronización            | Accesibilidad sin internet, experiencia fluida           |
+
+---
+
+## 📦 Estructura base del proyecto
+
