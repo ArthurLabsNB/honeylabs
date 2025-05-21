@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -12,4 +9,84 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Entidad {
+  id              Int      @id @default(autoincrement()) // Identificador único (entero, autoincremental)
+  nombre          String                                 // Nombre de la empresa/institución
+  tipo            String                                 // 'empresarial' o 'institucional'
+  correoContacto  String                                 // Correo de contacto
+  telefono        String?                                // Teléfono (opcional, por eso el '?')
+  direccion       String?                                // Dirección (opcional)
+  fechaCreacion   DateTime  @default(now())              // Fecha de creación (se llena automáticamente)
+  usuarios        Usuario[]                              // Relación: una entidad tiene varios usuarios
+  almacenes       Almacen[]                              // Relación: una entidad tiene varios almacenes
+  roles           Rol[]                                 // Relación: una entidad puede tener varios roles asociados
+}
+
+model Usuario {
+  id             Int       @id @default(autoincrement()) // Identificador único
+  nombre         String                                 // Nombre del usuario
+  apellidos      String                                 // Apellidos completos
+  correo         String    @unique                      // Correo único (requerido para login)
+  contrasena     String                                 // Contraseña (hasheada en la app, no en texto plano)
+  googleId       String?                                // ID de Google si se usa login social (opcional)
+  tipoCuenta     String                                 // 'estandar', 'empresarial', 'institucional'
+  estado         String    @default("pendiente")        // Estado: activo, pendiente, suspendido, etc.
+  fechaRegistro  DateTime  @default(now())              // Fecha de registro
+  entidadId      Int?                                   // Referencia a Entidad (puede ser null para cuentas estándar)
+  entidad        Entidad?   @relation(fields: [entidadId], references: [id]) // Relación con entidad
+  roles          Rol[]                                 // Relación con roles
+  almacenes      UsuarioAlmacen[]                       // Relación intermedia con almacenes
+}
+
+model Rol {
+  id          Int      @id @default(autoincrement()) // Identificador único
+  nombre      String                                // Ej: admin, editor, consulta
+  descripcion String?                               // Opcional: descripción del rol
+  permisos    String                                // Por simplicidad, una lista separada por comas o formato JSON
+  usuarios    Usuario[]                             // Usuarios con este rol (relación muchos a muchos)
+  entidad     Entidad? @relation(fields: [entidadId], references: [id])
+  entidadId   Int?                                  // El rol puede ser global o de una entidad específica
+}
+
+model Almacen {
+  id                  Int                @id @default(autoincrement()) // Identificador único
+  nombre              String                                     // Nombre del almacén
+  descripcion         String?                                    // Descripción (opcional)
+  imagenUrl           String?                                    // URL o ruta de la imagen del almacén (opcional)
+  codigoUnico         String          @unique                    // Código de invitación único, tipo Classroom
+  funciones           String?                                    // Lista/JSON de módulos habilitados (opcional)
+  permisosPredeterminados String?                                // Reglas para nuevos usuarios por código (opcional)
+  fechaCreacion       DateTime         @default(now())           // Fecha de creación del almacén
+  entidadId           Int                                         // Referencia a la entidad propietaria
+  entidad             Entidad          @relation(fields: [entidadId], references: [id])
+  usuarios            UsuarioAlmacen[]                            // Relación intermedia (usuarios que tienen acceso)
+  codigos             CodigoAlmacen[]                             // Códigos asociados (historial y para regenerar)
+}
+
+model UsuarioAlmacen {
+  id           Int      @id @default(autoincrement())      // Identificador único
+  usuarioId    Int                                         // Referencia al usuario
+  almacenId    Int                                         // Referencia al almacén
+  rolEnAlmacen String                                      // Rol específico en ese almacén (admin, editor, consulta, etc.)
+  permisosExtra String?                                    // Permisos personalizados (opcional, formato texto/JSON)
+  usuario      Usuario  @relation(fields: [usuarioId], references: [id])
+  almacen      Almacen  @relation(fields: [almacenId], references: [id])
+
+  @@unique([usuarioId, almacenId])                         // Un usuario solo puede tener un registro por almacén
+}
+
+model CodigoAlmacen {
+  id              Int       @id @default(autoincrement())     // Identificador único
+  almacenId       Int                                         // A qué almacén pertenece el código
+  codigo          String    @unique                           // El código único (puede ser generado aleatoriamente)
+  rolAsignado     String                                      // El rol que recibirá quien use el código (ej: estudiante, empleado, consulta)
+  permisos        String?                                     // Permisos adicionales/predefinidos (opcional, puede ser JSON)
+  usosDisponibles Int?                                        // Cuántas veces se puede usar este código (opcional, null = ilimitado)
+  activo          Boolean   @default(true)                    // Código activo o no (puedes “desactivar” si regeneras)
+  fechaCreacion   DateTime  @default(now())                   // Fecha en que se generó el código
+  fechaExpiracion DateTime?                                   // Fecha de expiración (opcional)
+  creadoPorId     Int?                                        // Usuario/entidad que generó el código (opcional)
+  almacen         Almacen   @relation(fields: [almacenId], references: [id]) // Relación con el almacén
 }
