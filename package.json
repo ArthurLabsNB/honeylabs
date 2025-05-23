@@ -14,6 +14,7 @@
     "honeylabs": "file:",
     "mysql2": "^3.14.1",
     "next": "15.3.2",
+    "nodemailer": "^7.0.3",
     "pg": "^8.16.0",
     "prisma": "^6.8.2",
     "react": "^19.0.0",

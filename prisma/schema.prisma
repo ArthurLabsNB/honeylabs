@@ -1,5 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// ===============================================
+// HONEYLABS - Estructura de base de datos Prisma
+// ===============================================
 
 generator client {
   provider = "prisma-client-js"
@@ -11,82 +12,125 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//
+// 🔸 ENTIDAD
+// Representa una empresa o institución oficial.
+//
 model Entidad {
-  id              Int      @id @default(autoincrement()) // Identificador único (entero, autoincremental)
-  nombre          String                                 // Nombre de la empresa/institución
-  tipo            String                                 // 'empresarial' o 'institucional'
-  correoContacto  String                                 // Correo de contacto
-  telefono        String?                                // Teléfono (opcional, por eso el '?')
-  direccion       String?                                // Dirección (opcional)
-  fechaCreacion   DateTime  @default(now())              // Fecha de creación (se llena automáticamente)
-  usuarios        Usuario[]                              // Relación: una entidad tiene varios usuarios
-  almacenes       Almacen[]                              // Relación: una entidad tiene varios almacenes
-  roles           Rol[]                                 // Relación: una entidad puede tener varios roles asociados
+  id              Int       @id @default(autoincrement())        // ID único autoincremental
+  nombre          String                                         // Nombre de la entidad
+  tipo            String                                         // 'empresarial' o 'institucional'
+  correoContacto  String                                         // Correo principal de contacto
+  telefono        String?                                        // Teléfono de contacto (opcional)
+  direccion       String?                                        // Dirección física (opcional)
+  fechaCreacion   DateTime  @default(now())                      // Fecha de registro automático
+  usuarios        Usuario[]                                      // Relación: usuarios que pertenecen a esta entidad
+  almacenes       Almacen[]                                      // Relación: almacenes asociados a esta entidad
+  roles           Rol[]                                          // Relación: roles personalizados de esta entidad
 }
 
+//
+// 🔸 USUARIO
+// Cuenta de acceso al sistema: individual, empresarial o institucional.
+//
 model Usuario {
-  id             Int       @id @default(autoincrement()) // Identificador único
-  nombre         String                                 // Nombre del usuario
-  apellidos      String                                 // Apellidos completos
-  correo         String    @unique                      // Correo único (requerido para login)
-  contrasena     String                                 // Contraseña (hasheada en la app, no en texto plano)
-  googleId       String?                                // ID de Google si se usa login social (opcional)
-  tipoCuenta     String                                 // 'estandar', 'empresarial', 'institucional'
-  estado         String    @default("pendiente")        // Estado: activo, pendiente, suspendido, etc.
-  fechaRegistro  DateTime  @default(now())              // Fecha de registro
-  entidadId      Int?                                   // Referencia a Entidad (puede ser null para cuentas estándar)
-  entidad        Entidad?   @relation(fields: [entidadId], references: [id]) // Relación con entidad
-  roles          Rol[]                                 // Relación con roles
-  almacenes      UsuarioAlmacen[]                       // Relación intermedia con almacenes
+  id             Int       @id @default(autoincrement())         // ID único
+  nombre         String                                           // Nombre del usuario
+  apellidos      String                                           // Apellidos completos
+  correo         String    @unique                               // Correo único (login principal)
+  contrasena     String                                           // Contraseña hasheada (bcrypt)
+  googleId       String?                                          // ID de cuenta Google (opcional)
+  tipoCuenta     String                                           // 'estandar', 'empresarial', 'institucional'
+  estado         String    @default("pendiente")                 // Estado: pendiente, activo, rechazado
+  fechaRegistro  DateTime  @default(now())                       // Fecha de creación de cuenta
+
+  // Relación con entidad (opcional si es cuenta individual)
+  entidadId      Int?
+  entidad        Entidad?   @relation(fields: [entidadId], references: [id])
+
+  // Relación con roles globales o internos
+  roles          Rol[]                                           // Roles asignados al usuario
+  almacenes      UsuarioAlmacen[]                                // Relación intermedia con almacenes
+
+  // 🔹 Nuevos campos para control avanzado de registro
+  codigoUsado    String?                                         // Código de invitación utilizado (si aplica)
+  archivoNombre  String?                                         // Nombre del archivo de validación (PDF/IMG)
+  archivoBuffer  Bytes?                                          // Archivo en sí (guardado en BLOB, opcional)
 }
 
+//
+// 🔸 ROL
+// Define permisos agrupados, asignables a usuarios. Pueden ser globales o propios de entidad.
+//
 model Rol {
-  id          Int      @id @default(autoincrement()) // Identificador único
-  nombre      String                                // Ej: admin, editor, consulta
-  descripcion String?                               // Opcional: descripción del rol
-  permisos    String                                // Por simplicidad, una lista separada por comas o formato JSON
-  usuarios    Usuario[]                             // Usuarios con este rol (relación muchos a muchos)
-  entidad     Entidad? @relation(fields: [entidadId], references: [id])
-  entidadId   Int?                                  // El rol puede ser global o de una entidad específica
+  id          Int       @id @default(autoincrement())            // ID único
+  nombre      String                                             // Nombre identificador (admin, editor...)
+  descripcion String?                                            // Explicación del rol (opcional)
+  permisos    String                                             // Lista de permisos (como texto o JSON)
+  
+  // Relación con entidad (opcional si es rol global)
+  entidadId   Int?
+  entidad     Entidad?  @relation(fields: [entidadId], references: [id])
+
+  usuarios    Usuario[]                                          // Usuarios que tienen este rol
 }
 
+//
+// 🔸 ALMACÉN
+// Espacio virtual de trabajo para una entidad, con control por roles.
+//
 model Almacen {
-  id                  Int                @id @default(autoincrement()) // Identificador único
-  nombre              String                                     // Nombre del almacén
-  descripcion         String?                                    // Descripción (opcional)
-  imagenUrl           String?                                    // URL o ruta de la imagen del almacén (opcional)
-  codigoUnico         String          @unique                    // Código de invitación único, tipo Classroom
-  funciones           String?                                    // Lista/JSON de módulos habilitados (opcional)
-  permisosPredeterminados String?                                // Reglas para nuevos usuarios por código (opcional)
-  fechaCreacion       DateTime         @default(now())           // Fecha de creación del almacén
-  entidadId           Int                                         // Referencia a la entidad propietaria
-  entidad             Entidad          @relation(fields: [entidadId], references: [id])
-  usuarios            UsuarioAlmacen[]                            // Relación intermedia (usuarios que tienen acceso)
-  codigos             CodigoAlmacen[]                             // Códigos asociados (historial y para regenerar)
+  id                      Int       @id @default(autoincrement())// ID único
+  nombre                  String                                   // Nombre del almacén
+  descripcion             String?                                  // Descripción (opcional)
+  imagenUrl               String?                                  // Imagen o icono del almacén (opcional)
+  codigoUnico             String   @unique                         // Código único de invitación (tipo Classroom)
+  funciones               String?                                  // Lista o JSON de módulos habilitados
+  permisosPredeterminados String?                                  // Reglas para nuevos usuarios por código
+
+  fechaCreacion           DateTime  @default(now())                // Fecha de creación
+
+  // Relación con entidad propietaria
+  entidadId               Int
+  entidad                 Entidad   @relation(fields: [entidadId], references: [id])
+
+  // Relaciones múltiples
+  usuarios                UsuarioAlmacen[]                         // Usuarios con acceso a este almacén
+  codigos                 CodigoAlmacen[]                          // Códigos históricos o activos del almacén
 }
 
+//
+// 🔸 USUARIO ALMACÉN
+// Relación intermedia para gestionar permisos por almacén.
+//
 model UsuarioAlmacen {
-  id           Int      @id @default(autoincrement())      // Identificador único
-  usuarioId    Int                                         // Referencia al usuario
-  almacenId    Int                                         // Referencia al almacén
-  rolEnAlmacen String                                      // Rol específico en ese almacén (admin, editor, consulta, etc.)
-  permisosExtra String?                                    // Permisos personalizados (opcional, formato texto/JSON)
-  usuario      Usuario  @relation(fields: [usuarioId], references: [id])
-  almacen      Almacen  @relation(fields: [almacenId], references: [id])
+  id             Int      @id @default(autoincrement())           // ID único
+  usuarioId      Int                                          
+  almacenId      Int                                          
+  rolEnAlmacen   String                                           // Rol específico en ese almacén (admin, consulta...)
+  permisosExtra  String?                                          // Permisos individuales en texto o JSON
 
-  @@unique([usuarioId, almacenId])                         // Un usuario solo puede tener un registro por almacén
+  usuario        Usuario  @relation(fields: [usuarioId], references: [id])
+  almacen        Almacen  @relation(fields: [almacenId], references: [id])
+
+  @@unique([usuarioId, almacenId])                               // Evita duplicados por almacén
 }
 
+//
+// 🔸 CÓDIGO ALMACÉN
+// Códigos de acceso al almacén con permisos predefinidos.
+//
 model CodigoAlmacen {
-  id              Int       @id @default(autoincrement())     // Identificador único
-  almacenId       Int                                         // A qué almacén pertenece el código
-  codigo          String    @unique                           // El código único (puede ser generado aleatoriamente)
-  rolAsignado     String                                      // El rol que recibirá quien use el código (ej: estudiante, empleado, consulta)
-  permisos        String?                                     // Permisos adicionales/predefinidos (opcional, puede ser JSON)
-  usosDisponibles Int?                                        // Cuántas veces se puede usar este código (opcional, null = ilimitado)
-  activo          Boolean   @default(true)                    // Código activo o no (puedes “desactivar” si regeneras)
-  fechaCreacion   DateTime  @default(now())                   // Fecha en que se generó el código
-  fechaExpiracion DateTime?                                   // Fecha de expiración (opcional)
-  creadoPorId     Int?                                        // Usuario/entidad que generó el código (opcional)
-  almacen         Almacen   @relation(fields: [almacenId], references: [id]) // Relación con el almacén
+  id              Int      @id @default(autoincrement())          // ID único
+  almacenId       Int                                          
+  codigo          String   @unique                                // Código de acceso único
+  rolAsignado     String                                         // Rol automático al usar este código
+  permisos        String?                                        // Permisos extra al registrarse (JSON)
+  usosDisponibles Int?                                           // Número de usos permitidos (null = ilimitado)
+  activo          Boolean  @default(true)                         // Control de activación/desactivación
+  fechaCreacion   DateTime @default(now())                        // Fecha de creación
+  fechaExpiracion DateTime?                                      // Fecha de expiración (opcional)
+  creadoPorId     Int?                                           // Usuario o entidad que creó el código
+
+  almacen         Almacen  @relation(fields: [almacenId], references: [id])
 }
