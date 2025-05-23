@@ -1,14 +1,17 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server';
 
-// 🧠 Memoria local simple para almacenar intentos (para producción se recomienda Redis u otro store)
-const ipRequests = new Map<string, { count: number, lastRequest: number }>();
+// 🧠 Memoria local simple para almacenar intentos por IP (solo útil mientras el servidor vive)
+// En producción, usar Redis, KV o Edge Store persistente
+const ipRequests = new Map<string, { count: number; lastRequest: number }>();
 
-// ⚙️ Configuración
-const RATE_LIMIT_MAX = 5; // máximo intentos
-const RATE_LIMIT_WINDOW_MS = 60 * 1000; // cada 1 minuto
+// ⚙️ Configuración de rate limit
+const RATE_LIMIT_MAX = 5; // Máximo intentos
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // Cada 1 minuto
 
 export function middleware(req: NextRequest) {
-  const ip = req.headers.get('x-forwarded-for') || req.ip || 'desconocido';
+  // ✅ Extrae IP compatible con Vercel Edge
+  const ip =
+    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'desconocido';
 
   const now = Date.now();
   const key = `REG_${ip}`;
@@ -20,7 +23,13 @@ export function middleware(req: NextRequest) {
         console.warn(`[RATE LIMIT] IP bloqueada temporalmente: ${ip}`);
         return new NextResponse(
           JSON.stringify({ error: 'Demasiadas peticiones. Intenta más tarde.' }),
-          { status: 429, headers: { 'Content-Type': 'application/json' } }
+          {
+            status: 429,
+            headers: {
+              'Content-Type': 'application/json',
+              'Retry-After': String(Math.ceil(RATE_LIMIT_WINDOW_MS / 1000)),
+            },
+          }
         );
       } else {
         entry.count += 1;
@@ -37,7 +46,7 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-// 🌐 Aplica este middleware SOLO a rutas API que empiecen con /api/registro
+// 🌐 Aplica este middleware solo a /api/registro
 export const config = {
   matcher: ['/api/registro'],
 };

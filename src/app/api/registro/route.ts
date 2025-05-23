@@ -1,12 +1,15 @@
+// Forzar ejecución en entorno Node.js (no Edge)
+export const runtime = 'nodejs';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import { enviarCorreoValidacionEmpresa } from '@/lib/email/enviarRegistro';
 
 const prisma = new PrismaClient();
 
-// 🔐 Configuración global de seguridad
+// 🔐 Configuración de validación de archivos
 const TAMAÑO_MAXIMO_MB = 2;
 const BYTES_MAXIMOS = TAMAÑO_MAXIMO_MB * 1024 * 1024;
 const EXTENSIONES_PERMITIDAS = ['.pdf', '.png', '.jpg', '.jpeg'];
@@ -25,15 +28,16 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
 
-    const nombre = formData.get('nombre')?.toString().trim() ?? '';
-    const apellidos = formData.get('apellidos')?.toString().trim() ?? '';
-    const correo = formData.get('correo')?.toLowerCase().trim() ?? '';
-    const contrasena = formData.get('contrasena')?.toString() ?? '';
-    const tipoCuenta = formData.get('tipoCuenta')?.toString() ?? '';
-    const codigo = formData.get('codigo')?.toString().trim() ?? '';
+    // ✅ Conversión segura para evitar errores en build de producción
+    const nombre = String(formData.get('nombre') ?? '').trim();
+    const apellidos = String(formData.get('apellidos') ?? '').trim();
+    const correo = String(formData.get('correo') ?? '').trim().toLowerCase();
+    const contrasena = String(formData.get('contrasena') ?? '');
+    const tipoCuenta = String(formData.get('tipoCuenta') ?? '');
+    const codigo = String(formData.get('codigo') ?? '').trim();
     const archivo = formData.get('archivo') as File | null;
 
-    // 🧪 Validaciones
+    // 🧪 Validaciones de campos requeridos
     if (!nombre || !apellidos || !correo || !contrasena || !tipoCuenta) {
       return NextResponse.json({ error: 'Faltan campos requeridos.' }, { status: 400 });
     }
@@ -42,16 +46,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Correo inválido.' }, { status: 400 });
     }
 
-    if ((tipoCuenta === 'empresarial' || tipoCuenta === 'institucional') && !archivo) {
+    if (['empresarial', 'institucional'].includes(tipoCuenta) && !archivo) {
       return NextResponse.json({ error: 'Se requiere un archivo de validación.' }, { status: 400 });
     }
 
-    const existe = await prisma.usuario.findUnique({ where: { correo } });
-    if (existe) {
+    const usuarioExistente = await prisma.usuario.findUnique({ where: { correo } });
+    if (usuarioExistente) {
       return NextResponse.json({ error: 'Ya existe una cuenta con ese correo.' }, { status: 409 });
     }
 
-    // 📎 Procesar archivo si aplica
+    // 📦 Procesar archivo (si aplica)
     let archivoNombre: string | null = null;
     let archivoBuffer: Buffer | null = null;
 
@@ -74,7 +78,7 @@ export async function POST(req: NextRequest) {
       archivoBuffer = Buffer.from(archivoArrayBuffer);
     }
 
-    // 🏷 Validar código de invitación (si aplica)
+    // 🧩 Código de invitación
     let entidadId: number | null = null;
     let codigoUsado: string | null = null;
     let estadoCuenta = 'activo';
@@ -98,11 +102,12 @@ export async function POST(req: NextRequest) {
       codigoUsado = codigo;
     }
 
-    // 🕒 Empresas/instituciones → pendiente hasta validar
+    // 🟡 Validación pendiente para empresa/institución
     if (['empresarial', 'institucional'].includes(tipoCuenta)) {
       estadoCuenta = 'pendiente';
     }
 
+    // 🔒 Hash de contraseña seguro
     const hashedPassword = await bcrypt.hash(contrasena, 10);
 
     const nuevoUsuario = await prisma.usuario.create({
@@ -121,7 +126,7 @@ export async function POST(req: NextRequest) {
       }
     });
 
-    // ✉️ Enviar notificación si requiere revisión manual
+    // 📩 Enviar notificación si requiere validación
     if (estadoCuenta === 'pendiente') {
       await enviarCorreoValidacionEmpresa({ nombre, correo, tipoCuenta });
     }

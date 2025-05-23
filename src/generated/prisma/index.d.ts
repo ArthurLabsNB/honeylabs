@@ -2702,6 +2702,9 @@ export namespace Prisma {
     estado: string | null
     fechaRegistro: Date | null
     entidadId: number | null
+    codigoUsado: string | null
+    archivoNombre: string | null
+    archivoBuffer: Uint8Array | null
   }
 
   export type UsuarioMaxAggregateOutputType = {
@@ -2715,6 +2718,9 @@ export namespace Prisma {
     estado: string | null
     fechaRegistro: Date | null
     entidadId: number | null
+    codigoUsado: string | null
+    archivoNombre: string | null
+    archivoBuffer: Uint8Array | null
   }
 
   export type UsuarioCountAggregateOutputType = {
@@ -2728,6 +2734,9 @@ export namespace Prisma {
     estado: number
     fechaRegistro: number
     entidadId: number
+    codigoUsado: number
+    archivoNombre: number
+    archivoBuffer: number
     _all: number
   }
 
@@ -2753,6 +2762,9 @@ export namespace Prisma {
     estado?: true
     fechaRegistro?: true
     entidadId?: true
+    codigoUsado?: true
+    archivoNombre?: true
+    archivoBuffer?: true
   }
 
   export type UsuarioMaxAggregateInputType = {
@@ -2766,6 +2778,9 @@ export namespace Prisma {
     estado?: true
     fechaRegistro?: true
     entidadId?: true
+    codigoUsado?: true
+    archivoNombre?: true
+    archivoBuffer?: true
   }
 
   export type UsuarioCountAggregateInputType = {
@@ -2779,6 +2794,9 @@ export namespace Prisma {
     estado?: true
     fechaRegistro?: true
     entidadId?: true
+    codigoUsado?: true
+    archivoNombre?: true
+    archivoBuffer?: true
     _all?: true
   }
 
@@ -2879,6 +2897,9 @@ export namespace Prisma {
     estado: string
     fechaRegistro: Date
     entidadId: number | null
+    codigoUsado: string | null
+    archivoNombre: string | null
+    archivoBuffer: Uint8Array | null
     _count: UsuarioCountAggregateOutputType | null
     _avg: UsuarioAvgAggregateOutputType | null
     _sum: UsuarioSumAggregateOutputType | null
@@ -2911,6 +2932,9 @@ export namespace Prisma {
     estado?: boolean
     fechaRegistro?: boolean
     entidadId?: boolean
+    codigoUsado?: boolean
+    archivoNombre?: boolean
+    archivoBuffer?: boolean
     entidad?: boolean | Usuario$entidadArgs<ExtArgs>
     roles?: boolean | Usuario$rolesArgs<ExtArgs>
     almacenes?: boolean | Usuario$almacenesArgs<ExtArgs>
@@ -2928,6 +2952,9 @@ export namespace Prisma {
     estado?: boolean
     fechaRegistro?: boolean
     entidadId?: boolean
+    codigoUsado?: boolean
+    archivoNombre?: boolean
+    archivoBuffer?: boolean
     entidad?: boolean | Usuario$entidadArgs<ExtArgs>
   }, ExtArgs["result"]["usuario"]>
 
@@ -2942,6 +2969,9 @@ export namespace Prisma {
     estado?: boolean
     fechaRegistro?: boolean
     entidadId?: boolean
+    codigoUsado?: boolean
+    archivoNombre?: boolean
+    archivoBuffer?: boolean
     entidad?: boolean | Usuario$entidadArgs<ExtArgs>
   }, ExtArgs["result"]["usuario"]>
 
@@ -2956,9 +2986,12 @@ export namespace Prisma {
     estado?: boolean
     fechaRegistro?: boolean
     entidadId?: boolean
+    codigoUsado?: boolean
+    archivoNombre?: boolean
+    archivoBuffer?: boolean
   }
 
-  export type UsuarioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "apellidos" | "correo" | "contrasena" | "googleId" | "tipoCuenta" | "estado" | "fechaRegistro" | "entidadId", ExtArgs["result"]["usuario"]>
+  export type UsuarioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "apellidos" | "correo" | "contrasena" | "googleId" | "tipoCuenta" | "estado" | "fechaRegistro" | "entidadId" | "codigoUsado" | "archivoNombre" | "archivoBuffer", ExtArgs["result"]["usuario"]>
   export type UsuarioInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     entidad?: boolean | Usuario$entidadArgs<ExtArgs>
     roles?: boolean | Usuario$rolesArgs<ExtArgs>
@@ -2990,6 +3023,9 @@ export namespace Prisma {
       estado: string
       fechaRegistro: Date
       entidadId: number | null
+      codigoUsado: string | null
+      archivoNombre: string | null
+      archivoBuffer: Uint8Array | null
     }, ExtArgs["result"]["usuario"]>
     composites: {}
   }
@@ -3426,6 +3462,9 @@ export namespace Prisma {
     readonly estado: FieldRef<"Usuario", 'String'>
     readonly fechaRegistro: FieldRef<"Usuario", 'DateTime'>
     readonly entidadId: FieldRef<"Usuario", 'Int'>
+    readonly codigoUsado: FieldRef<"Usuario", 'String'>
+    readonly archivoNombre: FieldRef<"Usuario", 'String'>
+    readonly archivoBuffer: FieldRef<"Usuario", 'Bytes'>
   }
     
 
@@ -4109,8 +4148,8 @@ export namespace Prisma {
     descripcion?: boolean
     permisos?: boolean
     entidadId?: boolean
-    usuarios?: boolean | Rol$usuariosArgs<ExtArgs>
     entidad?: boolean | Rol$entidadArgs<ExtArgs>
+    usuarios?: boolean | Rol$usuariosArgs<ExtArgs>
     _count?: boolean | RolCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["rol"]>
 
@@ -4142,8 +4181,8 @@ export namespace Prisma {
 
   export type RolOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "descripcion" | "permisos" | "entidadId", ExtArgs["result"]["rol"]>
   export type RolInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    usuarios?: boolean | Rol$usuariosArgs<ExtArgs>
     entidad?: boolean | Rol$entidadArgs<ExtArgs>
+    usuarios?: boolean | Rol$usuariosArgs<ExtArgs>
     _count?: boolean | RolCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type RolIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4156,8 +4195,8 @@ export namespace Prisma {
   export type $RolPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Rol"
     objects: {
-      usuarios: Prisma.$UsuarioPayload<ExtArgs>[]
       entidad: Prisma.$EntidadPayload<ExtArgs> | null
+      usuarios: Prisma.$UsuarioPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -4559,8 +4598,8 @@ export namespace Prisma {
    */
   export interface Prisma__RolClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    usuarios<T extends Rol$usuariosArgs<ExtArgs> = {}>(args?: Subset<T, Rol$usuariosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     entidad<T extends Rol$entidadArgs<ExtArgs> = {}>(args?: Subset<T, Rol$entidadArgs<ExtArgs>>): Prisma__EntidadClient<$Result.GetResult<Prisma.$EntidadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    usuarios<T extends Rol$usuariosArgs<ExtArgs> = {}>(args?: Subset<T, Rol$usuariosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4991,6 +5030,25 @@ export namespace Prisma {
   }
 
   /**
+   * Rol.entidad
+   */
+  export type Rol$entidadArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Entidad
+     */
+    select?: EntidadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Entidad
+     */
+    omit?: EntidadOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EntidadInclude<ExtArgs> | null
+    where?: EntidadWhereInput
+  }
+
+  /**
    * Rol.usuarios
    */
   export type Rol$usuariosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5012,25 +5070,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: UsuarioScalarFieldEnum | UsuarioScalarFieldEnum[]
-  }
-
-  /**
-   * Rol.entidad
-   */
-  export type Rol$entidadArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Entidad
-     */
-    select?: EntidadSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Entidad
-     */
-    omit?: EntidadOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EntidadInclude<ExtArgs> | null
-    where?: EntidadWhereInput
   }
 
   /**
@@ -8572,7 +8611,10 @@ export namespace Prisma {
     tipoCuenta: 'tipoCuenta',
     estado: 'estado',
     fechaRegistro: 'fechaRegistro',
-    entidadId: 'entidadId'
+    entidadId: 'entidadId',
+    codigoUsado: 'codigoUsado',
+    archivoNombre: 'archivoNombre',
+    archivoBuffer: 'archivoBuffer'
   };
 
   export type UsuarioScalarFieldEnum = (typeof UsuarioScalarFieldEnum)[keyof typeof UsuarioScalarFieldEnum]
@@ -8703,6 +8745,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Bytes'
+   */
+  export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes'>
+    
+
+
+  /**
+   * Reference to a field of type 'Bytes[]'
+   */
+  export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
@@ -8813,6 +8869,9 @@ export namespace Prisma {
     estado?: StringFilter<"Usuario"> | string
     fechaRegistro?: DateTimeFilter<"Usuario"> | Date | string
     entidadId?: IntNullableFilter<"Usuario"> | number | null
+    codigoUsado?: StringNullableFilter<"Usuario"> | string | null
+    archivoNombre?: StringNullableFilter<"Usuario"> | string | null
+    archivoBuffer?: BytesNullableFilter<"Usuario"> | Uint8Array | null
     entidad?: XOR<EntidadNullableScalarRelationFilter, EntidadWhereInput> | null
     roles?: RolListRelationFilter
     almacenes?: UsuarioAlmacenListRelationFilter
@@ -8829,6 +8888,9 @@ export namespace Prisma {
     estado?: SortOrder
     fechaRegistro?: SortOrder
     entidadId?: SortOrderInput | SortOrder
+    codigoUsado?: SortOrderInput | SortOrder
+    archivoNombre?: SortOrderInput | SortOrder
+    archivoBuffer?: SortOrderInput | SortOrder
     entidad?: EntidadOrderByWithRelationInput
     roles?: RolOrderByRelationAggregateInput
     almacenes?: UsuarioAlmacenOrderByRelationAggregateInput
@@ -8848,6 +8910,9 @@ export namespace Prisma {
     estado?: StringFilter<"Usuario"> | string
     fechaRegistro?: DateTimeFilter<"Usuario"> | Date | string
     entidadId?: IntNullableFilter<"Usuario"> | number | null
+    codigoUsado?: StringNullableFilter<"Usuario"> | string | null
+    archivoNombre?: StringNullableFilter<"Usuario"> | string | null
+    archivoBuffer?: BytesNullableFilter<"Usuario"> | Uint8Array | null
     entidad?: XOR<EntidadNullableScalarRelationFilter, EntidadWhereInput> | null
     roles?: RolListRelationFilter
     almacenes?: UsuarioAlmacenListRelationFilter
@@ -8864,6 +8929,9 @@ export namespace Prisma {
     estado?: SortOrder
     fechaRegistro?: SortOrder
     entidadId?: SortOrderInput | SortOrder
+    codigoUsado?: SortOrderInput | SortOrder
+    archivoNombre?: SortOrderInput | SortOrder
+    archivoBuffer?: SortOrderInput | SortOrder
     _count?: UsuarioCountOrderByAggregateInput
     _avg?: UsuarioAvgOrderByAggregateInput
     _max?: UsuarioMaxOrderByAggregateInput
@@ -8885,6 +8953,9 @@ export namespace Prisma {
     estado?: StringWithAggregatesFilter<"Usuario"> | string
     fechaRegistro?: DateTimeWithAggregatesFilter<"Usuario"> | Date | string
     entidadId?: IntNullableWithAggregatesFilter<"Usuario"> | number | null
+    codigoUsado?: StringNullableWithAggregatesFilter<"Usuario"> | string | null
+    archivoNombre?: StringNullableWithAggregatesFilter<"Usuario"> | string | null
+    archivoBuffer?: BytesNullableWithAggregatesFilter<"Usuario"> | Uint8Array | null
   }
 
   export type RolWhereInput = {
@@ -8896,8 +8967,8 @@ export namespace Prisma {
     descripcion?: StringNullableFilter<"Rol"> | string | null
     permisos?: StringFilter<"Rol"> | string
     entidadId?: IntNullableFilter<"Rol"> | number | null
-    usuarios?: UsuarioListRelationFilter
     entidad?: XOR<EntidadNullableScalarRelationFilter, EntidadWhereInput> | null
+    usuarios?: UsuarioListRelationFilter
   }
 
   export type RolOrderByWithRelationInput = {
@@ -8906,8 +8977,8 @@ export namespace Prisma {
     descripcion?: SortOrderInput | SortOrder
     permisos?: SortOrder
     entidadId?: SortOrderInput | SortOrder
-    usuarios?: UsuarioOrderByRelationAggregateInput
     entidad?: EntidadOrderByWithRelationInput
+    usuarios?: UsuarioOrderByRelationAggregateInput
   }
 
   export type RolWhereUniqueInput = Prisma.AtLeast<{
@@ -8919,8 +8990,8 @@ export namespace Prisma {
     descripcion?: StringNullableFilter<"Rol"> | string | null
     permisos?: StringFilter<"Rol"> | string
     entidadId?: IntNullableFilter<"Rol"> | number | null
-    usuarios?: UsuarioListRelationFilter
     entidad?: XOR<EntidadNullableScalarRelationFilter, EntidadWhereInput> | null
+    usuarios?: UsuarioListRelationFilter
   }, "id">
 
   export type RolOrderByWithAggregationInput = {
@@ -9261,6 +9332,9 @@ export namespace Prisma {
     tipoCuenta: string
     estado?: string
     fechaRegistro?: Date | string
+    codigoUsado?: string | null
+    archivoNombre?: string | null
+    archivoBuffer?: Uint8Array | null
     entidad?: EntidadCreateNestedOneWithoutUsuariosInput
     roles?: RolCreateNestedManyWithoutUsuariosInput
     almacenes?: UsuarioAlmacenCreateNestedManyWithoutUsuarioInput
@@ -9277,6 +9351,9 @@ export namespace Prisma {
     estado?: string
     fechaRegistro?: Date | string
     entidadId?: number | null
+    codigoUsado?: string | null
+    archivoNombre?: string | null
+    archivoBuffer?: Uint8Array | null
     roles?: RolUncheckedCreateNestedManyWithoutUsuariosInput
     almacenes?: UsuarioAlmacenUncheckedCreateNestedManyWithoutUsuarioInput
   }
@@ -9290,6 +9367,9 @@ export namespace Prisma {
     tipoCuenta?: StringFieldUpdateOperationsInput | string
     estado?: StringFieldUpdateOperationsInput | string
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
+    codigoUsado?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoNombre?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoBuffer?: NullableBytesFieldUpdateOperationsInput | Uint8Array | null
     entidad?: EntidadUpdateOneWithoutUsuariosNestedInput
     roles?: RolUpdateManyWithoutUsuariosNestedInput
     almacenes?: UsuarioAlmacenUpdateManyWithoutUsuarioNestedInput
@@ -9306,6 +9386,9 @@ export namespace Prisma {
     estado?: StringFieldUpdateOperationsInput | string
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
     entidadId?: NullableIntFieldUpdateOperationsInput | number | null
+    codigoUsado?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoNombre?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoBuffer?: NullableBytesFieldUpdateOperationsInput | Uint8Array | null
     roles?: RolUncheckedUpdateManyWithoutUsuariosNestedInput
     almacenes?: UsuarioAlmacenUncheckedUpdateManyWithoutUsuarioNestedInput
   }
@@ -9321,6 +9404,9 @@ export namespace Prisma {
     estado?: string
     fechaRegistro?: Date | string
     entidadId?: number | null
+    codigoUsado?: string | null
+    archivoNombre?: string | null
+    archivoBuffer?: Uint8Array | null
   }
 
   export type UsuarioUpdateManyMutationInput = {
@@ -9332,6 +9418,9 @@ export namespace Prisma {
     tipoCuenta?: StringFieldUpdateOperationsInput | string
     estado?: StringFieldUpdateOperationsInput | string
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
+    codigoUsado?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoNombre?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoBuffer?: NullableBytesFieldUpdateOperationsInput | Uint8Array | null
   }
 
   export type UsuarioUncheckedUpdateManyInput = {
@@ -9345,14 +9434,17 @@ export namespace Prisma {
     estado?: StringFieldUpdateOperationsInput | string
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
     entidadId?: NullableIntFieldUpdateOperationsInput | number | null
+    codigoUsado?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoNombre?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoBuffer?: NullableBytesFieldUpdateOperationsInput | Uint8Array | null
   }
 
   export type RolCreateInput = {
     nombre: string
     descripcion?: string | null
     permisos: string
-    usuarios?: UsuarioCreateNestedManyWithoutRolesInput
     entidad?: EntidadCreateNestedOneWithoutRolesInput
+    usuarios?: UsuarioCreateNestedManyWithoutRolesInput
   }
 
   export type RolUncheckedCreateInput = {
@@ -9368,8 +9460,8 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     descripcion?: NullableStringFieldUpdateOperationsInput | string | null
     permisos?: StringFieldUpdateOperationsInput | string
-    usuarios?: UsuarioUpdateManyWithoutRolesNestedInput
     entidad?: EntidadUpdateOneWithoutRolesNestedInput
+    usuarios?: UsuarioUpdateManyWithoutRolesNestedInput
   }
 
   export type RolUncheckedUpdateInput = {
@@ -9831,6 +9923,13 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type BytesNullableFilter<$PrismaModel = never> = {
+    equals?: Uint8Array | BytesFieldRefInput<$PrismaModel> | null
+    in?: Uint8Array[] | ListBytesFieldRefInput<$PrismaModel> | null
+    notIn?: Uint8Array[] | ListBytesFieldRefInput<$PrismaModel> | null
+    not?: NestedBytesNullableFilter<$PrismaModel> | Uint8Array | null
+  }
+
   export type EntidadNullableScalarRelationFilter = {
     is?: EntidadWhereInput | null
     isNot?: EntidadWhereInput | null
@@ -9857,6 +9956,9 @@ export namespace Prisma {
     estado?: SortOrder
     fechaRegistro?: SortOrder
     entidadId?: SortOrder
+    codigoUsado?: SortOrder
+    archivoNombre?: SortOrder
+    archivoBuffer?: SortOrder
   }
 
   export type UsuarioAvgOrderByAggregateInput = {
@@ -9875,6 +9977,9 @@ export namespace Prisma {
     estado?: SortOrder
     fechaRegistro?: SortOrder
     entidadId?: SortOrder
+    codigoUsado?: SortOrder
+    archivoNombre?: SortOrder
+    archivoBuffer?: SortOrder
   }
 
   export type UsuarioMinOrderByAggregateInput = {
@@ -9888,6 +9993,9 @@ export namespace Prisma {
     estado?: SortOrder
     fechaRegistro?: SortOrder
     entidadId?: SortOrder
+    codigoUsado?: SortOrder
+    archivoNombre?: SortOrder
+    archivoBuffer?: SortOrder
   }
 
   export type UsuarioSumOrderByAggregateInput = {
@@ -9909,6 +10017,16 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type BytesNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Uint8Array | BytesFieldRefInput<$PrismaModel> | null
+    in?: Uint8Array[] | ListBytesFieldRefInput<$PrismaModel> | null
+    notIn?: Uint8Array[] | ListBytesFieldRefInput<$PrismaModel> | null
+    not?: NestedBytesNullableWithAggregatesFilter<$PrismaModel> | Uint8Array | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBytesNullableFilter<$PrismaModel>
+    _max?: NestedBytesNullableFilter<$PrismaModel>
   }
 
   export type RolCountOrderByAggregateInput = {
@@ -10326,6 +10444,10 @@ export namespace Prisma {
     connect?: UsuarioAlmacenWhereUniqueInput | UsuarioAlmacenWhereUniqueInput[]
   }
 
+  export type NullableBytesFieldUpdateOperationsInput = {
+    set?: Uint8Array | null
+  }
+
   export type EntidadUpdateOneWithoutUsuariosNestedInput = {
     create?: XOR<EntidadCreateWithoutUsuariosInput, EntidadUncheckedCreateWithoutUsuariosInput>
     connectOrCreate?: EntidadCreateOrConnectWithoutUsuariosInput
@@ -10398,22 +10520,32 @@ export namespace Prisma {
     deleteMany?: UsuarioAlmacenScalarWhereInput | UsuarioAlmacenScalarWhereInput[]
   }
 
-  export type UsuarioCreateNestedManyWithoutRolesInput = {
-    create?: XOR<UsuarioCreateWithoutRolesInput, UsuarioUncheckedCreateWithoutRolesInput> | UsuarioCreateWithoutRolesInput[] | UsuarioUncheckedCreateWithoutRolesInput[]
-    connectOrCreate?: UsuarioCreateOrConnectWithoutRolesInput | UsuarioCreateOrConnectWithoutRolesInput[]
-    connect?: UsuarioWhereUniqueInput | UsuarioWhereUniqueInput[]
-  }
-
   export type EntidadCreateNestedOneWithoutRolesInput = {
     create?: XOR<EntidadCreateWithoutRolesInput, EntidadUncheckedCreateWithoutRolesInput>
     connectOrCreate?: EntidadCreateOrConnectWithoutRolesInput
     connect?: EntidadWhereUniqueInput
   }
 
+  export type UsuarioCreateNestedManyWithoutRolesInput = {
+    create?: XOR<UsuarioCreateWithoutRolesInput, UsuarioUncheckedCreateWithoutRolesInput> | UsuarioCreateWithoutRolesInput[] | UsuarioUncheckedCreateWithoutRolesInput[]
+    connectOrCreate?: UsuarioCreateOrConnectWithoutRolesInput | UsuarioCreateOrConnectWithoutRolesInput[]
+    connect?: UsuarioWhereUniqueInput | UsuarioWhereUniqueInput[]
+  }
+
   export type UsuarioUncheckedCreateNestedManyWithoutRolesInput = {
     create?: XOR<UsuarioCreateWithoutRolesInput, UsuarioUncheckedCreateWithoutRolesInput> | UsuarioCreateWithoutRolesInput[] | UsuarioUncheckedCreateWithoutRolesInput[]
     connectOrCreate?: UsuarioCreateOrConnectWithoutRolesInput | UsuarioCreateOrConnectWithoutRolesInput[]
     connect?: UsuarioWhereUniqueInput | UsuarioWhereUniqueInput[]
+  }
+
+  export type EntidadUpdateOneWithoutRolesNestedInput = {
+    create?: XOR<EntidadCreateWithoutRolesInput, EntidadUncheckedCreateWithoutRolesInput>
+    connectOrCreate?: EntidadCreateOrConnectWithoutRolesInput
+    upsert?: EntidadUpsertWithoutRolesInput
+    disconnect?: EntidadWhereInput | boolean
+    delete?: EntidadWhereInput | boolean
+    connect?: EntidadWhereUniqueInput
+    update?: XOR<XOR<EntidadUpdateToOneWithWhereWithoutRolesInput, EntidadUpdateWithoutRolesInput>, EntidadUncheckedUpdateWithoutRolesInput>
   }
 
   export type UsuarioUpdateManyWithoutRolesNestedInput = {
@@ -10427,16 +10559,6 @@ export namespace Prisma {
     update?: UsuarioUpdateWithWhereUniqueWithoutRolesInput | UsuarioUpdateWithWhereUniqueWithoutRolesInput[]
     updateMany?: UsuarioUpdateManyWithWhereWithoutRolesInput | UsuarioUpdateManyWithWhereWithoutRolesInput[]
     deleteMany?: UsuarioScalarWhereInput | UsuarioScalarWhereInput[]
-  }
-
-  export type EntidadUpdateOneWithoutRolesNestedInput = {
-    create?: XOR<EntidadCreateWithoutRolesInput, EntidadUncheckedCreateWithoutRolesInput>
-    connectOrCreate?: EntidadCreateOrConnectWithoutRolesInput
-    upsert?: EntidadUpsertWithoutRolesInput
-    disconnect?: EntidadWhereInput | boolean
-    delete?: EntidadWhereInput | boolean
-    connect?: EntidadWhereUniqueInput
-    update?: XOR<XOR<EntidadUpdateToOneWithWhereWithoutRolesInput, EntidadUpdateWithoutRolesInput>, EntidadUncheckedUpdateWithoutRolesInput>
   }
 
   export type UsuarioUncheckedUpdateManyWithoutRolesNestedInput = {
@@ -10736,6 +10858,13 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedBytesNullableFilter<$PrismaModel = never> = {
+    equals?: Uint8Array | BytesFieldRefInput<$PrismaModel> | null
+    in?: Uint8Array[] | ListBytesFieldRefInput<$PrismaModel> | null
+    notIn?: Uint8Array[] | ListBytesFieldRefInput<$PrismaModel> | null
+    not?: NestedBytesNullableFilter<$PrismaModel> | Uint8Array | null
+  }
+
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -10761,6 +10890,16 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedBytesNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Uint8Array | BytesFieldRefInput<$PrismaModel> | null
+    in?: Uint8Array[] | ListBytesFieldRefInput<$PrismaModel> | null
+    notIn?: Uint8Array[] | ListBytesFieldRefInput<$PrismaModel> | null
+    not?: NestedBytesNullableWithAggregatesFilter<$PrismaModel> | Uint8Array | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBytesNullableFilter<$PrismaModel>
+    _max?: NestedBytesNullableFilter<$PrismaModel>
   }
 
   export type NestedBoolFilter<$PrismaModel = never> = {
@@ -10810,6 +10949,9 @@ export namespace Prisma {
     tipoCuenta: string
     estado?: string
     fechaRegistro?: Date | string
+    codigoUsado?: string | null
+    archivoNombre?: string | null
+    archivoBuffer?: Uint8Array | null
     roles?: RolCreateNestedManyWithoutUsuariosInput
     almacenes?: UsuarioAlmacenCreateNestedManyWithoutUsuarioInput
   }
@@ -10824,6 +10966,9 @@ export namespace Prisma {
     tipoCuenta: string
     estado?: string
     fechaRegistro?: Date | string
+    codigoUsado?: string | null
+    archivoNombre?: string | null
+    archivoBuffer?: Uint8Array | null
     roles?: RolUncheckedCreateNestedManyWithoutUsuariosInput
     almacenes?: UsuarioAlmacenUncheckedCreateNestedManyWithoutUsuarioInput
   }
@@ -10928,6 +11073,9 @@ export namespace Prisma {
     estado?: StringFilter<"Usuario"> | string
     fechaRegistro?: DateTimeFilter<"Usuario"> | Date | string
     entidadId?: IntNullableFilter<"Usuario"> | number | null
+    codigoUsado?: StringNullableFilter<"Usuario"> | string | null
+    archivoNombre?: StringNullableFilter<"Usuario"> | string | null
+    archivoBuffer?: BytesNullableFilter<"Usuario"> | Uint8Array | null
   }
 
   export type AlmacenUpsertWithWhereUniqueWithoutEntidadInput = {
@@ -11136,38 +11284,6 @@ export namespace Prisma {
     permisosExtra?: StringNullableFilter<"UsuarioAlmacen"> | string | null
   }
 
-  export type UsuarioCreateWithoutRolesInput = {
-    nombre: string
-    apellidos: string
-    correo: string
-    contrasena: string
-    googleId?: string | null
-    tipoCuenta: string
-    estado?: string
-    fechaRegistro?: Date | string
-    entidad?: EntidadCreateNestedOneWithoutUsuariosInput
-    almacenes?: UsuarioAlmacenCreateNestedManyWithoutUsuarioInput
-  }
-
-  export type UsuarioUncheckedCreateWithoutRolesInput = {
-    id?: number
-    nombre: string
-    apellidos: string
-    correo: string
-    contrasena: string
-    googleId?: string | null
-    tipoCuenta: string
-    estado?: string
-    fechaRegistro?: Date | string
-    entidadId?: number | null
-    almacenes?: UsuarioAlmacenUncheckedCreateNestedManyWithoutUsuarioInput
-  }
-
-  export type UsuarioCreateOrConnectWithoutRolesInput = {
-    where: UsuarioWhereUniqueInput
-    create: XOR<UsuarioCreateWithoutRolesInput, UsuarioUncheckedCreateWithoutRolesInput>
-  }
-
   export type EntidadCreateWithoutRolesInput = {
     nombre: string
     tipo: string
@@ -11196,20 +11312,42 @@ export namespace Prisma {
     create: XOR<EntidadCreateWithoutRolesInput, EntidadUncheckedCreateWithoutRolesInput>
   }
 
-  export type UsuarioUpsertWithWhereUniqueWithoutRolesInput = {
+  export type UsuarioCreateWithoutRolesInput = {
+    nombre: string
+    apellidos: string
+    correo: string
+    contrasena: string
+    googleId?: string | null
+    tipoCuenta: string
+    estado?: string
+    fechaRegistro?: Date | string
+    codigoUsado?: string | null
+    archivoNombre?: string | null
+    archivoBuffer?: Uint8Array | null
+    entidad?: EntidadCreateNestedOneWithoutUsuariosInput
+    almacenes?: UsuarioAlmacenCreateNestedManyWithoutUsuarioInput
+  }
+
+  export type UsuarioUncheckedCreateWithoutRolesInput = {
+    id?: number
+    nombre: string
+    apellidos: string
+    correo: string
+    contrasena: string
+    googleId?: string | null
+    tipoCuenta: string
+    estado?: string
+    fechaRegistro?: Date | string
+    entidadId?: number | null
+    codigoUsado?: string | null
+    archivoNombre?: string | null
+    archivoBuffer?: Uint8Array | null
+    almacenes?: UsuarioAlmacenUncheckedCreateNestedManyWithoutUsuarioInput
+  }
+
+  export type UsuarioCreateOrConnectWithoutRolesInput = {
     where: UsuarioWhereUniqueInput
-    update: XOR<UsuarioUpdateWithoutRolesInput, UsuarioUncheckedUpdateWithoutRolesInput>
     create: XOR<UsuarioCreateWithoutRolesInput, UsuarioUncheckedCreateWithoutRolesInput>
-  }
-
-  export type UsuarioUpdateWithWhereUniqueWithoutRolesInput = {
-    where: UsuarioWhereUniqueInput
-    data: XOR<UsuarioUpdateWithoutRolesInput, UsuarioUncheckedUpdateWithoutRolesInput>
-  }
-
-  export type UsuarioUpdateManyWithWhereWithoutRolesInput = {
-    where: UsuarioScalarWhereInput
-    data: XOR<UsuarioUpdateManyMutationInput, UsuarioUncheckedUpdateManyWithoutRolesInput>
   }
 
   export type EntidadUpsertWithoutRolesInput = {
@@ -11244,6 +11382,22 @@ export namespace Prisma {
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     usuarios?: UsuarioUncheckedUpdateManyWithoutEntidadNestedInput
     almacenes?: AlmacenUncheckedUpdateManyWithoutEntidadNestedInput
+  }
+
+  export type UsuarioUpsertWithWhereUniqueWithoutRolesInput = {
+    where: UsuarioWhereUniqueInput
+    update: XOR<UsuarioUpdateWithoutRolesInput, UsuarioUncheckedUpdateWithoutRolesInput>
+    create: XOR<UsuarioCreateWithoutRolesInput, UsuarioUncheckedCreateWithoutRolesInput>
+  }
+
+  export type UsuarioUpdateWithWhereUniqueWithoutRolesInput = {
+    where: UsuarioWhereUniqueInput
+    data: XOR<UsuarioUpdateWithoutRolesInput, UsuarioUncheckedUpdateWithoutRolesInput>
+  }
+
+  export type UsuarioUpdateManyWithWhereWithoutRolesInput = {
+    where: UsuarioScalarWhereInput
+    data: XOR<UsuarioUpdateManyMutationInput, UsuarioUncheckedUpdateManyWithoutRolesInput>
   }
 
   export type EntidadCreateWithoutAlmacenesInput = {
@@ -11421,6 +11575,9 @@ export namespace Prisma {
     tipoCuenta: string
     estado?: string
     fechaRegistro?: Date | string
+    codigoUsado?: string | null
+    archivoNombre?: string | null
+    archivoBuffer?: Uint8Array | null
     entidad?: EntidadCreateNestedOneWithoutUsuariosInput
     roles?: RolCreateNestedManyWithoutUsuariosInput
   }
@@ -11436,6 +11593,9 @@ export namespace Prisma {
     estado?: string
     fechaRegistro?: Date | string
     entidadId?: number | null
+    codigoUsado?: string | null
+    archivoNombre?: string | null
+    archivoBuffer?: Uint8Array | null
     roles?: RolUncheckedCreateNestedManyWithoutUsuariosInput
   }
 
@@ -11494,6 +11654,9 @@ export namespace Prisma {
     tipoCuenta?: StringFieldUpdateOperationsInput | string
     estado?: StringFieldUpdateOperationsInput | string
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
+    codigoUsado?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoNombre?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoBuffer?: NullableBytesFieldUpdateOperationsInput | Uint8Array | null
     entidad?: EntidadUpdateOneWithoutUsuariosNestedInput
     roles?: RolUpdateManyWithoutUsuariosNestedInput
   }
@@ -11509,6 +11672,9 @@ export namespace Prisma {
     estado?: StringFieldUpdateOperationsInput | string
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
     entidadId?: NullableIntFieldUpdateOperationsInput | number | null
+    codigoUsado?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoNombre?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoBuffer?: NullableBytesFieldUpdateOperationsInput | Uint8Array | null
     roles?: RolUncheckedUpdateManyWithoutUsuariosNestedInput
   }
 
@@ -11624,6 +11790,9 @@ export namespace Prisma {
     tipoCuenta: string
     estado?: string
     fechaRegistro?: Date | string
+    codigoUsado?: string | null
+    archivoNombre?: string | null
+    archivoBuffer?: Uint8Array | null
   }
 
   export type AlmacenCreateManyEntidadInput = {
@@ -11653,6 +11822,9 @@ export namespace Prisma {
     tipoCuenta?: StringFieldUpdateOperationsInput | string
     estado?: StringFieldUpdateOperationsInput | string
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
+    codigoUsado?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoNombre?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoBuffer?: NullableBytesFieldUpdateOperationsInput | Uint8Array | null
     roles?: RolUpdateManyWithoutUsuariosNestedInput
     almacenes?: UsuarioAlmacenUpdateManyWithoutUsuarioNestedInput
   }
@@ -11667,6 +11839,9 @@ export namespace Prisma {
     tipoCuenta?: StringFieldUpdateOperationsInput | string
     estado?: StringFieldUpdateOperationsInput | string
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
+    codigoUsado?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoNombre?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoBuffer?: NullableBytesFieldUpdateOperationsInput | Uint8Array | null
     roles?: RolUncheckedUpdateManyWithoutUsuariosNestedInput
     almacenes?: UsuarioAlmacenUncheckedUpdateManyWithoutUsuarioNestedInput
   }
@@ -11681,6 +11856,9 @@ export namespace Prisma {
     tipoCuenta?: StringFieldUpdateOperationsInput | string
     estado?: StringFieldUpdateOperationsInput | string
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
+    codigoUsado?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoNombre?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoBuffer?: NullableBytesFieldUpdateOperationsInput | Uint8Array | null
   }
 
   export type AlmacenUpdateWithoutEntidadInput = {
@@ -11800,6 +11978,9 @@ export namespace Prisma {
     tipoCuenta?: StringFieldUpdateOperationsInput | string
     estado?: StringFieldUpdateOperationsInput | string
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
+    codigoUsado?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoNombre?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoBuffer?: NullableBytesFieldUpdateOperationsInput | Uint8Array | null
     entidad?: EntidadUpdateOneWithoutUsuariosNestedInput
     almacenes?: UsuarioAlmacenUpdateManyWithoutUsuarioNestedInput
   }
@@ -11815,6 +11996,9 @@ export namespace Prisma {
     estado?: StringFieldUpdateOperationsInput | string
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
     entidadId?: NullableIntFieldUpdateOperationsInput | number | null
+    codigoUsado?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoNombre?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoBuffer?: NullableBytesFieldUpdateOperationsInput | Uint8Array | null
     almacenes?: UsuarioAlmacenUncheckedUpdateManyWithoutUsuarioNestedInput
   }
 
@@ -11829,6 +12013,9 @@ export namespace Prisma {
     estado?: StringFieldUpdateOperationsInput | string
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
     entidadId?: NullableIntFieldUpdateOperationsInput | number | null
+    codigoUsado?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoNombre?: NullableStringFieldUpdateOperationsInput | string | null
+    archivoBuffer?: NullableBytesFieldUpdateOperationsInput | Uint8Array | null
   }
 
   export type UsuarioAlmacenCreateManyAlmacenInput = {

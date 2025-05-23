@@ -140,7 +140,10 @@ exports.Prisma.UsuarioScalarFieldEnum = {
   tipoCuenta: 'tipoCuenta',
   estado: 'estado',
   fechaRegistro: 'fechaRegistro',
-  entidadId: 'entidadId'
+  entidadId: 'entidadId',
+  codigoUsado: 'codigoUsado',
+  archivoNombre: 'archivoNombre',
+  archivoBuffer: 'archivoBuffer'
 };
 
 exports.Prisma.RolScalarFieldEnum = {
