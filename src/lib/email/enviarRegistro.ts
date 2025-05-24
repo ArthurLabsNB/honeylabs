@@ -1,24 +1,28 @@
 import nodemailer from 'nodemailer';
 import { plantillaRegistroHTML } from '@/templates/email/registro.html';
 
-// 📧 Configura aquí el correo del equipo administrador
-const EMAIL_ADMIN = process.env.EMAIL_ADMIN ?? 'admin@honeylabs.mx';
-const SMTP_PASS = process.env.SMTP_PASS ?? '';
-const SMTP_USER = process.env.SMTP_USER ?? '';
+// ✅ Variables de entorno obligatorias (se deben definir en `.env`)
+const EMAIL_ADMIN = process.env.EMAIL_ADMIN;
+const SMTP_PASS = process.env.SMTP_PASS;
+const SMTP_USER = process.env.SMTP_USER;
+
+if (!EMAIL_ADMIN || !SMTP_USER || !SMTP_PASS) {
+  throw new Error('❌ Faltan variables de entorno para el sistema de correo (EMAIL_ADMIN, SMTP_USER o SMTP_PASS)');
+}
 
 export async function enviarCorreoValidacionEmpresa({
   nombre,
   correo,
-  tipoCuenta
+  tipoCuenta,
 }: {
   nombre: string;
   correo: string;
   tipoCuenta: string;
 }) {
   try {
-    // Crear transporte SMTP (puede ser Gmail, Mailersend, etc.)
+    // ✉️ Configuración del transporte SMTP (ej. Gmail, Mailjet, MailerSend, etc.)
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com', // o el host que uses
+      host: 'smtp.gmail.com',
       port: 465,
       secure: true,
       auth: {
@@ -29,17 +33,17 @@ export async function enviarCorreoValidacionEmpresa({
 
     const html = plantillaRegistroHTML({ nombre, correo, tipoCuenta });
 
-    // Enviar el correo
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: `"HoneyLabs Registro" <${SMTP_USER}>`,
       to: EMAIL_ADMIN,
-      subject: `📝 Nuevo registro pendiente: ${tipoCuenta} - ${correo}`,
+      subject: `📝 Nuevo registro pendiente: ${tipoCuenta.toUpperCase()} - ${correo}`,
       html,
     });
 
+    console.log('[EMAIL_ENVIADO]', info.messageId);
     return { enviado: true };
-  } catch (error) {
-    console.error('[ERROR_EMAIL_VALIDACION]', error);
-    return { enviado: false, error };
+  } catch (error: any) {
+    console.error('[ERROR_EMAIL_VALIDACION]', error.message || error);
+    return { enviado: false, error: error.message || 'Error desconocido' };
   }
 }

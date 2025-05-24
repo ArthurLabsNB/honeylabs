@@ -1,26 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// 🧠 Memoria local simple para almacenar intentos por IP (solo útil mientras el servidor vive)
-// En producción, usar Redis, KV o Edge Store persistente
+// 🚨 Memoria temporal (solo para desarrollo/servidor vivo)
 const ipRequests = new Map<string, { count: number; lastRequest: number }>();
 
-// ⚙️ Configuración de rate limit
-const RATE_LIMIT_MAX = 5; // Máximo intentos
-const RATE_LIMIT_WINDOW_MS = 60 * 1000; // Cada 1 minuto
+// ⚙️ Configuración
+const RATE_LIMIT_MAX = 5;
+const RATE_LIMIT_WINDOW_MS = 60 * 1000;
 
 export function middleware(req: NextRequest) {
-  // ✅ Extrae IP compatible con Vercel Edge
   const ip =
     req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'desconocido';
 
+  const path = req.nextUrl.pathname;
+  const key = `RATE_REGISTRO_${ip}`;
+
   const now = Date.now();
-  const key = `REG_${ip}`;
   const entry = ipRequests.get(key);
 
   if (entry) {
     if (now - entry.lastRequest < RATE_LIMIT_WINDOW_MS) {
       if (entry.count >= RATE_LIMIT_MAX) {
-        console.warn(`[RATE LIMIT] IP bloqueada temporalmente: ${ip}`);
+        console.warn(`[RATE LIMIT] Bloqueada: ${ip} en ${path}`);
         return new NextResponse(
           JSON.stringify({ error: 'Demasiadas peticiones. Intenta más tarde.' }),
           {
@@ -46,7 +46,7 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-// 🌐 Aplica este middleware solo a /api/registro
+// 🛡️ Solo aplicar a estas rutas por ahora
 export const config = {
-  matcher: ['/api/registro'],
+  matcher: ['/api/registro', '/api/login'],
 };
