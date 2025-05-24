@@ -1,86 +1,85 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function Login() {
+export default function LoginPage() {
   const router = useRouter();
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [mensaje, setMensaje] = useState('');
+  const [cargando, setCargando] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setMensaje('');
+    setCargando(true);
 
-    // Aquí iría tu lógica real de login
-    if (correo && contrasena) {
-      // Simulación de login exitoso
-      router.push('/panel');
-    } else {
-      setMensaje('Debes completar todos los campos.');
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ correo, contrasena }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || 'Error desconocido');
+      setMensaje('✔️ Inicio de sesión exitoso');
+
+      // Redirigir luego de 1s
+      setTimeout(() => router.push('/panel'), 1000);
+    } catch (error: any) {
+      setMensaje(`❌ ${error.message}`);
+    } finally {
+      setCargando(false);
     }
   };
 
   return (
-    <main className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-100 via-amber-100 to-rose-100 flex items-center justify-center">
       <form
         onSubmit={handleLogin}
-        className="bg-white p-8 rounded-lg shadow-md max-w-md w-full space-y-4"
+        className="bg-white shadow-md rounded-xl p-8 max-w-md w-full space-y-5 border border-amber-300"
       >
-        <h1 className="text-xl font-bold text-center">Iniciar sesión</h1>
+        <h2 className="text-2xl font-bold text-center text-amber-700">Iniciar Sesión</h2>
 
         <input
           type="email"
-          name="correo"
-          placeholder="Correo"
+          placeholder="Correo electrónico"
           value={correo}
-          onChange={(e) => setCorreo(e.target.value)}
+          onChange={e => setCorreo(e.target.value)}
+          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
           required
-          className="input"
         />
-
         <input
           type="password"
-          name="contrasena"
           placeholder="Contraseña"
           value={contrasena}
-          onChange={(e) => setContrasena(e.target.value)}
+          onChange={e => setContrasena(e.target.value)}
+          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
           required
-          className="input"
         />
 
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full"
+          disabled={cargando}
+          className="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-md transition"
         >
-          Iniciar sesión
+          {cargando ? 'Verificando...' : 'Entrar'}
         </button>
 
-        <button
-          type="button"
-          className="text-sm text-center text-blue-600 hover:underline w-full"
-          onClick={() => router.push('/registro')}
-        >
-          ¿No tienes cuenta? Crear una
-        </button>
+        <p className="text-center text-sm text-gray-600">
+          ¿No tienes cuenta?{' '}
+          <a href="/registro" className="text-amber-700 underline hover:text-amber-900">
+            Crear cuenta
+          </a>
+        </p>
 
         {mensaje && (
-          <div className="mt-2 text-center text-sm text-red-600">
-            {mensaje}
-          </div>
+          <div className="text-center text-sm mt-2 text-red-600 font-semibold">{mensaje}</div>
         )}
       </form>
-
-      <style jsx>{`
-        .input {
-          width: 100%;
-          padding: 0.5rem;
-          border: 1px solid #ccc;
-          border-radius: 0.375rem;
-          font-size: 1rem;
-        }
-      `}</style>
-    </main>
+    </div>
   );
 }
