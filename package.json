@@ -20,6 +20,7 @@
     "pg": "^8.16.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "styled-jsx": "^5.1.7",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
