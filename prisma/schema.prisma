@@ -1,3 +1,7 @@
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+// 🌐 Generador y fuente de datos
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,10 +11,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//
+// 🏢 Modelo de ENTIDADES (empresas, instituciones, etc.)
+//
 model Entidad {
   id             Int       @id @default(autoincrement())
   nombre         String
-  tipo           String
+  tipo           String                     // ej: 'institucional', 'empresarial'
   correoContacto String
   telefono       String?
   direccion      String?
@@ -20,35 +27,50 @@ model Entidad {
   usuarios       Usuario[]
 }
 
+//
+// 👤 Modelo de USUARIOS
+//
 model Usuario {
   id            Int              @id @default(autoincrement())
   nombre        String
   apellidos     String
   correo        String           @unique
   contrasena    String
-  googleId      String?
-  tipoCuenta    String
-  estado        String           @default("pendiente")
+  googleId      String?          // Para login alternativo con Google (futuro)
+  tipoCuenta    String           // 'estandar', 'institucional', etc.
+  estado        String           @default("pendiente")  // 'pendiente' o 'activo'
   fechaRegistro DateTime         @default(now())
+
+  // 🔗 Asociación con entidad si aplica
   entidadId     Int?
+  entidad       Entidad?         @relation(fields: [entidadId], references: [id])
+
+  // 📎 Soporte para validación de cuenta
   archivoBuffer Bytes?
   archivoNombre String?
   codigoUsado   String?
-  entidad       Entidad?         @relation(fields: [entidadId], references: [id])
+
+  // 🔗 Relaciones múltiples
   almacenes     UsuarioAlmacen[]
   roles         Rol[]            @relation("RolToUsuario")
 }
 
+//
+// 🎭 Roles personalizados
+//
 model Rol {
   id          Int       @id @default(autoincrement())
   nombre      String
   descripcion String?
-  permisos    String
+  permisos    String                 // JSON string con permisos
   entidadId   Int?
   entidad     Entidad?  @relation(fields: [entidadId], references: [id])
   usuarios    Usuario[] @relation("RolToUsuario")
 }
 
+//
+// 📦 Almacenes físicos o virtuales
+//
 model Almacen {
   id                      Int              @id @default(autoincrement())
   nombre                  String
@@ -58,24 +80,35 @@ model Almacen {
   funciones               String?
   permisosPredeterminados String?
   fechaCreacion           DateTime         @default(now())
-  entidadId               Int
-  entidad                 Entidad          @relation(fields: [entidadId], references: [id])
-  codigos                 CodigoAlmacen[]
-  usuarios                UsuarioAlmacen[]
+
+  // 🔗 Relación con Entidad
+  entidadId   Int
+  entidad     Entidad          @relation(fields: [entidadId], references: [id])
+
+  // 🔗 Códigos de registro, usuarios conectados
+  codigos     CodigoAlmacen[]
+  usuarios    UsuarioAlmacen[]
 }
 
+//
+// 🔑 Relación muchos-a-muchos entre usuarios y almacenes
+//
 model UsuarioAlmacen {
   id            Int     @id @default(autoincrement())
   usuarioId     Int
   almacenId     Int
   rolEnAlmacen  String  @db.VarChar(50)
   permisosExtra String?
-  almacen       Almacen @relation(fields: [almacenId], references: [id])
-  usuario       Usuario @relation(fields: [usuarioId], references: [id])
 
-  @@unique([usuarioId, almacenId])
+  usuario       Usuario @relation(fields: [usuarioId], references: [id])
+  almacen       Almacen @relation(fields: [almacenId], references: [id])
+
+  @@unique([usuarioId, almacenId]) // No puede estar dos veces en el mismo almacén
 }
 
+//
+// 🧾 Códigos generados por entidades para registrar afiliados
+//
 model CodigoAlmacen {
   id              Int       @id @default(autoincrement())
   almacenId       Int
@@ -87,5 +120,6 @@ model CodigoAlmacen {
   fechaCreacion   DateTime  @default(now())
   fechaExpiracion DateTime?
   creadoPorId     Int?
+
   almacen         Almacen   @relation(fields: [almacenId], references: [id])
 }
