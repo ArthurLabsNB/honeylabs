@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
     const codigo = String(formData.get('codigo') ?? '').trim();
     const archivo = formData.get('archivo') as File | null;
 
+    // Validaciones básicas
     if (!nombre || !apellidos || !correo || !contrasena || !tipoCuenta) {
       console.warn('❗ Campos requeridos faltantes');
       return NextResponse.json({ error: 'Faltan campos requeridos.' }, { status: 400 });
@@ -118,7 +119,6 @@ export async function POST(req: NextRequest) {
 
     const hashedPassword = await bcrypt.hash(contrasena, 10);
 
-    // Información previa a creación
     console.log('📄 Datos a insertar:', {
       nombre, apellidos, correo, tipoCuenta, estadoCuenta, entidadId, archivoNombre, tieneArchivo: !!archivoBuffer,
     });
@@ -142,11 +142,10 @@ export async function POST(req: NextRequest) {
 
       console.info('✅ Usuario creado:', nuevoUsuario.id, correo);
 
-      if (estadoCuenta === 'pendiente') {
-        const enviado = await enviarCorreoValidacionEmpresa({ nombre, correo, tipoCuenta });
-        if (!enviado.enviado) {
-          console.warn('⚠️ Error al enviar correo de validación:', enviado.error);
-        }
+      // ✉️ Enviar correo tanto al sistema como al usuario
+      const enviado = await enviarCorreoValidacionEmpresa({ nombre, correo, tipoCuenta });
+      if (!enviado.enviado) {
+        console.warn('⚠️ Error al enviar correo de validación/confirmación:', enviado.error);
       }
 
       return NextResponse.json({
