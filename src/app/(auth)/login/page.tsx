@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -24,10 +25,22 @@ export default function LoginPage() {
 
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data.error || 'Error desconocido');
+      if (!res.ok) throw new Error(data.error || 'Credenciales inválidas');
+
+      // ✅ Guardar sesión
+      localStorage.setItem(
+        'usuario',
+        JSON.stringify({
+          nombre: data.nombre,
+          tipoCuenta: data.tipoCuenta,
+          correo: data.correo,
+        })
+      );
+
       setMensaje('✔️ Inicio de sesión exitoso');
 
-      setTimeout(() => router.push('/panel'), 1000);
+      // ✅ Redirigir al panel
+      setTimeout(() => router.push('/panel'), 1200);
     } catch (error: any) {
       setMensaje(`❌ ${error.message}`);
     } finally {
@@ -39,9 +52,9 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-yellow-100 via-amber-100 to-rose-100 flex items-center justify-center px-4">
       <form
         onSubmit={handleLogin}
-        className="bg-white shadow-md rounded-xl p-8 max-w-md w-full space-y-5 border border-amber-300"
+        className="bg-white shadow-xl rounded-2xl p-8 max-w-md w-full space-y-5 border border-amber-300"
       >
-        <h2 className="text-2xl font-bold text-center text-amber-700">Iniciar Sesión</h2>
+        <h2 className="text-3xl font-bold text-center text-amber-700 tracking-tight">Iniciar Sesión</h2>
 
         <input
           type="email"
@@ -64,9 +77,15 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={cargando}
-          className="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-md transition"
+          className="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-md transition flex justify-center items-center gap-2"
         >
-          {cargando ? 'Verificando...' : 'Entrar'}
+          {cargando ? (
+            <>
+              <Loader2 className="animate-spin h-5 w-5" /> Verificando...
+            </>
+          ) : (
+            'Entrar'
+          )}
         </button>
 
         <p className="text-center text-sm text-gray-600">
