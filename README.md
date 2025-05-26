@@ -76,7 +76,8 @@ Para iniciar el entorno de desarrollo:
 npm run dev
 ```
 
-La aplicación estará disponible en [http://localhost:3000](http://localhost:3000).
+La aplicación estará disponible en [honeylabs.vercel.app] por el momento hasta que se tenga un host fijo.
+Entender que este repositorio solo cuenta "Funcional" la base del proyecto, no se piensa colocar completo por el momento.
 
 ---
 
@@ -125,5 +126,5 @@ Este proyecto está bajo la licencia MIT.
 ## Contacto
 
 ¿Tienes dudas o sugerencias?  
-Escríbenos a: contacto@honeylabs.com  
+Escríbenos a: logisticshoneylabs@gmail.com
 O abre un [issue en GitHub](https://github.com/tu-org/honeylabs/issues)
