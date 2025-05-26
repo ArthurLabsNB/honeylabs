@@ -7,6 +7,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import './globals.css';
 
+// 🎨 Tipografías profesionales
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -19,24 +20,43 @@ const geistMono = Geist_Mono({
   display: 'swap',
 });
 
+// 🌐 Metadata global del sitio
 export const metadata: Metadata = {
   title: 'HoneyLabs',
   description: 'Gestión inteligente de inventarios educativos y empresariales',
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
+// 📦 Layout raíz global (aplica a todas las rutas)
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" suppressHydrationWarning>
+    <html lang="es" className="scroll-smooth" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-amber-50 text-neutral-800 dark:bg-zinc-900 dark:text-neutral-100 transition-colors duration-300`}
+        className={`
+          ${geistSans.variable} ${geistMono.variable}
+          bg-[var(--color-background)] text-[var(--color-foreground)]
+          font-sans antialiased transition-colors duration-300
+          overflow-x-hidden
+        `}
       >
+        {/* 🔝 Barra de navegación */}
         <Navbar />
-        <main className="min-h-[calc(100vh-120px)]">{children}</main>
+
+        {/* 📄 Contenido principal */}
+        <main className="min-h-[calc(100vh-120px)] pt-[96px] pb-8 container-xl">
+          {children}
+        </main>
+
+        {/* 🦶 Footer global persistente */}
         <Footer />
+
+        {/* 📊 Integraciones Vercel */}
         <Analytics />
         <SpeedInsights />
       </body>

@@ -40,7 +40,7 @@ export default function LoginPage() {
       setMensaje('✔️ Inicio de sesión exitoso');
 
       // ✅ Redirigir al panel
-      setTimeout(() => router.push('/panel'), 1200);
+      setTimeout(() => router.push('/'), 1200);
     } catch (error: any) {
       setMensaje(`❌ ${error.message}`);
     } finally {
