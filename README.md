@@ -1,62 +1,129 @@
 # 🍯 HoneyLabs – Plataforma Integral de Gestión de Laboratorios y Almacenes
 
----
+![Estado](https://img.shields.io/badge/estado-en%20desarrollo-yellow)
+![Licencia](https://img.shields.io/badge/licencia-MIT-blue)
 
-## 🚩 Objetivo del Proyecto
+## Tabla de Contenidos
 
-HoneyLabs busca ser la **plataforma líder** en gestión digital de laboratorios, inventarios y almacenes para el sector educativo, institucional y empresarial. Queremos facilitar la administración, control de insumos, préstamos, seguimiento de entradas y salidas, así como la comunicación y transparencia entre todos los usuarios involucrados.
-
-Nuestro objetivo es ofrecer una herramienta **segura, ágil, intuitiva y adaptable**, que permita digitalizar procesos tradicionales, mejorar la trazabilidad y optimizar recursos tanto en escuelas como en empresas.
-
----
-
-## 📝 Descripción del Proyecto
-
-**HoneyLabs** es una aplicación web de nueva generación diseñada para modernizar la administración de laboratorios y almacenes:
-
-- Centraliza el inventario, préstamos y seguimiento de materiales.
-- Ofrece dashboards adaptados según el tipo de usuario (estudiante, empleado, encargado, administrador).
-- Permite la conexión entre instituciones y empresas mediante códigos de acceso, gestión de roles y permisos personalizados.
-- Brinda notificaciones, calendarios de eventos y registro de movimientos en tiempo real.
-- Pensada para ser **multiplataforma, responsiva y escalable**.
+- [Descripción](#descripción)
+- [Estado del Proyecto](#estado-del-proyecto)
+- [Características](#características)
+- [Tecnologías](#tecnologías)
+- [Instalación](#instalación)
+- [Uso](#uso)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Roadmap](#roadmap)
+- [Contribución](#contribución)
+- [Licencia](#licencia)
+- [Contacto](#contacto)
 
 ---
 
-## 🌟 Características principales (en desarrollo / planeadas)
+## Descripción
 
-- **Registro y autenticación de usuarios** (con validación avanzada para empresas/instituciones)
-- **Panel personalizado según tipo de cuenta**
-- **Gestión avanzada de almacenes e inventarios**
-- **Control de préstamos y devoluciones**
-- **Notificaciones y novedades automáticas**
-- **Calendario inteligente con eventos y recordatorios**
-- **Exportación y respaldo de datos**
-- **Soporte offline con sincronización local/remota**
-- **Integración multimedia (manuales, tutoriales, videos, documentación)**
-- **Centro de ayuda y contacto integrado**
-- **Sistema de roles y permisos avanzado**
-- **Interfaz moderna, profesional, inspirada en UX empresarial y educativa**
+**HoneyLabs** es una plataforma integral diseñada para la gestión eficiente de laboratorios y almacenes universitarios. Permite el registro, control y seguimiento de inventarios, préstamos y devoluciones de materiales, así como la administración de usuarios y reportes de incidencias.
 
 ---
 
-## 💻 Tecnologías utilizadas / stack principal
+## Estado del Proyecto
 
-| Tecnología      | Rol / Uso                                            | ¿Por qué se eligió?                                     |
-|-----------------|-----------------------------------------------------|---------------------------------------------------------|
-| **Next.js**     | Framework principal frontend + SSR                  | Escalabilidad, velocidad, soporte empresarial            |
-| **React**       | Interfaz de usuario                                 | Componentización, reactividad, comunidad amplia          |
-| **TypeScript**  | Lenguaje para frontend/backend                      | Seguridad de tipos, mantenimiento a largo plazo          |
-| **TailwindCSS** | Estilizado rápido, adaptativo y profesional         | Consistencia visual, rapidez, soporte para dark/light    |
-| **Prisma**      | ORM para manejo de base de datos                    | Migraciones seguras, compatibilidad multi-db             |
-| **PostgreSQL**  | Base de datos principal (nuevo desarrollo)          | Robustez, integridad, features avanzados                 |
-| **MySQL**       | Base de datos heredada o interoperabilidad inicial  | Compatibilidad con sistemas existentes                   |
-| **Vercel**      | Despliegue y hosting (CI/CD)                        | Integración directa con Next.js, rendimiento global      |
-| **Node.js**     | Backend (APIs, lógica de servidor)                  | Ecosistema JS completo, fácil despliegue                 |
-| **Git/GitHub**  | Control de versiones y colaboración                 | Transparencia, trabajo colaborativo                      |
-| **Docker** (futuro) | Contenerización y despliegue reproducible       | Facilidad para desarrollo, testing y producción          |
-| **PWA/Service Workers** | Soporte offline y sincronización            | Accesibilidad sin internet, experiencia fluida           |
+🚧 **En desarrollo activo**  
+Actualmente se están implementando las funcionalidades principales. Se aceptan sugerencias y contribuciones.
 
 ---
 
-## 📦 Estructura base del proyecto
+## Características
 
+- Registro y autenticación de usuarios
+- Gestión avanzada de inventarios
+- Control de préstamos y devoluciones de materiales
+- Administración de usuarios y roles
+- Reporte y seguimiento de incidencias
+- Panel de control intuitivo
+- Notificaciones y alertas
+
+---
+
+## Tecnologías
+
+- **Frontend:** Next.js, React, TypeScript, TailwindCSS
+- **Backend:** Next.js API Routes, Prisma
+- **Base de datos:** PostgreSQL
+- **ORM:** Prisma
+- **Despliegue:** Vercel
+
+---
+
+## Instalación
+
+Clona el repositorio y ejecuta los siguientes comandos:
+
+```sh
+git clone https://github.com/tu-org/honeylabs.git
+cd honeylabs
+npm install
+```
+
+Configura las variables de entorno según el archivo `.env.example`.
+
+---
+
+## Uso
+
+Para iniciar el entorno de desarrollo:
+
+```sh
+npm run dev
+```
+
+La aplicación estará disponible en [http://localhost:3000](http://localhost:3000).
+
+---
+
+## Estructura del Proyecto
+
+```
+honeylabs/
+├── app/                # Páginas y rutas principales
+├── components/         # Componentes reutilizables de React
+├── lib/                # Funciones y utilidades compartidas
+├── prisma/             # Esquema y migraciones de base de datos
+├── public/             # Recursos estáticos (imágenes, iconos)
+├── styles/             # Archivos de estilos globales
+├── tests/              # Pruebas unitarias y de integración
+├── .env.example        # Variables de entorno de ejemplo
+└── README.md           # Este archivo
+```
+
+---
+
+## Roadmap
+
+- [x] Estructura inicial del proyecto
+- [ ] Autenticación y registro de usuarios
+- [ ] Gestión de inventario
+- [ ] Control de préstamos y devoluciones
+- [ ] Panel de administración
+- [ ] Reporte de incidencias
+- [ ] Notificaciones y alertas
+
+---
+
+## Contribución
+
+¡Las contribuciones son bienvenidas!  
+Por favor, abre un issue para reportar errores o sugerir mejoras. Para contribuir con código, crea un fork del repositorio y envía un pull request.
+
+---
+
+## Licencia
+
+Este proyecto está bajo la licencia MIT.
+
+---
+
+## Contacto
+
+¿Tienes dudas o sugerencias?  
+Escríbenos a: contacto@honeylabs.com  
+O abre un [issue en GitHub](https://github.com/tu-org/honeylabs/issues)
