@@ -5,7 +5,7 @@ import ClientLayout from '@/components/ClientLayout';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
-// Tipografías
+// Tipografías Google Fonts (variables)
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -17,12 +17,11 @@ const geistMono = Geist_Mono({
   display: 'swap',
 });
 
+// Metadata global
 export const metadata: Metadata = {
   title: 'HoneyLabs',
   description: 'Gestión inteligente de inventarios educativos y empresariales',
-  icons: {
-    icon: '/favicon.ico',
-  },
+  icons: { icon: '/favicon.ico' },
 };
 
 export default function RootLayout({
@@ -40,8 +39,10 @@ export default function RootLayout({
           overflow-x-hidden
         `}
       >
+        {/* Layout principal con Navbar/Footer y lógica de sesión */}
         <ClientLayout>{children}</ClientLayout>
-        {/* Integraciones Vercel */}
+
+        {/* Integraciones y métricas */}
         <Analytics />
         <SpeedInsights />
       </body>

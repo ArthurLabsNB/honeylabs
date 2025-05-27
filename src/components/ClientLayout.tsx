@@ -4,11 +4,20 @@ import { usePathname } from 'next/navigation';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
+const RUTAS_OCULTAR_NAV = [
+  /^\/auth(\/|$)/, // Oculta en cualquier ruta bajo /auth (login, registro, etc)
+  // Puedes agregar más patrones aquí, ejemplo:
+  // /^\/privado(\/|$)/,
+];
+
+function debeOcultarNavbarFooter(pathname: string): boolean {
+  return RUTAS_OCULTAR_NAV.some((regex) => regex.test(pathname));
+}
+
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  // 🔒 Anti errores: rutas donde NO debe mostrarse navbar/footer
-  const ocultarNavbar = /^\/auth\/(login|registro)(\/.*)?$/.test(pathname);
+  const ocultarNavbar = debeOcultarNavbarFooter(pathname);
 
   return (
     <>
@@ -20,3 +29,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     </>
   );
 }
+
+// Nota: Este layout se usa para manejar la navegación y el footer en el cliente.
+// Si necesitas lógica adicional (como manejo de sesión), puedes agregarla aquí.

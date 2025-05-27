@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
     console.info('📥 Iniciando registro de usuario');
     const formData = await req.formData();
 
+    // Extracción y sanitización de campos
     const nombre = String(formData.get('nombre') ?? '').trim();
     const apellidos = String(formData.get('apellidos') ?? '').trim();
     const correo = String(formData.get('correo') ?? '').trim().toLowerCase();
@@ -35,30 +36,32 @@ export async function POST(req: NextRequest) {
     const codigo = String(formData.get('codigo') ?? '').trim();
     const archivo = formData.get('archivo') as File | null;
 
-    // Validaciones básicas
+    // Validación básica
     if (!nombre || !apellidos || !correo || !contrasena || !tipoCuenta) {
-      console.warn('❗ Campos requeridos faltantes');
       return NextResponse.json({ error: 'Faltan campos requeridos.' }, { status: 400 });
     }
-
     if (!esCorreoValido(correo)) {
-      console.warn('❗ Correo inválido:', correo);
       return NextResponse.json({ error: 'Correo inválido.' }, { status: 400 });
     }
+    if (contrasena.length < 6) {
+      return NextResponse.json({ error: 'La contraseña debe tener al menos 6 caracteres.' }, { status: 400 });
+    }
 
+    // Validación de usuario existente
     const existente = await prisma.usuario.findUnique({ where: { correo } });
     if (existente) {
-      console.warn('⚠️ Correo ya registrado:', correo);
       return NextResponse.json({ error: 'Ya existe una cuenta con ese correo.' }, { status: 409 });
     }
 
+    // Validación de archivo si se requiere
     const requiereArchivo = ['empresarial', 'institucional'].includes(tipoCuenta);
     let archivoNombre: string | null = null;
     let archivoBuffer: Buffer | null = null;
 
     if (requiereArchivo) {
-      if (!archivo) return NextResponse.json({ error: 'Se requiere un archivo de validación.' }, { status: 400 });
-      console.log('📎 Tipo de archivo recibido:', archivo.type);
+      if (!archivo) {
+        return NextResponse.json({ error: 'Se requiere un archivo de validación.' }, { status: 400 });
+      }
 
       if (!TIPOS_PERMITIDOS.includes(archivo.type)) {
         return NextResponse.json({ error: 'Tipo de archivo no permitido.' }, { status: 415 });
@@ -74,18 +77,15 @@ export async function POST(req: NextRequest) {
         if (buffer.byteLength > BYTES_MAXIMOS) {
           return NextResponse.json({ error: `Archivo demasiado grande. Máx: ${TAMAÑO_MAXIMO_MB}MB.` }, { status: 413 });
         }
-
         archivoNombre = `${uuidv4()}_${archivo.name}`;
         archivoBuffer = Buffer.from(buffer);
       } catch (err: any) {
         console.error('❌ Error al procesar archivo:', err);
-        return NextResponse.json({
-          error: 'No se pudo procesar el archivo.',
-          detalle: err.message,
-        }, { status: 500 });
+        return NextResponse.json({ error: 'No se pudo procesar el archivo.', detalle: err.message }, { status: 500 });
       }
     }
 
+    // Si viene código, buscar y asociar entidad/almacén
     let entidadId: number | null = null;
     let codigoUsado: string | null = null;
     let estadoCuenta = requiereArchivo ? 'pendiente' : 'activo';
@@ -110,21 +110,17 @@ export async function POST(req: NextRequest) {
         codigoUsado = codigo;
       } catch (err: any) {
         console.error('❌ Error en validación de código:', err);
-        return NextResponse.json({
-          error: 'Fallo al validar el código proporcionado.',
-          detalle: err.message,
-        }, { status: 500 });
+        return NextResponse.json({ error: 'Fallo al validar el código proporcionado.', detalle: err.message }, { status: 500 });
       }
     }
 
+    // Hash de contraseña
     const hashedPassword = await bcrypt.hash(contrasena, 10);
 
-    console.log('📄 Datos a insertar:', {
-      nombre, apellidos, correo, tipoCuenta, estadoCuenta, entidadId, archivoNombre, tieneArchivo: !!archivoBuffer,
-    });
-
+    // Guardar usuario en base de datos
+    let nuevoUsuario;
     try {
-      const nuevoUsuario = await prisma.usuario.create({
+      nuevoUsuario = await prisma.usuario.create({
         data: {
           nombre,
           apellidos,
@@ -139,37 +135,30 @@ export async function POST(req: NextRequest) {
           archivoBuffer,
         },
       });
-
       console.info('✅ Usuario creado:', nuevoUsuario.id, correo);
-
-      // ✉️ Enviar correo tanto al sistema como al usuario
-      const enviado = await enviarCorreoValidacionEmpresa({ nombre, correo, tipoCuenta });
-      if (!enviado.enviado) {
-        console.warn('⚠️ Error al enviar correo de validación/confirmación:', enviado.error);
-      }
-
-      return NextResponse.json({
-        success: true,
-        mensaje: estadoCuenta === 'pendiente'
-          ? 'Tu cuenta fue registrada y está pendiente de validación.'
-          : 'Registro exitoso. Ya puedes iniciar sesión.',
-      }, { status: 200 });
-
     } catch (err: any) {
       console.error('❌ Error al crear usuario:', err);
-      return NextResponse.json({
-        error: 'Error al guardar el usuario.',
-        nombre: err.name,
-        mensaje: err.message,
-        stack: err.stack,
-        datosIntentados: {
-          correo,
-          entidadId,
-          archivoNombre,
-          tieneArchivo: !!archivoBuffer
-        }
-      }, { status: 500 });
+      return NextResponse.json({ error: 'Error al guardar el usuario.' }, { status: 500 });
     }
+
+    // Enviar correo de validación/confirmación
+    try {
+      const enviado = await enviarCorreoValidacionEmpresa({ nombre, correo, tipoCuenta });
+      if (!enviado.enviado) {
+        console.warn('⚠️ Error al enviar correo de validación:', enviado.error);
+      }
+    } catch (err: any) {
+      console.warn('❌ Error al enviar correo de validación:', err);
+      // No bloquea el registro, pero se informa en logs.
+    }
+
+    // Mensaje de éxito dependiendo del tipo de cuenta
+    return NextResponse.json({
+      success: true,
+      mensaje: estadoCuenta === 'pendiente'
+        ? 'Tu cuenta fue registrada y está pendiente de validación.'
+        : 'Registro exitoso. Ya puedes iniciar sesión.',
+    }, { status: 200 });
 
   } catch (error: any) {
     console.error('❌ [ERROR_REGISTRO_GENERAL]', error);
