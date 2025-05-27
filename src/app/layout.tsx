@@ -5,13 +5,12 @@ import ClientLayout from '@/components/ClientLayout';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
-// 🎨 Tipografías profesionales
+// Tipografías
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
   display: 'swap',
 });
-
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
@@ -28,9 +27,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="es" className="scroll-smooth" suppressHydrationWarning>
       <body
@@ -42,8 +41,7 @@ export default function RootLayout({
         `}
       >
         <ClientLayout>{children}</ClientLayout>
-
-        {/* 📊 Integraciones Vercel */}
+        {/* Integraciones Vercel */}
         <Analytics />
         <SpeedInsights />
       </body>
