@@ -1,11 +1,9 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import './globals.css';
+import ClientLayout from '@/components/ClientLayout';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import './globals.css';
 
 // 🎨 Tipografías profesionales
 const geistSans = Geist({
@@ -20,7 +18,6 @@ const geistMono = Geist_Mono({
   display: 'swap',
 });
 
-// 🌐 Metadata global del sitio
 export const metadata: Metadata = {
   title: 'HoneyLabs',
   description: 'Gestión inteligente de inventarios educativos y empresariales',
@@ -29,7 +26,6 @@ export const metadata: Metadata = {
   },
 };
 
-// 📦 Layout raíz global (aplica a todas las rutas)
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -45,16 +41,7 @@ export default function RootLayout({
           overflow-x-hidden
         `}
       >
-        {/* 🔝 Barra de navegación */}
-        <Navbar />
-
-        {/* 📄 Contenido principal */}
-        <main className="min-h-[calc(100vh-120px)] pt-[96px] pb-8 container-xl">
-          {children}
-        </main>
-
-        {/* 🦶 Footer global persistente */}
-        <Footer />
+        <ClientLayout>{children}</ClientLayout>
 
         {/* 📊 Integraciones Vercel */}
         <Analytics />
