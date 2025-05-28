@@ -1,43 +1,62 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { Loader2 } from 'lucide-react';
-// import { useUser } from '@/context/UserContext'; // Opcional: para manejo global de sesión
+
+// SCHEMA VALIDACIÓN ZOD
+const loginSchema = z.object({
+  correo: z
+    .string({ required_error: 'Correo obligatorio' })
+    .nonempty({ message: 'Correo obligatorio' })
+    .email({ message: 'Correo inválido' }),
+  contrasena: z
+    .string({ required_error: 'Contraseña obligatoria' })
+    .nonempty({ message: 'Contraseña obligatoria' })
+    .min(6, { message: 'Mínimo 6 caracteres' }),
+});
+type LoginData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
-  // const { usuario, login } = useUser(); // Si tienes contexto global de usuario
-
-  const [correo, setCorreo] = useState('');
-  const [contrasena, setContrasena] = useState('');
+  const [verContrasena, setVerContrasena] = useState(false);
   const [mensaje, setMensaje] = useState('');
   const [cargando, setCargando] = useState(false);
-  const correoInput = useRef<HTMLInputElement>(null);
 
-  // Autoenfocar el input de correo
+  // React Hook Form
+  const {
+    register,
+    handleSubmit,
+    setFocus,
+    formState: { errors },
+    reset,
+  } = useForm<LoginData>({
+    resolver: zodResolver(loginSchema),
+    mode: 'onTouched', // Mejor UX (onBlur también funciona)
+  });
+
+  // Auto-enfoque al input de correo (con RHF, no con ref)
   useEffect(() => {
-    correoInput.current?.focus();
-  }, []);
+    setFocus('correo');
+  }, [setFocus]);
 
-  // Si ya hay sesión, redirige al home (o al panel)
+  // Si ya hay sesión, redirige
   useEffect(() => {
     const datos = localStorage.getItem('usuario');
     if (datos) {
       try {
         const user = JSON.parse(datos);
-        if (user && user.correo) {
-          router.replace('/'); // O "/panel"
-        }
+        if (user?.correo) router.replace('/');
       } catch {}
     }
-    // // Si usas contexto de usuario, haz esto:
-    // if (usuario) router.replace('/');
-  }, [router /*, usuario */]);
+  }, [router]);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // SUBMIT
+  const onSubmit = async (datos: LoginData) => {
     setMensaje('');
     setCargando(true);
 
@@ -45,70 +64,92 @@ export default function LoginPage() {
       const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ correo, contrasena }),
+        body: JSON.stringify(datos),
       });
 
       const data = await res.json();
 
       if (!res.ok) throw new Error(data?.error || 'Credenciales inválidas');
 
-      // Guardar sesión en localStorage (o usar contexto global)
-      localStorage.setItem(
-        'usuario',
-        JSON.stringify({
-          nombre: data.nombre,
-          tipoCuenta: data.tipoCuenta,
-          correo: data.correo,
-        })
-      );
-      // login(data); // Si usas contexto de usuario
+      // Guardar provisional (para producción usa cookies httpOnly)
+      localStorage.setItem('usuario', JSON.stringify(data));
 
       setMensaje('✔️ Inicio de sesión exitoso');
-
-      setTimeout(() => router.replace('/'), 900); // O "/panel"
+      reset(); // Limpia campos
+      setTimeout(() => router.replace('/'), 800);
     } catch (error: any) {
-      setMensaje(`❌ ${error.message || 'Error de conexión con el servidor'}`);
+      setMensaje(`❌ ${error.message}`);
     } finally {
       setCargando(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-100 via-amber-100 to-rose-100 flex items-center justify-center px-4">
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-100 via-amber-100 to-rose-100 px-4">
       <form
-        onSubmit={handleLogin}
-        className="bg-white shadow-xl rounded-2xl p-8 max-w-md w-full space-y-5 border border-amber-300"
-        aria-labelledby="login-title"
+        onSubmit={handleSubmit(onSubmit)}
+        className="bg-white dark:bg-zinc-900 shadow-xl border border-amber-300 dark:border-zinc-700 p-8 rounded-2xl max-w-md w-full space-y-5"
         autoComplete="on"
+        aria-labelledby="login-title"
+        noValidate
       >
-        <h2 id="login-title" className="text-3xl font-bold text-center text-amber-700 tracking-tight">
+        <h1 id="login-title" className="text-3xl font-bold text-center text-amber-700 dark:text-amber-300">
           Iniciar Sesión
-        </h2>
+        </h1>
 
-        <input
-          ref={correoInput}
-          type="email"
-          placeholder="Correo electrónico"
-          value={correo}
-          onChange={e => setCorreo(e.target.value)}
-          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-          required
-          autoComplete="email"
-        />
+        {/* 📧 Correo */}
+        <div className="space-y-1">
+          <input
+            {...register('correo')}
+            placeholder="Correo electrónico"
+            type="email"
+            autoComplete="email"
+            disabled={cargando}
+            className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+              errors.correo ? 'border-red-400' : ''
+            }`}
+            aria-invalid={!!errors.correo}
+            aria-describedby="error-correo"
+          />
+          {errors.correo && (
+            <p id="error-correo" className="text-sm text-red-500">{errors.correo.message}</p>
+          )}
+        </div>
 
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={contrasena}
-          onChange={e => setContrasena(e.target.value)}
-          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-          required
-          autoComplete="current-password"
-        />
+        {/* 🔒 Contraseña */}
+        <div className="relative space-y-1">
+          <input
+            {...register('contrasena')}
+            placeholder="Contraseña"
+            type={verContrasena ? 'text' : 'password'}
+            autoComplete="current-password"
+            disabled={cargando}
+            className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 pr-10 ${
+              errors.contrasena ? 'border-red-400' : ''
+            }`}
+            aria-invalid={!!errors.contrasena}
+            aria-describedby="error-contrasena"
+          />
+          <button
+            type="button"
+            tabIndex={-1}
+            onClick={() => setVerContrasena(v => !v)}
+            className="absolute right-3 top-[10px] text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
+            aria-label={verContrasena ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+            disabled={cargando}
+          >
+            {verContrasena ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+          </button>
+          {errors.contrasena && (
+            <p id="error-contrasena" className="text-sm text-red-500">{errors.contrasena.message}</p>
+          )}
+        </div>
 
+        {/* 🔘 Botón */}
         <button
           type="submit"
           disabled={cargando}
+          aria-busy={cargando}
           className={`w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-md transition flex justify-center items-center gap-2 ${
             cargando ? 'opacity-70 cursor-not-allowed' : ''
           }`}
@@ -122,16 +163,18 @@ export default function LoginPage() {
           )}
         </button>
 
-        <p className="text-center text-sm text-gray-600">
+        {/* 💡 Registro */}
+        <p className="text-center text-sm text-gray-600 dark:text-zinc-300">
           ¿No tienes cuenta?{' '}
           <Link
             href="/registro"
-            className="text-amber-700 underline hover:text-amber-900 font-medium transition"
+            className="text-amber-700 underline hover:text-amber-900 dark:text-amber-300 font-medium transition"
           >
             Crear cuenta
           </Link>
         </p>
 
+        {/* 🧾 Mensaje */}
         {mensaje && (
           <div
             className={`text-center text-sm mt-2 font-semibold ${
@@ -143,6 +186,6 @@ export default function LoginPage() {
           </div>
         )}
       </form>
-    </div>
+    </main>
   );
 }

@@ -13,17 +13,17 @@ import {
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 export default function UserMenu({
   usuario,
 }: {
-  usuario: { nombre: string; correo: string } | null;
+  usuario: { nombre: string; correo: string; imagen?: string | null } | null;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [temaOscuro, setTemaOscuro] = useState(false);
-
   const refMenu = useRef<HTMLDivElement>(null);
 
   // Inicializa tema desde localStorage o sistema
@@ -38,21 +38,28 @@ export default function UserMenu({
     }
   }, []);
 
-  // Cerrar menú al click fuera o al navegar
+  // Cerrar menú al click fuera o Escape
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (refMenu.current && !refMenu.current.contains(e.target as Node)) {
         setOpen(false);
       }
     };
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEsc);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEsc);
+    };
   }, []);
 
-  // Cierra menú al navegar
+  // Cierra menú al cambiar de ruta
   useEffect(() => {
     setOpen(false);
-  }, [router]);
+  }, [pathname]);
 
   const alternarTema = () => {
     setTemaOscuro((prev) => {
@@ -68,23 +75,40 @@ export default function UserMenu({
     sessionStorage.clear();
     document.cookie = 'session=; Max-Age=0; path=/';
     setOpen(false);
-    // 🔄 Refresca toda la app para forzar recarga y logout limpio
     window.location.href = '/login';
+  };
+
+  // Avatar rendering (image or initial)
+  const renderAvatar = () => {
+    if (usuario?.imagen) {
+      return (
+        <img
+          src={usuario.imagen}
+          alt="Avatar"
+          className="h-9 w-9 rounded-full object-cover"
+        />
+      );
+    }
+    return usuario?.correo?.[0]?.toUpperCase() || 'U';
   };
 
   return (
     <div className="relative" ref={refMenu}>
       <button
         aria-label="Abrir menú de usuario"
+        aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
         className="h-9 w-9 rounded-full bg-amber-600 text-white font-bold text-sm flex items-center justify-center hover:ring-2 ring-amber-400 transition"
         tabIndex={0}
       >
-        {usuario?.correo?.[0]?.toUpperCase() || 'U'}
+        {renderAvatar()}
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-xl border border-amber-200 bg-white shadow-xl z-50 animate-fade-scale dark:bg-zinc-900 dark:border-zinc-700">
+        <nav
+          className="absolute right-0 mt-2 w-56 origin-top-right rounded-xl border border-amber-200 bg-white shadow-xl z-50 animate-fade-scale dark:bg-zinc-900 dark:border-zinc-700"
+          aria-label="Menú de usuario"
+        >
           {/* Sesión activa */}
           {usuario ? (
             <div className="px-4 py-3">
@@ -100,9 +124,9 @@ export default function UserMenu({
           {/* Accesos rápidos */}
           {usuario && (
             <div className="border-t dark:border-zinc-700 py-2">
-              <MenuLink href="/panel" icon={<LayoutDashboard className="h-4 w-4" />} label="Panel" />
-              <MenuLink href="/configuracion" icon={<Settings className="h-4 w-4" />} label="Configuración" />
-              <MenuLink href="/" icon={<Home className="h-4 w-4" />} label="Inicio" />
+              <MenuLink href="/panel" icon={<LayoutDashboard className="h-4 w-4" />} label="Panel" tabIndex={open ? 0 : -1} />
+              <MenuLink href="/configuracion" icon={<Settings className="h-4 w-4" />} label="Configuración" tabIndex={open ? 0 : -1} />
+              <MenuLink href="/" icon={<Home className="h-4 w-4" />} label="Inicio" tabIndex={open ? 0 : -1} />
             </div>
           )}
 
@@ -129,6 +153,7 @@ export default function UserMenu({
               <button
                 onClick={cerrarSesion}
                 className="w-full px-4 py-2 flex items-center gap-2 text-red-600 hover:bg-red-50 dark:hover:bg-zinc-800 dark:text-red-400 text-sm"
+                tabIndex={open ? 0 : -1}
               >
                 <LogOut className="h-4 w-4" /> Cerrar sesión
               </button>
@@ -136,6 +161,7 @@ export default function UserMenu({
               <Link
                 href="/login"
                 className="w-full px-4 py-2 flex items-center gap-2 text-amber-700 hover:bg-amber-50 dark:hover:bg-zinc-800 text-sm"
+                tabIndex={open ? 0 : -1}
               >
                 <LogIn className="h-4 w-4" /> Iniciar sesión
               </Link>
@@ -147,11 +173,12 @@ export default function UserMenu({
             <Link
               href="/servicios"
               className="block w-full px-4 py-3 text-center text-sm font-semibold text-white bg-amber-500 hover:bg-amber-600 transition flex items-center justify-center gap-2"
+              tabIndex={open ? 0 : -1}
             >
               Upgrade to Pro <ArrowUpRight className="h-4 w-4" />
             </Link>
           </div>
-        </div>
+        </nav>
       )}
     </div>
   );
@@ -161,15 +188,18 @@ function MenuLink({
   href,
   icon,
   label,
+  tabIndex,
 }: {
   href: string;
   icon: React.ReactNode;
   label: string;
+  tabIndex?: number;
 }) {
   return (
     <Link
       href={href}
-      className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-amber-50 dark:hover:bg-zinc-800"
+      tabIndex={tabIndex}
+      className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-amber-50 dark:hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-amber-400 rounded-md"
     >
       {icon}
       {label}

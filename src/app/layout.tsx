@@ -1,3 +1,4 @@
+// src/app/layout.tsx
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
@@ -5,19 +6,20 @@ import ClientLayout from '@/components/ClientLayout';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
-// Tipografías Google Fonts (variables)
+// Tipografías modernas como variables
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
   display: 'swap',
 });
+
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
   display: 'swap',
 });
 
-// Metadata global
+// Metadatos globales (para Next SEO o fallback)
 export const metadata: Metadata = {
   title: 'HoneyLabs',
   description: 'Gestión inteligente de inventarios educativos y empresariales',
@@ -30,7 +32,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="es" className="scroll-smooth motion-safe:transition-all" suppressHydrationWarning>
+      <head>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {/* SEO: Favicon */}
+        <link rel="icon" href="/favicon.ico" />
+      </head>
       <body
         className={`
           ${geistSans.variable} ${geistMono.variable}
@@ -39,10 +47,12 @@ export default function RootLayout({
           overflow-x-hidden
         `}
       >
-        {/* Layout principal con Navbar/Footer y lógica de sesión */}
-        <ClientLayout>{children}</ClientLayout>
+        {/* Layout cliente global (Navbar, Footer, lógica sesión, etc) */}
+        <ClientLayout>
+          {children}
+        </ClientLayout>
 
-        {/* Integraciones y métricas */}
+        {/* Integraciones externas (métricas, análisis, etc) */}
         <Analytics />
         <SpeedInsights />
       </body>
