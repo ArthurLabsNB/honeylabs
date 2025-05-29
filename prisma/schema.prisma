@@ -53,6 +53,7 @@ model Usuario {
   // 🔗 Relaciones múltiples
   almacenes     UsuarioAlmacen[]
   roles         Rol[]            @relation("RolToUsuario")
+  movimientos   Movimiento[]
 }
 
 //
@@ -88,6 +89,7 @@ model Almacen {
   // 🔗 Códigos de registro, usuarios conectados
   codigos     CodigoAlmacen[]
   usuarios    UsuarioAlmacen[]
+  movimientos Movimiento[]
 }
 
 //
@@ -122,4 +124,23 @@ model CodigoAlmacen {
   creadoPorId     Int?
 
   almacen         Almacen   @relation(fields: [almacenId], references: [id])
+}
+
+//
+// 📊 Movimientos de almacén (entradas y salidas)
+//
+model Movimiento {
+  id          Int       @id @default(autoincrement())
+  tipo        String    // 'entrada' o 'salida'
+  cantidad    Int
+  fecha       DateTime  @default(now())
+  descripcion String?
+
+  // 🔗 Relación con almacén
+  almacenId   Int
+  almacen     Almacen   @relation(fields: [almacenId], references: [id], onDelete: Cascade)
+
+  // 🔗 Relación opcional con usuario que hizo el movimiento
+  usuarioId   Int?
+  usuario     Usuario?  @relation(fields: [usuarioId], references: [id])
 }

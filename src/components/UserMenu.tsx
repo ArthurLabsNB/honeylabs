@@ -23,19 +23,20 @@ export default function UserMenu({
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [temaOscuro, setTemaOscuro] = useState(false);
+  const [temaOscuro, setTemaOscuro] = useState(true); // Oscuro por default
   const refMenu = useRef<HTMLDivElement>(null);
 
-  // Inicializa tema desde localStorage o sistema
+  // Inicializa tema desde localStorage o sistema, por default oscuro
   useEffect(() => {
-    const temaGuardado = localStorage.getItem('tema');
-    if (temaGuardado === 'oscuro' || (!temaGuardado && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      setTemaOscuro(true);
-      document.documentElement.classList.add('dark');
-    } else {
-      setTemaOscuro(false);
-      document.documentElement.classList.remove('dark');
+    let temaGuardado = localStorage.getItem('tema');
+    if (!temaGuardado) {
+      // Si hay preferencia del sistema, úsala; si no, dark
+      const preferenciaSistema = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      temaGuardado = preferenciaSistema || 'dark';
     }
+    setTemaOscuro(temaGuardado === 'dark');
+    document.documentElement.classList.toggle('dark', temaGuardado === 'dark');
+    document.documentElement.classList.toggle('light', temaGuardado === 'light');
   }, []);
 
   // Cerrar menú al click fuera o Escape
@@ -61,12 +62,14 @@ export default function UserMenu({
     setOpen(false);
   }, [pathname]);
 
+  // Switch Tema: actualiza html y localStorage
   const alternarTema = () => {
     setTemaOscuro((prev) => {
-      const nuevo = !prev;
-      document.documentElement.classList.toggle('dark', nuevo);
-      localStorage.setItem('tema', nuevo ? 'oscuro' : 'claro');
-      return nuevo;
+      const nextIsDark = !prev;
+      document.documentElement.classList.toggle('dark', nextIsDark);
+      document.documentElement.classList.toggle('light', !nextIsDark);
+      localStorage.setItem('tema', nextIsDark ? 'dark' : 'light');
+      return nextIsDark;
     });
   };
 
