@@ -103,9 +103,14 @@ export default function Navbar() {
         role="banner"
         aria-label="Barra superior"
       >
-        <div className="flex flex-wrap md:flex-nowrap items-center justify-between w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 py-2 gap-2 min-h-[58px]">
-          {/* Logo + Bienvenida */}
-          <div className="flex items-center gap-2 min-w-[110px] flex-1">
+        <div className="flex items-center justify-between w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 py-2 gap-2 min-h-[58px]">
+          {/* Avatar/UserMenu SIEMPRE a la IZQUIERDA */}
+          <div className="flex-shrink-0 flex items-center">
+            <UserMenu usuario={usuario} />
+          </div>
+
+          {/* Logo */}
+          <div className="flex-shrink-0 flex items-center ml-2 mr-4">
             <Link href="/" className="flex items-center gap-2 focus:outline-none select-none" aria-label="Ir al inicio">
               <Image
                 src="/logo-honeylabs.png"
@@ -117,17 +122,11 @@ export default function Navbar() {
                 priority
                 style={{ userSelect: 'none' }}
               />
-              {/* Bienvenida SIEMPRE visible */}
-              {usuario && (
-                <span className="inline-block text-base font-semibold text-amber-100 ml-2 drop-shadow max-w-[120px] sm:max-w-none truncate">
-                  Bienvenido, <span className="font-bold">{usuario.nombre}</span>
-                </span>
-              )}
             </Link>
           </div>
 
-          {/* Botón Comenzar Ahora SIEMPRE visible */}
-          <div className="flex-1 flex justify-center md:justify-end">
+          {/* Botón Comenzar Ahora */}
+          <div className="flex-shrink-0">
             {usuario ? (
               <Link
                 href="/panel"
@@ -158,73 +157,79 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Menú de usuario SIEMPRE visible, se ajusta a la derecha */}
-          <div className="flex-1 flex justify-end items-center gap-2 min-w-fit">
-            <UserMenu usuario={usuario} />
+          {/* Bienvenida */}
+          {usuario && (
+            <span className="hidden sm:inline-block text-base font-semibold text-amber-100 ml-3 mr-2 drop-shadow max-w-[150px] truncate">
+              Bienvenido, <span className="font-bold">{usuario.nombre}</span>
+            </span>
+          )}
 
-            {/* Desktop: links y wiki */}
-            <nav className="hidden md:flex items-center gap-2 ml-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`
-                    ${linkBase}
-                    ${isActive(link.href)
-                      ? 'bg-amber-100/10 text-amber-200 underline underline-offset-4'
-                      : ''
-                    }
-                  `}
-                  tabIndex={0}
-                  aria-current={isActive(link.href) ? 'page' : undefined}
-                  style={{
-                    fontSize: '1rem',
-                    minWidth: 92,
-                    textAlign: 'center'
-                  }}
-                >
-                  {link.label}
-                </Link>
-              ))}
+          {/* Botones de navegación */}
+          <nav className="hidden md:flex items-center gap-2">
+            {navLinks.map((link) => (
               <Link
-                href="/wiki"
-                className="ml-2 p-2 rounded-full hover:bg-[#222]/60 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
-                aria-label="Ir a la Wiki"
+                key={link.href}
+                href={link.href}
+                className={`
+                  ${linkBase}
+                  ${isActive(link.href)
+                    ? 'bg-amber-100/10 text-amber-200 underline underline-offset-4'
+                    : ''
+                  }
+                `}
                 tabIndex={0}
+                aria-current={isActive(link.href) ? 'page' : undefined}
+                style={{
+                  fontSize: '1rem',
+                  minWidth: 92,
+                  textAlign: 'center'
+                }}
               >
-                <BookOpen className="w-5 h-5 text-amber-200" />
+                {link.label}
               </Link>
-              {!usuario && (
-                <Link
-                  href="/registro"
-                  className="ml-2 px-4 py-2 rounded-xl font-semibold bg-[#222]/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow text-base"
-                  style={{
-                    minWidth: 120,
-                    textAlign: 'center'
-                  }}
-                  tabIndex={0}
-                  onClick={rippleEffect}
-                >
-                  Regístrate
-                </Link>
-              )}
-            </nav>
+            ))}
+          </nav>
 
-            {/* Botón hamburguesa solo móvil/tablet */}
-            <button
-              className="block md:hidden p-2 ml-1 rounded-full hover:bg-[#222]/70 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
-              aria-label="Abrir menú"
-              onClick={() => setMenuOpen(true)}
-              type="button"
+          {/* Botón Wiki */}
+          <Link
+            href="/wiki"
+            className="hidden md:inline-flex ml-2 p-2 rounded-full hover:bg-[#222]/60 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+            aria-label="Ir a la Wiki"
+            tabIndex={0}
+          >
+            <BookOpen className="w-5 h-5 text-amber-200" />
+          </Link>
+
+          {/* Botón de registro solo para desktop */}
+          {!usuario && (
+            <Link
+              href="/registro"
+              className="hidden md:inline-flex ml-2 px-4 py-2 rounded-xl font-semibold bg-[#222]/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow text-base"
+              style={{
+                minWidth: 120,
+                textAlign: 'center'
+              }}
               tabIndex={0}
+              onClick={rippleEffect}
             >
-              <Menu className="text-amber-100" />
-            </button>
-          </div>
+              Regístrate
+            </Link>
+          )}
+
+          {/* Botón hamburguesa solo móvil/tablet */}
+          <button
+            className="block md:hidden p-2 ml-1 rounded-full hover:bg-[#222]/70 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+            aria-label="Abrir menú"
+            onClick={() => setMenuOpen(true)}
+            type="button"
+            tabIndex={0}
+          >
+            <Menu className="text-amber-100" />
+          </button>
         </div>
       </div>
 
-      {/* --- Drawer móvil --- */}
+      {/* Drawer móvil */}
       <div
         className={`
           fixed inset-0 bg-black/40 z-[99] transition-opacity duration-300
@@ -301,7 +306,6 @@ export default function Navbar() {
       {/* Espaciador navbar */}
       <div className="h-[80px] sm:h-[88px]" aria-hidden="true" />
 
-      {/* Ripple y fondo glass */}
       <style jsx global>{`
         .ripple {
           position: absolute;
