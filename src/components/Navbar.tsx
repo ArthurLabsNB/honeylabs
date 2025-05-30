@@ -18,14 +18,11 @@ const linkBase =
   'px-4 py-2 rounded-xl font-medium text-amber-50/90 bg-navglass/80 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow-sm';
 
 export default function Navbar() {
-  // --- Estado de usuario real: aquí simulas, cambia luego por tu lógica de auth/estado global.
   const [usuario, setUsuario] = useState<any | null>(null);
   const [showTooltip, setShowTooltip] = useState(false);
 
   // Simula login para test rápido (quítalo en producción)
   useEffect(() => {
-    // Descomenta esto para test
-    // setUsuario({ nombre: 'Arthur', correo: 'arthur@honeylabs.com' });
     const raw = localStorage.getItem('usuario');
     setUsuario(raw ? JSON.parse(raw) : null);
   }, []);
@@ -136,8 +133,8 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Links principales */}
-          <nav className="flex items-center gap-2 mx-4">
+          {/* Links principales: Solo desktop/tablet */}
+          <nav className="hidden md:flex items-center gap-2 mx-4">
             {navLinks.map((link, i) => (
               <Link
                 key={link.href}
@@ -162,9 +159,8 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Botón principal y acciones */}
-          <div className="flex items-center gap-2 relative">
-            {/* Si hay sesión: botón activo */}
+          {/* Botón principal y acciones: Solo desktop/tablet */}
+          <div className="hidden md:flex items-center gap-2 relative">
             {usuario ? (
               <Link
                 href="/panel"
@@ -227,17 +223,18 @@ export default function Navbar() {
               <BookOpen className="w-5 h-5 text-amber-200" />
             </Link>
             <UserMenu usuario={usuario} />
-            {/* Responsive: Hamburguesa */}
-            <button
-              className="md:hidden p-2 ml-1 rounded-full hover:bg-[#222]/70 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
-              aria-label="Abrir menú"
-              onClick={() => setMenuOpen(true)}
-              type="button"
-              tabIndex={0}
-            >
-              <Menu className="text-amber-100" />
-            </button>
           </div>
+
+          {/* Botón hamburguesa: Solo móvil */}
+          <button
+            className="block md:hidden p-2 ml-1 rounded-full hover:bg-[#222]/70 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+            aria-label="Abrir menú"
+            onClick={() => setMenuOpen(true)}
+            type="button"
+            tabIndex={0}
+          >
+            <Menu className="text-amber-100" />
+          </button>
         </div>
       </div>
 
