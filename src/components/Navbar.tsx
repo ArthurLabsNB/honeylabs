@@ -7,7 +7,6 @@ import { useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import UserMenu from './UserMenu';
 
-// Links del navbar
 const navLinks = [
   { href: '/', label: 'Inicio' },
   { href: '/acerca', label: 'Acerca De' },
@@ -21,14 +20,12 @@ export default function Navbar() {
   const [usuario, setUsuario] = useState<any | null>(null);
   const [showTooltip, setShowTooltip] = useState(false);
 
-  // Simula login para test rápido (quítalo en producción)
   useEffect(() => {
     const raw = localStorage.getItem('usuario');
     setUsuario(raw ? JSON.parse(raw) : null);
   }, []);
 
   const [showTopBar, setShowTopBar] = useState(true);
-  const [navFloating, setNavFloating] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -47,10 +44,8 @@ export default function Navbar() {
       const y = window.scrollY;
       if (y > lastScrollY && y > 64) {
         setShowTopBar(false);
-        setNavFloating(true);
       } else if (y < lastScrollY - 4 || y <= 0) {
         setShowTopBar(true);
-        setNavFloating(false);
       }
       setLastScrollY(y);
     };
@@ -73,13 +68,11 @@ export default function Navbar() {
     };
   }, [menuOpen]);
 
-  // Link activo
   const isActive = (href: string) =>
     href === '/'
       ? pathname === '/'
       : pathname.startsWith(href) && href !== '/';
 
-  // --- Animación de burbuja si no hay sesión
   function handleComenzar(e: React.MouseEvent) {
     if (!usuario) {
       e.preventDefault();
@@ -89,7 +82,6 @@ export default function Navbar() {
     }
   }
 
-  // Ripple effect (opcional)
   function rippleEffect(e: React.MouseEvent) {
     const button = e.currentTarget as HTMLElement;
     const circle = document.createElement('span');
@@ -113,7 +105,7 @@ export default function Navbar() {
       >
         <div className="flex items-center justify-between max-w-7xl mx-auto px-6 py-2 gap-4 min-h-[58px]">
           {/* Logo + Bienvenida */}
-          <div className="flex items-center gap-2 group">
+          <div className="flex items-center gap-2 group flex-shrink-0">
             <Link href="/" className="flex items-center gap-2 focus:outline-none select-none" aria-label="Ir al inicio">
               <Image
                 src="/logo-honeylabs.png"
@@ -125,15 +117,16 @@ export default function Navbar() {
                 priority
                 style={{ userSelect: 'none' }}
               />
+              {/* Bienvenida SIEMPRE visible */}
               {usuario && (
-                <span className="hidden sm:inline-block text-base font-semibold text-amber-100 ml-2 drop-shadow">
+                <span className="inline-block text-base font-semibold text-amber-100 ml-2 drop-shadow">
                   Bienvenido, <span className="font-bold">{usuario.nombre}</span>
                 </span>
               )}
             </Link>
           </div>
 
-          {/* Links principales: Solo desktop/tablet */}
+          {/* --- CENTRO: Solo desktop/tablet --- */}
           <nav className="hidden md:flex items-center gap-2 mx-4">
             {navLinks.map((link, i) => (
               <Link
@@ -159,8 +152,9 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Botón principal y acciones: Solo desktop/tablet */}
-          <div className="hidden md:flex items-center gap-2 relative">
+          {/* --- DERECHA: Acciones y menú de usuario --- */}
+          <div className="flex items-center gap-2 relative">
+            {/* Botón Comenzar Ahora SIEMPRE visible en móvil y desktop */}
             {usuario ? (
               <Link
                 href="/panel"
@@ -176,69 +170,73 @@ export default function Navbar() {
                 Comenzar Ahora!
               </Link>
             ) : (
-              <>
-                <button
-                  className="px-5 py-2 rounded-xl font-semibold bg-navglass/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow-md text-base relative"
-                  style={{
-                    minWidth: 154,
-                    textAlign: 'center',
-                    letterSpacing: '0.02em'
-                  }}
-                  onClick={e => { handleComenzar(e); rippleEffect(e); }}
-                  tabIndex={0}
-                >
-                  Comenzar Ahora!
-                  {/* Tooltip animado */}
-                  <span className={`
-                    pointer-events-none absolute left-1/2 -top-12 transform -translate-x-1/2 
-                    bg-amber-400 text-[#101014] font-semibold rounded-xl shadow-lg px-4 py-2 
-                    transition-all duration-300 text-sm select-none
-                    ${showTooltip ? 'opacity-100 scale-100 drop-shadow-2xl' : 'opacity-0 scale-95'}
-                  `} style={{
-                    zIndex: 200
-                  }}>
-                    Debes iniciar sesión antes
-                  </span>
-                </button>
-                <Link
-                  href="/registro"
-                  className="ml-2 px-4 py-2 rounded-xl font-semibold bg-[#222]/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow text-base"
-                  style={{
-                    minWidth: 120,
-                    textAlign: 'center'
-                  }}
-                  tabIndex={0}
-                  onClick={rippleEffect}
-                >
-                  Regístrate
-                </Link>
-              </>
+              <button
+                className="px-5 py-2 rounded-xl font-semibold bg-navglass/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow-md text-base relative"
+                style={{
+                  minWidth: 154,
+                  textAlign: 'center',
+                  letterSpacing: '0.02em'
+                }}
+                onClick={e => { handleComenzar(e); rippleEffect(e); }}
+                tabIndex={0}
+              >
+                Comenzar Ahora!
+                {/* Tooltip animado */}
+                <span className={`
+                  pointer-events-none absolute left-1/2 -top-12 transform -translate-x-1/2 
+                  bg-amber-400 text-[#101014] font-semibold rounded-xl shadow-lg px-4 py-2 
+                  transition-all duration-300 text-sm select-none
+                  ${showTooltip ? 'opacity-100 scale-100 drop-shadow-2xl' : 'opacity-0 scale-95'}
+                `} style={{
+                  zIndex: 200
+                }}>
+                  Debes iniciar sesión antes
+                </span>
+              </button>
             )}
+
+            {/* UserMenu SIEMPRE visible */}
+            <UserMenu usuario={usuario} />
+
+            {/* --- Solo desktop: Wiki y registro --- */}
             <Link
               href="/wiki"
-              className="ml-2 p-2 rounded-full hover:bg-[#222]/60 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+              className="hidden md:inline-flex ml-2 p-2 rounded-full hover:bg-[#222]/60 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
               aria-label="Ir a la Wiki"
               tabIndex={0}
             >
               <BookOpen className="w-5 h-5 text-amber-200" />
             </Link>
-            <UserMenu usuario={usuario} />
-          </div>
+            {!usuario && (
+              <Link
+                href="/registro"
+                className="hidden md:inline-flex ml-2 px-4 py-2 rounded-xl font-semibold bg-[#222]/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow text-base"
+                style={{
+                  minWidth: 120,
+                  textAlign: 'center'
+                }}
+                tabIndex={0}
+                onClick={rippleEffect}
+              >
+                Regístrate
+              </Link>
+            )}
 
-          {/* Botón hamburguesa: Solo móvil */}
-          <button
-            className="block md:hidden p-2 ml-1 rounded-full hover:bg-[#222]/70 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
-            aria-label="Abrir menú"
-            onClick={() => setMenuOpen(true)}
-            type="button"
-            tabIndex={0}
-          >
-            <Menu className="text-amber-100" />
-          </button>
+            {/* --- Botón hamburguesa solo móvil --- */}
+            <button
+              className="block md:hidden p-2 ml-1 rounded-full hover:bg-[#222]/70 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+              aria-label="Abrir menú"
+              onClick={() => setMenuOpen(true)}
+              type="button"
+              tabIndex={0}
+            >
+              <Menu className="text-amber-100" />
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Responsive Drawer móvil */}
+      {/* --- Drawer móvil --- */}
       <div
         className={`
           fixed inset-0 bg-black/40 z-[99] transition-opacity duration-300
@@ -261,11 +259,21 @@ export default function Navbar() {
           <button className="self-end mb-4 p-2 rounded hover:bg-[#332711]/30 focus:outline-none" onClick={() => setMenuOpen(false)} aria-label="Cerrar menú">
             <X className="text-amber-200" />
           </button>
+          {/* Links principales */}
           {navLinks.map((link) => (
             <Link key={link.href} href={link.href} className="py-2 px-3 rounded-xl hover:bg-amber-400/90 hover:text-[#101014] text-lg text-amber-100 transition-all duration-300" onClick={() => setMenuOpen(false)}>
               {link.label}
             </Link>
           ))}
+          {/* Botón wiki */}
+          <Link
+            href="/wiki"
+            className="py-2 px-3 rounded-xl hover:bg-amber-400/90 hover:text-[#101014] text-lg text-amber-100 flex items-center gap-2 transition-all duration-300"
+            onClick={() => setMenuOpen(false)}
+          >
+            <BookOpen className="w-5 h-5" /> Wiki
+          </Link>
+          {/* Botón Comenzar Ahora (dentro del menú) */}
           {usuario ? (
             <Link
               href="/panel"
@@ -283,7 +291,6 @@ export default function Navbar() {
                 onClick={handleComenzar}
               >
                 Comenzar Ahora!
-                {/* Tooltip móvil */}
                 <span className={`
                   pointer-events-none absolute left-1/2 -top-10 transform -translate-x-1/2 
                   bg-amber-400 text-[#101014] font-semibold rounded-xl shadow-lg px-4 py-2 
@@ -295,6 +302,7 @@ export default function Navbar() {
                   Debes iniciar sesión antes
                 </span>
               </button>
+              {/* Botón registro en el menú móvil */}
               <Link
                 href="/registro"
                 className="mt-2 py-2 px-3 rounded-xl font-semibold bg-[#222]/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 shadow text-lg"
@@ -308,10 +316,8 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Spacer para navbar fijo */}
       <div className="h-[80px] sm:h-[88px]" aria-hidden="true" />
 
-      {/* Ripple y fondo glass */}
       <style jsx global>{`
         .ripple {
           position: absolute;
