@@ -3,17 +3,17 @@ import jwt from 'jsonwebtoken'
 import prisma from '@lib/prisma'
 
 const JWT_SECRET = process.env.JWT_SECRET!
-const COOKIE_NAME = 'hl_session' // <--- igual que en el login
+const COOKIE_NAME = 'hl_session'
 
 export async function getUsuarioFromSession() {
-  const cookieStore = cookies()
+  // ASÍNCRONO en server actions o middleware
+  const cookieStore = await cookies() // <-- await aquí
   const token = cookieStore.get(COOKIE_NAME)?.value
 
   if (!token) return null
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as { id: number }
-    // Busca el usuario real por ID
     const usuario = await prisma.usuario.findUnique({
       where: { id: decoded.id },
     })
