@@ -2,9 +2,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
-// =========== MATRIZ CLÁSICA PACMAN (28 x 31) ===========
-// 0 = vacío/túnel, 1 = pared, 2 = punto, 3 = power pellet, 4 = puerta/jaula fantasmas
-const PACMAN_MAZE = [
+// ================== MATRIZ FIEL PACMAN ARCADE ==================
+const MAZE = [
+  // 0: vacío/túnel, 1: pared, 2: punto, 3: power pellet, 4: puerta jaula
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
   [1,3,2,2,2,2,2,2,2,2,2,1,1,2,2,1,1,2,2,2,2,2,2,2,2,2,3,1],
   [1,2,1,1,1,1,2,1,1,1,2,1,1,2,2,1,1,2,1,1,1,1,2,1,1,1,2,1],
@@ -25,8 +25,11 @@ const PACMAN_MAZE = [
   [1,1,1,1,1,1,2,1,2,2,2,1,1,2,2,1,1,2,2,2,2,1,1,1,1,1,1,1],
   [1,1,1,1,1,1,2,1,1,1,2,1,1,2,2,1,1,2,1,1,1,1,1,1,1,1,1,1],
   [1,3,2,2,2,2,2,2,2,2,2,1,1,2,2,1,1,2,2,2,2,2,2,2,2,2,3,1],
-  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-];
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+]
+const MAZE_W = MAZE[0].length
+const MAZE_H = MAZE.length
+const SIZE_BASE = 20
 
 const DIRS = {
   ArrowUp:    { x:  0, y: -1 },
@@ -39,37 +42,44 @@ const DIRS = {
   d:          { x:  1, y:  0 }
 }
 const START_POS = { x: 13, y: 17 }
-const SIZE_BASE = 20 // Cambia esto para escalar el tamaño del tablero
+const GHOST_HOME = [
+  { x: 13, y: 10, color: "#e94f4f" }, // rojo
+  { x: 14, y: 10, color: "#44c8ff" }, // azul
+]
 
-type Ghost = { x: number, y: number, dir: keyof typeof DIRS, scatter?: boolean }
+type Ghost = { x: number, y: number, dir: keyof typeof DIRS, color: string, vulnerable: boolean, scatter?: boolean }
 
 function randomDir() {
   const keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
   return keys[Math.floor(Math.random() * keys.length)] as keyof typeof DIRS
 }
 
-function nextGhostMove(ghost: Ghost, maze: number[][], pacman: {x:number,y:number}): Ghost {
+function nextGhostMove(ghost: Ghost, maze: number[][], pacman: {x:number,y:number}, vulnerable: boolean): Ghost {
+  // IA básica: persigue o huye
   let scatter = ghost.scatter || false
-  if (Math.random() < 0.03) scatter = !scatter
+  if (Math.random() < 0.02) scatter = !scatter
   const choices: [keyof typeof DIRS, number][] = []
   for (const key of ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'] as const) {
     const nx = ghost.x + DIRS[key].x
     const ny = ghost.y + DIRS[key].y
-    if (maze[ny]?.[nx] !== 1 && maze[ny]?.[nx] !== undefined) {
+    // Evita paredes y la puerta de la jaula (excepto cuando salen)
+    if (maze[ny]?.[nx] !== 1 && (maze[ny]?.[nx] !== 4 || ghost.y <= 10)) {
+      // Si vulnerable: huye, si no: persigue
       let dist = Math.abs(nx - pacman.x) + Math.abs(ny - pacman.y)
-      if (scatter) dist = 999 - dist
+      if (scatter || vulnerable) dist = 999 - dist
       choices.push([key, dist])
     }
   }
   if (!choices.length) return ghost
   choices.sort((a, b) => a[1] - b[1])
-  const goBest = Math.random() < 0.7
+  const goBest = Math.random() < 0.85
   const move = goBest ? choices[0][0] : choices[Math.floor(Math.random()*choices.length)][0]
   const nx = ghost.x + DIRS[move].x
   const ny = ghost.y + DIRS[move].y
   return { ...ghost, x: nx, y: ny, dir: move, scatter }
 }
 
+// ================== SPRITES ==================
 function PacmanSprite({ x, y, mouthOpen, direction, size }: { x: number, y: number, mouthOpen: boolean, direction: string, size:number }) {
   let rotate = 0
   if (direction === 'ArrowUp') rotate = -90
@@ -102,7 +112,8 @@ function PacmanSprite({ x, y, mouthOpen, direction, size }: { x: number, y: numb
     </motion.div>
   )
 }
-function GhostSprite({ x, y, color, size }: { x: number, y: number, color: string, size:number }) {
+
+function GhostSprite({ x, y, color, size, vulnerable }: { x: number, y: number, color: string, size:number, vulnerable: boolean }) {
   return (
     <motion.div
       style={{
@@ -115,17 +126,21 @@ function GhostSprite({ x, y, color, size }: { x: number, y: number, color: strin
       transition={{ repeat: Infinity, duration: 0.8 }}
     >
       <svg width={size} height={size} viewBox="0 0 24 24">
-        <path d="M4 20 L4 8 Q12 1, 20 8 L20 20 Q18 18, 16 20 Q14 18, 12 20 Q10 18, 8 20 Q6 18, 4 20 Z" fill={color} />
+        <path d="M4 20 L4 8 Q12 1, 20 8 L20 20 Q18 18, 16 20 Q14 18, 12 20 Q10 18, 8 20 Q6 18, 4 20 Z"
+          fill={vulnerable ? "#fff" : color} stroke={vulnerable ? "#70cfff" : "#333"} strokeWidth="1"/>
         <circle cx="8.5" cy="12" r="2" fill="#fff" />
         <circle cx="15.5" cy="12" r="2" fill="#fff" />
         <circle cx="9" cy="12" r="1" fill="#222" />
         <circle cx="16" cy="12" r="1" fill="#222" />
+        {vulnerable && (
+          <ellipse cx="12" cy="17" rx="4" ry="1.5" fill="#70cfff" />
+        )}
       </svg>
     </motion.div>
   )
 }
+
 function MazeBoard({ maze, pos, ghosts, mouthOpen, direction, size }: any) {
-  // Calcula dimensiones responsivas
   return (
     <div
       style={{
@@ -141,7 +156,7 @@ function MazeBoard({ maze, pos, ghosts, mouthOpen, direction, size }: any) {
       }}
       className="select-none"
     >
-      {/* Render de paredes (bordes azules con fondo) */}
+      {/* Render de paredes */}
       {maze.map((row: number[], y: number) =>
         row.map((cell: number, x: number) => (
           <div
@@ -210,22 +225,21 @@ function MazeBoard({ maze, pos, ghosts, mouthOpen, direction, size }: any) {
       )}
       <PacmanSprite x={pos.x} y={pos.y} mouthOpen={mouthOpen} direction={direction} size={size} />
       {ghosts.map((g: Ghost, i: number) => (
-        <GhostSprite key={i} x={g.x} y={g.y} color={["#e94f4f", "#44c8ff", "#fcbf49", "#c08cff"][i % 4]} size={size} />
+        <GhostSprite key={i} x={g.x} y={g.y} color={g.color} size={size} vulnerable={g.vulnerable} />
       ))}
     </div>
   )
 }
 
-// ========== PRINCIPAL ==========
+// ================== PRINCIPAL ==================
 export default function PacmanGame() {
-  // Escalado responsivo (mobile/tablet)
+  // Escalado responsivo
   const [size, setSize] = useState(SIZE_BASE)
   useEffect(() => {
     function calcSize() {
       const ww = window.innerWidth
-      // Resta margen para mobile y mantén el juego lo más grande posible pero visible
-      let s = Math.floor(Math.min(ww*0.96/(PACMAN_MAZE[0].length), window.innerHeight*0.72/(PACMAN_MAZE.length)))
-      s = Math.max(14, Math.min(s, 36))
+      let s = Math.floor(Math.min(ww*0.96/(MAZE_W), window.innerHeight*0.72/(MAZE_H)))
+      s = Math.max(14, Math.min(s, 38))
       setSize(s)
     }
     calcSize()
@@ -233,21 +247,23 @@ export default function PacmanGame() {
     return () => window.removeEventListener('resize', calcSize)
   }, [])
 
-  const [maze, setMaze] = useState(PACMAN_MAZE.map(row => [...row]))
+  // Estado general
+  const [maze, setMaze] = useState(MAZE.map(row => [...row]))
   const [pos, setPos] = useState({ ...START_POS })
   const [score, setScore] = useState(0)
   const [running, setRunning] = useState(true)
   const [mouthOpen, setMouthOpen] = useState(true)
   const [direction, setDirection] = useState<keyof typeof DIRS>('ArrowRight')
-  const [ghosts, setGhosts] = useState<Ghost[]>([
-    { x: 13, y: 9, dir: randomDir() },
-    { x: 14, y: 9, dir: randomDir() }
-  ])
+  const [ghosts, setGhosts] = useState<Ghost[]>(
+    GHOST_HOME.map(g => ({ ...g, dir: randomDir(), vulnerable: false }))
+  )
+  const [vulnerable, setVulnerable] = useState(false)
+  const [vulnerableTime, setVulnerableTime] = useState(0)
   const [gameOver, setGameOver] = useState(false)
   const [touchStart, setTouchStart] = useState<{x:number,y:number}|null>(null)
   const boardRef = useRef<HTMLDivElement>(null)
 
-  // MOVIMIENTO PACMAN
+  // MOVIMIENTO PACMAN + WARP
   useEffect(() => {
     if (!running) return
     const handle = (e: KeyboardEvent) => {
@@ -256,17 +272,19 @@ export default function PacmanGame() {
       e.preventDefault()
       let nx = pos.x + DIRS[k as keyof typeof DIRS].x
       let ny = pos.y + DIRS[k as keyof typeof DIRS].y
-
-      // Warp/túneles laterales
-      if (ny === 8 && nx < 0) nx = PACMAN_MAZE[0].length - 1
-      if (ny === 8 && nx >= PACMAN_MAZE[0].length) nx = 0
-
+      // Warp túneles
+      if (ny === 8 && nx < 0) nx = MAZE_W - 1
+      if (ny === 8 && nx >= MAZE_W) nx = 0
       if (maze[ny]?.[nx] !== 1 && maze[ny]?.[nx] !== undefined) {
         setPos({ x: nx, y: ny })
         setDirection(k as keyof typeof DIRS)
-        // Comer punto
+        // Comer punto o power pellet
         if (maze[ny][nx] === 2 || maze[ny][nx] === 3) {
           const newMaze = maze.map(r => [...r])
+          if (maze[ny][nx] === 3) {
+            setVulnerable(true)
+            setVulnerableTime(Date.now())
+          }
           newMaze[ny][nx] = 0
           setMaze(newMaze)
           setScore(s => s + (maze[ny][nx] === 3 ? 50 : 10))
@@ -277,7 +295,7 @@ export default function PacmanGame() {
     return () => window.removeEventListener('keydown', handle)
   }, [pos, maze, running])
 
-  // MOBILE: Swipes
+  // TOUCH (swipe)
   useEffect(() => {
     const el = boardRef.current
     if (!el) return
@@ -296,16 +314,17 @@ export default function PacmanGame() {
       else move = dy > 0 ? 'ArrowDown' : 'ArrowUp'
       let nx = pos.x + (move ? DIRS[move].x : 0)
       let ny = pos.y + (move ? DIRS[move].y : 0)
-      // Warp
-      if (ny === 8 && nx < 0) nx = PACMAN_MAZE[0].length - 1
-      if (ny === 8 && nx >= PACMAN_MAZE[0].length) nx = 0
-
+      if (ny === 8 && nx < 0) nx = MAZE_W - 1
+      if (ny === 8 && nx >= MAZE_W) nx = 0
       if (move && maze[ny]?.[nx] !== 1 && maze[ny]?.[nx] !== undefined) {
         setPos({ x: nx, y: ny })
         setDirection(move)
-        // Comer punto
         if (maze[ny][nx] === 2 || maze[ny][nx] === 3) {
           const newMaze = maze.map(r => [...r])
+          if (maze[ny][nx] === 3) {
+            setVulnerable(true)
+            setVulnerableTime(Date.now())
+          }
           newMaze[ny][nx] = 0
           setMaze(newMaze)
           setScore(s => s + (maze[ny][nx] === 3 ? 50 : 10))
@@ -327,43 +346,75 @@ export default function PacmanGame() {
     return () => clearInterval(interval)
   }, [running])
 
-  // Fantasmas IA
+  // Fantasmas IA, vulnerabilidad y salida de la jaula
   useEffect(() => {
     if (!running || gameOver) return
     const interval = setInterval(() => {
       setGhosts(gs =>
-        gs.map(g => nextGhostMove(g, maze, pos))
+        gs.map(g =>
+          nextGhostMove(
+            g,
+            maze,
+            pos,
+            vulnerable
+          )
+        )
       )
-    }, 240)
+    }, vulnerable ? 150 : 240)
     return () => clearInterval(interval)
-  }, [maze, pos, running, gameOver])
+  }, [maze, pos, running, gameOver, vulnerable])
 
-  // Colisión Pacman/fantasma
+  // Vulnerabilidad (fantasmas comestibles ~7 segundos)
+  useEffect(() => {
+    if (!vulnerable) return
+    const timeout = setTimeout(() => {
+      setVulnerable(false)
+      setGhosts(gs => gs.map(g => ({ ...g, vulnerable: false })))
+    }, 7000)
+    setGhosts(gs => gs.map(g => ({ ...g, vulnerable: true })))
+    return () => clearTimeout(timeout)
+  }, [vulnerable])
+
+  // Colisión Pacman/fantasma y comer fantasmas
   useEffect(() => {
     if (!running) return
-    for (const g of ghosts) {
+    for (let i=0; i<ghosts.length; ++i) {
+      const g = ghosts[i]
       if (g.x === pos.x && g.y === pos.y) {
-        setGameOver(true)
-        setRunning(false)
+        if (g.vulnerable) {
+          // Fantasma comido: regrésalo a casa
+          setGhosts(gs =>
+            gs.map((gg,j) => j===i ? { ...GHOST_HOME[i], dir: randomDir(), vulnerable: false } : gg)
+          )
+          setScore(s => s + 200)
+        } else {
+          setGameOver(true)
+          setRunning(false)
+        }
       }
     }
-    // Victoria
+    // Victoria: mapa limpio -> regenerar
     if (maze.flat().every(c => c !== 2 && c !== 3)) {
-      setRunning(false)
+      setTimeout(() => {
+        setMaze(MAZE.map(row => [...row]))
+        setPos({ ...START_POS })
+        setGhosts(GHOST_HOME.map(g => ({ ...g, dir: randomDir(), vulnerable: false })))
+        setVulnerable(false)
+        setGameOver(false)
+        setRunning(true)
+      }, 1300)
     }
   }, [ghosts, pos, maze, running])
 
   // REINICIO
   const restart = () => {
-    setMaze(PACMAN_MAZE.map(row => [...row]))
+    setMaze(MAZE.map(row => [...row]))
     setPos({ ...START_POS })
     setScore(0)
     setDirection('ArrowRight')
     setRunning(true)
-    setGhosts([
-      { x: 13, y: 9, dir: randomDir() },
-      { x: 14, y: 9, dir: randomDir() }
-    ])
+    setGhosts(GHOST_HOME.map(g => ({ ...g, dir: randomDir(), vulnerable: false })))
+    setVulnerable(false)
     setGameOver(false)
   }
 
@@ -378,8 +429,8 @@ export default function PacmanGame() {
         tabIndex={0}
         style={{
           outline: 'none',
-          width: `${PACMAN_MAZE[0].length * size}px`,
-          height: `${PACMAN_MAZE.length * size}px`,
+          width: `${MAZE_W * size}px`,
+          height: `${MAZE_H * size}px`,
           background: '#111117',
           borderRadius: 18,
           position: 'relative',
