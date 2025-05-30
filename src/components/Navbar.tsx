@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { BookOpen, Menu, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import UserMenu from './UserMenu';
 
 const navLinks = [
@@ -32,7 +32,6 @@ export default function Navbar() {
   const tooltipTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const pathname = usePathname();
-  const router = useRouter();
 
   // Oculta Navbar en rutas auth/login/registro
   const ocultarNavbar = /^(\/auth(\/|$)|(\/)?(login|registro)(\/|$))/.test(pathname);
@@ -92,7 +91,6 @@ export default function Navbar() {
 
   return (
     <>
-      {/* NAVBAR PRINCIPAL */}
       <div
         className={`
           fixed top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out
@@ -103,17 +101,17 @@ export default function Navbar() {
         role="banner"
         aria-label="Barra superior"
       >
-        <div className="flex items-center justify-between w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 py-2 gap-2 min-h-[58px]">
-          
+        <div className="flex items-center justify-between w-full max-w-7xl mx-auto px-3 md:px-6 py-2 gap-2 min-h-[64px]">
+
           {/* Logo */}
-          <div className="flex-shrink-0 flex items-center mr-1">
+          <div className="flex-shrink-0 flex items-center mr-2">
             <Link href="/" className="flex items-center gap-2 focus:outline-none select-none" aria-label="Ir al inicio">
               <Image
                 src="/logo-honeylabs.png"
                 alt="HoneyLabs"
-                width={28}
-                height={28}
-                className="h-7 w-7 transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-2"
+                width={32} // ← Más grande
+                height={32}
+                className="h-8 w-8 transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-2"
                 draggable={false}
                 priority
                 style={{ userSelect: 'none' }}
@@ -121,15 +119,20 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Bienvenido */}
+          {/* Bienvenido con nombre, clickeable */}
           {usuario && (
-            <span className="hidden md:inline-block text-base font-semibold text-amber-100 ml-3 mr-2 drop-shadow max-w-[150px] truncate">
+            <Link
+              href="/configuracion"
+              title={usuario.nombre}
+              className="hidden md:inline-block text-base font-semibold text-amber-100 ml-3 mr-2 drop-shadow max-w-[170px] truncate hover:underline cursor-pointer transition"
+              style={{ lineHeight: '1.2' }}
+            >
               Bienvenido, <span className="font-bold">{usuario.nombre}</span>
-            </span>
+            </Link>
           )}
 
           {/* Botones de navegación */}
-          <nav className="hidden md:flex items-center gap-2">
+          <nav className="hidden md:flex items-center gap-2 mx-2">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
