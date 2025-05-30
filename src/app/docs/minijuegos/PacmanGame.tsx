@@ -2,20 +2,21 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
-// MATRIZ DEL LABERINTO
+// LABERINTO MEJORADO
 const LABS_MAZE = [
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  [1,2,0,0,1,1,2,1,2,1,2,0,1,1,2,0,1,2,0,1],
-  [1,2,1,0,1,1,2,1,2,1,2,0,1,1,2,0,1,2,0,1],
-  [1,2,0,0,1,1,2,1,2,1,2,0,1,1,2,0,1,2,0,1],
-  [1,1,1,0,1,1,2,1,2,1,2,0,1,1,2,0,1,2,0,1],
-  [1,0,0,0,1,1,2,0,2,0,2,0,1,1,2,0,1,2,0,1],
-  [1,0,1,0,1,1,2,1,2,1,2,0,1,1,2,0,1,2,0,1],
-  [1,0,0,0,1,1,2,1,2,1,2,0,1,1,2,0,1,2,0,1],
+  [1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,1],
+  [1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,1],
+  [1,2,2,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,2,1],
+  [1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1],
+  [1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,1],
+  [1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,1],
+  [1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,1],
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ]
 const SIZE = 32
-
+const MAZE_W = LABS_MAZE[0].length
+const MAZE_H = LABS_MAZE.length
 const DIRS = {
   ArrowUp:    { x:  0, y: -1 },
   ArrowDown:  { x:  0, y:  1 },
@@ -26,10 +27,9 @@ const DIRS = {
   a:          { x: -1, y:  0 },
   d:          { x:  1, y:  0 }
 }
-
 const START_POS = { x: 1, y: 1 }
 
-type Ghost = { x: number, y: number, dir: keyof typeof DIRS }
+type Ghost = { x: number, y: number, dir: keyof typeof DIRS, scatter?: boolean }
 
 function randomDir() {
   const keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
@@ -37,28 +37,31 @@ function randomDir() {
 }
 
 function nextGhostMove(ghost: Ghost, maze: number[][], pacman: {x:number,y:number}): Ghost {
-  // Simple IA: mueve hacia Pacman si puede (o random si bloqueado)
+  // IA: a veces persigue, a veces huye (scatter)
+  let scatter = ghost.scatter || false
+  // Cambia modo cada cierto tiempo (simula patrón Pacman)
+  if (Math.random() < 0.03) scatter = !scatter
   const choices: [keyof typeof DIRS, number][] = []
   for (const key of ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'] as const) {
     const nx = ghost.x + DIRS[key].x
     const ny = ghost.y + DIRS[key].y
     if (maze[ny]?.[nx] !== 1) {
-      // distancia a Pacman si mueve ahí
-      const dist = Math.abs(nx - pacman.x) + Math.abs(ny - pacman.y)
+      // distancia a Pacman o distancia inversa si scatter
+      let dist = Math.abs(nx - pacman.x) + Math.abs(ny - pacman.y)
+      if (scatter) dist = 999 - dist
       choices.push([key, dist])
     }
   }
   if (!choices.length) return ghost
   choices.sort((a, b) => a[1] - b[1])
-  // 60% ir hacia Pacman, 40% random de las opciones
-  const goBest = Math.random() < 0.6
+  const goBest = Math.random() < 0.7
   const move = goBest ? choices[0][0] : choices[Math.floor(Math.random()*choices.length)][0]
   const nx = ghost.x + DIRS[move].x
   const ny = ghost.y + DIRS[move].y
-  return { ...ghost, x: nx, y: ny, dir: move }
+  return { ...ghost, x: nx, y: ny, dir: move, scatter }
 }
 
-// SPRITES
+// Sprite y animación
 function PacmanSprite({ x, y, mouthOpen, direction }: { x: number, y: number, mouthOpen: boolean, direction: string }) {
   let rotate = 0
   if (direction === 'ArrowUp') rotate = -90
@@ -91,7 +94,6 @@ function PacmanSprite({ x, y, mouthOpen, direction }: { x: number, y: number, mo
     </motion.div>
   )
 }
-
 function GhostSprite({ x, y, color }: { x: number, y: number, color: string }) {
   return (
     <motion.div
@@ -114,7 +116,6 @@ function GhostSprite({ x, y, color }: { x: number, y: number, color: string }) {
     </motion.div>
   )
 }
-
 function MazeBoard({ maze, pos, ghosts, mouthOpen, direction }: any) {
   return (
     <div
@@ -185,15 +186,20 @@ export default function PacmanGame() {
   const [touchStart, setTouchStart] = useState<{x:number,y:number}|null>(null)
   const boardRef = useRef<HTMLDivElement>(null)
 
-  // MOVIMIENTO PACMAN
+  // MOVIMIENTO PACMAN (mejorado: warp)
   useEffect(() => {
     if (!running) return
     const handle = (e: KeyboardEvent) => {
       const k = e.key in DIRS ? e.key : e.key.toLowerCase()
       if (!(k in DIRS)) return
       e.preventDefault()
-      const nx = pos.x + DIRS[k as keyof typeof DIRS].x
-      const ny = pos.y + DIRS[k as keyof typeof DIRS].y
+      let nx = pos.x + DIRS[k as keyof typeof DIRS].x
+      let ny = pos.y + DIRS[k as keyof typeof DIRS].y
+
+      // Warp (salida lateral)
+      if (nx < 0) nx = MAZE_W - 2
+      if (nx >= MAZE_W) nx = 1
+
       if (maze[ny]?.[nx] !== 1) {
         setPos({ x: nx, y: ny })
         setDirection(k as keyof typeof DIRS)
@@ -209,7 +215,7 @@ export default function PacmanGame() {
     return () => window.removeEventListener('keydown', handle)
   }, [pos, maze, running])
 
-  // TOUCH SUPPORT (Mobile)
+  // TOUCH (mobile mejorado, soporte warp)
   useEffect(() => {
     const el = boardRef.current
     if (!el) return
@@ -222,22 +228,25 @@ export default function PacmanGame() {
       const dx = e.changedTouches[0].clientX - touchStart.x
       const dy = e.changedTouches[0].clientY - touchStart.y
       setTouchStart(null)
-      if (Math.abs(dx) < 18 && Math.abs(dy) < 18) return
+      if (Math.abs(dx) < 14 && Math.abs(dy) < 14) return
       let move: keyof typeof DIRS | null = null
       if (Math.abs(dx) > Math.abs(dy)) move = dx > 0 ? 'ArrowRight' : 'ArrowLeft'
       else move = dy > 0 ? 'ArrowDown' : 'ArrowUp'
-      if (move) {
-        const nx = pos.x + DIRS[move].x
-        const ny = pos.y + DIRS[move].y
-        if (maze[ny]?.[nx] !== 1) {
-          setPos({ x: nx, y: ny })
-          setDirection(move)
-          if (maze[ny][nx] === 2) {
-            const newMaze = maze.map(r => [...r])
-            newMaze[ny][nx] = 0
-            setMaze(newMaze)
-            setScore(s => s + 10)
-          }
+
+      let nx = pos.x + (move ? DIRS[move].x : 0)
+      let ny = pos.y + (move ? DIRS[move].y : 0)
+      // Warp (salida lateral)
+      if (nx < 0) nx = MAZE_W - 2
+      if (nx >= MAZE_W) nx = 1
+
+      if (move && maze[ny]?.[nx] !== 1) {
+        setPos({ x: nx, y: ny })
+        setDirection(move)
+        if (maze[ny][nx] === 2) {
+          const newMaze = maze.map(r => [...r])
+          newMaze[ny][nx] = 0
+          setMaze(newMaze)
+          setScore(s => s + 10)
         }
       }
     }
@@ -249,26 +258,25 @@ export default function PacmanGame() {
     }
   }, [pos, maze, running, touchStart])
 
-  // ANIMACIÓN BOCA
+  // Animación boca
   useEffect(() => {
     if (!running) return
     const interval = setInterval(() => setMouthOpen(m => !m), 100)
     return () => clearInterval(interval)
   }, [running])
 
-  // FANTASMAS IA y Colisiones
+  // Fantasmas IA
   useEffect(() => {
-    if (!running) return
-    if (gameOver) return
+    if (!running || gameOver) return
     const interval = setInterval(() => {
       setGhosts(gs =>
         gs.map(g => nextGhostMove(g, maze, pos))
       )
-    }, 260)
+    }, 240)
     return () => clearInterval(interval)
   }, [maze, pos, running, gameOver])
 
-  // Checa colisión Pacman/fantasma
+  // Colisión Pacman/fantasma
   useEffect(() => {
     if (!running) return
     for (const g of ghosts) {
