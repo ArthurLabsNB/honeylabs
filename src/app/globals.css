@@ -1,223 +1,79 @@
 @import "tailwindcss";
 
-/* Paleta HoneyLabs */
 :root {
-  --background: #181325;
-  --foreground: #faf3e8;
-  --accent: #ffe066;        /* Miel, acento suave */
-  --secondary-bg: #22223b;  /* Cards, botones secundarios */
-  --border: #353552;
-  --shadow: 0 4px 24px #0005;
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
-/* Soporte dark/light automático */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #181325;
-    --foreground: #faf3e8;
-  }
-}
-@media (prefers-color-scheme: light) {
-  :root {
-    --background: #fffbe7;
-    --foreground: #22223b;
+    --background: #0a0a0a;
+    --foreground: #ededed;
   }
 }
 
-body {
-  background: var(--background) !important;
-  color: var(--foreground) !important;
+/* ===== FONDO SIEMPRE 100% Y SIN DELIMITACIONES ===== */
+html, body {
+  background: var(--background);
+  color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-  transition: background 0.3s, color 0.3s;
+  width: 100vw;
   min-height: 100vh;
-  min-width: 100vw;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  width: 100vw;
-  height: 100vh;
-  /* Esto asegura que el fondo SIEMPRE cubra todo */
   overflow-x: hidden;
 }
 
-/* Evita que los contenedores "floten" si haces zoom out */
-html, #__next, #root, .full-bg, .fullscreen-bg {
+body {
+  /* fallback para scrolls largos */
   min-height: 100vh;
-  min-width: 100vw;
+}
+
+/* Evita que los contenedores se limiten en zoom */
+#__next, #root {
+  min-height: 100vh;
   width: 100vw;
-  height: 100vh;
   background: inherit;
 }
 
-/* Centraliza todo en el viewport SIEMPRE */
-.centered-content {
-  min-height: 80vh;
-  min-width: 100vw;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  padding: 2rem 1rem;
-  box-sizing: border-box;
-}
+/* ================= ANIMACIONES SUGERIDAS ================= */
+@keyframes blink { 50% { opacity: 0 } }
+.animate-blink { animation: blink 1.05s steps(1) infinite; }
 
-@media (max-width: 900px) {
-  .centered-content {
-    min-height: 70vh;
-    padding: 1.5rem 0.5rem;
-  }
-}
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+.animate-fade-in { animation: fadeIn 0.7s ease 0.15s both; }
 
-/* Container clásico para contenido principal */
-.container {
-  width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 2rem 2vw;
-  box-sizing: border-box;
-  /* Transición de ancho para suavidad */
-  transition: max-width 0.3s, padding 0.3s;
-}
-
-@media (max-width: 900px) {
-  .container {
-    padding: 1rem 1vw;
-    max-width: 98vw;
-  }
-  h1, h2 {
-    font-size: 1.5rem;
-  }
-}
-@media (max-width: 600px) {
-  .container {
-    padding: 0.5rem 0;
-    max-width: 100vw;
-  }
-  h1 {
-    font-size: 1.2rem;
-  }
-  h2 {
-    font-size: 1.05rem;
-  }
-}
-
-/* Para textos largos en pantalla grande */
-p, .desc, .subtext {
-  max-width: 650px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* Cards adaptables */
-.card {
-  background: var(--secondary-bg, #22223b);
-  color: var(--foreground, #faf3e8);
-  border-radius: 12px;
-  box-shadow: var(--shadow, 0 2px 16px #0002);
-  padding: 2rem;
-  margin-bottom: 2rem;
-  transition: box-shadow 0.2s, background 0.2s;
-}
-@media (max-width: 600px) {
-  .card {
-    padding: 1rem;
-    margin-bottom: 1rem;
-  }
-}
-
-/* Grid adaptable */
-.responsive-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 2rem;
-}
-@media (max-width: 900px) {
-  .responsive-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
-}
-@media (max-width: 600px) {
-  .responsive-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-}
-
-/* NAVBAR 100% ancho y nunca corta */
-.navbar, nav, .navbar-bg {
-  width: 100vw !important;
-  max-width: 100vw !important;
-  min-width: 100vw !important;
-  left: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border-radius: 0 !important;
-  background: var(--secondary-bg, #22223b);
-  box-shadow: var(--shadow, 0 4px 24px #0005);
-  z-index: 999;
-  /* Blur opcional: */
-  backdrop-filter: blur(8px);
-}
-
-@media (max-width: 600px) {
-  .navbar, nav, .navbar-bg {
-    padding: 0 !important;
-    min-width: 100vw;
-  }
-}
-
-/* --------- Animación máquina de escribir --------- */
 .animate-typewriter {
   overflow: hidden;
-  border-right: .15em solid #ffe066;
+  border-right: .15em solid #ffeb3b;
   white-space: nowrap;
-  animation:
-    blink-cursor 0.9s steps(1) infinite;
+  animation: blink-cursor 0.9s steps(1) infinite;
 }
 @keyframes blink-cursor {
-  0%, 100% { border-color: #ffe066; }
+  0%, 100% { border-color: #ffeb3b; }
   50% { border-color: transparent; }
 }
 
-/* --------- Ejemplo para el hero --------- */
-.hero-title {
-  font-size: 2.8rem;
-  font-weight: 800;
-  letter-spacing: -1.5px;
-  color: #ffe066;
-  margin-bottom: 1.2rem;
-  text-align: center;
+/* Otras animaciones opcionales */
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-48px); }
+  to { opacity: 1; transform: none; }
 }
-@media (max-width: 600px) {
-  .hero-title {
-    font-size: 1.7rem;
-  }
-}
+.animate-fade-in-left { animation: fadeInLeft 0.8s cubic-bezier(.36,1.6,.28,1) both; }
 
-/* --------- Botones centrados --------- */
-.btn-main {
-  margin: 1.5rem auto 0 auto;
-  display: block;
-  font-size: 1.1rem;
-  font-weight: 700;
+@keyframes pop3D {
+  from { opacity: 0; transform: scale(0.94) rotateY(7deg); }
+  to { opacity: 1; transform: scale(1) rotateY(0deg); }
 }
+.animate-3dpop { animation: pop3D 1.05s cubic-bezier(.22,.68,0,.17) both; }
 
-/* Scrollbar elegante */
-::-webkit-scrollbar {
-  width: 8px;
-  background: #181325;
-}
-::-webkit-scrollbar-thumb {
-  background: #ffe06699;
-  border-radius: 6px;
-}
+/* Puedes agregar más animaciones de tu lista aquí... */
 
-/* --- Otros utilitarios responsivos --- */
-img,
-video,
-iframe {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
