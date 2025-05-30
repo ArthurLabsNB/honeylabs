@@ -9,7 +9,7 @@ export async function GET() {
   const top = await prisma.puntajePacman.findMany({
     take: 10,
     orderBy: { puntaje: 'desc' },
-    include: { usuario: { select: { nombre: true, imagen: true } } }
+    include: { usuario: { select: { nombre: true } } }
   })
   return NextResponse.json({ top })
 }
