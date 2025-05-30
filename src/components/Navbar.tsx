@@ -103,9 +103,9 @@ export default function Navbar() {
         role="banner"
         aria-label="Barra superior"
       >
-        <div className="flex items-center justify-between max-w-7xl mx-auto px-6 py-2 gap-4 min-h-[58px]">
+        <div className="flex flex-wrap md:flex-nowrap items-center justify-between w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 py-2 gap-2 min-h-[58px]">
           {/* Logo + Bienvenida */}
-          <div className="flex items-center gap-2 group flex-shrink-0">
+          <div className="flex items-center gap-2 min-w-[110px] flex-1">
             <Link href="/" className="flex items-center gap-2 focus:outline-none select-none" aria-label="Ir al inicio">
               <Image
                 src="/logo-honeylabs.png"
@@ -119,51 +119,20 @@ export default function Navbar() {
               />
               {/* Bienvenida SIEMPRE visible */}
               {usuario && (
-                <span className="inline-block text-base font-semibold text-amber-100 ml-2 drop-shadow">
+                <span className="inline-block text-base font-semibold text-amber-100 ml-2 drop-shadow max-w-[120px] sm:max-w-none truncate">
                   Bienvenido, <span className="font-bold">{usuario.nombre}</span>
                 </span>
               )}
             </Link>
           </div>
 
-          {/* --- CENTRO: Solo desktop/tablet --- */}
-          <nav className="hidden md:flex items-center gap-2 mx-4">
-            {navLinks.map((link, i) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`
-                  ${linkBase}
-                  ${isActive(link.href)
-                    ? 'bg-amber-100/10 text-amber-200 underline underline-offset-4'
-                    : ''
-                  }
-                `}
-                tabIndex={0}
-                aria-current={isActive(link.href) ? 'page' : undefined}
-                style={{
-                  fontSize: '1rem',
-                  minWidth: 92,
-                  textAlign: 'center'
-                }}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          {/* --- DERECHA: Acciones y menú de usuario --- */}
-          <div className="flex items-center gap-2 relative">
-            {/* Botón Comenzar Ahora SIEMPRE visible en móvil y desktop */}
+          {/* Botón Comenzar Ahora SIEMPRE visible */}
+          <div className="flex-1 flex justify-center md:justify-end">
             {usuario ? (
               <Link
                 href="/panel"
-                className="px-5 py-2 rounded-xl font-semibold bg-navglass/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow-md text-base"
-                style={{
-                  minWidth: 154,
-                  textAlign: 'center',
-                  letterSpacing: '0.02em'
-                }}
+                className="px-4 py-2 rounded-xl font-semibold bg-navglass/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow-md text-base w-full sm:w-auto max-w-xs text-center"
+                style={{ letterSpacing: '0.02em' }}
                 onClick={rippleEffect}
                 tabIndex={0}
               >
@@ -171,58 +140,77 @@ export default function Navbar() {
               </Link>
             ) : (
               <button
-                className="px-5 py-2 rounded-xl font-semibold bg-navglass/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow-md text-base relative"
-                style={{
-                  minWidth: 154,
-                  textAlign: 'center',
-                  letterSpacing: '0.02em'
-                }}
+                className="px-4 py-2 rounded-xl font-semibold bg-navglass/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow-md text-base w-full sm:w-auto max-w-xs text-center relative"
+                style={{ letterSpacing: '0.02em' }}
                 onClick={e => { handleComenzar(e); rippleEffect(e); }}
                 tabIndex={0}
               >
                 Comenzar Ahora!
-                {/* Tooltip animado */}
                 <span className={`
                   pointer-events-none absolute left-1/2 -top-12 transform -translate-x-1/2 
                   bg-amber-400 text-[#101014] font-semibold rounded-xl shadow-lg px-4 py-2 
                   transition-all duration-300 text-sm select-none
                   ${showTooltip ? 'opacity-100 scale-100 drop-shadow-2xl' : 'opacity-0 scale-95'}
-                `} style={{
-                  zIndex: 200
-                }}>
+                `} style={{ zIndex: 200 }}>
                   Debes iniciar sesión antes
                 </span>
               </button>
             )}
+          </div>
 
-            {/* UserMenu SIEMPRE visible */}
+          {/* Menú de usuario SIEMPRE visible, se ajusta a la derecha */}
+          <div className="flex-1 flex justify-end items-center gap-2 min-w-fit">
             <UserMenu usuario={usuario} />
 
-            {/* --- Solo desktop: Wiki y registro --- */}
-            <Link
-              href="/wiki"
-              className="hidden md:inline-flex ml-2 p-2 rounded-full hover:bg-[#222]/60 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
-              aria-label="Ir a la Wiki"
-              tabIndex={0}
-            >
-              <BookOpen className="w-5 h-5 text-amber-200" />
-            </Link>
-            {!usuario && (
+            {/* Desktop: links y wiki */}
+            <nav className="hidden md:flex items-center gap-2 ml-4">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`
+                    ${linkBase}
+                    ${isActive(link.href)
+                      ? 'bg-amber-100/10 text-amber-200 underline underline-offset-4'
+                      : ''
+                    }
+                  `}
+                  tabIndex={0}
+                  aria-current={isActive(link.href) ? 'page' : undefined}
+                  style={{
+                    fontSize: '1rem',
+                    minWidth: 92,
+                    textAlign: 'center'
+                  }}
+                >
+                  {link.label}
+                </Link>
+              ))}
               <Link
-                href="/registro"
-                className="hidden md:inline-flex ml-2 px-4 py-2 rounded-xl font-semibold bg-[#222]/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow text-base"
-                style={{
-                  minWidth: 120,
-                  textAlign: 'center'
-                }}
+                href="/wiki"
+                className="ml-2 p-2 rounded-full hover:bg-[#222]/60 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+                aria-label="Ir a la Wiki"
                 tabIndex={0}
-                onClick={rippleEffect}
               >
-                Regístrate
+                <BookOpen className="w-5 h-5 text-amber-200" />
               </Link>
-            )}
+              {!usuario && (
+                <Link
+                  href="/registro"
+                  className="ml-2 px-4 py-2 rounded-xl font-semibold bg-[#222]/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow text-base"
+                  style={{
+                    minWidth: 120,
+                    textAlign: 'center'
+                  }}
+                  tabIndex={0}
+                  onClick={rippleEffect}
+                >
+                  Regístrate
+                </Link>
+              )}
+            </nav>
 
-            {/* --- Botón hamburguesa solo móvil --- */}
+            {/* Botón hamburguesa solo móvil/tablet */}
             <button
               className="block md:hidden p-2 ml-1 rounded-full hover:bg-[#222]/70 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
               aria-label="Abrir menú"
@@ -249,7 +237,7 @@ export default function Navbar() {
           ref={drawerRef}
           tabIndex={menuOpen ? 0 : -1}
           className={`
-            absolute right-0 top-0 h-full w-72 max-w-[90vw] bg-[#101014]/95 backdrop-blur-lg shadow-lg p-6 flex flex-col gap-6 transition-transform duration-300
+            absolute right-0 top-0 h-full w-80 max-w-[98vw] bg-[#101014]/95 backdrop-blur-lg shadow-lg p-6 flex flex-col gap-5 transition-transform duration-300
             ${menuOpen ? 'translate-x-0' : 'translate-x-full'}
           `}
           onClick={e => e.stopPropagation()}
@@ -259,13 +247,11 @@ export default function Navbar() {
           <button className="self-end mb-4 p-2 rounded hover:bg-[#332711]/30 focus:outline-none" onClick={() => setMenuOpen(false)} aria-label="Cerrar menú">
             <X className="text-amber-200" />
           </button>
-          {/* Links principales */}
           {navLinks.map((link) => (
             <Link key={link.href} href={link.href} className="py-2 px-3 rounded-xl hover:bg-amber-400/90 hover:text-[#101014] text-lg text-amber-100 transition-all duration-300" onClick={() => setMenuOpen(false)}>
               {link.label}
             </Link>
           ))}
-          {/* Botón wiki */}
           <Link
             href="/wiki"
             className="py-2 px-3 rounded-xl hover:bg-amber-400/90 hover:text-[#101014] text-lg text-amber-100 flex items-center gap-2 transition-all duration-300"
@@ -273,7 +259,6 @@ export default function Navbar() {
           >
             <BookOpen className="w-5 h-5" /> Wiki
           </Link>
-          {/* Botón Comenzar Ahora (dentro del menú) */}
           {usuario ? (
             <Link
               href="/panel"
@@ -296,13 +281,10 @@ export default function Navbar() {
                   bg-amber-400 text-[#101014] font-semibold rounded-xl shadow-lg px-4 py-2 
                   transition-all duration-300 text-sm select-none
                   ${showTooltip ? 'opacity-100 scale-100 drop-shadow-2xl' : 'opacity-0 scale-95'}
-                `} style={{
-                  zIndex: 200
-                }}>
+                `} style={{ zIndex: 200 }}>
                   Debes iniciar sesión antes
                 </span>
               </button>
-              {/* Botón registro en el menú móvil */}
               <Link
                 href="/registro"
                 className="mt-2 py-2 px-3 rounded-xl font-semibold bg-[#222]/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 shadow text-lg"
@@ -316,8 +298,10 @@ export default function Navbar() {
         </div>
       </div>
 
+      {/* Espaciador navbar */}
       <div className="h-[80px] sm:h-[88px]" aria-hidden="true" />
 
+      {/* Ripple y fondo glass */}
       <style jsx global>{`
         .ripple {
           position: absolute;
