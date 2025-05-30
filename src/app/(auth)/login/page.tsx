@@ -36,15 +36,13 @@ export default function LoginPage() {
     reset,
   } = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
-    mode: 'onTouched', // Mejor UX (onBlur también funciona)
+    mode: 'onTouched',
   });
 
-  // Auto-enfoque al input de correo (con RHF, no con ref)
   useEffect(() => {
     setFocus('correo');
   }, [setFocus]);
 
-  // Si ya hay sesión, redirige
   useEffect(() => {
     const datos = localStorage.getItem('usuario');
     if (datos) {
@@ -55,7 +53,6 @@ export default function LoginPage() {
     }
   }, [router]);
 
-  // SUBMIT
   const onSubmit = async (datos: LoginData) => {
     setMensaje('');
     setCargando(true);
@@ -71,11 +68,10 @@ export default function LoginPage() {
 
       if (!res.ok) throw new Error(data?.error || 'Credenciales inválidas');
 
-      // Guardar provisional (para producción usa cookies httpOnly)
       localStorage.setItem('usuario', JSON.stringify(data));
 
       setMensaje('✔️ Inicio de sesión exitoso');
-      reset(); // Limpia campos
+      reset();
       setTimeout(() => router.replace('/'), 800);
     } catch (error: any) {
       setMensaje(`❌ ${error.message}`);
@@ -85,15 +81,19 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-100 via-amber-100 to-rose-100 px-4">
+    <main className="min-h-screen w-full flex items-center justify-center">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white dark:bg-zinc-900 shadow-xl border border-amber-300 dark:border-zinc-700 p-8 rounded-2xl max-w-md w-full space-y-5"
+        className="bg-white dark:bg-zinc-900 shadow-xl border border-amber-300 dark:border-zinc-700 p-8 rounded-2xl max-w-md w-full space-y-5 animate-fade-in"
         autoComplete="on"
         aria-labelledby="login-title"
         noValidate
       >
-        <h1 id="login-title" className="text-3xl font-bold text-center text-amber-700 dark:text-amber-300">
+        <h1
+          id="login-title"
+          className="text-3xl font-bold text-center text-amber-700 dark:text-amber-300 animate-typewriter"
+          style={{ animationDuration: '2.1s', animationTimingFunction: 'steps(25, end)' }}
+        >
           Iniciar Sesión
         </h1>
 
