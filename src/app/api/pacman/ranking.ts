@@ -2,7 +2,7 @@
 
 import { NextResponse } from 'next/server'
 // Usa import relativo, no alias:
-import prisma from '../../../../lib/prisma'
+import prisma from '@lib/prisma'
 
 export async function GET() {
   // Top 10 por puntaje más alto
