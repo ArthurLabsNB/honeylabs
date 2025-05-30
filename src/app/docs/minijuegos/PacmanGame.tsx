@@ -4,14 +4,9 @@ import { useState, useRef, useEffect } from 'react'
 import { Loop, Stage, World } from 'react-game-kit'
 import { motion } from 'framer-motion'
 import useSWR from 'swr'
-import { create } from 'zustand'
 
-// ========== RANKING GLOBAL (con zustand + swr) ==========
+// ========== RANKING GLOBAL (solo SWR) ==========
 const fetcher = (url: string) => fetch(url).then(r => r.json())
-const useScoreStore = create((set: any) => ({
-  highScore: 0,
-  setHighScore: (score: number) => set({ highScore: score }),
-}))
 
 // ========== MATRIZ DEL LABERINTO ==========
 const LABS_MAZE = [
@@ -200,7 +195,7 @@ export default function PacmanGame() {
     setSubmitError('')
   }
 
-  // --- RANKING (opcional) ---
+  // --- RANKING (solo SWR) ---
   const { data: ranking, error: rankingError } = useSWR('/api/pacman/ranking', fetcher)
 
   // --- Foco inicial ---
