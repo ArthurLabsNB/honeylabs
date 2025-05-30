@@ -54,6 +54,16 @@ model Usuario {
   almacenes     UsuarioAlmacen[]
   roles         Rol[]            @relation("RolToUsuario")
   movimientos   Movimiento[]
+
+  // 🔗 Relaciones con minijuegos
+  puntajesPacman       PuntajePacman[]
+  puntajesMario        PuntajeMario[]
+  puntajesSnake        PuntajeSnake[]
+  puntajesTetris       PuntajeTetris[]
+  puntajesPingPong     PuntajePingPong[]
+  puntajesBreakout     PuntajeBreakout[]
+  puntajesFlappyBee    PuntajeFlappyBee[]
+  puntajesSpaceShooter PuntajeSpaceShooter[]
 }
 
 //
@@ -143,4 +153,99 @@ model Movimiento {
   // 🔗 Relación opcional con usuario que hizo el movimiento
   usuarioId   Int?
   usuario     Usuario?  @relation(fields: [usuarioId], references: [id])
+}
+
+//
+// 🎮 PACMAN
+//
+model PuntajePacman {
+  id        Int      @id @default(autoincrement())
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  puntaje   Int
+  fecha     DateTime @default(now())
+}
+
+//
+// 🎮 MARIO BROS
+//
+model PuntajeMario {
+  id        Int      @id @default(autoincrement())
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  nivel     Int      // nivel más alto alcanzado
+  puntaje   Int      // score total
+  fecha     DateTime @default(now())
+}
+
+//
+// 🎮 SNAKE
+//
+model PuntajeSnake {
+  id        Int      @id @default(autoincrement())
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  longitud  Int      // longitud máxima alcanzada
+  puntaje   Int      // puntos totales
+  fecha     DateTime @default(now())
+}
+
+//
+// 🎮 TETRIS
+//
+model PuntajeTetris {
+  id        Int      @id @default(autoincrement())
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  lineas    Int      // líneas completadas
+  puntaje   Int      // score total
+  fecha     DateTime @default(now())
+}
+
+//
+// 🎮 PING PONG
+//
+model PuntajePingPong {
+  id        Int      @id @default(autoincrement())
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  rondas    Int      // rondas ganadas
+  puntaje   Int      // score final
+  fecha     DateTime @default(now())
+}
+
+//
+// 🎮 BREAKOUT
+//
+model PuntajeBreakout {
+  id        Int      @id @default(autoincrement())
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  nivel     Int      // nivel máximo
+  puntaje   Int      // puntos
+  fecha     DateTime @default(now())
+}
+
+//
+// 🎮 FLAPPYBEE
+//
+model PuntajeFlappyBee {
+  id        Int      @id @default(autoincrement())
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  distancia Int      // distancia recorrida
+  puntaje   Int      // puntos
+  fecha     DateTime @default(now())
+}
+
+//
+// 🎮 SPACESHOOTER
+//
+model PuntajeSpaceShooter {
+  id        Int      @id @default(autoincrement())
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  enemigos  Int      // enemigos eliminados
+  puntaje   Int      // score total
+  fecha     DateTime @default(now())
 }

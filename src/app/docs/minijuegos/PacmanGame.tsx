@@ -1,11 +1,20 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import { Loop, Stage, World } from 'react-game-kit'
+import { motion, AnimatePresence } from 'framer-motion'
+import useSound from 'use-sound'
+import useSWR from 'swr'
+import create from 'zustand'
 
-// ========== MATRIZ DEL LABERINTO "LABS" ==========
-// 0: camino, 1: muro, 2: punto
+// ========== RANKING GLOBAL (con zustand + swr) ==========
+const fetcher = (url: string) => fetch(url).then(r => r.json())
+const useScoreStore = create((set: any) => ({
+  highScore: 0,
+  setHighScore: (score: number) => set({ highScore: score }),
+}))
+
+// ========== MATRIZ DEL LABERINTO ==========
 const LABS_MAZE = [
-  // L   A   B   S   (cada bloque son 5x5)
-  // 20 cols x 15 rows aprox
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
   [1,2,0,0,1,1,2,1,2,1,2,0,1,1,2,0,1,2,0,1],
   [1,2,1,0,1,1,2,1,2,1,2,0,1,1,2,0,1,2,0,1],
@@ -16,11 +25,10 @@ const LABS_MAZE = [
   [1,0,0,0,1,1,2,1,2,1,2,0,1,1,2,0,1,2,0,1],
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ]
+const SIZE = 24
 
 // ========== POSICIÓN INICIAL ==========
 const START_POS = { x: 1, y: 1 }
-
-const SIZE = 24 // px por celda
 
 // ========== DIRECCIONES ==========
 const DIRS = {
@@ -30,72 +38,64 @@ const DIRS = {
   ArrowRight: { x:  1, y:  0 },
 }
 
-export default function PacmanGame() {
-  const [pos, setPos] = useState(START_POS)
-  const [maze, setMaze] = useState(LABS_MAZE.map(row => [...row])) // Copia profunda
-  const [score, setScore] = useState(0)
-  const [running, setRunning] = useState(true)
-  const boardRef = useRef<HTMLDivElement>(null)
+// ========== SONIDOS ==========
+import popSfx from './sounds/pop.mp3'    // crea una carpeta y pon sonidos arcade mp3 aquí
+import winSfx from './sounds/win.mp3'
+import startSfx from './sounds/start.mp3'
 
-  // ========== MOVIMIENTO ==========
-  useEffect(() => {
-    function handle(e: KeyboardEvent) {
-      if (!running) return
-      const dir = DIRS[e.key as keyof typeof DIRS]
-      if (!dir) return
-      const nx = pos.x + dir.x
-      const ny = pos.y + dir.y
-      if (maze[ny]?.[nx] !== 1) {
-        // Comer punto
-        if (maze[ny][nx] === 2) {
-          const newMaze = maze.map(r => [...r])
-          newMaze[ny][nx] = 0
-          setMaze(newMaze)
-          setScore(s => s + 10)
-        }
-        setPos({ x: nx, y: ny })
-      }
-    }
-    window.addEventListener('keydown', handle)
-    return () => window.removeEventListener('keydown', handle)
-  }, [pos, maze, running])
-
-  // ========== VICTORIA ==========
-  useEffect(() => {
-    if (maze.flat().filter(v => v === 2).length === 0) {
-      setRunning(false)
-    }
-  }, [maze])
-
-  // ========== REINICIO ==========
-  function restart() {
-    setMaze(LABS_MAZE.map(row => [...row]))
-    setPos(START_POS)
-    setScore(0)
-    setRunning(true)
-  }
-
-  // ========== RENDER ==========
+// ========== PACMAN SPRITE (con animación framer-motion) ==========
+function PacmanSprite({ x, y, direction, mouthOpen }: { x: number, y: number, direction: string, mouthOpen: boolean }) {
+  let rotate = 0
+  if (direction === 'ArrowUp') rotate = -90
+  if (direction === 'ArrowDown') rotate = 90
+  if (direction === 'ArrowLeft') rotate = 180
   return (
-    <div className="flex flex-col items-center w-full">
-      <h3 className="text-xl font-bold text-miel mb-2">¡Pac-Man LABS!</h3>
-      <div
-        ref={boardRef}
-        tabIndex={0}
-        style={{
-          outline: 'none',
-          width: `${LABS_MAZE[0].length * SIZE}px`,
-          height: `${LABS_MAZE.length * SIZE}px`,
-          background: '#161313',
-          borderRadius: 12,
-          position: 'relative',
-          boxShadow: '0 6px 24px #0007, 0 0 0 2px #ffd23b33'
-        }}
-        className="mb-2 grid"
-        onClick={() => boardRef.current?.focus()}
-      >
-        {/* Render cells */}
-        {maze.map((row, y) => row.map((cell, x) => (
+    <motion.div
+      style={{
+        position: 'absolute',
+        left: x * SIZE,
+        top: y * SIZE,
+        width: SIZE,
+        height: SIZE,
+        zIndex: 2,
+        pointerEvents: 'none',
+      }}
+      animate={{ rotate }}
+      transition={{ type: "tween", duration: 0.08 }}
+    >
+      <svg width={SIZE} height={SIZE} viewBox="0 0 24 24">
+        <motion.path
+          d={
+            mouthOpen
+              ? "M12,12 L24,6 A12,12 0 1,1 24,18 Z"
+              : "M12,12 L24,10 A12,12 0 1,1 24,14 Z"
+          }
+          fill="#ffe066"
+          stroke="#ffd23b"
+          animate={{ rotate: [0, 5, 0] }}
+          transition={{ repeat: Infinity, duration: 0.28 }}
+        />
+        <circle cx="16" cy="9" r="1.2" fill="#22223b" />
+      </svg>
+    </motion.div>
+  )
+}
+
+function MazeBoard({ maze, pos, mouthOpen, direction }: any) {
+  return (
+    <div
+      style={{
+        width: `${maze[0].length * SIZE}px`,
+        height: `${maze.length * SIZE}px`,
+        background: '#181325',
+        borderRadius: 12,
+        position: 'relative',
+        boxShadow: '0 6px 24px #0007, 0 0 0 2px #ffd23b33',
+      }}
+      className="select-none"
+    >
+      {maze.map((row: number[], y: number) =>
+        row.map((cell: number, x: number) => (
           <div
             key={`${x}-${y}`}
             style={{
@@ -106,47 +106,174 @@ export default function PacmanGame() {
               height: SIZE,
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              zIndex: 1,
             }}
           >
             {cell === 1 && (
-              <div className="bg-[#373353] rounded" style={{ width: SIZE-4, height: SIZE-4, boxShadow: 'inset 0 0 4px #000a' }} />
+              <div className="bg-[#373353] rounded"
+                style={{ width: SIZE-4, height: SIZE-4, boxShadow: 'inset 0 0 4px #000a' }}
+              />
             )}
             {cell === 2 && (
-              <div className="rounded-full bg-miel mx-auto" style={{ width: 8, height: 8, boxShadow: '0 0 4px #ffd23b99' }} />
-            )}
-            {/* Pacman */}
-            {pos.x === x && pos.y === y && (
-              <div style={{
-                width: SIZE-6,
-                height: SIZE-6,
-                background: 'radial-gradient(circle at 65% 35%, #fffbe7 85%, #ffd23b 100%)',
-                borderRadius: '50%',
-                boxShadow: '0 0 8px #ffd23b99',
-                position: 'absolute'
-              }}>
-                {/* Puedes añadir una "boca" SVG si quieres */}
-              </div>
+              <motion.div
+                className="rounded-full bg-miel mx-auto"
+                style={{ width: 8, height: 8, boxShadow: '0 0 4px #ffd23b99' }}
+                animate={{ scale: [1, 1.4, 1] }}
+                transition={{ duration: 0.8, repeat: Infinity }}
+              />
             )}
           </div>
-        )))}
-      </div>
-      <div className="flex gap-6 items-center mb-2">
+        ))
+      )}
+      <PacmanSprite x={pos.x} y={pos.y} mouthOpen={mouthOpen} direction={direction} />
+    </div>
+  )
+}
+
+// ========== COMPONENTE PRINCIPAL ==========
+export default function PacmanGame() {
+  const [maze, setMaze] = useState(LABS_MAZE.map(row => [...row]))
+  const [pos, setPos] = useState(START_POS)
+  const [score, setScore] = useState(0)
+  const [running, setRunning] = useState(true)
+  const [mouthOpen, setMouthOpen] = useState(true)
+  const [direction, setDirection] = useState<'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight'>('ArrowRight')
+  const boardRef = useRef<HTMLDivElement>(null)
+
+  // --- SONIDOS ---
+  const [playPop] = useSound(popSfx, { volume: 0.5 })
+  const [playWin] = useSound(winSfx, { volume: 0.5 })
+  const [playStart] = useSound(startSfx, { volume: 0.4 })
+
+  // --- MOVIMIENTO & COMIDA ---
+  useEffect(() => {
+    if (!running) return
+    const handle = (e: KeyboardEvent) => {
+      if (!(e.key in DIRS)) return
+      e.preventDefault()
+      setDirection(e.key as any)
+      const { x, y } = pos
+      const nx = x + DIRS[e.key as keyof typeof DIRS].x
+      const ny = y + DIRS[e.key as keyof typeof DIRS].y
+      if (maze[ny]?.[nx] !== 1) {
+        setPos({ x: nx, y: ny })
+        if (maze[ny][nx] === 2) {
+          const newMaze = maze.map(r => [...r])
+          newMaze[ny][nx] = 0
+          setMaze(newMaze)
+          setScore(s => s + 10)
+          playPop()
+        }
+      }
+    }
+    window.addEventListener('keydown', handle)
+    return () => window.removeEventListener('keydown', handle)
+  }, [pos, maze, running])
+
+  // --- ANIMACIÓN DE BOCA ---
+  useEffect(() => {
+    if (!running) return
+    const interval = setInterval(() => setMouthOpen(m => !m), 120)
+    return () => clearInterval(interval)
+  }, [running])
+
+  // --- VICTORIA ---
+  useEffect(() => {
+    if (maze.flat().filter(v => v === 2).length === 0 && running) {
+      setRunning(false)
+      playWin()
+      // Opcional: guardar en ranking con API
+      fetch('/api/pacman/score', {
+        method: 'POST',
+        body: JSON.stringify({ score }),
+        headers: { 'Content-Type': 'application/json' }
+      }).then(() => {
+        // Refresca ranking global automáticamente con swr si lo usas
+      })
+    }
+  }, [maze, running, playWin, score])
+
+  // --- REINICIO ---
+  const restart = () => {
+    setMaze(LABS_MAZE.map(row => [...row]))
+    setPos(START_POS)
+    setScore(0)
+    setDirection('ArrowRight')
+    setRunning(true)
+    playStart()
+  }
+
+  // --- RANKING (opcional) ---
+  const { data: ranking } = useSWR('/api/pacman/ranking', fetcher)
+
+  // --- Foco inicial ---
+  useEffect(() => { boardRef.current?.focus() }, [])
+
+  return (
+    <Loop>
+      <Stage
+        width={maze[0].length * SIZE}
+        height={maze.length * SIZE}
+        style={{
+          background: '#181325',
+          borderRadius: 12,
+          boxShadow: '0 6px 24px #0007, 0 0 0 2px #ffd23b33',
+          position: 'relative',
+        }}
+      >
+        <World>
+          <div
+            ref={boardRef}
+            tabIndex={0}
+            style={{
+              width: maze[0].length * SIZE,
+              height: maze.length * SIZE,
+              outline: 'none',
+              position: 'relative',
+            }}
+            onClick={() => boardRef.current?.focus()}
+          >
+            <MazeBoard maze={maze} pos={pos} mouthOpen={mouthOpen} direction={direction} />
+          </div>
+        </World>
+      </Stage>
+      <div className="flex flex-col items-center mt-3">
         <span className="text-miel font-bold">Puntaje: {score}</span>
         {!running && (
-          <span className="text-green-400 font-bold animate-bounce">¡Victoria!</span>
+          <motion.span
+            className="text-green-400 font-bold animate-bounce"
+            initial={{ scale: 0.5 }}
+            animate={{ scale: 1.2 }}
+            transition={{ type: "spring", stiffness: 200 }}
+          >
+            ¡Victoria!
+          </motion.span>
         )}
+        <button
+          onClick={restart}
+          className="mt-2 px-4 py-1 bg-miel text-[#22223b] font-bold rounded shadow hover:scale-105 transition"
+        >
+          Reiniciar
+        </button>
+        <p className="mt-2 text-zinc-400 text-xs">
+          Usa las flechas para mover a Pac-Man.<br />
+          Come todos los puntos miel para ganar.
+        </p>
+        {/* Ranking Global */}
+        <div className="w-full mt-2">
+          <h4 className="text-sm text-miel mb-1 font-bold">Ranking 🏆</h4>
+          <ul>
+            {ranking?.top?.map((item: any, i: number) => (
+              <li key={i} className="flex items-center py-1">
+                <span className="mr-2 font-bold">{i + 1}.</span>
+                <span className="mr-2">{item.usuario?.nombre || "Anónimo"}</span>
+                <span className="ml-auto font-bold text-miel">{item.puntaje}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-      <button
-        onClick={restart}
-        className="mt-1 px-4 py-1 bg-miel text-[#22223b] font-bold rounded shadow hover:scale-105 transition"
-      >
-        Reiniciar
-      </button>
-      <p className="mt-2 text-zinc-400 text-xs">
-        Usa las flechas para mover a Pac-Man.<br />
-        Come todos los puntos miel para ganar.
-      </p>
-    </div>
+    </Loop>
   )
 }

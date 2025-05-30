@@ -1,92 +1,149 @@
+'use client'
+import { useState, useEffect } from 'react'
 import MinijuegoLoader from './MinijuegoLoader'
 
 export default function Docs() {
+  const [showMinijuego, setShowMinijuego] = useState(false)
+
+  // Bloquea flechas y tabulación cuando está abierto el minijuego
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (!showMinijuego) return
+      // Solo permitimos flechas y tab para el minijuego (no scroll/página)
+      if (
+        ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab', ' '].includes(e.key) ||
+        (e.key.length === 1 && /[wasd]/i.test(e.key))
+      ) {
+        e.stopPropagation()
+      } else {
+        // Bloquea todo excepto escape
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }
+    if (showMinijuego) {
+      document.body.style.overflow = 'hidden' // Bloquea scroll
+      window.addEventListener('keydown', onKeyDown, true)
+    } else {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', onKeyDown, true)
+    }
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', onKeyDown, true)
+    }
+  }, [showMinijuego])
+
+  // Al cambiar de página, oculta el panel (recomendado Next Router para SPA)
+  useEffect(() => {
+    const hidePanel = () => setShowMinijuego(false)
+    window.addEventListener('popstate', hidePanel)
+    return () => window.removeEventListener('popstate', hidePanel)
+  }, [])
+
   return (
-    <div className="mx-auto max-w-4xl p-4 sm:p-8 space-y-8">
-      {/* 1. Panel de minijuegos oculto (easter egg style) */}
-      <section
+    <div className="mx-auto max-w-4xl p-4 sm:p-8 space-y-8 relative">
+      {/* --- Botón secreto --- */}
+      <button
         className="
-          relative
-          w-full
-          h-6
-          my-1
-          select-none
-          group
-          flex items-center
-          opacity-30
-          hover:opacity-100 focus-within:opacity-100
-          transition-opacity
-          bg-transparent
+          fixed z-50
+          bottom-3 right-4
+          w-5 h-5
+          rounded-full
+          bg-zinc-700/20
+          hover:bg-miel hover:scale-110
+          shadow-lg
+          flex items-center justify-center
+          transition-all
           cursor-pointer
-          rounded
+          border border-transparent hover:border-miel
+          p-0 m-0
+          select-none
+          active:scale-95
         "
-        tabIndex={-1}
-        aria-hidden="true"
+        style={{
+          fontSize: '0.6rem',
+          opacity: showMinijuego ? 1 : 0.22,
+          outline: 'none',
+          boxShadow: showMinijuego ? '0 0 10px #ffe06688' : 'none',
+        }}
+        aria-label="Panel secreto"
+        tabIndex={0}
+        onClick={() => setShowMinijuego(!showMinijuego)}
+        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setShowMinijuego(v => !v) }}
       >
-        {/* Invisible trigger para accesibilidad */}
-        <div className="absolute inset-0 z-10" tabIndex={0} />
-        {/* Loader solo se muestra al hover/focus */}
+        {/* Un emoji opcional: 🐝 */}
+        <span className="text-[13px] text-miel select-none pointer-events-none">.</span>
+      </button>
+
+      {/* --- Panel flotante de minijuego --- */}
+      {showMinijuego && (
         <div
           className="
-            w-full
-            absolute left-0 top-0 z-20
-            pointer-events-none
-            group-hover:pointer-events-auto
-            group-focus-within:pointer-events-auto
+            fixed z-40
+            inset-0
+            bg-[#1a1422cc] bg-opacity-80
+            flex items-center justify-center
+            animate-fadeIn
             transition-all
-            duration-300
-            scale-95
-            group-hover:scale-100
-            group-focus-within:scale-100
           "
+          onClick={() => setShowMinijuego(false)}
         >
-          <div className="mx-auto w-full max-w-sm">
+          <div
+            className="
+              bg-[#22223b] border border-miel/40 rounded-xl p-6 shadow-2xl
+              max-w-md w-full mx-4
+              relative
+              animate-pop
+              flex flex-col items-center
+            "
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              className="absolute top-3 right-3 bg-miel text-[#22223b] rounded-full w-6 h-6 flex items-center justify-center font-bold shadow hover:scale-110 transition"
+              title="Cerrar"
+              aria-label="Cerrar"
+              onClick={() => setShowMinijuego(false)}
+            >
+              ×
+            </button>
             <MinijuegoLoader />
           </div>
         </div>
-      </section>
+      )}
 
-      {/* 2. Manual de Usuario */}
+      {/* --- CONTENIDO REAL DE DOCUMENTACIÓN --- */}
+      {/* ... el resto igual que antes ... */}
       <section className="rounded-lg bg-white/70 dark:bg-[#22223b]/80 p-4 shadow">
         <h2 className="text-lg font-bold text-amber-700 mb-1">Manual de Usuario</h2>
         <p className="text-zinc-600 dark:text-zinc-300 text-sm">
           Aquí encontrarás el paso a paso para usar HoneyLabs de manera eficiente.
         </p>
       </section>
-
-      {/* 3. Documentación Técnica */}
       <section className="rounded-lg bg-white/70 dark:bg-[#22223b]/80 p-4 shadow">
         <h2 className="text-lg font-bold text-amber-700 mb-1">Documentación Técnica</h2>
         <p className="text-zinc-600 dark:text-zinc-300 text-sm">
           Referencias de arquitectura, endpoints, y recursos para desarrolladores.
         </p>
       </section>
-
-      {/* 4. Preguntas Frecuentes (FAQ) */}
       <section className="rounded-lg bg-white/70 dark:bg-[#22223b]/80 p-4 shadow">
         <h2 className="text-lg font-bold text-amber-700 mb-1">Preguntas Frecuentes</h2>
         <p className="text-zinc-600 dark:text-zinc-300 text-sm">
           Respuestas a dudas comunes sobre el uso y funcionamiento de la plataforma.
         </p>
       </section>
-
-      {/* 5. Glosario */}
       <section className="rounded-lg bg-white/70 dark:bg-[#22223b]/80 p-4 shadow">
         <h2 className="text-lg font-bold text-amber-700 mb-1">Glosario</h2>
         <p className="text-zinc-600 dark:text-zinc-300 text-sm">
           Definiciones de términos técnicos y logísticos utilizados en HoneyLabs.
         </p>
       </section>
-
-      {/* 6. Guías Rápidas y Tips */}
       <section className="rounded-lg bg-white/70 dark:bg-[#22223b]/80 p-4 shadow">
         <h2 className="text-lg font-bold text-amber-700 mb-1">Guías Rápidas y Tips</h2>
         <p className="text-zinc-600 dark:text-zinc-300 text-sm">
           Consejos y atajos para aprovechar al máximo todas las funciones.
         </p>
       </section>
-
-      {/* 7. Contacto y Soporte */}
       <section className="rounded-lg bg-white/70 dark:bg-[#22223b]/80 p-4 shadow">
         <h2 className="text-lg font-bold text-amber-700 mb-1">Contacto y Soporte</h2>
         <p className="text-zinc-600 dark:text-zinc-300 text-sm">
