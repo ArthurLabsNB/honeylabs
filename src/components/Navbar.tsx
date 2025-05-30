@@ -104,13 +104,9 @@ export default function Navbar() {
         aria-label="Barra superior"
       >
         <div className="flex items-center justify-between w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 py-2 gap-2 min-h-[58px]">
-          {/* Avatar/UserMenu SIEMPRE a la IZQUIERDA */}
-          <div className="flex-shrink-0 flex items-center">
-            <UserMenu usuario={usuario} />
-          </div>
-
+          
           {/* Logo */}
-          <div className="flex-shrink-0 flex items-center ml-2 mr-4">
+          <div className="flex-shrink-0 flex items-center mr-1">
             <Link href="/" className="flex items-center gap-2 focus:outline-none select-none" aria-label="Ir al inicio">
               <Image
                 src="/logo-honeylabs.png"
@@ -125,41 +121,9 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Botón Comenzar Ahora */}
-          <div className="flex-shrink-0">
-            {usuario ? (
-              <Link
-                href="/panel"
-                className="px-4 py-2 rounded-xl font-semibold bg-navglass/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow-md text-base w-full sm:w-auto max-w-xs text-center"
-                style={{ letterSpacing: '0.02em' }}
-                onClick={rippleEffect}
-                tabIndex={0}
-              >
-                Comenzar Ahora!
-              </Link>
-            ) : (
-              <button
-                className="px-4 py-2 rounded-xl font-semibold bg-navglass/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow-md text-base w-full sm:w-auto max-w-xs text-center relative"
-                style={{ letterSpacing: '0.02em' }}
-                onClick={e => { handleComenzar(e); rippleEffect(e); }}
-                tabIndex={0}
-              >
-                Comenzar Ahora!
-                <span className={`
-                  pointer-events-none absolute left-1/2 -top-12 transform -translate-x-1/2 
-                  bg-amber-400 text-[#101014] font-semibold rounded-xl shadow-lg px-4 py-2 
-                  transition-all duration-300 text-sm select-none
-                  ${showTooltip ? 'opacity-100 scale-100 drop-shadow-2xl' : 'opacity-0 scale-95'}
-                `} style={{ zIndex: 200 }}>
-                  Debes iniciar sesión antes
-                </span>
-              </button>
-            )}
-          </div>
-
-          {/* Bienvenida */}
+          {/* Bienvenido */}
           {usuario && (
-            <span className="hidden sm:inline-block text-base font-semibold text-amber-100 ml-3 mr-2 drop-shadow max-w-[150px] truncate">
+            <span className="hidden md:inline-block text-base font-semibold text-amber-100 ml-3 mr-2 drop-shadow max-w-[150px] truncate">
               Bienvenido, <span className="font-bold">{usuario.nombre}</span>
             </span>
           )}
@@ -200,7 +164,39 @@ export default function Navbar() {
             <BookOpen className="w-5 h-5 text-amber-200" />
           </Link>
 
-          {/* Botón de registro solo para desktop */}
+          {/* Botón Comenzar Ahora */}
+          <div className="flex-shrink-0 ml-2">
+            {usuario ? (
+              <Link
+                href="/panel"
+                className="px-4 py-2 rounded-xl font-semibold bg-navglass/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow-md text-base w-full sm:w-auto max-w-xs text-center"
+                style={{ letterSpacing: '0.02em' }}
+                onClick={rippleEffect}
+                tabIndex={0}
+              >
+                Comenzar Ahora!
+              </Link>
+            ) : (
+              <button
+                className="px-4 py-2 rounded-xl font-semibold bg-navglass/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow-md text-base w-full sm:w-auto max-w-xs text-center relative"
+                style={{ letterSpacing: '0.02em' }}
+                onClick={e => { handleComenzar(e); rippleEffect(e); }}
+                tabIndex={0}
+              >
+                Comenzar Ahora!
+                <span className={`
+                  pointer-events-none absolute left-1/2 -top-12 transform -translate-x-1/2 
+                  bg-amber-400 text-[#101014] font-semibold rounded-xl shadow-lg px-4 py-2 
+                  transition-all duration-300 text-sm select-none
+                  ${showTooltip ? 'opacity-100 scale-100 drop-shadow-2xl' : 'opacity-0 scale-95'}
+                `} style={{ zIndex: 200 }}>
+                  Debes iniciar sesión antes
+                </span>
+              </button>
+            )}
+          </div>
+
+          {/* Botón de registrar si no hay sesión */}
           {!usuario && (
             <Link
               href="/registro"
@@ -215,6 +211,11 @@ export default function Navbar() {
               Regístrate
             </Link>
           )}
+
+          {/* Avatar/UserMenu hasta la derecha */}
+          <div className="flex-shrink-0 flex items-center ml-2">
+            <UserMenu usuario={usuario} />
+          </div>
 
           {/* Botón hamburguesa solo móvil/tablet */}
           <button
