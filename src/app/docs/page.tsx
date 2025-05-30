@@ -5,24 +5,32 @@ import MinijuegoLoader from './MinijuegoLoader'
 export default function Docs() {
   const [showMinijuego, setShowMinijuego] = useState(false)
 
-  // Bloquea flechas y tabulación cuando está abierto el minijuego
+  // Solo bloquea flechas, espacio y tabulación cuando NO estás editando un input o textarea
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if (!showMinijuego) return
-      // Solo permitimos flechas y tab para el minijuego (no scroll/página)
+      // No bloquear si el foco está en un input, textarea o contenteditable
+      const active = document.activeElement
+      const isTyping = active &&
+        (active.tagName === 'INPUT' ||
+         active.tagName === 'TEXTAREA' ||
+         (active as HTMLElement).isContentEditable)
+      if (isTyping) return
+
       if (
         ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab', ' '].includes(e.key) ||
         (e.key.length === 1 && /[wasd]/i.test(e.key))
       ) {
+        // Permite solo para minijuego, detiene propagación a la página
         e.stopPropagation()
-      } else {
-        // Bloquea todo excepto escape
+      } else if (e.key !== 'Escape') {
+        // Bloquea todo excepto Escape (que debería cerrar el minijuego)
         e.preventDefault()
         e.stopPropagation()
       }
     }
     if (showMinijuego) {
-      document.body.style.overflow = 'hidden' // Bloquea scroll
+      document.body.style.overflow = 'hidden'
       window.addEventListener('keydown', onKeyDown, true)
     } else {
       document.body.style.overflow = ''
@@ -34,33 +42,33 @@ export default function Docs() {
     }
   }, [showMinijuego])
 
-  // Al cambiar de página, oculta el panel (recomendado Next Router para SPA)
+  // Oculta minijuego al cambiar de página
   useEffect(() => {
     const hidePanel = () => setShowMinijuego(false)
     window.addEventListener('popstate', hidePanel)
     return () => window.removeEventListener('popstate', hidePanel)
   }, [])
 
+  // Cierra con Escape también
+  useEffect(() => {
+    if (!showMinijuego) return
+    function onEsc(e: KeyboardEvent) {
+      if (e.key === 'Escape') setShowMinijuego(false)
+    }
+    window.addEventListener('keydown', onEsc)
+    return () => window.removeEventListener('keydown', onEsc)
+  }, [showMinijuego])
+
   return (
     <div className="mx-auto max-w-4xl p-4 sm:p-8 space-y-8 relative">
       {/* --- Botón secreto --- */}
       <button
-        className="
-          fixed z-50
-          bottom-3 right-4
-          w-5 h-5
-          rounded-full
-          bg-zinc-700/20
-          hover:bg-miel hover:scale-110
-          shadow-lg
-          flex items-center justify-center
-          transition-all
-          cursor-pointer
-          border border-transparent hover:border-miel
-          p-0 m-0
-          select-none
-          active:scale-95
-        "
+        className={`
+          fixed z-50 bottom-3 right-4 w-5 h-5 rounded-full bg-zinc-700/20
+          hover:bg-miel hover:scale-110 shadow-lg flex items-center justify-center
+          transition-all cursor-pointer border border-transparent hover:border-miel
+          p-0 m-0 select-none active:scale-95
+        `}
         style={{
           fontSize: '0.6rem',
           opacity: showMinijuego ? 1 : 0.22,
@@ -69,34 +77,23 @@ export default function Docs() {
         }}
         aria-label="Panel secreto"
         tabIndex={0}
-        onClick={() => setShowMinijuego(!showMinijuego)}
-        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setShowMinijuego(v => !v) }}
+        onClick={() => setShowMinijuego(v => !v)}
+        onKeyDown={e => {
+          if (e.key === 'Enter' || e.key === ' ') setShowMinijuego(v => !v)
+        }}
       >
-        {/* Un emoji opcional: 🐝 */}
-        <span className="text-[13px] text-miel select-none pointer-events-none">.</span>
+        {/* Emoji opcional */}
+        <span className="text-[13px] text-miel select-none pointer-events-none">🐝</span>
       </button>
 
       {/* --- Panel flotante de minijuego --- */}
       {showMinijuego && (
         <div
-          className="
-            fixed z-40
-            inset-0
-            bg-[#1a1422cc] bg-opacity-80
-            flex items-center justify-center
-            animate-fadeIn
-            transition-all
-          "
+          className="fixed z-40 inset-0 bg-[#1a1422cc] bg-opacity-80 flex items-center justify-center animate-fadeIn transition-all"
           onClick={() => setShowMinijuego(false)}
         >
           <div
-            className="
-              bg-[#22223b] border border-miel/40 rounded-xl p-6 shadow-2xl
-              max-w-md w-full mx-4
-              relative
-              animate-pop
-              flex flex-col items-center
-            "
+            className="bg-[#22223b] border border-miel/40 rounded-xl p-6 shadow-2xl max-w-md w-full mx-4 relative animate-pop flex flex-col items-center"
             onClick={e => e.stopPropagation()}
           >
             <button
@@ -113,7 +110,6 @@ export default function Docs() {
       )}
 
       {/* --- CONTENIDO REAL DE DOCUMENTACIÓN --- */}
-      {/* ... el resto igual que antes ... */}
       <section className="rounded-lg bg-white/70 dark:bg-[#22223b]/80 p-4 shadow">
         <h2 className="text-lg font-bold text-amber-700 mb-1">Manual de Usuario</h2>
         <p className="text-zinc-600 dark:text-zinc-300 text-sm">
