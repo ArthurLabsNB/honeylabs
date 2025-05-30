@@ -50,13 +50,13 @@ export default function Footer() {
 
   return (
     <footer
-      className="bg-[var(--color-background)] border-t border-amber-200 dark:border-zinc-700 py-10 text-sm text-[var(--color-foreground)]"
+      className="bg-[var(--color-background)] border-t border-amber-200 dark:border-zinc-700 py-6 text-sm text-[var(--color-foreground)]"
       role="contentinfo"
     >
-      <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-8">
+      <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-8">
         {/* 🔗 Navegación principal */}
         <nav
-          className="flex flex-wrap justify-center md:justify-start gap-6"
+          className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-6"
           aria-label="Navegación de footer"
         >
           <Link href="/" className="hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500">
@@ -94,12 +94,12 @@ export default function Footer() {
             <div
               ref={dropdownRef}
               id="legal-dropdown"
-              className={`absolute z-50 min-w-[210px] max-w-xs w-fit bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-2xl text-left py-2 px-4 animate-fade-scale transition pointer-events-auto
+              className={`absolute z-50 min-w-[200px] max-w-xs w-fit bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-2xl text-left py-2 px-3 animate-fade-scale transition pointer-events-auto
                 ${showLegal ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'}
                 ${dropdownPosition === 'right' ? 'right-0' : 'left-0'}
-                mt-2
+                bottom-full mb-2
               `}
-              style={{ minWidth: 220, maxWidth: 320 }}
+              style={{ minWidth: 190, maxWidth: 290 }}
               tabIndex={-1}
               role="menu"
               aria-label="Políticas legales"
