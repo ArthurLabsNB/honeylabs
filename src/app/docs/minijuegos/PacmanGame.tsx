@@ -1,5 +1,6 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
+// @ts-ignore
 import { Loop, Stage, World } from 'react-game-kit'
 import { motion } from 'framer-motion'
 import useSWR from 'swr'
@@ -37,7 +38,7 @@ const DIRS = {
   ArrowRight: { x:  1, y:  0 },
 }
 
-// ========== PACMAN SPRITE (con animación framer-motion) ==========
+// ========== PACMAN SPRITE ==========
 function PacmanSprite({ x, y, direction, mouthOpen }: { x: number, y: number, direction: string, mouthOpen: boolean }) {
   let rotate = 0
   if (direction === 'ArrowUp') rotate = -90
