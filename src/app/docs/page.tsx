@@ -5,10 +5,11 @@ import MinijuegoLoader from './MinijuegoLoader'
 export default function Docs() {
   const [showMinijuego, setShowMinijuego] = useState(false)
 
-  // Solo bloquea flechas, espacio y tabulación cuando NO estás editando un input o textarea
+  // Permite controles completos en el minijuego, solo bloquea lo necesario
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if (!showMinijuego) return
+
       // No bloquear si el foco está en un input, textarea o contenteditable
       const active = document.activeElement
       const isTyping = active &&
@@ -17,18 +18,14 @@ export default function Docs() {
          (active as HTMLElement).isContentEditable)
       if (isTyping) return
 
-      if (
-        ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab', ' '].includes(e.key) ||
-        (e.key.length === 1 && /[wasd]/i.test(e.key))
-      ) {
-        // Permite solo para minijuego, detiene propagación a la página
-        e.stopPropagation()
-      } else if (e.key !== 'Escape') {
-        // Bloquea todo excepto Escape (que debería cerrar el minijuego)
+      // Solo bloquea Tab para que no cambie de foco, el resto de las teclas funcionan normal
+      if (e.key === 'Tab') {
         e.preventDefault()
         e.stopPropagation()
       }
+      // El resto (letras, números, flechas, espacio, enter, etc) permitidos normalmente
     }
+
     if (showMinijuego) {
       document.body.style.overflow = 'hidden'
       window.addEventListener('keydown', onKeyDown, true)
@@ -61,7 +58,7 @@ export default function Docs() {
 
   return (
     <div className="mx-auto max-w-4xl p-4 sm:p-8 space-y-8 relative">
-      {/* --- Botón secreto --- */}
+      {/* --- Botón secreto para abrir minijuego --- */}
       <button
         className={`
           fixed z-50 bottom-3 right-4 w-5 h-5 rounded-full bg-zinc-700/20
@@ -82,7 +79,7 @@ export default function Docs() {
           if (e.key === 'Enter' || e.key === ' ') setShowMinijuego(v => !v)
         }}
       >
-        {/* Emoji opcional */}
+        {/* Emoji o icono */}
         <span className="text-[13px] text-miel select-none pointer-events-none">🐝</span>
       </button>
 
@@ -109,7 +106,7 @@ export default function Docs() {
         </div>
       )}
 
-      {/* --- CONTENIDO REAL DE DOCUMENTACIÓN --- */}
+      {/* --- SECCIONES DE DOCUMENTACIÓN --- */}
       <section className="rounded-lg bg-white/70 dark:bg-[#22223b]/80 p-4 shadow">
         <h2 className="text-lg font-bold text-amber-700 mb-1">Manual de Usuario</h2>
         <p className="text-zinc-600 dark:text-zinc-300 text-sm">
@@ -119,7 +116,7 @@ export default function Docs() {
       <section className="rounded-lg bg-white/70 dark:bg-[#22223b]/80 p-4 shadow">
         <h2 className="text-lg font-bold text-amber-700 mb-1">Documentación Técnica</h2>
         <p className="text-zinc-600 dark:text-zinc-300 text-sm">
-          Referencias de arquitectura, endpoints, y recursos para desarrolladores.
+          Referencias de arquitectura, endpoints y recursos para desarrolladores.
         </p>
       </section>
       <section className="rounded-lg bg-white/70 dark:bg-[#22223b]/80 p-4 shadow">
