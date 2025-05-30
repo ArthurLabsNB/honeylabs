@@ -1,26 +1,24 @@
-// /src/lib/auth.ts
-
 import { cookies } from 'next/headers'
-// O cualquier lib de tu stack, por ejemplo: import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import prisma from '@lib/prisma'
 
-/**
- * Obtiene el usuario autenticado a partir de la cookie/session.
- * Ejemplo para JWT en cookie 'token'
- */
+const JWT_SECRET = process.env.JWT_SECRET!
+const COOKIE_NAME = 'hl_session' // <--- igual que en el login
+
 export async function getUsuarioFromSession() {
   const cookieStore = cookies()
-  const token = cookieStore.get('token')?.value
+  const token = cookieStore.get(COOKIE_NAME)?.value
 
   if (!token) return null
 
-  // Aquí decodificas el token y obtienes el id:
-  // const { userId } = jwt.verify(token, process.env.JWT_SECRET!)
-  // (Haz el try/catch real según tu lógica)
-
-  // Ejemplo: buscas al usuario por id
-  // return await prisma.usuario.findUnique({ where: { id: userId } })
-
-  // Este es solo ejemplo, tú adapta según tu sistema.
-  return null
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as { id: number }
+    // Busca el usuario real por ID
+    const usuario = await prisma.usuario.findUnique({
+      where: { id: decoded.id },
+    })
+    return usuario
+  } catch {
+    return null
+  }
 }
