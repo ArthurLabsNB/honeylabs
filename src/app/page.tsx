@@ -47,7 +47,7 @@ function useCountUp(to: number, duration: number = 1100) {
 // ================== HERO SECTION ===================
 
 function HeroSection() {
-  const titulo = 'Gestión de materiales eficiente';
+  const titulo = 'Gestión de eficiente';
   const descripcion =
     'Nuestra plataforma permite gestionar, registrar y visualizar materiales en almacenes, adaptándose a cada tipo de usuario. Accede desde cualquier lugar, con dashboards personalizados para un control completo y fácil.';
   const textoTyped = useTypewriter(titulo, 36);
