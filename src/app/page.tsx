@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { ArrowDownCircle, ArrowUpCircle, Users, Warehouse } from 'lucide-react';
 
 // ================== CONFIG ===================
-const GIF_BG = '/fondo-negro-loop.gif';
+const GIF_BG = '/background.mp4';
 
 // ============ HOOKS PROFESIONALES ============
 
