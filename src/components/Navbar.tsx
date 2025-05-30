@@ -124,7 +124,7 @@ export default function Navbar() {
             <Link
               href="/configuracion"
               title={usuario.nombre}
-              className="hidden md:inline-block text-base font-semibold text-amber-100 ml-3 mr-2 drop-shadow max-w-[170px] truncate hover:underline cursor-pointer transition"
+              className="hidden md:inline-block text-base font-semibold text-amber-100 ml-3 mr-2 drop-shadow max-w-[260px] truncate hover:underline cursor-pointer transition"
               style={{ lineHeight: '1.2' }}
             >
               Bienvenido, <span className="font-bold">{usuario.nombre}</span>
