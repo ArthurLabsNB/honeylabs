@@ -7,12 +7,35 @@ import { ChevronDown } from 'lucide-react';
 export default function Footer() {
   const [showLegal, setShowLegal] = useState(false);
   const legalRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [dropdownPosition, setDropdownPosition] = useState<'left' | 'right'>('left');
+
+  // Ajusta posición del menú legal si está muy cerca del borde derecho
+  useEffect(() => {
+    if (showLegal && legalRef.current && dropdownRef.current) {
+      const buttonRect = legalRef.current.getBoundingClientRect();
+      const dropdownRect = dropdownRef.current.getBoundingClientRect();
+      const windowWidth = window.innerWidth;
+      if (buttonRect.left + dropdownRect.width + 24 > windowWidth) {
+        setDropdownPosition('right');
+      } else {
+        setDropdownPosition('left');
+      }
+    }
+  }, [showLegal]);
 
   // Cierra el menú legal con click fuera o Escape
   useEffect(() => {
     if (!showLegal) return;
     function handleClick(e: MouseEvent) {
-      if (legalRef.current && !legalRef.current.contains(e.target as Node)) setShowLegal(false);
+      if (
+        legalRef.current &&
+        !legalRef.current.contains(e.target as Node) &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setShowLegal(false);
+      }
     }
     function handleKey(e: KeyboardEvent) {
       if (e.key === 'Escape') setShowLegal(false);
@@ -69,11 +92,14 @@ export default function Footer() {
               <ChevronDown className="w-4 h-4" />
             </button>
             <div
+              ref={dropdownRef}
               id="legal-dropdown"
-              className={`absolute left-1 top-auto bottom-full mb-2 min-w-[210px] max-w-xs bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-xl z-50 text-left py-2 px-4 animate-fade-scale transition pointer-events-auto
+              className={`absolute z-50 min-w-[210px] max-w-xs w-fit bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-2xl text-left py-2 px-4 animate-fade-scale transition pointer-events-auto
                 ${showLegal ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'}
+                ${dropdownPosition === 'right' ? 'right-0' : 'left-0'}
+                mt-2
               `}
-              style={{ minWidth: 220 }}
+              style={{ minWidth: 220, maxWidth: 320 }}
               tabIndex={-1}
               role="menu"
               aria-label="Políticas legales"
