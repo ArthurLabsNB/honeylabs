@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
+import { prisma } from '@lib/prisma';
 import { getUsuarioFromSession } from '@/lib/auth' // Ajusta el import según tu autenticación
 
 export async function POST(req: NextRequest) {
