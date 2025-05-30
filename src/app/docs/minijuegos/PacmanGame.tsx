@@ -2,8 +2,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
-// === MATRIZ CLÁSICA PACMAN ===
-// 0 = vacío (warp/túnel), 1 = pared, 2 = punto, 3 = power pellet, 4 = puerta/jaula fantasmas
+// =========== MATRIZ CLÁSICA PACMAN (28 x 31) ===========
+// 0 = vacío/túnel, 1 = pared, 2 = punto, 3 = power pellet, 4 = puerta/jaula fantasmas
 const PACMAN_MAZE = [
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
   [1,3,2,2,2,2,2,2,2,2,2,1,1,2,2,1,1,2,2,2,2,2,2,2,2,2,3,1],
@@ -28,10 +28,6 @@ const PACMAN_MAZE = [
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ];
 
-const SIZE = 22 // Un poco más pequeño para que quepa bien en pantalla.
-const MAZE_W = PACMAN_MAZE[0].length
-const MAZE_H = PACMAN_MAZE.length
-
 const DIRS = {
   ArrowUp:    { x:  0, y: -1 },
   ArrowDown:  { x:  0, y:  1 },
@@ -43,6 +39,7 @@ const DIRS = {
   d:          { x:  1, y:  0 }
 }
 const START_POS = { x: 13, y: 17 }
+const SIZE_BASE = 20 // Cambia esto para escalar el tamaño del tablero
 
 type Ghost = { x: number, y: number, dir: keyof typeof DIRS, scatter?: boolean }
 
@@ -73,7 +70,7 @@ function nextGhostMove(ghost: Ghost, maze: number[][], pacman: {x:number,y:numbe
   return { ...ghost, x: nx, y: ny, dir: move, scatter }
 }
 
-function PacmanSprite({ x, y, mouthOpen, direction }: { x: number, y: number, mouthOpen: boolean, direction: string }) {
+function PacmanSprite({ x, y, mouthOpen, direction, size }: { x: number, y: number, mouthOpen: boolean, direction: string, size:number }) {
   let rotate = 0
   if (direction === 'ArrowUp') rotate = -90
   if (direction === 'ArrowDown') rotate = 90
@@ -82,14 +79,14 @@ function PacmanSprite({ x, y, mouthOpen, direction }: { x: number, y: number, mo
     <motion.div
       style={{
         position: 'absolute',
-        left: x * SIZE,
-        top: y * SIZE,
-        width: SIZE, height: SIZE, zIndex: 2, pointerEvents: 'none',
+        left: x * size,
+        top: y * size,
+        width: size, height: size, zIndex: 2, pointerEvents: 'none',
       }}
       animate={{ rotate }}
       transition={{ type: "tween", duration: 0.08 }}
     >
-      <svg width={SIZE} height={SIZE} viewBox="0 0 24 24">
+      <svg width={size} height={size} viewBox="0 0 24 24">
         <motion.path
           d={mouthOpen
             ? "M12,12 L24,6 A12,12 0 1,1 24,18 Z"
@@ -105,19 +102,19 @@ function PacmanSprite({ x, y, mouthOpen, direction }: { x: number, y: number, mo
     </motion.div>
   )
 }
-function GhostSprite({ x, y, color }: { x: number, y: number, color: string }) {
+function GhostSprite({ x, y, color, size }: { x: number, y: number, color: string, size:number }) {
   return (
     <motion.div
       style={{
         position: 'absolute',
-        left: x * SIZE,
-        top: y * SIZE,
-        width: SIZE, height: SIZE, zIndex: 2, pointerEvents: 'none'
+        left: x * size,
+        top: y * size,
+        width: size, height: size, zIndex: 2, pointerEvents: 'none'
       }}
       animate={{ scale: [1, 1.12, 1], y: [0, 2, 0] }}
       transition={{ repeat: Infinity, duration: 0.8 }}
     >
-      <svg width={SIZE} height={SIZE} viewBox="0 0 24 24">
+      <svg width={size} height={size} viewBox="0 0 24 24">
         <path d="M4 20 L4 8 Q12 1, 20 8 L20 20 Q18 18, 16 20 Q14 18, 12 20 Q10 18, 8 20 Q6 18, 4 20 Z" fill={color} />
         <circle cx="8.5" cy="12" r="2" fill="#fff" />
         <circle cx="15.5" cy="12" r="2" fill="#fff" />
@@ -127,80 +124,115 @@ function GhostSprite({ x, y, color }: { x: number, y: number, color: string }) {
     </motion.div>
   )
 }
-function MazeBoard({ maze, pos, ghosts, mouthOpen, direction }: any) {
+function MazeBoard({ maze, pos, ghosts, mouthOpen, direction, size }: any) {
+  // Calcula dimensiones responsivas
   return (
     <div
       style={{
-        width: `${maze[0].length * SIZE}px`,
-        height: `${maze.length * SIZE}px`,
+        width: `${maze[0].length * size}px`,
+        height: `${maze.length * size}px`,
         background: '#181325',
         borderRadius: 18,
         position: 'relative',
-        boxShadow: '0 6px 24px #0007, 0 0 0 2px #ffd23b33',
+        boxShadow: '0 6px 24px #0007, 0 0 0 2px #0098ff66',
         touchAction: 'none',
+        overflow: 'hidden',
+        margin: '0 auto',
       }}
       className="select-none"
     >
+      {/* Render de paredes (bordes azules con fondo) */}
       {maze.map((row: number[], y: number) =>
         row.map((cell: number, x: number) => (
           <div
             key={`${x}-${y}`}
             style={{
               position: 'absolute',
-              left: x * SIZE,
-              top: y * SIZE,
-              width: SIZE,
-              height: SIZE,
+              left: x * size,
+              top: y * size,
+              width: size,
+              height: size,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               zIndex: 1,
+              boxSizing: 'border-box',
             }}
           >
             {cell === 1 && (
-              <div className="bg-[#373353] rounded"
-                style={{ width: SIZE-4, height: SIZE-4, boxShadow: 'inset 0 0 4px #000a' }}
-              />
+              <div style={{
+                width: size-2,
+                height: size-2,
+                background: '#181c2f',
+                border: `2px solid #00b8ff`,
+                borderRadius: 8,
+                boxShadow: 'inset 0 0 6px #0090eecc, 0 0 2px #0090eeaa'
+              }}/>
             )}
             {cell === 2 && (
               <motion.div
-                className="rounded-full bg-miel mx-auto"
-                style={{ width: 8, height: 8, boxShadow: '0 0 6px #ffd23b99' }}
-                animate={{ scale: [1, 1.4, 1] }}
+                style={{
+                  width: size > 16 ? 5 : 4,
+                  height: size > 16 ? 5 : 4,
+                  background: '#ffe066',
+                  borderRadius: '50%',
+                  boxShadow: '0 0 6px #ffe066aa'
+                }}
+                animate={{ scale: [1, 1.3, 1] }}
                 transition={{ duration: 0.7, repeat: Infinity }}
               />
             )}
             {cell === 3 && (
               <motion.div
-                className="rounded-full bg-white mx-auto"
-                style={{ width: 15, height: 15, boxShadow: '0 0 8px #fff4' }}
+                style={{
+                  width: size > 16 ? 12 : 8,
+                  height: size > 16 ? 12 : 8,
+                  background: '#fff',
+                  borderRadius: '50%',
+                  boxShadow: '0 0 12px #ffe066dd'
+                }}
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 0.7, repeat: Infinity }}
               />
             )}
             {cell === 4 && (
-              <div className="bg-blue-400 rounded"
-                style={{
-                  width: SIZE-10,
-                  height: 6,
-                  marginTop: SIZE/2-3,
-                  boxShadow: '0 0 8px #21d1ff77',
-                }}
-              />
+              <div style={{
+                width: size-8,
+                height: 5,
+                marginTop: size/2-2,
+                background: '#2bdcff',
+                borderRadius: 2,
+                boxShadow: '0 0 8px #2bdcff77',
+              }}/>
             )}
           </div>
         ))
       )}
-      <PacmanSprite x={pos.x} y={pos.y} mouthOpen={mouthOpen} direction={direction} />
+      <PacmanSprite x={pos.x} y={pos.y} mouthOpen={mouthOpen} direction={direction} size={size} />
       {ghosts.map((g: Ghost, i: number) => (
-        <GhostSprite key={i} x={g.x} y={g.y} color={["#e94f4f", "#44c8ff", "#fcbf49", "#9d4edd"][i % 4]} />
+        <GhostSprite key={i} x={g.x} y={g.y} color={["#e94f4f", "#44c8ff", "#fcbf49", "#c08cff"][i % 4]} size={size} />
       ))}
     </div>
   )
 }
 
-// PRINCIPAL
+// ========== PRINCIPAL ==========
 export default function PacmanGame() {
+  // Escalado responsivo (mobile/tablet)
+  const [size, setSize] = useState(SIZE_BASE)
+  useEffect(() => {
+    function calcSize() {
+      const ww = window.innerWidth
+      // Resta margen para mobile y mantén el juego lo más grande posible pero visible
+      let s = Math.floor(Math.min(ww*0.96/(PACMAN_MAZE[0].length), window.innerHeight*0.72/(PACMAN_MAZE.length)))
+      s = Math.max(14, Math.min(s, 36))
+      setSize(s)
+    }
+    calcSize()
+    window.addEventListener('resize', calcSize)
+    return () => window.removeEventListener('resize', calcSize)
+  }, [])
+
   const [maze, setMaze] = useState(PACMAN_MAZE.map(row => [...row]))
   const [pos, setPos] = useState({ ...START_POS })
   const [score, setScore] = useState(0)
@@ -208,14 +240,14 @@ export default function PacmanGame() {
   const [mouthOpen, setMouthOpen] = useState(true)
   const [direction, setDirection] = useState<keyof typeof DIRS>('ArrowRight')
   const [ghosts, setGhosts] = useState<Ghost[]>([
-    { x: 13, y: 9, dir: randomDir() }, // cerca de la jaula
+    { x: 13, y: 9, dir: randomDir() },
     { x: 14, y: 9, dir: randomDir() }
   ])
   const [gameOver, setGameOver] = useState(false)
   const [touchStart, setTouchStart] = useState<{x:number,y:number}|null>(null)
   const boardRef = useRef<HTMLDivElement>(null)
 
-  // MOVIMIENTO PACMAN (warp en filas con 0)
+  // MOVIMIENTO PACMAN
   useEffect(() => {
     if (!running) return
     const handle = (e: KeyboardEvent) => {
@@ -225,9 +257,9 @@ export default function PacmanGame() {
       let nx = pos.x + DIRS[k as keyof typeof DIRS].x
       let ny = pos.y + DIRS[k as keyof typeof DIRS].y
 
-      // Warp (túneles): si es fila 8 y sales por el 0 o 27, apareces en el opuesto
-      if (ny === 8 && nx < 0) nx = MAZE_W - 1
-      if (ny === 8 && nx >= MAZE_W) nx = 0
+      // Warp/túneles laterales
+      if (ny === 8 && nx < 0) nx = PACMAN_MAZE[0].length - 1
+      if (ny === 8 && nx >= PACMAN_MAZE[0].length) nx = 0
 
       if (maze[ny]?.[nx] !== 1 && maze[ny]?.[nx] !== undefined) {
         setPos({ x: nx, y: ny })
@@ -245,7 +277,7 @@ export default function PacmanGame() {
     return () => window.removeEventListener('keydown', handle)
   }, [pos, maze, running])
 
-  // TOUCH (mobile mejorado, soporte warp)
+  // MOBILE: Swipes
   useEffect(() => {
     const el = boardRef.current
     if (!el) return
@@ -258,15 +290,15 @@ export default function PacmanGame() {
       const dx = e.changedTouches[0].clientX - touchStart.x
       const dy = e.changedTouches[0].clientY - touchStart.y
       setTouchStart(null)
-      if (Math.abs(dx) < 14 && Math.abs(dy) < 14) return
+      if (Math.abs(dx) < 12 && Math.abs(dy) < 12) return
       let move: keyof typeof DIRS | null = null
       if (Math.abs(dx) > Math.abs(dy)) move = dx > 0 ? 'ArrowRight' : 'ArrowLeft'
       else move = dy > 0 ? 'ArrowDown' : 'ArrowUp'
       let nx = pos.x + (move ? DIRS[move].x : 0)
       let ny = pos.y + (move ? DIRS[move].y : 0)
-      // Warp (túneles)
-      if (ny === 8 && nx < 0) nx = MAZE_W - 1
-      if (ny === 8 && nx >= MAZE_W) nx = 0
+      // Warp
+      if (ny === 8 && nx < 0) nx = PACMAN_MAZE[0].length - 1
+      if (ny === 8 && nx >= PACMAN_MAZE[0].length) nx = 0
 
       if (move && maze[ny]?.[nx] !== 1 && maze[ny]?.[nx] !== undefined) {
         setPos({ x: nx, y: ny })
@@ -346,18 +378,19 @@ export default function PacmanGame() {
         tabIndex={0}
         style={{
           outline: 'none',
-          width: `${PACMAN_MAZE[0].length * SIZE}px`,
-          height: `${PACMAN_MAZE.length * SIZE}px`,
-          background: '#161313',
+          width: `${PACMAN_MAZE[0].length * size}px`,
+          height: `${PACMAN_MAZE.length * size}px`,
+          background: '#111117',
           borderRadius: 18,
           position: 'relative',
-          boxShadow: '0 6px 24px #0007, 0 0 0 2px #ffd23b33',
+          boxShadow: '0 6px 24px #0007, 0 0 0 2px #0098ff66',
           touchAction: 'none',
+          margin: '0 auto'
         }}
         className="mb-2 grid"
         onClick={() => boardRef.current?.focus()}
       >
-        <MazeBoard maze={maze} pos={pos} ghosts={ghosts} mouthOpen={mouthOpen} direction={direction} />
+        <MazeBoard maze={maze} pos={pos} ghosts={ghosts} mouthOpen={mouthOpen} direction={direction} size={size} />
       </div>
       <div className="flex gap-6 items-center mb-2">
         <span className="text-miel font-bold">Puntaje: {score}</span>
@@ -374,9 +407,9 @@ export default function PacmanGame() {
       >
         Reiniciar
       </button>
-      <p className="mt-2 text-zinc-400 text-xs">
+      <p className="mt-2 text-zinc-400 text-xs text-center">
         Usa flechas o WASD para mover a Pac-Man.<br />
-        Es compatible con móvil (desliza para mover).<br />
+        Compatible con móvil (desliza para mover).<br />
         ¡Evita a los fantasmas y come todos los puntos!
       </p>
     </div>
