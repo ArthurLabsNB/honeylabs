@@ -1,8 +1,7 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
 import { Loop, Stage, World } from 'react-game-kit'
-import { motion, AnimatePresence } from 'framer-motion'
-import useSound from 'use-sound'
+import { motion } from 'framer-motion'
 import useSWR from 'swr'
 import create from 'zustand'
 
@@ -37,11 +36,6 @@ const DIRS = {
   ArrowLeft:  { x: -1, y:  0 },
   ArrowRight: { x:  1, y:  0 },
 }
-
-// ========== SONIDOS ==========
-import popSfx from './sounds/pop.mp3'    // crea una carpeta y pon sonidos arcade mp3 aquí
-import winSfx from './sounds/win.mp3'
-import startSfx from './sounds/start.mp3'
 
 // ========== PACMAN SPRITE (con animación framer-motion) ==========
 function PacmanSprite({ x, y, direction, mouthOpen }: { x: number, y: number, direction: string, mouthOpen: boolean }) {
@@ -139,12 +133,8 @@ export default function PacmanGame() {
   const [running, setRunning] = useState(true)
   const [mouthOpen, setMouthOpen] = useState(true)
   const [direction, setDirection] = useState<'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight'>('ArrowRight')
+  const [submitError, setSubmitError] = useState('')
   const boardRef = useRef<HTMLDivElement>(null)
-
-  // --- SONIDOS ---
-  const [playPop] = useSound(popSfx, { volume: 0.5 })
-  const [playWin] = useSound(winSfx, { volume: 0.5 })
-  const [playStart] = useSound(startSfx, { volume: 0.4 })
 
   // --- MOVIMIENTO & COMIDA ---
   useEffect(() => {
@@ -163,7 +153,6 @@ export default function PacmanGame() {
           newMaze[ny][nx] = 0
           setMaze(newMaze)
           setScore(s => s + 10)
-          playPop()
         }
       }
     }
@@ -178,21 +167,27 @@ export default function PacmanGame() {
     return () => clearInterval(interval)
   }, [running])
 
-  // --- VICTORIA ---
+  // --- VICTORIA Y RANKING ---
   useEffect(() => {
     if (maze.flat().filter(v => v === 2).length === 0 && running) {
       setRunning(false)
-      playWin()
-      // Opcional: guardar en ranking con API
-      fetch('/api/pacman/score', {
-        method: 'POST',
-        body: JSON.stringify({ score }),
-        headers: { 'Content-Type': 'application/json' }
-      }).then(() => {
-        // Refresca ranking global automáticamente con swr si lo usas
-      })
+      // Guardar en ranking solo si hay score > 0 y endpoint disponible
+      if (score > 0) {
+        fetch('/api/pacman/score', {
+          method: 'POST',
+          body: JSON.stringify({ score }),
+          headers: { 'Content-Type': 'application/json' }
+        })
+        .then(async res => {
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}))
+            setSubmitError(data?.error || 'Error al guardar tu puntaje.')
+          }
+        })
+        .catch(() => setSubmitError('No se pudo conectar al servidor de ranking.'))
+      }
     }
-  }, [maze, running, playWin, score])
+  }, [maze, running, score])
 
   // --- REINICIO ---
   const restart = () => {
@@ -201,11 +196,11 @@ export default function PacmanGame() {
     setScore(0)
     setDirection('ArrowRight')
     setRunning(true)
-    playStart()
+    setSubmitError('')
   }
 
   // --- RANKING (opcional) ---
-  const { data: ranking } = useSWR('/api/pacman/ranking', fetcher)
+  const { data: ranking, error: rankingError } = useSWR('/api/pacman/ranking', fetcher)
 
   // --- Foco inicial ---
   useEffect(() => { boardRef.current?.focus() }, [])
@@ -263,15 +258,23 @@ export default function PacmanGame() {
         {/* Ranking Global */}
         <div className="w-full mt-2">
           <h4 className="text-sm text-miel mb-1 font-bold">Ranking 🏆</h4>
+          {rankingError && (
+            <span className="text-red-500 text-xs">Error al cargar ranking.</span>
+          )}
           <ul>
-            {ranking?.top?.map((item: any, i: number) => (
+            {ranking?.top?.length ? ranking.top.map((item: any, i: number) => (
               <li key={i} className="flex items-center py-1">
                 <span className="mr-2 font-bold">{i + 1}.</span>
                 <span className="mr-2">{item.usuario?.nombre || "Anónimo"}</span>
                 <span className="ml-auto font-bold text-miel">{item.puntaje}</span>
               </li>
-            ))}
+            )) : !rankingError && (
+              <li className="text-xs text-zinc-400">Cargando...</li>
+            )}
           </ul>
+          {submitError && (
+            <div className="text-xs text-red-500 mt-2">{submitError}</div>
+          )}
         </div>
       </div>
     </Loop>
