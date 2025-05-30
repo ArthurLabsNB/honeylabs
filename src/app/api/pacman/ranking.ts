@@ -1,5 +1,8 @@
+// src/app/api/pacman/ranking.ts
+
 import { NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
+// Usa import relativo, no alias:
+import prisma from '../../../lib/prisma'
 
 export async function GET() {
   // Top 10 por puntaje más alto
