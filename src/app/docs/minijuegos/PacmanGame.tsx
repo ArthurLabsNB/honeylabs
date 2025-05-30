@@ -2,21 +2,36 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
-// LABERINTO MEJORADO
-const LABS_MAZE = [
-  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  [1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,1],
-  [1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,1],
-  [1,2,2,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,2,1],
-  [1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1],
-  [1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,1],
-  [1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,1],
-  [1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,1],
-  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-]
-const SIZE = 32
-const MAZE_W = LABS_MAZE[0].length
-const MAZE_H = LABS_MAZE.length
+// === MATRIZ CLÁSICA PACMAN ===
+// 0 = vacío (warp/túnel), 1 = pared, 2 = punto, 3 = power pellet, 4 = puerta/jaula fantasmas
+const PACMAN_MAZE = [
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+  [1,3,2,2,2,2,2,2,2,2,2,1,1,2,2,1,1,2,2,2,2,2,2,2,2,2,3,1],
+  [1,2,1,1,1,1,2,1,1,1,2,1,1,2,2,1,1,2,1,1,1,1,2,1,1,1,2,1],
+  [1,2,1,1,1,1,2,1,1,1,2,1,1,2,2,1,1,2,1,1,1,1,2,1,1,1,2,1],
+  [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+  [1,2,1,1,1,1,2,1,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,2,1,1],
+  [1,2,2,2,2,2,2,1,2,2,2,1,1,2,2,1,1,2,2,2,2,1,2,2,2,2,2,1],
+  [1,1,1,1,1,1,2,1,1,1,2,1,1,2,2,1,1,2,1,1,1,1,2,1,1,1,1,1],
+  [0,0,0,0,0,1,2,1,1,1,2,1,1,2,2,1,1,2,1,1,1,1,2,1,0,0,0,0],
+  [1,1,1,1,0,1,2,2,2,2,2,1,1,2,2,1,1,2,2,2,2,1,2,1,1,1,1,1],
+  [1,1,1,1,0,1,2,1,1,1,2,1,1,4,4,1,1,2,1,1,1,1,2,1,1,1,1,1],
+  [1,1,1,1,0,1,2,1,1,1,2,1,1,4,4,1,1,2,1,1,1,1,2,1,1,1,1,1],
+  [1,1,1,1,0,1,2,1,1,1,2,1,1,1,1,1,1,2,1,1,1,1,2,1,1,1,1,1],
+  [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+  [1,2,1,1,1,1,2,1,1,1,2,1,1,2,2,1,1,2,1,1,1,1,2,1,1,1,2,1],
+  [1,2,2,2,2,2,2,1,2,2,2,1,1,2,2,1,1,2,2,2,2,1,2,2,2,2,2,1],
+  [1,1,1,1,1,1,2,1,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1],
+  [1,1,1,1,1,1,2,1,2,2,2,1,1,2,2,1,1,2,2,2,2,1,1,1,1,1,1,1],
+  [1,1,1,1,1,1,2,1,1,1,2,1,1,2,2,1,1,2,1,1,1,1,1,1,1,1,1,1],
+  [1,3,2,2,2,2,2,2,2,2,2,1,1,2,2,1,1,2,2,2,2,2,2,2,2,2,3,1],
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+];
+
+const SIZE = 22 // Un poco más pequeño para que quepa bien en pantalla.
+const MAZE_W = PACMAN_MAZE[0].length
+const MAZE_H = PACMAN_MAZE.length
+
 const DIRS = {
   ArrowUp:    { x:  0, y: -1 },
   ArrowDown:  { x:  0, y:  1 },
@@ -27,7 +42,7 @@ const DIRS = {
   a:          { x: -1, y:  0 },
   d:          { x:  1, y:  0 }
 }
-const START_POS = { x: 1, y: 1 }
+const START_POS = { x: 13, y: 17 }
 
 type Ghost = { x: number, y: number, dir: keyof typeof DIRS, scatter?: boolean }
 
@@ -37,16 +52,13 @@ function randomDir() {
 }
 
 function nextGhostMove(ghost: Ghost, maze: number[][], pacman: {x:number,y:number}): Ghost {
-  // IA: a veces persigue, a veces huye (scatter)
   let scatter = ghost.scatter || false
-  // Cambia modo cada cierto tiempo (simula patrón Pacman)
   if (Math.random() < 0.03) scatter = !scatter
   const choices: [keyof typeof DIRS, number][] = []
   for (const key of ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'] as const) {
     const nx = ghost.x + DIRS[key].x
     const ny = ghost.y + DIRS[key].y
-    if (maze[ny]?.[nx] !== 1) {
-      // distancia a Pacman o distancia inversa si scatter
+    if (maze[ny]?.[nx] !== 1 && maze[ny]?.[nx] !== undefined) {
       let dist = Math.abs(nx - pacman.x) + Math.abs(ny - pacman.y)
       if (scatter) dist = 999 - dist
       choices.push([key, dist])
@@ -61,7 +73,6 @@ function nextGhostMove(ghost: Ghost, maze: number[][], pacman: {x:number,y:numbe
   return { ...ghost, x: nx, y: ny, dir: move, scatter }
 }
 
-// Sprite y animación
 function PacmanSprite({ x, y, mouthOpen, direction }: { x: number, y: number, mouthOpen: boolean, direction: string }) {
   let rotate = 0
   if (direction === 'ArrowUp') rotate = -90
@@ -154,9 +165,27 @@ function MazeBoard({ maze, pos, ghosts, mouthOpen, direction }: any) {
             {cell === 2 && (
               <motion.div
                 className="rounded-full bg-miel mx-auto"
-                style={{ width: 10, height: 10, boxShadow: '0 0 6px #ffd23b99' }}
+                style={{ width: 8, height: 8, boxShadow: '0 0 6px #ffd23b99' }}
                 animate={{ scale: [1, 1.4, 1] }}
                 transition={{ duration: 0.7, repeat: Infinity }}
+              />
+            )}
+            {cell === 3 && (
+              <motion.div
+                className="rounded-full bg-white mx-auto"
+                style={{ width: 15, height: 15, boxShadow: '0 0 8px #fff4' }}
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 0.7, repeat: Infinity }}
+              />
+            )}
+            {cell === 4 && (
+              <div className="bg-blue-400 rounded"
+                style={{
+                  width: SIZE-10,
+                  height: 6,
+                  marginTop: SIZE/2-3,
+                  boxShadow: '0 0 8px #21d1ff77',
+                }}
               />
             )}
           </div>
@@ -172,21 +201,21 @@ function MazeBoard({ maze, pos, ghosts, mouthOpen, direction }: any) {
 
 // PRINCIPAL
 export default function PacmanGame() {
-  const [maze, setMaze] = useState(LABS_MAZE.map(row => [...row]))
+  const [maze, setMaze] = useState(PACMAN_MAZE.map(row => [...row]))
   const [pos, setPos] = useState({ ...START_POS })
   const [score, setScore] = useState(0)
   const [running, setRunning] = useState(true)
   const [mouthOpen, setMouthOpen] = useState(true)
   const [direction, setDirection] = useState<keyof typeof DIRS>('ArrowRight')
   const [ghosts, setGhosts] = useState<Ghost[]>([
-    { x: 18, y: 1, dir: randomDir() },
-    { x: 1, y: 7, dir: randomDir() }
+    { x: 13, y: 9, dir: randomDir() }, // cerca de la jaula
+    { x: 14, y: 9, dir: randomDir() }
   ])
   const [gameOver, setGameOver] = useState(false)
   const [touchStart, setTouchStart] = useState<{x:number,y:number}|null>(null)
   const boardRef = useRef<HTMLDivElement>(null)
 
-  // MOVIMIENTO PACMAN (mejorado: warp)
+  // MOVIMIENTO PACMAN (warp en filas con 0)
   useEffect(() => {
     if (!running) return
     const handle = (e: KeyboardEvent) => {
@@ -196,18 +225,19 @@ export default function PacmanGame() {
       let nx = pos.x + DIRS[k as keyof typeof DIRS].x
       let ny = pos.y + DIRS[k as keyof typeof DIRS].y
 
-      // Warp (salida lateral)
-      if (nx < 0) nx = MAZE_W - 2
-      if (nx >= MAZE_W) nx = 1
+      // Warp (túneles): si es fila 8 y sales por el 0 o 27, apareces en el opuesto
+      if (ny === 8 && nx < 0) nx = MAZE_W - 1
+      if (ny === 8 && nx >= MAZE_W) nx = 0
 
-      if (maze[ny]?.[nx] !== 1) {
+      if (maze[ny]?.[nx] !== 1 && maze[ny]?.[nx] !== undefined) {
         setPos({ x: nx, y: ny })
         setDirection(k as keyof typeof DIRS)
-        if (maze[ny][nx] === 2) {
+        // Comer punto
+        if (maze[ny][nx] === 2 || maze[ny][nx] === 3) {
           const newMaze = maze.map(r => [...r])
           newMaze[ny][nx] = 0
           setMaze(newMaze)
-          setScore(s => s + 10)
+          setScore(s => s + (maze[ny][nx] === 3 ? 50 : 10))
         }
       }
     }
@@ -232,21 +262,21 @@ export default function PacmanGame() {
       let move: keyof typeof DIRS | null = null
       if (Math.abs(dx) > Math.abs(dy)) move = dx > 0 ? 'ArrowRight' : 'ArrowLeft'
       else move = dy > 0 ? 'ArrowDown' : 'ArrowUp'
-
       let nx = pos.x + (move ? DIRS[move].x : 0)
       let ny = pos.y + (move ? DIRS[move].y : 0)
-      // Warp (salida lateral)
-      if (nx < 0) nx = MAZE_W - 2
-      if (nx >= MAZE_W) nx = 1
+      // Warp (túneles)
+      if (ny === 8 && nx < 0) nx = MAZE_W - 1
+      if (ny === 8 && nx >= MAZE_W) nx = 0
 
-      if (move && maze[ny]?.[nx] !== 1) {
+      if (move && maze[ny]?.[nx] !== 1 && maze[ny]?.[nx] !== undefined) {
         setPos({ x: nx, y: ny })
         setDirection(move)
-        if (maze[ny][nx] === 2) {
+        // Comer punto
+        if (maze[ny][nx] === 2 || maze[ny][nx] === 3) {
           const newMaze = maze.map(r => [...r])
           newMaze[ny][nx] = 0
           setMaze(newMaze)
-          setScore(s => s + 10)
+          setScore(s => s + (maze[ny][nx] === 3 ? 50 : 10))
         }
       }
     }
@@ -286,21 +316,21 @@ export default function PacmanGame() {
       }
     }
     // Victoria
-    if (maze.flat().every(c => c !== 2)) {
+    if (maze.flat().every(c => c !== 2 && c !== 3)) {
       setRunning(false)
     }
   }, [ghosts, pos, maze, running])
 
   // REINICIO
   const restart = () => {
-    setMaze(LABS_MAZE.map(row => [...row]))
+    setMaze(PACMAN_MAZE.map(row => [...row]))
     setPos({ ...START_POS })
     setScore(0)
     setDirection('ArrowRight')
     setRunning(true)
     setGhosts([
-      { x: 18, y: 1, dir: randomDir() },
-      { x: 1, y: 7, dir: randomDir() }
+      { x: 13, y: 9, dir: randomDir() },
+      { x: 14, y: 9, dir: randomDir() }
     ])
     setGameOver(false)
   }
@@ -316,8 +346,8 @@ export default function PacmanGame() {
         tabIndex={0}
         style={{
           outline: 'none',
-          width: `${LABS_MAZE[0].length * SIZE}px`,
-          height: `${LABS_MAZE.length * SIZE}px`,
+          width: `${PACMAN_MAZE[0].length * SIZE}px`,
+          height: `${PACMAN_MAZE.length * SIZE}px`,
           background: '#161313',
           borderRadius: 18,
           position: 'relative',
