@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Loop, Stage, World } from 'react-game-kit'
 import { motion } from 'framer-motion'
 import useSWR from 'swr'
-import create from 'zustand'
+import { create } from 'zustand'
 
 // ========== RANKING GLOBAL (con zustand + swr) ==========
 const fetcher = (url: string) => fetch(url).then(r => r.json())
