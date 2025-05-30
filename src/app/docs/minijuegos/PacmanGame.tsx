@@ -1,14 +1,8 @@
 'use client'
-import { useState, useRef, useEffect } from 'react'
-// @ts-ignore
-import { Loop, Stage, World } from 'react-game-kit'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
-import useSWR from 'swr'
 
-// ========== RANKING GLOBAL (solo SWR) ==========
-const fetcher = (url: string) => fetch(url).then(r => r.json())
-
-// ========== MATRIZ DEL LABERINTO ==========
+// MATRIZ DEL LABERINTO
 const LABS_MAZE = [
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
   [1,2,0,0,1,1,2,1,2,1,2,0,1,1,2,0,1,2,0,1],
@@ -20,21 +14,52 @@ const LABS_MAZE = [
   [1,0,0,0,1,1,2,1,2,1,2,0,1,1,2,0,1,2,0,1],
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ]
-const SIZE = 24
+const SIZE = 32
 
-// ========== POSICIÓN INICIAL ==========
-const START_POS = { x: 1, y: 1 }
-
-// ========== DIRECCIONES ==========
 const DIRS = {
   ArrowUp:    { x:  0, y: -1 },
   ArrowDown:  { x:  0, y:  1 },
   ArrowLeft:  { x: -1, y:  0 },
   ArrowRight: { x:  1, y:  0 },
+  w:          { x:  0, y: -1 },
+  s:          { x:  0, y:  1 },
+  a:          { x: -1, y:  0 },
+  d:          { x:  1, y:  0 }
 }
 
-// ========== PACMAN SPRITE ==========
-function PacmanSprite({ x, y, direction, mouthOpen }: { x: number, y: number, direction: string, mouthOpen: boolean }) {
+const START_POS = { x: 1, y: 1 }
+
+type Ghost = { x: number, y: number, dir: keyof typeof DIRS }
+
+function randomDir() {
+  const keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
+  return keys[Math.floor(Math.random() * keys.length)] as keyof typeof DIRS
+}
+
+function nextGhostMove(ghost: Ghost, maze: number[][], pacman: {x:number,y:number}): Ghost {
+  // Simple IA: mueve hacia Pacman si puede (o random si bloqueado)
+  const choices: [keyof typeof DIRS, number][] = []
+  for (const key of ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'] as const) {
+    const nx = ghost.x + DIRS[key].x
+    const ny = ghost.y + DIRS[key].y
+    if (maze[ny]?.[nx] !== 1) {
+      // distancia a Pacman si mueve ahí
+      const dist = Math.abs(nx - pacman.x) + Math.abs(ny - pacman.y)
+      choices.push([key, dist])
+    }
+  }
+  if (!choices.length) return ghost
+  choices.sort((a, b) => a[1] - b[1])
+  // 60% ir hacia Pacman, 40% random de las opciones
+  const goBest = Math.random() < 0.6
+  const move = goBest ? choices[0][0] : choices[Math.floor(Math.random()*choices.length)][0]
+  const nx = ghost.x + DIRS[move].x
+  const ny = ghost.y + DIRS[move].y
+  return { ...ghost, x: nx, y: ny, dir: move }
+}
+
+// SPRITES
+function PacmanSprite({ x, y, mouthOpen, direction }: { x: number, y: number, mouthOpen: boolean, direction: string }) {
   let rotate = 0
   if (direction === 'ArrowUp') rotate = -90
   if (direction === 'ArrowDown') rotate = 90
@@ -45,42 +70,62 @@ function PacmanSprite({ x, y, direction, mouthOpen }: { x: number, y: number, di
         position: 'absolute',
         left: x * SIZE,
         top: y * SIZE,
-        width: SIZE,
-        height: SIZE,
-        zIndex: 2,
-        pointerEvents: 'none',
+        width: SIZE, height: SIZE, zIndex: 2, pointerEvents: 'none',
       }}
       animate={{ rotate }}
       transition={{ type: "tween", duration: 0.08 }}
     >
       <svg width={SIZE} height={SIZE} viewBox="0 0 24 24">
         <motion.path
-          d={
-            mouthOpen
-              ? "M12,12 L24,6 A12,12 0 1,1 24,18 Z"
-              : "M12,12 L24,10 A12,12 0 1,1 24,14 Z"
+          d={mouthOpen
+            ? "M12,12 L24,6 A12,12 0 1,1 24,18 Z"
+            : "M12,12 L24,10 A12,12 0 1,1 24,14 Z"
           }
           fill="#ffe066"
           stroke="#ffd23b"
-          animate={{ rotate: [0, 5, 0] }}
-          transition={{ repeat: Infinity, duration: 0.28 }}
+          animate={{ rotate: [0, 7, 0] }}
+          transition={{ repeat: Infinity, duration: 0.22 }}
         />
-        <circle cx="16" cy="9" r="1.2" fill="#22223b" />
+        <circle cx="16" cy="9" r="1.6" fill="#22223b" />
       </svg>
     </motion.div>
   )
 }
 
-function MazeBoard({ maze, pos, mouthOpen, direction }: any) {
+function GhostSprite({ x, y, color }: { x: number, y: number, color: string }) {
+  return (
+    <motion.div
+      style={{
+        position: 'absolute',
+        left: x * SIZE,
+        top: y * SIZE,
+        width: SIZE, height: SIZE, zIndex: 2, pointerEvents: 'none'
+      }}
+      animate={{ scale: [1, 1.12, 1], y: [0, 2, 0] }}
+      transition={{ repeat: Infinity, duration: 0.8 }}
+    >
+      <svg width={SIZE} height={SIZE} viewBox="0 0 24 24">
+        <path d="M4 20 L4 8 Q12 1, 20 8 L20 20 Q18 18, 16 20 Q14 18, 12 20 Q10 18, 8 20 Q6 18, 4 20 Z" fill={color} />
+        <circle cx="8.5" cy="12" r="2" fill="#fff" />
+        <circle cx="15.5" cy="12" r="2" fill="#fff" />
+        <circle cx="9" cy="12" r="1" fill="#222" />
+        <circle cx="16" cy="12" r="1" fill="#222" />
+      </svg>
+    </motion.div>
+  )
+}
+
+function MazeBoard({ maze, pos, ghosts, mouthOpen, direction }: any) {
   return (
     <div
       style={{
         width: `${maze[0].length * SIZE}px`,
         height: `${maze.length * SIZE}px`,
         background: '#181325',
-        borderRadius: 12,
+        borderRadius: 18,
         position: 'relative',
         boxShadow: '0 6px 24px #0007, 0 0 0 2px #ffd23b33',
+        touchAction: 'none',
       }}
       className="select-none"
     >
@@ -108,42 +153,50 @@ function MazeBoard({ maze, pos, mouthOpen, direction }: any) {
             {cell === 2 && (
               <motion.div
                 className="rounded-full bg-miel mx-auto"
-                style={{ width: 8, height: 8, boxShadow: '0 0 4px #ffd23b99' }}
+                style={{ width: 10, height: 10, boxShadow: '0 0 6px #ffd23b99' }}
                 animate={{ scale: [1, 1.4, 1] }}
-                transition={{ duration: 0.8, repeat: Infinity }}
+                transition={{ duration: 0.7, repeat: Infinity }}
               />
             )}
           </div>
         ))
       )}
       <PacmanSprite x={pos.x} y={pos.y} mouthOpen={mouthOpen} direction={direction} />
+      {ghosts.map((g: Ghost, i: number) => (
+        <GhostSprite key={i} x={g.x} y={g.y} color={["#e94f4f", "#44c8ff", "#fcbf49", "#9d4edd"][i % 4]} />
+      ))}
     </div>
   )
 }
 
-// ========== COMPONENTE PRINCIPAL ==========
+// PRINCIPAL
 export default function PacmanGame() {
   const [maze, setMaze] = useState(LABS_MAZE.map(row => [...row]))
-  const [pos, setPos] = useState(START_POS)
+  const [pos, setPos] = useState({ ...START_POS })
   const [score, setScore] = useState(0)
   const [running, setRunning] = useState(true)
   const [mouthOpen, setMouthOpen] = useState(true)
-  const [direction, setDirection] = useState<'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight'>('ArrowRight')
-  const [submitError, setSubmitError] = useState('')
+  const [direction, setDirection] = useState<keyof typeof DIRS>('ArrowRight')
+  const [ghosts, setGhosts] = useState<Ghost[]>([
+    { x: 18, y: 1, dir: randomDir() },
+    { x: 1, y: 7, dir: randomDir() }
+  ])
+  const [gameOver, setGameOver] = useState(false)
+  const [touchStart, setTouchStart] = useState<{x:number,y:number}|null>(null)
   const boardRef = useRef<HTMLDivElement>(null)
 
-  // --- MOVIMIENTO & COMIDA ---
+  // MOVIMIENTO PACMAN
   useEffect(() => {
     if (!running) return
     const handle = (e: KeyboardEvent) => {
-      if (!(e.key in DIRS)) return
+      const k = e.key in DIRS ? e.key : e.key.toLowerCase()
+      if (!(k in DIRS)) return
       e.preventDefault()
-      setDirection(e.key as any)
-      const { x, y } = pos
-      const nx = x + DIRS[e.key as keyof typeof DIRS].x
-      const ny = y + DIRS[e.key as keyof typeof DIRS].y
+      const nx = pos.x + DIRS[k as keyof typeof DIRS].x
+      const ny = pos.y + DIRS[k as keyof typeof DIRS].y
       if (maze[ny]?.[nx] !== 1) {
         setPos({ x: nx, y: ny })
+        setDirection(k as keyof typeof DIRS)
         if (maze[ny][nx] === 2) {
           const newMaze = maze.map(r => [...r])
           newMaze[ny][nx] = 0
@@ -156,123 +209,138 @@ export default function PacmanGame() {
     return () => window.removeEventListener('keydown', handle)
   }, [pos, maze, running])
 
-  // --- ANIMACIÓN DE BOCA ---
+  // TOUCH SUPPORT (Mobile)
+  useEffect(() => {
+    const el = boardRef.current
+    if (!el) return
+    function handleTouchStart(e: TouchEvent) {
+      if (e.touches.length !== 1) return
+      setTouchStart({ x: e.touches[0].clientX, y: e.touches[0].clientY })
+    }
+    function handleTouchEnd(e: TouchEvent) {
+      if (!touchStart) return
+      const dx = e.changedTouches[0].clientX - touchStart.x
+      const dy = e.changedTouches[0].clientY - touchStart.y
+      setTouchStart(null)
+      if (Math.abs(dx) < 18 && Math.abs(dy) < 18) return
+      let move: keyof typeof DIRS | null = null
+      if (Math.abs(dx) > Math.abs(dy)) move = dx > 0 ? 'ArrowRight' : 'ArrowLeft'
+      else move = dy > 0 ? 'ArrowDown' : 'ArrowUp'
+      if (move) {
+        const nx = pos.x + DIRS[move].x
+        const ny = pos.y + DIRS[move].y
+        if (maze[ny]?.[nx] !== 1) {
+          setPos({ x: nx, y: ny })
+          setDirection(move)
+          if (maze[ny][nx] === 2) {
+            const newMaze = maze.map(r => [...r])
+            newMaze[ny][nx] = 0
+            setMaze(newMaze)
+            setScore(s => s + 10)
+          }
+        }
+      }
+    }
+    el.addEventListener('touchstart', handleTouchStart)
+    el.addEventListener('touchend', handleTouchEnd)
+    return () => {
+      el.removeEventListener('touchstart', handleTouchStart)
+      el.removeEventListener('touchend', handleTouchEnd)
+    }
+  }, [pos, maze, running, touchStart])
+
+  // ANIMACIÓN BOCA
   useEffect(() => {
     if (!running) return
-    const interval = setInterval(() => setMouthOpen(m => !m), 120)
+    const interval = setInterval(() => setMouthOpen(m => !m), 100)
     return () => clearInterval(interval)
   }, [running])
 
-  // --- VICTORIA Y RANKING ---
+  // FANTASMAS IA y Colisiones
   useEffect(() => {
-    if (maze.flat().filter(v => v === 2).length === 0 && running) {
-      setRunning(false)
-      // Guardar en ranking solo si hay score > 0 y endpoint disponible
-      if (score > 0) {
-        fetch('/api/pacman/score', {
-          method: 'POST',
-          body: JSON.stringify({ score }),
-          headers: { 'Content-Type': 'application/json' }
-        })
-        .then(async res => {
-          if (!res.ok) {
-            const data = await res.json().catch(() => ({}))
-            setSubmitError(data?.error || 'Error al guardar tu puntaje.')
-          }
-        })
-        .catch(() => setSubmitError('No se pudo conectar al servidor de ranking.'))
+    if (!running) return
+    if (gameOver) return
+    const interval = setInterval(() => {
+      setGhosts(gs =>
+        gs.map(g => nextGhostMove(g, maze, pos))
+      )
+    }, 260)
+    return () => clearInterval(interval)
+  }, [maze, pos, running, gameOver])
+
+  // Checa colisión Pacman/fantasma
+  useEffect(() => {
+    if (!running) return
+    for (const g of ghosts) {
+      if (g.x === pos.x && g.y === pos.y) {
+        setGameOver(true)
+        setRunning(false)
       }
     }
-  }, [maze, running, score])
+    // Victoria
+    if (maze.flat().every(c => c !== 2)) {
+      setRunning(false)
+    }
+  }, [ghosts, pos, maze, running])
 
-  // --- REINICIO ---
+  // REINICIO
   const restart = () => {
     setMaze(LABS_MAZE.map(row => [...row]))
-    setPos(START_POS)
+    setPos({ ...START_POS })
     setScore(0)
     setDirection('ArrowRight')
     setRunning(true)
-    setSubmitError('')
+    setGhosts([
+      { x: 18, y: 1, dir: randomDir() },
+      { x: 1, y: 7, dir: randomDir() }
+    ])
+    setGameOver(false)
   }
 
-  // --- RANKING (solo SWR) ---
-  const { data: ranking, error: rankingError } = useSWR('/api/pacman/ranking', fetcher)
-
-  // --- Foco inicial ---
+  // Foco teclado
   useEffect(() => { boardRef.current?.focus() }, [])
 
   return (
-    <Loop>
-      <Stage
-        width={maze[0].length * SIZE}
-        height={maze.length * SIZE}
+    <div className="flex flex-col items-center w-full">
+      <h3 className="text-xl font-bold text-miel mb-2">¡Pac-Man LABS!</h3>
+      <div
+        ref={boardRef}
+        tabIndex={0}
         style={{
-          background: '#181325',
-          borderRadius: 12,
-          boxShadow: '0 6px 24px #0007, 0 0 0 2px #ffd23b33',
+          outline: 'none',
+          width: `${LABS_MAZE[0].length * SIZE}px`,
+          height: `${LABS_MAZE.length * SIZE}px`,
+          background: '#161313',
+          borderRadius: 18,
           position: 'relative',
+          boxShadow: '0 6px 24px #0007, 0 0 0 2px #ffd23b33',
+          touchAction: 'none',
         }}
+        className="mb-2 grid"
+        onClick={() => boardRef.current?.focus()}
       >
-        <World>
-          <div
-            ref={boardRef}
-            tabIndex={0}
-            style={{
-              width: maze[0].length * SIZE,
-              height: maze.length * SIZE,
-              outline: 'none',
-              position: 'relative',
-            }}
-            onClick={() => boardRef.current?.focus()}
-          >
-            <MazeBoard maze={maze} pos={pos} mouthOpen={mouthOpen} direction={direction} />
-          </div>
-        </World>
-      </Stage>
-      <div className="flex flex-col items-center mt-3">
-        <span className="text-miel font-bold">Puntaje: {score}</span>
-        {!running && (
-          <motion.span
-            className="text-green-400 font-bold animate-bounce"
-            initial={{ scale: 0.5 }}
-            animate={{ scale: 1.2 }}
-            transition={{ type: "spring", stiffness: 200 }}
-          >
-            ¡Victoria!
-          </motion.span>
-        )}
-        <button
-          onClick={restart}
-          className="mt-2 px-4 py-1 bg-miel text-[#22223b] font-bold rounded shadow hover:scale-105 transition"
-        >
-          Reiniciar
-        </button>
-        <p className="mt-2 text-zinc-400 text-xs">
-          Usa las flechas para mover a Pac-Man.<br />
-          Come todos los puntos miel para ganar.
-        </p>
-        {/* Ranking Global */}
-        <div className="w-full mt-2">
-          <h4 className="text-sm text-miel mb-1 font-bold">Ranking 🏆</h4>
-          {rankingError && (
-            <span className="text-red-500 text-xs">Error al cargar ranking.</span>
-          )}
-          <ul>
-            {ranking?.top?.length ? ranking.top.map((item: any, i: number) => (
-              <li key={i} className="flex items-center py-1">
-                <span className="mr-2 font-bold">{i + 1}.</span>
-                <span className="mr-2">{item.usuario?.nombre || "Anónimo"}</span>
-                <span className="ml-auto font-bold text-miel">{item.puntaje}</span>
-              </li>
-            )) : !rankingError && (
-              <li className="text-xs text-zinc-400">Cargando...</li>
-            )}
-          </ul>
-          {submitError && (
-            <div className="text-xs text-red-500 mt-2">{submitError}</div>
-          )}
-        </div>
+        <MazeBoard maze={maze} pos={pos} ghosts={ghosts} mouthOpen={mouthOpen} direction={direction} />
       </div>
-    </Loop>
+      <div className="flex gap-6 items-center mb-2">
+        <span className="text-miel font-bold">Puntaje: {score}</span>
+        {!running && !gameOver && (
+          <span className="text-green-400 font-bold animate-bounce">¡Victoria!</span>
+        )}
+        {gameOver && (
+          <span className="text-red-400 font-bold animate-bounce">Game Over</span>
+        )}
+      </div>
+      <button
+        onClick={restart}
+        className="mt-1 px-4 py-1 bg-miel text-[#22223b] font-bold rounded shadow hover:scale-105 transition"
+      >
+        Reiniciar
+      </button>
+      <p className="mt-2 text-zinc-400 text-xs">
+        Usa flechas o WASD para mover a Pac-Man.<br />
+        Es compatible con móvil (desliza para mover).<br />
+        ¡Evita a los fantasmas y come todos los puntos!
+      </p>
+    </div>
   )
 }
