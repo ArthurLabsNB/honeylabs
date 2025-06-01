@@ -3,10 +3,8 @@
 import { useState, useEffect, ReactNode, useRef } from 'react';
 import clsx from 'clsx';
 
-// ========================
-// HERO SECTION
-// ========================
-function useTypewriter(text: string, speed = 60): string {
+// ============ HERO SECTION =============
+function useTypewriter(text: string, speed = 70): string {
   const [displayed, setDisplayed] = useState('');
   useEffect(() => {
     setDisplayed('');
@@ -19,12 +17,11 @@ function useTypewriter(text: string, speed = 60): string {
   }, [text, speed]);
   return displayed;
 }
-
 function HeroSection() {
   const titulo = 'Gestión de materiales eficiente';
   const descripcion =
     'Gestiona, registra y visualiza materiales en almacenes, adaptándose a cada tipo de usuario. Accede desde cualquier lugar con dashboards personalizados para un control completo y fácil.';
-  const textoTyped = useTypewriter(titulo, 60);
+  const textoTyped = useTypewriter(titulo, 70);
   const [showDesc, setShowDesc] = useState(false);
   useEffect(() => {
     setShowDesc(false);
@@ -54,13 +51,22 @@ function HeroSection() {
       >
         Explorar HoneyLabs
       </a>
+      <style jsx global>{`
+        @keyframes blink { 50% { opacity: 0 } }
+        .animate-blink { animation: blink 1.05s steps(1) infinite; }
+        .animate-typewriter { overflow: hidden; border-right: .15em solid #ffeb3b; white-space: nowrap; }
+        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+        .animate-fade-in { animation: fadeIn 0.7s ease 0.15s both; }
+        @keyframes fadeInLeft { from { opacity: 0; transform: translateX(-48px); } to { opacity: 1; transform: none; } }
+        .animate-fade-in-left { animation: fadeInLeft 0.8s cubic-bezier(.36,1.6,.28,1) both; }
+        @keyframes pop3D { from { opacity: 0; transform: scale(0.94) rotateY(7deg); } to { opacity: 1; transform: scale(1) rotateY(0deg); } }
+        .animate-3dpop { animation: pop3D 1.05s cubic-bezier(.22,.68,0,.17) both; }
+      `}</style>
     </section>
   );
 }
 
-// ========================
-// ABOUT SECTION
-// ========================
+// ============ ABOUT SECTION =============
 function AboutSection() {
   return (
     <section id="acerca" className="relative max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-14 py-28 md:py-40 px-4">
@@ -92,11 +98,8 @@ function AboutSection() {
   );
 }
 
-// ========================
-// KPI SECTION
-// ========================
+// ============ KPI SECTION =============
 type Metrics = { entradas: number; salidas: number; usuarios: number; almacenes: number };
-
 function useCountUp(to: number, duration = 1100): number {
   const [count, setCount] = useState(0);
   useEffect(() => {
@@ -113,11 +116,9 @@ function useCountUp(to: number, duration = 1100): number {
   }, [to, duration]);
   return count;
 }
-
 function KpiSection() {
   const [data, setData] = useState<Metrics | null>(null);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     setLoading(true);
     fetch('/api/metrics')
@@ -126,25 +127,23 @@ function KpiSection() {
       .catch(() => setData({ entradas: 0, salidas: 0, usuarios: 0, almacenes: 0 }))
       .finally(() => setLoading(false));
   }, []);
-
   const entradas = useCountUp(data?.entradas ?? 0, 900);
   const salidas = useCountUp(data?.salidas ?? 0, 900);
   const usuarios = useCountUp(data?.usuarios ?? 0, 800);
   const almacenes = useCountUp(data?.almacenes ?? 0, 800);
-
   return (
-    <section className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 py-24 px-4">
+    <section className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16 py-24 px-4">
       <KpiCard className="animate-float-card">
         {loading ? <LoaderKPI /> : (
           <>
             <div className="flex gap-7 mb-1">
               <div className="flex flex-col items-center">
-                <span className="inline-block h-6 w-6 rounded-full bg-green-400/40 flex items-center justify-center"><span className="text-green-500">↓</span></span>
+                <img src="/features/inventario.png" alt="" className="w-7 h-7 mb-1" />
                 <span className="text-2xl font-semibold text-green-300">{entradas.toLocaleString()}</span>
                 <span className="text-xs text-zinc-100/70">Entradas</span>
               </div>
               <div className="flex flex-col items-center">
-                <span className="inline-block h-6 w-6 rounded-full bg-rose-400/40 flex items-center justify-center"><span className="text-rose-400">↑</span></span>
+                <img src="/features/reportes.png" alt="" className="w-7 h-7 mb-1" />
                 <span className="text-2xl font-semibold text-rose-300">{salidas.toLocaleString()}</span>
                 <span className="text-xs text-zinc-100/70">Salidas</span>
               </div>
@@ -156,7 +155,7 @@ function KpiSection() {
       <KpiCard className="animate-float-card-delayed">
         {loading ? <LoaderKPI /> : (
           <>
-            <span className="inline-block h-7 w-7 bg-sky-400/40 rounded-full mb-1" />
+            <img src="/features/consulta.png" alt="" className="w-8 h-8 mb-1" />
             <span className="text-3xl font-bold text-sky-100">{usuarios.toLocaleString()}</span>
             <span className="text-base text-zinc-200/90 mt-1">Usuarios registrados</span>
           </>
@@ -165,18 +164,21 @@ function KpiSection() {
       <KpiCard className="animate-float-card-delaymore">
         {loading ? <LoaderKPI /> : (
           <>
-            <span className="inline-block h-7 w-7 bg-amber-400/50 rounded-full mb-1" />
+            <img src="/features/almacen.png" alt="" className="w-8 h-8 mb-1" />
             <span className="text-3xl font-bold text-amber-100">{almacenes.toLocaleString()}</span>
             <span className="text-base text-zinc-200/90 mt-1">Almacenes creados</span>
           </>
         )}
       </KpiCard>
+      <style jsx global>{`
+        .kpi-card { box-shadow: 0 0 8px #000c; border-radius: 18px; }
+      `}</style>
     </section>
   );
 }
 function KpiCard({ children, className = "" }: { children: ReactNode, className?: string }) {
   return (
-    <div className={`rounded-2xl bg-zinc-900/85 shadow-xl p-8 border border-amber-400/10 flex flex-col items-center transition-transform hover:scale-105 min-h-[170px] ${className}`}>
+    <div className={`rounded-2xl bg-zinc-900/85 shadow-xl p-8 border border-amber-400/10 flex flex-col items-center transition-transform hover:scale-105 min-h-[170px] kpi-card ${className}`}>
       {children}
     </div>
   );
@@ -190,9 +192,7 @@ function LoaderKPI() {
   );
 }
 
-// ========================
-// FEATURES/ACCORDION CAROUSEL SECTION
-// ========================
+// ============ FEATURES CAROUSEL/ACCORDION ============
 interface Feature {
   title: string;
   desc: string;
@@ -265,7 +265,15 @@ const features: Feature[] = [
 function FeaturesCarouselSection() {
   const [active, setActive] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  // Swipe para mobile
+  // Centrado automático al cambiar de tarjeta
+  useEffect(() => {
+    const el = containerRef.current;
+    if (el) {
+      const child = el.children[active] as HTMLElement;
+      child?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+  }, [active]);
+  // Swipe (touch) horizontal
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -292,38 +300,30 @@ function FeaturesCarouselSection() {
       el.removeEventListener('mouseleave', end);
     };
   }, []);
-  // Flechas
-  function scrollTo(idx: number) {
-    setActive(idx);
-    const el = containerRef.current;
-    if (el) {
-      const child = el.children[idx] as HTMLElement;
-      child?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-    }
-  }
   return (
     <section className="max-w-7xl mx-auto py-32 px-4 space-y-16 relative">
       <h2 className="text-3xl md:text-4xl font-bold text-amber-300 mb-14 text-center">Funciones principales</h2>
-      {/* Flechas */}
-      <button
-        onClick={() => scrollTo(Math.max(0, active - 1))}
-        className="hidden md:flex absolute left-1 z-10 top-1/2 -translate-y-1/2 bg-amber-300/70 text-zinc-900 rounded-full w-12 h-12 shadow-lg border-4 border-amber-300/50 items-center justify-center hover:scale-110 transition disabled:opacity-50"
-        disabled={active === 0}
-        aria-label="Anterior"
-      >‹</button>
-      <button
-        onClick={() => scrollTo(Math.min(features.length - 1, active + 1))}
-        className="hidden md:flex absolute right-1 z-10 top-1/2 -translate-y-1/2 bg-amber-300/70 text-zinc-900 rounded-full w-12 h-12 shadow-lg border-4 border-amber-300/50 items-center justify-center hover:scale-110 transition disabled:opacity-50"
-        disabled={active === features.length - 1}
-        aria-label="Siguiente"
-      >›</button>
-      {/* Carrusel */}
+      <div className="flex justify-center items-center mb-8 gap-3">
+        <button
+          onClick={() => setActive(a => Math.max(0, a - 1))}
+          className="arrow-btn"
+          disabled={active === 0}
+          aria-label="Anterior"
+        >‹</button>
+        <button
+          onClick={() => setActive(a => Math.min(features.length - 1, a + 1))}
+          className="arrow-btn"
+          disabled={active === features.length - 1}
+          aria-label="Siguiente"
+        >›</button>
+      </div>
       <div
         ref={containerRef}
-        className="carousel-acordeon flex gap-8 overflow-x-auto px-4 py-8 pb-12 snap-x snap-mandatory"
+        className="carousel-acordeon flex gap-10 overflow-x-auto px-1 pb-12 snap-x snap-mandatory justify-center"
         style={{
           scrollbarWidth: "none",
-          msOverflowStyle: "none"
+          msOverflowStyle: "none",
+          minHeight: 400,
         }}
       >
         {features.map((feature, idx) => (
@@ -331,186 +331,97 @@ function FeaturesCarouselSection() {
             key={feature.title}
             tabIndex={0}
             className={clsx(
-              "feature-card-acordeon snap-center flex flex-col items-center transition-all duration-700 cursor-pointer relative",
+              "feature-card-acordeon snap-center flex flex-col items-center transition-all duration-500 cursor-pointer relative",
               active === idx
-                ? "active shadow-2xl scale-110 z-30"
+                ? "active shadow-glow scale-110 z-30"
                 : Math.abs(active - idx) === 1
-                ? "neighbor scale-95 opacity-85 z-20"
+                ? "neighbor scale-95 opacity-90 z-10"
                 : "inactive scale-90 opacity-60 z-0"
             )}
             style={{
-              minWidth: 320,
-              maxWidth: 340,
+              minWidth: 330,
+              maxWidth: 350,
               height: active === idx ? 410 : 320,
-              marginTop: active === idx ? 0 : 40,
-              marginBottom: active === idx ? 0 : 60,
-              background: "linear-gradient(120deg, #181325f8 60%, #ffe06622 100%)",
-              boxShadow: active === idx ? "0 0 32px #ffe06655,0 6px 28px #111" : undefined,
+              marginTop: active === idx ? 0 : 35,
+              marginBottom: active === idx ? 0 : 40,
+              background: "linear-gradient(120deg, #181325f7 60%, #ffe06619 100%)",
+              border: active === idx ? "2.4px solid #ffe066cc" : "1.5px solid #ffe06640",
+              boxShadow: active === idx
+                ? "0 0 40px 8px #ffe06655, 0 10px 28px #111a"
+                : "0 1px 12px #0007",
+              outline: active === idx ? "2px solid #fff2" : "none",
             }}
-            onClick={() => scrollTo(idx)}
-            onFocus={() => scrollTo(idx)}
+            onClick={() => setActive(idx)}
+            onFocus={() => setActive(idx)}
           >
             <img src={feature.icon} alt={feature.title} className="mb-2 w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-2xl mt-5" loading="lazy" />
             <h3 className="font-semibold text-amber-200 mb-1 text-center text-lg md:text-xl px-2">{feature.title}</h3>
             <p className="text-zinc-200 text-center text-base mb-2 px-3">{feature.desc}</p>
             {active === idx && (
-              <div className="expanded-detail text-amber-100 text-base px-6 pb-6 pt-3 w-full animate-fade-in">
-                <div className="font-bold text-lg mb-1 text-amber-200">{feature.title}</div>
+              <div className="expanded-detail text-amber-100 text-base px-6 pb-6 pt-3 w-full animate-fade-in font-medium">
                 {feature.detalle}
               </div>
             )}
           </div>
         ))}
       </div>
-      {/* Indicadores puntos */}
-      <div className="flex justify-center gap-2 mt-2">
-        {features.map((_, idx) => (
-          <button
-            key={idx}
-            onClick={() => scrollTo(idx)}
-            aria-label={`Ir a la tarjeta ${idx + 1}`}
-            className={clsx(
-              "inline-block w-3 h-3 rounded-full mx-1 border border-amber-400 transition",
-              active === idx
-                ? "bg-amber-400 shadow-md"
-                : "bg-zinc-700 hover:bg-amber-300"
-            )}
-          />
-        ))}
-      </div>
-      {/* CSS en línea para el carrusel y animaciones */}
       <style jsx global>{`
         .carousel-acordeon::-webkit-scrollbar { display: none; }
+        .arrow-btn {
+          background: linear-gradient(120deg, #ffe066bb 20%, #ffdb66 90%);
+          color: #181325;
+          font-size: 2.1rem;
+          width: 2.8rem;
+          height: 2.8rem;
+          border-radius: 50%;
+          box-shadow: 0 2px 12px #18132566;
+          border: 0;
+          display: flex; align-items: center; justify-content: center;
+          font-weight: bold;
+          cursor: pointer;
+          transition: transform .15s, background .22s;
+        }
+        .arrow-btn:disabled { opacity: .4; cursor: not-allowed; }
         .feature-card-acordeon {
-          border-radius: 1.7rem;
-          border: 1.5px solid #ffe06625;
-          box-shadow: 0 2px 14px #ffe06611;
-          background: linear-gradient(120deg, #181325f8 60%, #ffe06622 100%);
-          min-height: 320px;
-          max-height: 420px;
-          user-select: none;
+          border-radius: 26px;
+          overflow: hidden;
+          box-shadow: 0 2px 16px #181325a8;
+          transition: all .5s cubic-bezier(.43,1.53,.56,1.04);
+          cursor: pointer;
         }
         .feature-card-acordeon.active {
-          box-shadow: 0 0 32px #ffe06655, 0 8px 48px #151425bb;
-          border: 2.5px solid #ffe06699;
-        }
-        .feature-card-acordeon.neighbor {
-          border: 2px solid #ffe06633;
+          background: linear-gradient(120deg, #1e1a2cf5 80%, #ffe0661b 100%);
+          box-shadow: 0 0 45px 8px #ffe06666, 0 14px 36px #111c;
+          outline: 2.5px solid #ffe06644;
+          z-index: 50;
         }
         .feature-card-acordeon.inactive {
-          filter: blur(0.5px) grayscale(.18);
+          opacity: .65;
         }
-        .feature-card-acordeon:focus-visible {
-          outline: 3px solid #ffe06699;
+        .feature-card-acordeon .expanded-detail {
+          border-top: 1.5px solid #ffe0662c;
+          margin-top: 8px;
+          font-size: 1.09rem;
+          background: rgba(30,20,48,.55);
+          border-radius: 0 0 22px 22px;
+          box-shadow: 0 0 32px #ffe06611;
         }
-        .expanded-detail {
-          border-radius: 1.25rem;
-          margin-top: 1.1rem;
-          background: linear-gradient(120deg, #ffe06628 10%, #181325f8 80%);
-          box-shadow: 0 2px 14px #ffe06618;
+        .shadow-glow {
+          box-shadow: 0 0 45px 0px #ffe06688, 0 7px 24px #181325cc !important;
         }
-        /* Animaciones adicionales */
-        @keyframes blink { 50% { opacity: 0 } }
-        .animate-blink { animation: blink 1.05s steps(1) infinite; }
-        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
-        .animate-fade-in { animation: fadeIn 0.8s cubic-bezier(.33,1,.68,1) both; }
-        .animate-typewriter {
-          overflow: hidden;
-          border-right: .15em solid #ffeb3b;
-          white-space: nowrap;
-          animation: blink-cursor 1s steps(1) infinite;
-        }
-        @keyframes blink-cursor {
-          0%,100% { border-color: #ffeb3b; }
-          50% { border-color: transparent; }
-        }
-        @keyframes fadeInLeft { from { opacity: 0; transform: translateX(-48px); } to { opacity: 1; transform: none; } }
-        .animate-fade-in-left { animation: fadeInLeft 0.9s cubic-bezier(.36,1.6,.28,1) both; }
-        @keyframes pop3D { from { opacity: 0; transform: scale(0.94) rotateY(7deg); } to { opacity: 1; transform: scale(1) rotateY(0deg); } }
-        .animate-3dpop { animation: pop3D 1.1s cubic-bezier(.22,.68,0,1.71) both; }
-        @keyframes ripple { 0% { box-shadow: 0 0 0 0 #ffe06666; } 70% { box-shadow: 0 0 0 8px #ffe06622; } 100% { box-shadow: 0 0 0 0 #ffe06600; } }
-        .animate-ripple:active { animation: ripple .6s; }
-        @keyframes floatCard { 0% { transform: translateY(0px) } 50% { transform: translateY(-10px) } 100% { transform: translateY(0px) } }
-        .animate-float-card { animation: floatCard 2.8s ease-in-out infinite; }
-        .animate-float-card-delayed { animation: floatCard 2.8s 0.33s ease-in-out infinite; }
-        .animate-float-card-delaymore { animation: floatCard 2.8s 0.7s ease-in-out infinite; }
-        .float-card { will-change: transform; }
       `}</style>
     </section>
   );
 }
 
-// ========================
-// PARTNERS/ALIADOS SECTION (Acordeón Multimedia)
-// ========================
-interface Aliado {
-  nombre: string;
-  img: string;
-  url: string;
-  desc: string;
-  principal?: boolean;
-}
-function PartnersSection() {
-  const aliados: Aliado[] = [
-    {
-      nombre: "Tecnológico Nacional de México - ITQ",
-      img: "/aliados/itq.png",
-      url: "https://www.queretaro.tecnm.mx/",
-      desc: "Principal aliado institucional, promotor de la digitalización de laboratorios y prácticas profesionales en logística.",
-      principal: true,
-    },
-    {
-      nombre: "HoneyLabs Open Community",
-      img: "/aliados/comunidad.png",
-      url: "https://github.com/honeylabs",
-      desc: "Red de desarrolladores y usuarios que contribuyen con ideas, soporte y feedback para la mejora continua.",
-    },
-    {
-      nombre: "Otro Aliado",
-      img: "/aliados/aliado-ejemplo.png",
-      url: "#",
-      desc: "Ejemplo de empresa aliada en digitalización logística.",
-    }
-  ];
-  const [open, setOpen] = useState(0);
-  return (
-    <section className="max-w-5xl mx-auto py-36 px-4">
-      <h2 className="text-2xl md:text-3xl font-bold text-amber-300 mb-9 text-center">Colaboradores y aliados</h2>
-      <div className="flex flex-col gap-6">
-        {aliados.map((a, i) => (
-          <div key={a.nombre} className={clsx(
-            "rounded-2xl bg-zinc-900/80 border border-amber-300/15 shadow-xl transition-all",
-            open === i ? "scale-100 shadow-2xl border-amber-300/30" : "scale-95 opacity-70"
-          )}>
-            <button className="flex items-center w-full p-5 gap-6 focus:outline-none" onClick={() => setOpen(i)} aria-expanded={open === i}>
-              <img src={a.img} alt={a.nombre} className={clsx("rounded-2xl shadow border-2 object-cover transition", a.principal ? "w-24 h-24 border-amber-300" : "w-20 h-20 border-amber-200")} loading="lazy" />
-              <div className="flex flex-col items-start">
-                <span className={clsx("font-bold text-lg", a.principal ? "text-amber-200" : "text-amber-100")}>{a.nombre}</span>
-                <span className="text-zinc-200 text-sm">{a.desc}</span>
-                <a href={a.url} target="_blank" rel="noopener noreferrer" className="text-amber-300 mt-2 hover:underline">Visitar sitio</a>
-              </div>
-              <div className="ml-auto">{open === i ? <span className="text-amber-300">▲</span> : <span className="text-amber-300">▼</span>}</div>
-            </button>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-// ========================
-// MAIN PAGE (EXPORT)
-// ========================
+// ============ MAIN PAGE EXPORT ============
 export default function Page() {
   return (
-    <main className="relative min-h-screen w-full font-sans overflow-x-hidden">
-      <div className="relative z-10 flex flex-col min-h-screen">
-        <HeroSection />
-        <AboutSection />
-        <KpiSection />
-        <FeaturesCarouselSection />
-        <PartnersSection />
-      </div>
+    <main className="relative min-h-screen w-full font-sans overflow-x-hidden bg-[#181325]">
+      <HeroSection />
+      <AboutSection />
+      <KpiSection />
+      <FeaturesCarouselSection />
     </main>
   );
 }
