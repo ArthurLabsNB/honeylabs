@@ -5,14 +5,18 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-const prisma = new PrismaClient();
+const globalForPrisma = global as unknown as { prisma?: PrismaClient };
+const prisma = globalForPrisma.prisma ?? new PrismaClient();
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+
 const JWT_SECRET = process.env.JWT_SECRET ?? 'mi_clave_de_emergencia';
 const COOKIE_NAME = 'hl_session';
 
-const TAMAÑO_MAXIMO_FOTO_MB = 2;
+// ========== AJUSTA EL LÍMITE AQUÍ ==========
+const TAMAÑO_MAXIMO_FOTO_MB = 10;   // <<< NUEVO LÍMITE (10 MB)
 const BYTES_MAXIMO_FOTO = TAMAÑO_MAXIMO_FOTO_MB * 1024 * 1024;
 const TIPOS_FOTO_PERMITIDOS = [
-  'image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif'
+  'image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif', // + más si agregas
 ];
 
 const bloqueos = new Map<string, { intentos: number; timestamp: number }>();
@@ -33,7 +37,7 @@ async function guardarBitacoraCambio(usuarioId: number, cambios: any) {
         fecha: new Date(),
       }
     });
-  } catch (err) { /* Silencioso para no romper la UX */ }
+  } catch (err) { /* Silencioso */ }
 }
 
 async function crearNotificacion(usuarioId: number, mensaje: string) {
@@ -88,10 +92,11 @@ export async function PUT(req: NextRequest) {
     catch { return NextResponse.json({ error: 'Sesión inválida o expirada.' }, { status: 401 }); }
     const usuarioId = payload.id;
 
-    // Manejo de multipart/form-data para foto de perfil
+    // --- Manejamos tanto JSON como multipart ---
     let body: any = {};
     let fotoBuffer: Buffer | null = null;
     let fotoNombre: string | null = null;
+
     if (req.headers.get('content-type')?.includes('multipart/form-data')) {
       const formData = await req.formData();
       body = {
@@ -104,9 +109,11 @@ export async function PUT(req: NextRequest) {
       };
       const foto = formData.get('foto') as File | null;
       if (foto) {
+        // Verifica tipo
         if (!TIPOS_FOTO_PERMITIDOS.includes(foto.type)) {
           return NextResponse.json({ error: 'Formato de imagen no permitido.' }, { status: 415 });
         }
+        // Verifica tamaño
         const buffer = await foto.arrayBuffer();
         if (buffer.byteLength > BYTES_MAXIMO_FOTO) {
           return NextResponse.json({ error: `Imagen demasiado grande. Máx: ${TAMAÑO_MAXIMO_FOTO_MB}MB.` }, { status: 413 });
@@ -167,7 +174,7 @@ export async function PUT(req: NextRequest) {
       data.fotoPerfil = fotoBuffer;
       data.fotoPerfilNombre = fotoNombre;
     }
-    if (preferencias) data.preferencias = preferencias;
+    if (preferencias !== undefined) data.preferencias = preferencias;
 
     await prisma.usuario.update({
       where: { id: usuarioId },
