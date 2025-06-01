@@ -194,7 +194,7 @@ export default function UserMenu({
           {/* Accesos rápidos */}
           {usuario && (
             <div className="border-t dark:border-zinc-700 py-2">
-              <MenuLink href="/panel" icon={<LayoutDashboard className="h-4 w-4" />} label="Panel" tabIndex={open ? 0 : -1} />
+              <MenuLink href="/dashboard" icon={<LayoutDashboard className="h-4 w-4" />} label="Dashboard" tabIndex={open ? 0 : -1} />
               <MenuLink href="/configuracion" icon={<Settings className="h-4 w-4" />} label="Configuración" tabIndex={open ? 0 : -1} />
               <MenuLink href="/" icon={<Home className="h-4 w-4" />} label="Inicio" tabIndex={open ? 0 : -1} />
               {/* Seguridad (2FA, solo acceso si está activo) */}

@@ -1,0 +1,205 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===================== VARIABLES ===================== */
+:root {
+  --dashboard-bg: #16171a;
+  --dashboard-sidebar: #23272f;
+  --dashboard-navbar: #21232a;
+  --dashboard-table-bg: #191b20;
+  --dashboard-table-row: #23232b;
+  --dashboard-table-hover: #282b31;
+  --dashboard-card: #1e1f25;
+  --dashboard-accent: #ffe066;
+  --dashboard-accent-hover: #fff3a1;
+  --dashboard-border: #2a2a33;
+  --dashboard-text: #ececec;
+  --dashboard-muted: #9ca3af;
+  --dashboard-shadow: 0 2px 10px #0005;
+  --dashboard-glass: rgba(255,255,255,0.12);
+}
+
+/* ===================== LAYOUT PRINCIPAL ===================== */
+.dashboard-bg {
+  @apply min-h-screen;
+  background: var(--dashboard-bg);
+  color: var(--dashboard-text);
+}
+
+/* ===================== SIDEBAR ===================== */
+.dashboard-sidebar {
+  background: var(--dashboard-sidebar);
+  color: var(--dashboard-accent);
+  @apply shadow-2xl border-r border-[var(--dashboard-border)] transition-all duration-200;
+}
+.dashboard-sidebar-item {
+  @apply flex items-center px-4 py-3 rounded-lg font-medium transition-all cursor-pointer relative select-none;
+  color: var(--dashboard-text);
+  border-left: 4px solid transparent;
+  background: transparent;
+}
+.dashboard-sidebar-item.active,
+.dashboard-sidebar-item:focus,
+.dashboard-sidebar-item:hover {
+  background: linear-gradient(90deg, var(--dashboard-accent) 75%, var(--dashboard-glass) 100%) !important;
+  color: #23272f !important;
+  border-left: 4px solid var(--dashboard-accent);
+  font-weight: bold;
+  box-shadow: 0 2px 16px #ffe06622;
+  filter: blur(0.3px);
+  transition: background 0.25s, color 0.2s, box-shadow 0.2s;
+}
+.dashboard-sidebar-item:active {
+  background: linear-gradient(90deg, var(--dashboard-accent-hover) 85%, #fff5 100%) !important;
+  color: #181325 !important;
+}
+.dashboard-sidebar-item span {
+  @apply ml-1;
+}
+.dashboard-sidebar-icon {
+  @apply w-5 h-5 mr-2;
+  color: var(--dashboard-accent);
+  opacity: 0.93;
+}
+
+/* ===================== SIDEBAR FOOTER ===================== */
+.dashboard-sidebar-footer {
+  @apply border-t border-[var(--dashboard-border)] mt-auto p-5 flex flex-col items-center;
+  color: var(--dashboard-accent);
+  background: var(--dashboard-sidebar);
+}
+
+/* ===================== NAVBAR ===================== */
+.dashboard-navbar {
+  @apply flex items-center px-6 h-16 sticky top-0 z-20;
+  background: var(--dashboard-navbar);
+  color: var(--dashboard-accent);
+  border-bottom: 2px solid var(--dashboard-border);
+  box-shadow: 0 2px 18px #0006;
+}
+.dashboard-navbar .p-2,
+.dashboard-navbar .dashboard-btn {
+  margin-top: 2px; /* Para despegar iconos del borde */
+}
+.dashboard-navbar button,
+.dashboard-navbar a.p-2 {
+  transition: background 0.18s, color 0.18s, box-shadow 0.22s;
+}
+.dashboard-navbar button:hover,
+.dashboard-navbar a.p-2:hover {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(3.5px);
+  box-shadow: 0 2px 6px #fff1, 0 0 0 2px var(--dashboard-accent);
+  color: #fff !important;
+}
+.dashboard-navbar button:active,
+.dashboard-navbar a.p-2:active {
+  background: rgba(255,255,255,0.17);
+}
+
+/* ===================== GRUPOS DE ACCIONES ===================== */
+.dashboard-group {
+  @apply flex items-center gap-3;
+  border-right: 1.5px solid var(--dashboard-border);
+  padding-right: 1.5rem;
+  margin-right: 1.5rem;
+}
+.dashboard-group:last-child {
+  border-right: none;
+  margin-right: 0;
+  padding-right: 0;
+}
+
+/* ===================== CARDS & WIDGETS ===================== */
+.dashboard-widget-card {
+  @apply rounded-lg shadow-lg p-5 transition-all border;
+  background: var(--dashboard-card);
+  color: var(--dashboard-text);
+  border: 1.5px solid var(--dashboard-border);
+  box-shadow: var(--dashboard-shadow);
+}
+
+/* ===================== TABLAS ===================== */
+.dashboard-table {
+  width: 100%;
+  background: var(--dashboard-table-bg);
+  border-radius: 12px;
+  border: 1.5px solid var(--dashboard-border);
+  overflow: hidden;
+}
+.dashboard-table thead {
+  background: var(--dashboard-sidebar);
+  color: var(--dashboard-accent);
+  font-weight: bold;
+  border-bottom: 1.5px solid var(--dashboard-border);
+}
+.dashboard-table-row {
+  background: var(--dashboard-table-row);
+  border-bottom: 1px solid var(--dashboard-border);
+  @apply transition-colors;
+}
+.dashboard-table-row:hover {
+  background: var(--dashboard-table-hover);
+}
+.dashboard-table-cell {
+  @apply px-4 py-3;
+  border-right: 1px solid var(--dashboard-border);
+}
+.dashboard-table-cell:last-child {
+  border-right: none;
+}
+
+/* ===================== BOTONES ===================== */
+.dashboard-btn {
+  @apply rounded-md font-semibold px-4 py-2 transition shadow-sm;
+  background: var(--dashboard-accent);
+  color: #23272f;
+  border: 1.5px solid var(--dashboard-border);
+  box-shadow: 0 2px 8px #0002;
+}
+.dashboard-btn:hover {
+  background: var(--dashboard-accent-hover);
+  border-color: var(--dashboard-accent);
+  color: #181325;
+}
+
+/* ===================== BUSCADOR Y INPUTS ===================== */
+.dashboard-input {
+  @apply rounded-md px-4 py-2;
+  background: #23232b;
+  color: var(--dashboard-text);
+  border: 1.5px solid var(--dashboard-border);
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.dashboard-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--dashboard-accent);
+  border-color: var(--dashboard-accent);
+}
+
+/* ===================== ANIMACIONES ===================== */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fade-in 0.6s cubic-bezier(.4,0,.2,1);
+}
+
+/* ===================== SCROLLBAR ===================== */
+::-webkit-scrollbar {
+  width: 10px;
+  background: var(--dashboard-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--dashboard-border);
+  border-radius: 5px;
+}
+
+/* ===================== SEPARADORES ===================== */
+.dashboard-separator {
+  border-top: 1.5px solid var(--dashboard-border);
+  margin: 1.2rem 0;
+}

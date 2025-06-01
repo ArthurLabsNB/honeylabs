@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import ClientLayout from '@/components/ClientLayout';
+import ConditionalLayout from '@/components/ConditionalLayout'; // <--- Cambia aquí
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
@@ -28,9 +28,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         font-sans antialiased transition-colors duration-300
         overflow-x-hidden
       `}>
-        <ClientLayout>
+        <ConditionalLayout>
           {children}
-        </ClientLayout>
+        </ConditionalLayout>
         <Analytics />
         <SpeedInsights />
       </body>

@@ -192,7 +192,7 @@ export default function Navbar() {
           <div className="flex-shrink-0 ml-2">
             {usuario ? (
               <Link
-                href="/panel"
+                href="/dashboard"
                 className="px-4 py-2 rounded-xl font-semibold bg-navglass/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow-md text-base w-full sm:w-auto max-w-xs text-center"
                 style={{ letterSpacing: '0.02em' }}
                 onClick={rippleEffect}
