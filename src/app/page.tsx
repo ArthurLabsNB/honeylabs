@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 import clsx from 'clsx';
 import {
   ArrowDownCircle, ArrowUpCircle, Users, Warehouse,
@@ -27,7 +27,7 @@ function FondoGIF() {
 }
 
 // ===== HERO SECTION =====
-function useTypewriter(text, speed = 36) {
+function useTypewriter(text: string, speed = 36) {
   const [displayed, setDisplayed] = useState('');
   useEffect(() => {
     setDisplayed('');
@@ -96,11 +96,13 @@ function AboutSection() {
 }
 
 // ===== KPI SECTION =====
-function useCountUp(to, duration = 1100) {
+type Metrics = { entradas: number; salidas: number; usuarios: number; almacenes: number };
+
+function useCountUp(to: number, duration = 1100) {
   const [count, setCount] = useState(0);
   useEffect(() => {
-    let start = 0, raf, startTime;
-    function animate(ts) {
+    let start = 0, raf: number, startTime: number;
+    function animate(ts: number) {
       if (!startTime) startTime = ts;
       const progress = Math.min((ts - startTime) / duration, 1);
       setCount(Math.floor(start + (to - start) * progress));
@@ -114,14 +116,15 @@ function useCountUp(to, duration = 1100) {
 }
 
 function KpiSection() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<Metrics | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
     fetch('/api/metrics')
       .then(res => res.json())
-      .then(setData)
+      .then(d => setData(d))
+      .catch(() => setData({ entradas: 0, salidas: 0, usuarios: 0, almacenes: 0 }))
       .finally(() => setLoading(false));
   }, []);
 
@@ -172,7 +175,7 @@ function KpiSection() {
     </section>
   );
 }
-function KpiCard({ children, className = "" }) {
+function KpiCard({ children, className = "" }: { children: ReactNode, className?: string }) {
   return (
     <div className={`rounded-2xl bg-zinc-900/85 shadow-xl p-8 border border-amber-400/10 flex flex-col items-center transition-transform hover:scale-105 min-h-[170px] ${className}`}>
       {children}
@@ -189,6 +192,14 @@ function LoaderKPI() {
 }
 
 // ===== FEATURES SECTION =====
+interface FeatureCardProps {
+  title: string;
+  desc: string;
+  icon: string;
+  big?: boolean;
+  small?: boolean;
+  animClass?: string;
+}
 function FeaturesSection() {
   return (
     <section className="max-w-7xl mx-auto py-24 px-4 space-y-10">
@@ -208,7 +219,7 @@ function FeaturesSection() {
     </section>
   );
 }
-function FeatureCard({ title, desc, icon, big, small, animClass = "" }) {
+function FeatureCard({ title, desc, icon, big, small, animClass = "" }: FeatureCardProps) {
   return (
     <div className={
       `bg-zinc-900/85 rounded-2xl shadow-xl border border-amber-200/10 flex flex-col items-center p-7
@@ -226,8 +237,13 @@ function FeatureCard({ title, desc, icon, big, small, animClass = "" }) {
 }
 
 // ===== ROADMAP SECTION =====
+interface RoadmapStep {
+  titulo: string;
+  texto: string;
+  icon: string;
+}
 function RoadmapSection() {
-  const pasos = [
+  const pasos: RoadmapStep[] = [
     { titulo: "Registro", texto: "Crea tu cuenta o únete a una organización", icon: "👤" },
     { titulo: "Configura tus almacenes", texto: "Agrega y personaliza tus almacenes, usuarios y permisos", icon: "🏢" },
     { titulo: "Registra movimientos", texto: "Controla entradas y salidas en tiempo real", icon: "📦" },
@@ -270,8 +286,14 @@ function RoadmapSection() {
 }
 
 // ===== TESTIMONIALS CAROUSEL SECTION =====
+interface Testimonial {
+  nombre: string;
+  rol: string;
+  img: string;
+  texto: string;
+}
 function TestimonialsSection() {
-  const testimonios = [
+  const testimonios: Testimonial[] = [
     { nombre: "Ana Sánchez", rol: "Docente", img: "/testimonios/ana.png", texto: "¡Organizar los materiales nunca fue tan fácil y visual! Mis alumnos pueden consultar y pedir lo que necesitan, y yo sé siempre quién usó qué." },
     { nombre: "Ing. López", rol: "Jefe de Almacén", img: "/testimonios/lopez.png", texto: "Integrar HoneyLabs con mis procesos de inventario digital fue inmediato. El reporte automático me ahorra horas cada semana." },
     { nombre: "Luis Torres", rol: "Estudiante", img: "/testimonios/luis.png", texto: "Por fin puedo ver disponibilidad y pedir materiales para prácticas, sin filas y sin perder tiempo." },
@@ -309,8 +331,12 @@ function TestimonialsSection() {
 }
 
 // ===== FAQ ACCORDION SECTION =====
+interface FAQ {
+  q: string;
+  a: string;
+}
 function FAQSection() {
-  const faqs = [
+  const faqs: FAQ[] = [
     { q: "¿Qué puedo hacer si soy estudiante?", a: "Puedes consultar el inventario, hacer solicitudes de materiales y ver tus registros de uso." },
     { q: "¿Puedo exportar mis datos?", a: "Sí, desde tu perfil puedes exportar toda tu información y registros en formato seguro." },
     { q: "¿HoneyLabs es gratuito para escuelas?", a: "¡Sí! La plataforma es de uso gratuito para instituciones educativas registradas." },
@@ -340,9 +366,16 @@ function FAQSection() {
   );
 }
 
-// ===== PARTNERS/ALIADOS SECTION: Acordeón Multimedia =====
+// ===== PARTNERS/ALIADOS SECTION =====
+interface Aliado {
+  nombre: string;
+  img: string;
+  url: string;
+  desc: string;
+  principal?: boolean;
+}
 function PartnersSection() {
-  const aliados = [
+  const aliados: Aliado[] = [
     {
       nombre: "Tecnológico Nacional de México - ITQ",
       img: "/aliados/itq.png",
