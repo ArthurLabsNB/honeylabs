@@ -267,11 +267,8 @@ function FeatureCard({ title, desc, icon, big, small, animClass = "" }: FeatureC
 }
 
 // ========================
-// ROADMAP SECTION (línea de tiempo animada estilo circuito)
+// ROADMAP SECTION (línea de tiempo animada)
 // ========================
-import { useState, useEffect } from "react";
-import clsx from "clsx";
-
 interface RoadmapStep {
   titulo: string;
   texto: string;
@@ -443,7 +440,6 @@ export function RoadmapSection() {
     </section>
   );
 }
-
 
 // ========================
 // TESTIMONIALS SECTION (3D Slider)
