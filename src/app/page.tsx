@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, ReactNode, useRef } from 'react';
+import { useState, useEffect, useRef, ReactNode } from 'react';
 import clsx from 'clsx';
 
 // ============ HERO SECTION =============
@@ -21,7 +21,7 @@ function HeroSection() {
   const titulo = 'Gestión de materiales eficiente';
   const descripcion =
     'Gestiona, registra y visualiza materiales en almacenes, adaptándose a cada tipo de usuario. Accede desde cualquier lugar con dashboards personalizados para un control completo y fácil.';
-  const textoTyped = useTypewriter(titulo, 70);
+  const textoTyped = useTypewriter(titulo, 85);
   const [showDesc, setShowDesc] = useState(false);
   useEffect(() => {
     setShowDesc(false);
@@ -51,16 +51,13 @@ function HeroSection() {
       >
         Explorar HoneyLabs
       </a>
+      {/* Animaciones necesarias */}
       <style jsx global>{`
         @keyframes blink { 50% { opacity: 0 } }
         .animate-blink { animation: blink 1.05s steps(1) infinite; }
         .animate-typewriter { overflow: hidden; border-right: .15em solid #ffeb3b; white-space: nowrap; }
         @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
         .animate-fade-in { animation: fadeIn 0.7s ease 0.15s both; }
-        @keyframes fadeInLeft { from { opacity: 0; transform: translateX(-48px); } to { opacity: 1; transform: none; } }
-        .animate-fade-in-left { animation: fadeInLeft 0.8s cubic-bezier(.36,1.6,.28,1) both; }
-        @keyframes pop3D { from { opacity: 0; transform: scale(0.94) rotateY(7deg); } to { opacity: 1; transform: scale(1) rotateY(0deg); } }
-        .animate-3dpop { animation: pop3D 1.05s cubic-bezier(.22,.68,0,.17) both; }
       `}</style>
     </section>
   );
@@ -94,6 +91,19 @@ function AboutSection() {
           />
         </div>
       </div>
+      {/* Solo esta animación local */}
+      <style jsx>{`
+        @keyframes fadeInLeft {
+          from { opacity: 0; transform: translateX(-48px); }
+          to { opacity: 1; transform: none; }
+        }
+        .animate-fade-in-left { animation: fadeInLeft 0.8s cubic-bezier(.36,1.6,.28,1) both; }
+        @keyframes pop3D {
+          from { opacity: 0; transform: scale(0.94) rotateY(7deg); }
+          to { opacity: 1; transform: scale(1) rotateY(0deg); }
+        }
+        .animate-3dpop { animation: pop3D 1.05s cubic-bezier(.22,.68,0,.17) both; }
+      `}</style>
     </section>
   );
 }
@@ -133,7 +143,7 @@ function KpiSection() {
   const almacenes = useCountUp(data?.almacenes ?? 0, 800);
   return (
     <section className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16 py-24 px-4">
-      <KpiCard className="animate-float-card">
+      <KpiCard>
         {loading ? <LoaderKPI /> : (
           <>
             <div className="flex gap-7 mb-1">
@@ -152,7 +162,7 @@ function KpiSection() {
           </>
         )}
       </KpiCard>
-      <KpiCard className="animate-float-card-delayed">
+      <KpiCard>
         {loading ? <LoaderKPI /> : (
           <>
             <img src="/features/consulta.png" alt="" className="w-8 h-8 mb-1" />
@@ -161,7 +171,7 @@ function KpiSection() {
           </>
         )}
       </KpiCard>
-      <KpiCard className="animate-float-card-delaymore">
+      <KpiCard>
         {loading ? <LoaderKPI /> : (
           <>
             <img src="/features/almacen.png" alt="" className="w-8 h-8 mb-1" />
@@ -176,9 +186,9 @@ function KpiSection() {
     </section>
   );
 }
-function KpiCard({ children, className = "" }: { children: ReactNode, className?: string }) {
+function KpiCard({ children }: { children: ReactNode }) {
   return (
-    <div className={`rounded-2xl bg-zinc-900/85 shadow-xl p-8 border border-amber-400/10 flex flex-col items-center transition-transform hover:scale-105 min-h-[170px] kpi-card ${className}`}>
+    <div className="rounded-2xl bg-zinc-900/85 shadow-xl p-8 border border-amber-400/10 flex flex-col items-center transition-transform hover:scale-105 min-h-[170px] kpi-card">
       {children}
     </div>
   );
@@ -265,41 +275,52 @@ const features: Feature[] = [
 function FeaturesCarouselSection() {
   const [active, setActive] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+
   // Centrado automático al cambiar de tarjeta
   useEffect(() => {
     const el = containerRef.current;
     if (el) {
       const child = el.children[active] as HTMLElement;
-      child?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      if (child && child.scrollIntoView) {
+        child.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
     }
   }, [active]);
-  // Swipe (touch) horizontal
+
+  // Mejor experiencia swipe horizontal
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
     let startX = 0, scrollLeft = 0, isDown = false;
-    const start = (e: any) => {
+    const onTouchStart = (e: any) => {
       isDown = true;
       startX = e.touches ? e.touches[0].pageX : e.pageX;
       scrollLeft = el.scrollLeft;
     };
-    const move = (e: any) => {
+    const onTouchMove = (e: any) => {
       if (!isDown) return;
       const x = e.touches ? e.touches[0].pageX : e.pageX;
       el.scrollLeft = scrollLeft - (x - startX);
     };
-    const end = () => { isDown = false; };
-    el.addEventListener('mousedown', start); el.addEventListener('touchstart', start);
-    el.addEventListener('mousemove', move); el.addEventListener('touchmove', move);
-    el.addEventListener('mouseup', end); el.addEventListener('touchend', end);
-    el.addEventListener('mouseleave', end);
+    const onTouchEnd = () => { isDown = false; };
+    el.addEventListener('mousedown', onTouchStart);
+    el.addEventListener('mousemove', onTouchMove);
+    el.addEventListener('mouseup', onTouchEnd);
+    el.addEventListener('mouseleave', onTouchEnd);
+    el.addEventListener('touchstart', onTouchStart);
+    el.addEventListener('touchmove', onTouchMove);
+    el.addEventListener('touchend', onTouchEnd);
     return () => {
-      el.removeEventListener('mousedown', start); el.removeEventListener('touchstart', start);
-      el.removeEventListener('mousemove', move); el.removeEventListener('touchmove', move);
-      el.removeEventListener('mouseup', end); el.removeEventListener('touchend', end);
-      el.removeEventListener('mouseleave', end);
+      el.removeEventListener('mousedown', onTouchStart);
+      el.removeEventListener('mousemove', onTouchMove);
+      el.removeEventListener('mouseup', onTouchEnd);
+      el.removeEventListener('mouseleave', onTouchEnd);
+      el.removeEventListener('touchstart', onTouchStart);
+      el.removeEventListener('touchmove', onTouchMove);
+      el.removeEventListener('touchend', onTouchEnd);
     };
   }, []);
+
   return (
     <section className="max-w-7xl mx-auto py-32 px-4 space-y-16 relative">
       <h2 className="text-3xl md:text-4xl font-bold text-amber-300 mb-14 text-center">Funciones principales</h2>
@@ -319,7 +340,7 @@ function FeaturesCarouselSection() {
       </div>
       <div
         ref={containerRef}
-        className="carousel-acordeon flex gap-10 overflow-x-auto px-1 pb-12 snap-x snap-mandatory justify-center"
+        className="carousel-acordeon flex gap-10 overflow-x-auto px-1 pb-14 snap-x snap-mandatory justify-center"
         style={{
           scrollbarWidth: "none",
           msOverflowStyle: "none",
@@ -335,21 +356,20 @@ function FeaturesCarouselSection() {
               active === idx
                 ? "active shadow-glow scale-110 z-30"
                 : Math.abs(active - idx) === 1
-                ? "neighbor scale-95 opacity-90 z-10"
-                : "inactive scale-90 opacity-60 z-0"
+                ? "neighbor scale-98 opacity-90 z-10"
+                : "inactive scale-95 opacity-60 z-0"
             )}
             style={{
-              minWidth: 330,
-              maxWidth: 350,
-              height: active === idx ? 410 : 320,
-              marginTop: active === idx ? 0 : 35,
-              marginBottom: active === idx ? 0 : 40,
-              background: "linear-gradient(120deg, #181325f7 60%, #ffe06619 100%)",
+              minWidth: 310,
+              maxWidth: 340,
+              background: "linear-gradient(140deg,#181325 60%,#ffe06619 100%)",
               border: active === idx ? "2.4px solid #ffe066cc" : "1.5px solid #ffe06640",
               boxShadow: active === idx
                 ? "0 0 40px 8px #ffe06655, 0 10px 28px #111a"
                 : "0 1px 12px #0007",
               outline: active === idx ? "2px solid #fff2" : "none",
+              marginTop: active === idx ? -15 : 16,
+              marginBottom: active === idx ? -15 : 24,
             }}
             onClick={() => setActive(idx)}
             onFocus={() => setActive(idx)}
@@ -365,7 +385,8 @@ function FeaturesCarouselSection() {
           </div>
         ))}
       </div>
-      <style jsx global>{`
+      {/* Animaciones y estilos solo para esta sección */}
+      <style jsx>{`
         .carousel-acordeon::-webkit-scrollbar { display: none; }
         .arrow-btn {
           background: linear-gradient(120deg, #ffe066bb 20%, #ffdb66 90%);
@@ -386,7 +407,7 @@ function FeaturesCarouselSection() {
           border-radius: 26px;
           overflow: hidden;
           box-shadow: 0 2px 16px #181325a8;
-          transition: all .5s cubic-bezier(.43,1.53,.56,1.04);
+          transition: all .45s cubic-bezier(.43,1.53,.56,1.04);
           cursor: pointer;
         }
         .feature-card-acordeon.active {
@@ -395,8 +416,11 @@ function FeaturesCarouselSection() {
           outline: 2.5px solid #ffe06644;
           z-index: 50;
         }
+        .feature-card-acordeon.neighbor {
+          filter: blur(.2px) brightness(0.97);
+        }
         .feature-card-acordeon.inactive {
-          opacity: .65;
+          opacity: .60;
         }
         .feature-card-acordeon .expanded-detail {
           border-top: 1.5px solid #ffe0662c;
