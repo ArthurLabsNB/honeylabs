@@ -13,16 +13,45 @@ const prisma = globalForPrisma.prisma ?? new PrismaClient();
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 // --- CONFIGURACIÓN SEGURA ---
-const JWT_SECRET = process.env.JWT_SECRET ?? 'mi_clave_de_emergencia'; // Cambia esto en producción
+const JWT_SECRET = process.env.JWT_SECRET ?? 'mi_clave_de_emergencia';
 const COOKIE_NAME = 'hl_session';
 const COOKIE_EXPIRES = 60 * 60 * 24 * 7; // 7 días en segundos
+
+// Utilidad: obtiene plan activo y límites del usuario
+async function obtenerPlanYLimites(usuario: any) {
+  // Si usuario tiene plan propio, ese es prioritario
+  if (usuario.planId) {
+    const plan = await prisma.plan.findUnique({ where: { id: usuario.planId } });
+    return plan ? {
+      tipo: 'usuario',
+      nombre: plan.nombre,
+      limites: plan.limites ? JSON.parse(plan.limites) : {},
+      id: plan.id
+    } : null;
+  }
+  // Si usuario tiene entidad con plan, usar ese
+  if (usuario.entidadId) {
+    const entidad = await prisma.entidad.findUnique({
+      where: { id: usuario.entidadId },
+      include: { plan: true }
+    });
+    if (entidad?.plan) {
+      return {
+        tipo: 'entidad',
+        nombre: entidad.plan.nombre,
+        limites: entidad.plan.limites ? JSON.parse(entidad.plan.limites) : {},
+        id: entidad.plan.id
+      };
+    }
+  }
+  return null; // Sin plan explícito
+}
 
 // ---- POST: Login ----
 export async function POST(req: NextRequest) {
   try {
     const { correo, contrasena } = await req.json();
 
-    // Validación básica
     if (!correo || !contrasena) {
       return NextResponse.json(
         { success: false, error: 'Correo y contraseña requeridos.' },
@@ -33,17 +62,25 @@ export async function POST(req: NextRequest) {
     // Busca el usuario (correo minúsculas y sin espacios)
     const usuario = await prisma.usuario.findUnique({
       where: { correo: correo.toLowerCase().trim() },
+      include: {
+        entidad: {
+          select: { id: true, nombre: true, tipo: true, planId: true }
+        },
+        roles: { select: { id: true, nombre: true, descripcion: true, permisos: true } },
+        suscripciones: {
+          where: { activo: true },
+          select: { id: true, plan: { select: { nombre: true, limites: true } }, fechaFin: true }
+        },
+      }
     });
 
     if (!usuario) {
-      // Mensaje genérico para evitar enumeración
       return NextResponse.json(
         { success: false, error: 'Credenciales inválidas.' },
         { status: 401 }
       );
     }
 
-    // Validar contraseña (bcrypt compara hash)
     const passwordOk = await bcrypt.compare(contrasena, usuario.contrasena);
     if (!passwordOk) {
       return NextResponse.json(
@@ -52,7 +89,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Checa estado de cuenta
     if ((usuario.estado ?? 'activo') !== 'activo') {
       return NextResponse.json(
         { success: false, error: 'Tu cuenta no está validada o ha sido suspendida.' },
@@ -60,21 +96,53 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Generar JWT (nunca pongas datos sensibles, nunca la contraseña)
+    // Obtén info de plan activo y límites
+    const planActivo = await obtenerPlanYLimites(usuario);
+
+    // Opcional: extrae roles en formato simple
+    const roles = (usuario.roles ?? []).map((r: any) => ({
+      id: r.id,
+      nombre: r.nombre,
+      descripcion: r.descripcion,
+      permisos: r.permisos ? JSON.parse(r.permisos) : {},
+    }));
+
+    // Opcional: suscripción directa
+    const suscripcionActiva = usuario.suscripciones?.length > 0
+      ? {
+          id: usuario.suscripciones[0].id,
+          plan: usuario.suscripciones[0].plan?.nombre,
+          limites: usuario.suscripciones[0].plan?.limites
+            ? JSON.parse(usuario.suscripciones[0].plan.limites)
+            : {},
+          fechaFin: usuario.suscripciones[0].fechaFin,
+        }
+      : null;
+
+    // Payload para JWT (nunca contraseña)
     const payload = {
       id: usuario.id,
       nombre: usuario.nombre,
-      tipoCuenta: usuario.tipoCuenta,
       correo: usuario.correo,
+      tipoCuenta: usuario.tipoCuenta,
       estado: usuario.estado,
       entidadId: usuario.entidadId,
+      entidad: usuario.entidad ? {
+        id: usuario.entidad.id,
+        nombre: usuario.entidad.nombre,
+        tipo: usuario.entidad.tipo,
+        planId: usuario.entidad.planId
+      } : null,
+      roles,
+      plan: planActivo,
+      suscripcion: suscripcionActiva,
     };
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: COOKIE_EXPIRES });
 
     // Set cookie segura
     const res = NextResponse.json(
-      { success: true, mensaje: 'Inicio de sesión exitoso.', ...payload },
+      { success: true, mensaje: 'Inicio de sesión exitoso.', usuario: payload },
       { status: 200 }
     );
     res.cookies.set(COOKIE_NAME, token, {
@@ -114,7 +182,6 @@ export async function GET(req: NextRequest) {
         { status: 200 }
       );
     } catch (e) {
-      // Token inválido o expirado
       return NextResponse.json(
         { success: false, error: 'Sesión inválida o expirada.' },
         { status: 401 }
@@ -136,8 +203,6 @@ export async function DELETE(req: NextRequest) {
       { success: true, mensaje: 'Sesión cerrada exitosamente.' },
       { status: 200 }
     );
-
-    // Elimina la cookie del cliente
     res.cookies.set(COOKIE_NAME, '', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

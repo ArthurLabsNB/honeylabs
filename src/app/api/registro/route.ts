@@ -22,6 +22,15 @@ function obtenerExtension(nombre: string): string {
   return nombre.slice(nombre.lastIndexOf('.')).toLowerCase();
 }
 
+// 🔑 Obtiene el ID de plan inicial según tipo de cuenta
+async function obtenerIdPlanInicial(tipoCuenta: string): Promise<number | null> {
+  let nombrePlan: string = '';
+  if (tipoCuenta === 'empresarial' || tipoCuenta === 'institucional') nombrePlan = 'Empresarial';
+  else nombrePlan = 'Free'; // estandar, personal, etc.
+  const plan = await prisma.plan.findFirst({ where: { nombre: { equals: nombrePlan, mode: 'insensitive' } } });
+  return plan?.id ?? null;
+}
+
 export async function POST(req: NextRequest) {
   try {
     console.info('📥 Iniciando registro de usuario');
@@ -62,16 +71,13 @@ export async function POST(req: NextRequest) {
       if (!archivo) {
         return NextResponse.json({ error: 'Se requiere un archivo de validación.' }, { status: 400 });
       }
-
       if (!TIPOS_PERMITIDOS.includes(archivo.type)) {
         return NextResponse.json({ error: 'Tipo de archivo no permitido.' }, { status: 415 });
       }
-
       const extension = obtenerExtension(archivo.name);
       if (!EXTENSIONES_PERMITIDAS.includes(extension)) {
         return NextResponse.json({ error: 'Extensión de archivo no válida.' }, { status: 415 });
       }
-
       try {
         const buffer = await archivo.arrayBuffer();
         if (buffer.byteLength > BYTES_MAXIMOS) {
@@ -96,16 +102,13 @@ export async function POST(req: NextRequest) {
         if (!codigoEncontrado || !codigoEncontrado.activo) {
           return NextResponse.json({ error: 'Código inválido o caducado.' }, { status: 400 });
         }
-
         const almacen = await prisma.almacen.findUnique({
           where: { id: codigoEncontrado.almacenId },
           include: { entidad: true },
         });
-
         if (!almacen) {
           return NextResponse.json({ error: 'Error al asociar el almacén del código.' }, { status: 500 });
         }
-
         entidadId = almacen.entidadId;
         codigoUsado = codigo;
       } catch (err: any) {
@@ -116,6 +119,9 @@ export async function POST(req: NextRequest) {
 
     // Hash de contraseña
     const hashedPassword = await bcrypt.hash(contrasena, 10);
+
+    // Seleccionar plan inicial (según tipoCuenta)
+    const planId = await obtenerIdPlanInicial(tipoCuenta);
 
     // Guardar usuario en base de datos
     let nuevoUsuario;
@@ -133,6 +139,8 @@ export async function POST(req: NextRequest) {
           codigoUsado,
           archivoNombre,
           archivoBuffer,
+          planId,
+          // Puedes agregar más campos aquí según extiendas el modelo
         },
       });
       console.info('✅ Usuario creado:', nuevoUsuario.id, correo);

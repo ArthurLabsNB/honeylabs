@@ -12,23 +12,54 @@ datasource db {
 }
 
 //
-// 🏢 Modelo de ENTIDADES (empresas, instituciones, etc.)
+// 🏆 PLANES Y SUSCRIPCIONES
+//
+model Plan {
+  id           Int        @id @default(autoincrement())
+  nombre       String     // Ej: 'Free', 'Pro', 'Empresarial'
+  descripcion  String?
+  precio       Float?
+  periodicidad String?    // 'mensual', 'anual'
+  limites      String?    // JSON: {almacenes: 2, colaboradores: 5, ...}
+  usuarios     Usuario[]
+  entidades    Entidad[]
+  suscripciones Suscripcion[]
+}
+
+model Suscripcion {
+  id           Int        @id @default(autoincrement())
+  usuarioId    Int?
+  entidadId    Int?
+  planId       Int
+  fechaInicio  DateTime   @default(now())
+  fechaFin     DateTime?
+  activo       Boolean    @default(true)
+  usuario      Usuario?   @relation(fields: [usuarioId], references: [id])
+  entidad      Entidad?   @relation(fields: [entidadId], references: [id])
+  plan         Plan       @relation(fields: [planId], references: [id])
+}
+
+//
+// 🏢 ENTIDADES (empresas, instituciones, etc.)
 //
 model Entidad {
-  id             Int       @id @default(autoincrement())
+  id             Int          @id @default(autoincrement())
   nombre         String
   tipo           String                     // ej: 'institucional', 'empresarial'
   correoContacto String
   telefono       String?
   direccion      String?
-  fechaCreacion  DateTime  @default(now())
+  fechaCreacion  DateTime      @default(now())
   almacenes      Almacen[]
   roles          Rol[]
   usuarios       Usuario[]
+  planId         Int?          // Plan activo para la entidad
+  plan           Plan?         @relation(fields: [planId], references: [id])
+  suscripciones  Suscripcion[]
 }
 
 //
-// 👤 Modelo de USUARIOS
+// 👤 USUARIOS
 //
 model Usuario {
   id            Int              @id @default(autoincrement())
@@ -38,17 +69,30 @@ model Usuario {
   contrasena    String
   googleId      String?          // Para login alternativo con Google (futuro)
   tipoCuenta    String           // 'estandar', 'institucional', etc.
-  estado        String           @default("pendiente")  // 'pendiente' o 'activo'
+  estado        String           @default("pendiente")  // 'pendiente', 'activo'
   fechaRegistro DateTime         @default(now())
 
   // 🔗 Asociación con entidad si aplica
   entidadId     Int?
   entidad       Entidad?         @relation(fields: [entidadId], references: [id])
 
+  // Plan y suscripciones
+  planId        Int?             // Plan activo del usuario (si aplica)
+  plan          Plan?            @relation(fields: [planId], references: [id])
+  suscripciones Suscripcion[]
+
   // 📎 Soporte para validación de cuenta
   archivoBuffer Bytes?
   archivoNombre String?
   codigoUsado   String?
+
+  // 🔑 Seguridad y opciones avanzadas
+  fotoPerfil        Bytes?          // Imagen de perfil (BLOB)
+  fotoPerfilNombre  String?
+  preferencias      String?         // JSON o texto de preferencias/ajustes
+  tiene2FA         Boolean?         @default(false)
+  metodo2FA        String?          // 'email', 'app', etc.
+  codigo2FASecret  String?          // secreto para autenticador
 
   // 🔗 Relaciones múltiples
   almacenes     UsuarioAlmacen[]
@@ -64,10 +108,45 @@ model Usuario {
   puntajesBreakout     PuntajeBreakout[]
   puntajesFlappyBee    PuntajeFlappyBee[]
   puntajesSpaceShooter PuntajeSpaceShooter[]
+
+  // Relaciones a otros módulos
+  eventosCreados       EventoAlmacen[]      @relation("EventosCreados")
+  novedadesCreadas     NovedadAlmacen[]     @relation("NovedadesCreadas")
+  documentosSubidos    DocumentoAlmacen[]   @relation("DocumentosSubidos")
+  incidenciasCreadas   Incidencia[]         @relation("IncidenciasCreadas")
+  incidenciasResueltas Incidencia[]         @relation("IncidenciasResueltas")
+  notificaciones       Notificacion[]
+  bitacoraCambios      BitacoraCambioPerfil[]
+  sesiones            SesionUsuario[]
 }
 
 //
-// 🎭 Roles personalizados
+// 👁️‍🗨️ BITÁCORA DE CAMBIOS DE PERFIL
+//
+model BitacoraCambioPerfil {
+  id         Int      @id @default(autoincrement())
+  usuarioId  Int
+  cambios    String
+  fecha      DateTime @default(now())
+  usuario    Usuario  @relation(fields: [usuarioId], references: [id])
+}
+
+//
+// 🖥️ HISTORIAL DE SESIONES DE USUARIO
+//
+model SesionUsuario {
+  id           Int      @id @default(autoincrement())
+  usuarioId    Int
+  userAgent    String?
+  ip           String?
+  fechaInicio  DateTime @default(now())
+  fechaUltima  DateTime @default(now())
+  activa       Boolean  @default(true)
+  usuario      Usuario  @relation(fields: [usuarioId], references: [id])
+}
+
+//
+// 🎭 ROLES PERSONALIZADOS
 //
 model Rol {
   id          Int       @id @default(autoincrement())
@@ -80,7 +159,7 @@ model Rol {
 }
 
 //
-// 📦 Almacenes físicos o virtuales
+// 📦 ALMACENES
 //
 model Almacen {
   id                      Int              @id @default(autoincrement())
@@ -100,6 +179,13 @@ model Almacen {
   codigos     CodigoAlmacen[]
   usuarios    UsuarioAlmacen[]
   movimientos Movimiento[]
+
+  // Nuevos módulos
+  eventos         EventoAlmacen[]
+  novedades       NovedadAlmacen[]
+  documentos      DocumentoAlmacen[]
+  incidencias     Incidencia[]
+  notificaciones  Notificacion[]
 }
 
 //
@@ -137,7 +223,7 @@ model CodigoAlmacen {
 }
 
 //
-// 📊 Movimientos de almacén (entradas y salidas)
+// 📊 MOVIMIENTOS DE ALMACÉN (entradas y salidas)
 //
 model Movimiento {
   id          Int       @id @default(autoincrement())
@@ -156,7 +242,87 @@ model Movimiento {
 }
 
 //
-// 🎮 PACMAN
+// 📅 EVENTOS DE CALENDARIO POR ALMACÉN
+//
+model EventoAlmacen {
+  id           Int       @id @default(autoincrement())
+  titulo       String
+  descripcion  String?
+  fechaInicio  DateTime
+  fechaFin     DateTime?
+  tipo         String?        // ej: 'mantenimiento', 'auditoría', etc.
+  archivoUrl   String?
+  almacenId    Int
+  almacenes    Almacen        @relation(fields: [almacenId], references: [id])
+  creadoPorId  Int
+  creadoPor    Usuario        @relation("EventosCreados", fields: [creadoPorId], references: [id])
+}
+
+//
+// 📰 NOVEDADES Y ANUNCIOS POR ALMACÉN
+//
+model NovedadAlmacen {
+  id          Int      @id @default(autoincrement())
+  titulo      String
+  contenido   String
+  fecha       DateTime @default(now())
+  almacenId   Int
+  almacenes   Almacen  @relation(fields: [almacenId], references: [id])
+  creadoPorId Int
+  creadoPor   Usuario  @relation("NovedadesCreadas", fields: [creadoPorId], references: [id])
+}
+
+//
+// 🔔 NOTIFICACIONES (usuario + almacén opcional)
+//
+model Notificacion {
+  id          Int      @id @default(autoincrement())
+  usuarioId   Int
+  mensaje     String
+  leida       Boolean  @default(false)
+  tipo        String?  // ej: 'evento', 'novedad', etc.
+  fecha       DateTime @default(now())
+  almacenId   Int?
+  usuario     Usuario  @relation(fields: [usuarioId], references: [id])
+  almacenes   Almacen? @relation(fields: [almacenId], references: [id])
+}
+
+//
+// 📁 DOCUMENTOS OFICIALES POR ALMACÉN
+//
+model DocumentoAlmacen {
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  url         String
+  descripcion String?
+  fecha       DateTime @default(now())
+  version     String?
+  almacenId   Int
+  almacen     Almacen  @relation(fields: [almacenId], references: [id])
+  subidoPorId Int
+  subidoPor   Usuario  @relation("DocumentosSubidos", fields: [subidoPorId], references: [id])
+}
+
+//
+// ⚠️ INCIDENCIAS
+//
+model Incidencia {
+  id            Int      @id @default(autoincrement())
+  titulo        String
+  descripcion   String
+  estado        String   @default("abierta")
+  fecha         DateTime @default(now())
+  almacenId     Int
+  almacen       Almacen  @relation(fields: [almacenId], references: [id])
+  creadaPorId   Int
+  creadaPor     Usuario  @relation("IncidenciasCreadas", fields: [creadaPorId], references: [id])
+  resueltaPorId Int?
+  resueltaPor   Usuario? @relation("IncidenciasResueltas", fields: [resueltaPorId], references: [id])
+  fechaResuelta DateTime?
+}
+
+//
+// 🎮 MINIJUEGOS (no cambian)
 //
 model PuntajePacman {
   id        Int      @id @default(autoincrement())
@@ -166,86 +332,65 @@ model PuntajePacman {
   fecha     DateTime @default(now())
 }
 
-//
-// 🎮 MARIO BROS
-//
 model PuntajeMario {
   id        Int      @id @default(autoincrement())
   usuario   Usuario  @relation(fields: [usuarioId], references: [id])
   usuarioId Int
-  nivel     Int      // nivel más alto alcanzado
-  puntaje   Int      // score total
+  nivel     Int
+  puntaje   Int
   fecha     DateTime @default(now())
 }
 
-//
-// 🎮 SNAKE
-//
 model PuntajeSnake {
   id        Int      @id @default(autoincrement())
   usuario   Usuario  @relation(fields: [usuarioId], references: [id])
   usuarioId Int
-  longitud  Int      // longitud máxima alcanzada
-  puntaje   Int      // puntos totales
+  longitud  Int
+  puntaje   Int
   fecha     DateTime @default(now())
 }
 
-//
-// 🎮 TETRIS
-//
 model PuntajeTetris {
   id        Int      @id @default(autoincrement())
   usuario   Usuario  @relation(fields: [usuarioId], references: [id])
   usuarioId Int
-  lineas    Int      // líneas completadas
-  puntaje   Int      // score total
+  lineas    Int
+  puntaje   Int
   fecha     DateTime @default(now())
 }
 
-//
-// 🎮 PING PONG
-//
 model PuntajePingPong {
   id        Int      @id @default(autoincrement())
   usuario   Usuario  @relation(fields: [usuarioId], references: [id])
   usuarioId Int
-  rondas    Int      // rondas ganadas
-  puntaje   Int      // score final
+  rondas    Int
+  puntaje   Int
   fecha     DateTime @default(now())
 }
 
-//
-// 🎮 BREAKOUT
-//
 model PuntajeBreakout {
   id        Int      @id @default(autoincrement())
   usuario   Usuario  @relation(fields: [usuarioId], references: [id])
   usuarioId Int
-  nivel     Int      // nivel máximo
-  puntaje   Int      // puntos
+  nivel     Int
+  puntaje   Int
   fecha     DateTime @default(now())
 }
 
-//
-// 🎮 FLAPPYBEE
-//
 model PuntajeFlappyBee {
   id        Int      @id @default(autoincrement())
   usuario   Usuario  @relation(fields: [usuarioId], references: [id])
   usuarioId Int
-  distancia Int      // distancia recorrida
-  puntaje   Int      // puntos
+  distancia Int
+  puntaje   Int
   fecha     DateTime @default(now())
 }
 
-//
-// 🎮 SPACESHOOTER
-//
 model PuntajeSpaceShooter {
   id        Int      @id @default(autoincrement())
   usuario   Usuario  @relation(fields: [usuarioId], references: [id])
   usuarioId Int
-  enemigos  Int      // enemigos eliminados
-  puntaje   Int      // score total
+  enemigos  Int
+  puntaje   Int
   fecha     DateTime @default(now())
 }
