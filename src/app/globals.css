@@ -1,15 +1,9 @@
 @import "tailwindcss";
 
+/* =================== VARIABLES DE COLOR =================== */
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,50 +13,43 @@
   }
 }
 
-/* ===== FONDO SIEMPRE 100% Y SIN DELIMITACIONES ===== */
 html, body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-  width: 100vw;
   min-height: 100vh;
+  width: 100vw;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   overflow-x: hidden;
 }
 
-body {
-  /* fallback para scrolls largos */
-  min-height: 100vh;
-}
-
-/* Evita que los contenedores se limiten en zoom */
+/* Asegura que el contenedor raíz nunca limite el fondo */
 #__next, #root {
   min-height: 100vh;
   width: 100vw;
   background: inherit;
 }
 
-/* ================= ANIMACIONES SUGERIDAS ================= */
+/* =============== ANIMACIONES NECESARIAS =============== */
 @keyframes blink { 50% { opacity: 0 } }
 .animate-blink { animation: blink 1.05s steps(1) infinite; }
 
 @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
 .animate-fade-in { animation: fadeIn 0.7s ease 0.15s both; }
 
+@keyframes blink-cursor {
+  0%, 100% { border-color: #ffeb3b; }
+  50% { border-color: transparent; }
+}
 .animate-typewriter {
   overflow: hidden;
   border-right: .15em solid #ffeb3b;
   white-space: nowrap;
   animation: blink-cursor 0.9s steps(1) infinite;
 }
-@keyframes blink-cursor {
-  0%, 100% { border-color: #ffeb3b; }
-  50% { border-color: transparent; }
-}
 
-/* Otras animaciones opcionales */
 @keyframes fadeInLeft {
   from { opacity: 0; transform: translateX(-48px); }
   to { opacity: 1; transform: none; }
@@ -74,6 +61,3 @@ body {
   to { opacity: 1; transform: scale(1) rotateY(0deg); }
 }
 .animate-3dpop { animation: pop3D 1.05s cubic-bezier(.22,.68,0,.17) both; }
-
-/* Puedes agregar más animaciones de tu lista aquí... */
-

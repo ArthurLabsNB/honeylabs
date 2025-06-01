@@ -7,27 +7,35 @@ import {
   ChevronDown, ChevronUp
 } from 'lucide-react';
 
-// ===== FONDO GIF GLOBAL =====
+// ========================
+// FONDO GIF GLOBAL
+// ========================
 function FondoGIF() {
+  // Usa div con background-image para mayor control responsivo
   return (
-    <img
-      src="/background.gif"
-      alt="Fondo animado"
-      className="fixed top-0 left-0 w-screen h-screen min-w-full min-h-full object-cover z-[-1] pointer-events-none select-none"
+    <div
+      className="fixed top-0 left-0 w-screen h-screen min-w-full min-h-full z-[-2] pointer-events-none select-none transition-all duration-500"
       style={{
+        backgroundImage: "url('/background.gif')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        inset: 0,
         width: "100vw",
         height: "100vh",
         minWidth: "100vw",
         minHeight: "100vh",
-        objectFit: "cover",
       }}
-      draggable={false}
+      aria-hidden="true"
+      tabIndex={-1}
     />
   );
 }
 
-// ===== HERO SECTION =====
-function useTypewriter(text: string, speed = 36) {
+// ========================
+// HERO SECTION
+// ========================
+function useTypewriter(text: string, speed = 36): string {
   const [displayed, setDisplayed] = useState('');
   useEffect(() => {
     setDisplayed('');
@@ -55,7 +63,7 @@ function HeroSection() {
     }
   }, [textoTyped, titulo.length]);
   return (
-    <section className="flex flex-col items-center justify-center min-h-[70vh] py-32 px-4 text-center select-none space-y-8">
+    <section className="flex flex-col items-center justify-center min-h-[75vh] py-28 md:py-36 px-4 text-center select-none space-y-8">
       <h1 className={clsx(
         'text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-amber-200 drop-shadow-xl transition-all animate-typewriter'
       )} style={{ fontFamily: `'Nunito', 'Inter', Arial, sans-serif` }}>
@@ -68,14 +76,20 @@ function HeroSection() {
       )}>
         {showDesc && descripcion}
       </div>
-      <a href="#acerca" className="bg-amber-400 hover:bg-amber-500 text-black font-semibold px-8 py-3 rounded-lg shadow-lg mt-3 animate-ripple transition">
+      <a
+        href="#acerca"
+        className="bg-amber-400 hover:bg-amber-500 text-black font-semibold px-8 py-3 rounded-lg shadow-lg mt-3 animate-ripple transition focus:outline-none focus:ring-2 focus:ring-amber-200"
+        aria-label="Explorar HoneyLabs"
+      >
         Explorar HoneyLabs
       </a>
     </section>
   );
 }
 
-// ===== ABOUT SECTION =====
+// ========================
+// ABOUT SECTION
+// ========================
 function AboutSection() {
   return (
     <section id="acerca" className="relative max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-14 py-24 md:py-32 px-4">
@@ -84,21 +98,35 @@ function AboutSection() {
         <p className="text-zinc-200 mb-6 max-w-lg text-lg md:text-xl font-normal">
           HoneyLabs es la solución moderna para la gestión logística y digitalización de inventarios en laboratorios, empresas e instituciones. Optimiza el registro, la organización y la consulta de materiales, facilitando procesos y colaboración en cualquier entorno.
         </p>
-        <a href="/acerca" className="inline-block bg-amber-400 hover:bg-amber-500 text-black font-medium px-6 py-2 rounded-lg shadow transition animate-ripple">Saber más</a>
+        <a
+          href="/acerca"
+          className="inline-block bg-amber-400 hover:bg-amber-500 text-black font-medium px-6 py-2 rounded-lg shadow transition animate-ripple"
+          aria-label="Saber más sobre HoneyLabs"
+        >
+          Saber más
+        </a>
       </div>
       <div className="flex-1 flex justify-center items-center animate-3dpop">
         <div className="relative group transition-transform duration-700 will-change-transform" tabIndex={0} style={{ perspective: '1000px', outline: 'none' }}>
-          <img src="/ilustracion-almacen-3d.png" alt="Ilustración Almacén" className="w-80 h-80 md:w-[26rem] md:h-[26rem] object-cover rounded-2xl shadow-2xl border-2 border-amber-100 group-hover:scale-105 group-hover:rotate-2 group-hover:shadow-3xl transition-transform duration-500" draggable={false} />
+          <img
+            src="/ilustracion-almacen-3d.png"
+            alt="Ilustración Almacén"
+            className="w-80 h-80 md:w-[26rem] md:h-[26rem] object-cover rounded-2xl shadow-2xl border-2 border-amber-100 group-hover:scale-105 group-hover:rotate-2 group-hover:shadow-3xl transition-transform duration-500"
+            draggable={false}
+            loading="lazy"
+          />
         </div>
       </div>
     </section>
   );
 }
 
-// ===== KPI SECTION =====
+// ========================
+// KPI SECTION
+// ========================
 type Metrics = { entradas: number; salidas: number; usuarios: number; almacenes: number };
 
-function useCountUp(to: number, duration = 1100) {
+function useCountUp(to: number, duration = 1100): number {
   const [count, setCount] = useState(0);
   useEffect(() => {
     let start = 0, raf: number, startTime: number;
@@ -191,7 +219,9 @@ function LoaderKPI() {
   );
 }
 
-// ===== FEATURES SECTION =====
+// ========================
+// FEATURES SECTION
+// ========================
 interface FeatureCardProps {
   title: string;
   desc: string;
@@ -229,14 +259,16 @@ function FeatureCard({ title, desc, icon, big, small, animClass = "" }: FeatureC
       ${animClass}
       float-card`
     }>
-      <img src={icon} alt={title} className={`mb-3 ${big ? "w-20 h-20" : "w-12 h-12"} drop-shadow`} />
+      <img src={icon} alt={title} className={`mb-3 ${big ? "w-20 h-20" : "w-12 h-12"} drop-shadow`} loading="lazy" />
       <h3 className="font-semibold text-amber-200 mb-1 text-center">{title}</h3>
       <p className="text-zinc-200 text-center">{desc}</p>
     </div>
   );
 }
 
-// ===== ROADMAP SECTION =====
+// ========================
+// ROADMAP SECTION (línea de tiempo animada)
+// ========================
 interface RoadmapStep {
   titulo: string;
   texto: string;
@@ -285,7 +317,9 @@ function RoadmapSection() {
   );
 }
 
-// ===== TESTIMONIALS CAROUSEL SECTION =====
+// ========================
+// TESTIMONIALS SECTION (3D Slider)
+// ========================
 interface Testimonial {
   nombre: string;
   rol: string;
@@ -317,7 +351,7 @@ function TestimonialsSection() {
             )}
             style={{ transition: "all 0.8s cubic-bezier(.18,.89,.32,1.28)", width: "350px" }}
           >
-            <img src={t.img} alt={t.nombre} className="w-24 h-24 rounded-full object-cover border-4 border-amber-300 mb-3 shadow-lg" />
+            <img src={t.img} alt={t.nombre} className="w-24 h-24 rounded-full object-cover border-4 border-amber-300 mb-3 shadow-lg" loading="lazy" />
             <div className="bg-zinc-900/85 p-6 rounded-xl shadow-xl border border-amber-100/20 text-zinc-100 text-center font-normal text-lg">
               <p className="mb-2">"{t.texto}"</p>
               <span className="text-amber-200 font-bold">{t.nombre}</span>
@@ -330,11 +364,10 @@ function TestimonialsSection() {
   );
 }
 
-// ===== FAQ ACCORDION SECTION =====
-interface FAQ {
-  q: string;
-  a: string;
-}
+// ========================
+// FAQ ACCORDION SECTION
+// ========================
+interface FAQ { q: string; a: string; }
 function FAQSection() {
   const faqs: FAQ[] = [
     { q: "¿Qué puedo hacer si soy estudiante?", a: "Puedes consultar el inventario, hacer solicitudes de materiales y ver tus registros de uso." },
@@ -366,7 +399,9 @@ function FAQSection() {
   );
 }
 
-// ===== PARTNERS/ALIADOS SECTION =====
+// ========================
+// PARTNERS/ALIADOS SECTION (Acordeón Multimedia)
+// ========================
 interface Aliado {
   nombre: string;
   img: string;
@@ -406,8 +441,8 @@ function PartnersSection() {
             "rounded-2xl bg-zinc-900/80 border border-amber-300/15 shadow-xl transition-all",
             open === i ? "scale-100 shadow-2xl border-amber-300/30" : "scale-95 opacity-70"
           )}>
-            <button className="flex items-center w-full p-5 gap-6 focus:outline-none" onClick={() => setOpen(i)}>
-              <img src={a.img} alt={a.nombre} className={clsx("rounded-2xl shadow border-2 object-cover transition", a.principal ? "w-24 h-24 border-amber-300" : "w-20 h-20 border-amber-200")} />
+            <button className="flex items-center w-full p-5 gap-6 focus:outline-none" onClick={() => setOpen(i)} aria-expanded={open === i}>
+              <img src={a.img} alt={a.nombre} className={clsx("rounded-2xl shadow border-2 object-cover transition", a.principal ? "w-24 h-24 border-amber-300" : "w-20 h-20 border-amber-200")} loading="lazy" />
               <div className="flex flex-col items-start">
                 <span className={clsx("font-bold text-lg", a.principal ? "text-amber-200" : "text-amber-100")}>{a.nombre}</span>
                 <span className="text-zinc-200 text-sm">{a.desc}</span>
@@ -422,12 +457,15 @@ function PartnersSection() {
   );
 }
 
-// ===== MAIN PAGE =====
+// ========================
+// MAIN PAGE (EXPORT)
+// ========================
 export default function Page() {
   return (
     <main className="relative min-h-screen w-full font-sans overflow-x-hidden">
       <FondoGIF />
-      <div className="absolute inset-0 bg-black/20 pointer-events-none z-0" />
+      {/* Overlay suave para contraste (ajusta opacidad si lo ves muy oscuro) */}
+      <div className="absolute inset-0 bg-black/25 pointer-events-none z-0 transition-all duration-700" />
       <div className="relative z-10 flex flex-col min-h-screen">
         <HeroSection />
         <AboutSection />
