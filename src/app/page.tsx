@@ -8,31 +8,6 @@ import {
 } from 'lucide-react';
 
 // ========================
-// FONDO GIF GLOBAL
-// ========================
-function FondoGIF() {
-  // Usa div con background-image para mayor control responsivo
-  return (
-    <div
-      className="fixed top-0 left-0 w-screen h-screen min-w-full min-h-full z-[-2] pointer-events-none select-none transition-all duration-500"
-      style={{
-        backgroundImage: "url('/background.gif')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        inset: 0,
-        width: "100vw",
-        height: "100vh",
-        minWidth: "100vw",
-        minHeight: "100vh",
-      }}
-      aria-hidden="true"
-      tabIndex={-1}
-    />
-  );
-}
-
-// ========================
 // HERO SECTION
 // ========================
 function useTypewriter(text: string, speed = 36): string {
@@ -267,55 +242,112 @@ function FeatureCard({ title, desc, icon, big, small, animClass = "" }: FeatureC
 }
 
 // ========================
-// ROADMAP SECTION (línea de tiempo animada)
+// ROADMAP SECTION (línea de tiempo circuito animada)
 // ========================
 interface RoadmapStep {
   titulo: string;
   texto: string;
   icon: string;
+  detalle?: string;
 }
 function RoadmapSection() {
+  // ¡Personaliza tus pasos aquí! Más largo y visual.
   const pasos: RoadmapStep[] = [
-    { titulo: "Registro", texto: "Crea tu cuenta o únete a una organización", icon: "👤" },
-    { titulo: "Configura tus almacenes", texto: "Agrega y personaliza tus almacenes, usuarios y permisos", icon: "🏢" },
-    { titulo: "Registra movimientos", texto: "Controla entradas y salidas en tiempo real", icon: "📦" },
-    { titulo: "Analiza y mejora", texto: "Obtén reportes automáticos y sugerencias", icon: "📊" },
+    { titulo: "Registro", texto: "Crea tu cuenta personal o por código institucional.", icon: "👤", detalle: "Solo necesitas un correo válido o el código que te proporciona tu organización." },
+    { titulo: "Validación y bienvenida", texto: "Activa tu cuenta y recibe acceso inicial.", icon: "✅", detalle: "En caso de empresas o instituciones, el equipo valida tus datos manualmente." },
+    { titulo: "Configura tus almacenes", texto: "Agrega y personaliza almacenes, usuarios y permisos.", icon: "🏢", detalle: "Puedes crear almacenes, invitar colaboradores y definir roles." },
+    { titulo: "Inventario inicial", texto: "Carga el stock base de materiales y herramientas.", icon: "📦", detalle: "Carga masiva desde Excel/CSV, edición rápida y catálogos inteligentes." },
+    { titulo: "Registra movimientos", texto: "Controla entradas, salidas y transferencias.", icon: "🔄", detalle: "Todo movimiento queda registrado y es auditable, con alertas automáticas." },
+    { titulo: "Consulta y reportes", texto: "Visualiza inventarios y genera reportes automáticos.", icon: "📊", detalle: "Estadísticas en tiempo real, exportables y con filtros personalizados." },
+    { titulo: "Colaboración activa", texto: "Solicita materiales, comparte tareas, colabora.", icon: "🤝", detalle: "Flujos de aprobación, notificaciones y colaboración multiusuario." },
+    { titulo: "Optimiza y crece", texto: "Usa la IA y analítica para mejorar procesos.", icon: "🚀", detalle: "Sugerencias de optimización, predicción de faltantes y automatización de compras." }
   ];
   const [activo, setActivo] = useState(2);
+  const [expand, setExpand] = useState<number | null>(null);
+
   useEffect(() => {
-    const id = setInterval(() => setActivo(a => (a + 1) % pasos.length), 2900);
+    const id = setInterval(() => setActivo(a => (a + 1) % pasos.length), 3500);
     return () => clearInterval(id);
-  }, []);
+  }, [pasos.length]);
+
   return (
-    <section className="max-w-5xl mx-auto py-24 px-4">
-      <h2 className="text-2xl md:text-3xl font-bold text-amber-300 mb-10 text-center">¿Cómo funciona?</h2>
-      <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-0">
+    <section className="max-w-6xl mx-auto py-32 px-4">
+      <h2 className="text-3xl md:text-4xl font-bold text-amber-300 mb-12 text-center">¿Cómo funciona?</h2>
+      <div className="w-full flex flex-col md:flex-row items-center justify-between gap-12 md:gap-0 relative z-0">
         {pasos.map((paso, i) => (
-          <div key={paso.titulo} className="flex flex-col items-center relative">
-            <div className={clsx(
-              "rounded-full flex items-center justify-center shadow-xl border-2 transition-all",
-              activo === i ? "bg-amber-400 text-black border-amber-400 scale-110" : "bg-zinc-800 text-amber-200 border-amber-300 scale-100"
-            )} style={{ width: 64, height: 64, fontSize: 34 }}>
-              <span>{paso.icon}</span>
-            </div>
-            <div className="absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2">
-              {i < pasos.length - 1 && (
-                <div className="w-32 h-2 bg-gradient-to-r from-amber-400 to-amber-300/60 rounded-full animate-pulse md:block hidden"
-                  style={{ marginLeft: 32 }}
-                />
+          <div key={paso.titulo} className="flex flex-col items-center relative group z-10">
+            {/* Icono y circuito */}
+            <button
+              onClick={() => setExpand(expand === i ? null : i)}
+              className={clsx(
+                "rounded-full flex items-center justify-center shadow-xl border-4 transition-all focus:outline-none",
+                activo === i ? "bg-gradient-to-br from-amber-300 to-yellow-400 border-amber-400 scale-125 animate-circuit-glow ring-4 ring-amber-200/30" :
+                  "bg-zinc-900 text-amber-200 border-amber-400 scale-100",
+                expand === i ? "ring-4 ring-amber-300/60" : ""
               )}
-            </div>
+              style={{
+                width: expand === i ? 96 : 64,
+                height: expand === i ? 96 : 64,
+                fontSize: expand === i ? 42 : 34,
+                zIndex: 15,
+                boxShadow: activo === i ? "0 0 28px #ffe06699,0 0 12px #ffe06644" : undefined,
+                transition: "all 0.48s cubic-bezier(.26,1.2,.28,1)"
+              }}
+              aria-label={paso.titulo}
+            >
+              <span>{paso.icon}</span>
+            </button>
+            {/* Línea "circuito" RGB animada */}
+            {i < pasos.length - 1 && (
+              <div className="w-2 h-16 md:w-32 md:h-2 flex-shrink-0">
+                <div className="h-full w-full mx-auto md:my-auto bg-gradient-to-r from-[#ffe066] via-[#ffd23b] to-[#faf3e8] rounded-full shadow-lg relative overflow-hidden animate-circuit-cable"
+                  style={{
+                    filter: activo === i ? "drop-shadow(0 0 14px #ffe06688)" : undefined,
+                    boxShadow: activo === i ? "0 0 24px #ffe06655" : undefined
+                  }}
+                />
+                {/* SVG relieves circuito */}
+                <svg width="100%" height="100%" className="absolute top-0 left-0 pointer-events-none" style={{ zIndex: 0 }}>
+                  <defs>
+                    <linearGradient id={`circuit${i}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#ffe066" />
+                      <stop offset="100%" stopColor="#ffd23b" />
+                    </linearGradient>
+                  </defs>
+                  <rect width="100%" height="100%" rx="12" fill={`url(#circuit${i})`} opacity="0.27" />
+                </svg>
+              </div>
+            )}
+            {/* Títulos y descripción */}
             <span className={clsx(
-              "font-semibold mt-4 text-center",
-              activo === i ? "text-amber-400 scale-105" : "text-amber-200"
+              "font-bold mt-4 text-center text-base md:text-lg select-none transition-all",
+              activo === i ? "text-amber-400 scale-110" : "text-amber-200"
             )}>{paso.titulo}</span>
             <span className="text-zinc-200 text-sm text-center mt-1 max-w-xs">{paso.texto}</span>
+            {/* Detalle expandible */}
+            {expand === i && (
+              <div className="mt-4 bg-zinc-900/95 rounded-2xl shadow-2xl border border-amber-100/15 px-8 py-6 max-w-xs text-zinc-100 animate-fade-in z-30 text-center text-base font-normal">
+                <div className="mb-2 text-amber-200 font-bold text-lg">{paso.titulo}</div>
+                <div>{paso.detalle}</div>
+              </div>
+            )}
           </div>
         ))}
       </div>
     </section>
   );
 }
+
+// Animaciones personalizadas CSS (agrega a tu globals.css)
+/*
+@keyframes circuitGlow { 0%,100%{box-shadow:0 0 32px #ffe06644;} 50%{box-shadow:0 0 56px #ffd23b99;} }
+.animate-circuit-glow { animation: circuitGlow 2.6s infinite alternate; }
+@keyframes circuitCable { 0%{filter:brightness(1);} 50%{filter:brightness(1.27);} 100%{filter:brightness(1);} }
+.animate-circuit-cable { animation: circuitCable 2.4s infinite; }
+*/
+
+
+
 
 // ========================
 // TESTIMONIALS SECTION (3D Slider)
@@ -344,7 +376,7 @@ function TestimonialsSection() {
         {testimonios.map((t, i) => (
           <div key={t.nombre}
             className={clsx(
-              "absolute top-0 left-[10%] -translate-x-1/2 flex flex-col items-center transition-all duration-700",
+              "absolute top-0 left-1/2 -translate-x-1/2 flex flex-col items-center transition-all duration-700",
               i === indice ? "opacity-100 scale-105 z-20" :
                 Math.abs(i - indice) === 1 ? "opacity-60 scale-95 z-10" : "opacity-0 scale-75 z-0",
               i > indice ? "translate-x-28" : i < indice ? "-translate-x-28" : "translate-x-0"
@@ -356,41 +388,6 @@ function TestimonialsSection() {
               <p className="mb-2">"{t.texto}"</p>
               <span className="text-amber-200 font-bold">{t.nombre}</span>
               <span className="ml-2 text-sm text-zinc-300">{t.rol}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-// ========================
-// FAQ ACCORDION SECTION
-// ========================
-interface FAQ { q: string; a: string; }
-function FAQSection() {
-  const faqs: FAQ[] = [
-    { q: "¿Qué puedo hacer si soy estudiante?", a: "Puedes consultar el inventario, hacer solicitudes de materiales y ver tus registros de uso." },
-    { q: "¿Puedo exportar mis datos?", a: "Sí, desde tu perfil puedes exportar toda tu información y registros en formato seguro." },
-    { q: "¿HoneyLabs es gratuito para escuelas?", a: "¡Sí! La plataforma es de uso gratuito para instituciones educativas registradas." },
-    { q: "¿Soportan control por roles?", a: "Sí. Puedes definir permisos granulares para cada usuario, almacén y función." },
-  ];
-  const [open, setOpen] = useState(-1);
-  return (
-    <section className="max-w-4xl mx-auto py-24 px-4">
-      <h2 className="text-2xl md:text-3xl font-bold text-amber-300 mb-7 text-center">Preguntas frecuentes</h2>
-      <div className="rounded-2xl bg-zinc-900/80 border border-amber-300/15 divide-y divide-amber-200/10 shadow-xl">
-        {faqs.map((faq, i) => (
-          <div key={i}>
-            <button className="flex w-full justify-between items-center p-6 text-left focus:outline-none group" onClick={() => setOpen(open === i ? -1 : i)}>
-              <span className="text-lg font-medium text-amber-100 group-hover:text-amber-400">{faq.q}</span>
-              {open === i ? <ChevronUp className="text-amber-300" /> : <ChevronDown className="text-amber-300" />}
-            </button>
-            <div className={clsx(
-              "overflow-hidden transition-all duration-500 px-6",
-              open === i ? "max-h-40 py-3 opacity-100" : "max-h-0 py-0 opacity-0"
-            )}>
-              <span className="block text-zinc-200 text-base">{faq.a}</span>
             </div>
           </div>
         ))}
@@ -463,9 +460,6 @@ function PartnersSection() {
 export default function Page() {
   return (
     <main className="relative min-h-screen w-full font-sans overflow-x-hidden">
-      <FondoGIF />
-      {/* Overlay suave para contraste (ajusta opacidad si lo ves muy oscuro) */}
-      <div className="absolute inset-0 bg-black/25 pointer-events-none z-0 transition-all duration-700" />
       <div className="relative z-10 flex flex-col min-h-screen">
         <HeroSection />
         <AboutSection />
@@ -473,7 +467,6 @@ export default function Page() {
         <FeaturesSection />
         <RoadmapSection />
         <TestimonialsSection />
-        <FAQSection />
         <PartnersSection />
       </div>
     </main>
