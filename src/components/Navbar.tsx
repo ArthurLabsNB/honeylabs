@@ -20,9 +20,30 @@ export default function Navbar() {
   const [usuario, setUsuario] = useState<any | null>(null);
   const [showTooltip, setShowTooltip] = useState(false);
 
+  // Obtiene el usuario en vivo del backend
   useEffect(() => {
-    const raw = localStorage.getItem('usuario');
-    setUsuario(raw ? JSON.parse(raw) : null);
+    async function fetchUser() {
+      try {
+        const res = await fetch('/api/perfil', { credentials: 'include' });
+        const data = await res.json();
+        if (data.success && data.usuario) {
+          setUsuario({
+            nombre: data.usuario.nombre,
+            correo: data.usuario.correo,
+            imagen: data.usuario.fotoPerfilNombre
+              ? `/api/perfil/foto?nombre=${encodeURIComponent(data.usuario.fotoPerfilNombre)}`
+              : undefined,
+            plan: data.usuario.planNombre, // Asegúrate que lo traes en el select
+            tiene2FA: data.usuario.tiene2FA,
+          });
+        } else {
+          setUsuario(null);
+        }
+      } catch {
+        setUsuario(null);
+      }
+    }
+    fetchUser();
   }, []);
 
   const [showTopBar, setShowTopBar] = useState(true);
@@ -109,7 +130,7 @@ export default function Navbar() {
               <Image
                 src="/logo-honeylabs.png"
                 alt="HoneyLabs"
-                width={32} // ← Más grande
+                width={32}
                 height={32}
                 className="h-8 w-8 transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-2"
                 draggable={false}

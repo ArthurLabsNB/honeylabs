@@ -9,16 +9,26 @@ import {
   Moon,
   Sun,
   Settings,
+  ShieldCheck,
+  BadgeCheck,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { usePathname, useRouter } from 'next/navigation';
 
+interface UsuarioData {
+  nombre: string;
+  correo: string;
+  imagen?: string | null; // url del avatar en endpoint /api/perfil/foto?nombre=
+  plan?: string;
+  tiene2FA?: boolean;
+}
+
 export default function UserMenu({
   usuario,
 }: {
-  usuario: { nombre: string; correo: string; imagen?: string | null } | null;
+  usuario: UsuarioData | null;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -26,11 +36,13 @@ export default function UserMenu({
   const [temaOscuro, setTemaOscuro] = useState(true); // Oscuro por default
   const refMenu = useRef<HTMLDivElement>(null);
 
+  // Avatar image url (si existe)
+  const [fotoPerfil, setFotoPerfil] = useState<string | null>(null);
+
   // Inicializa tema desde localStorage o sistema, por default oscuro
   useEffect(() => {
     let temaGuardado = localStorage.getItem('tema');
     if (!temaGuardado) {
-      // Si hay preferencia del sistema, úsala; si no, dark
       const preferenciaSistema = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
       temaGuardado = preferenciaSistema || 'dark';
     }
@@ -62,6 +74,22 @@ export default function UserMenu({
     setOpen(false);
   }, [pathname]);
 
+  // Carga foto de perfil desde el backend si está disponible (llama una sola vez)
+  useEffect(() => {
+    if (usuario?.imagen) {
+      setFotoPerfil(usuario.imagen);
+    } else if (usuario?.correo) {
+      // Si usas endpoint propio: `/api/perfil/foto?correo=...`
+      fetch(`/api/perfil/foto?correo=${encodeURIComponent(usuario.correo)}`)
+        .then(r => r.ok ? r.blob() : null)
+        .then(blob => {
+          if (blob) setFotoPerfil(URL.createObjectURL(blob));
+        });
+    } else {
+      setFotoPerfil(null);
+    }
+  }, [usuario]);
+
   // Switch Tema: actualiza html y localStorage
   const alternarTema = () => {
     setTemaOscuro((prev) => {
@@ -73,26 +101,45 @@ export default function UserMenu({
     });
   };
 
-  const cerrarSesion = () => {
-    localStorage.removeItem('usuario');
-    sessionStorage.clear();
-    document.cookie = 'session=; Max-Age=0; path=/';
+  // Cerrar sesión de verdad (endpoint)
+  const cerrarSesion = async () => {
     setOpen(false);
-    window.location.href = '/login';
+    await fetch('/api/login', { method: 'DELETE' });
+    router.replace('/login');
   };
 
-  // Avatar rendering (image or initial)
+  // Avatar rendering (image, svg avatar, or initial)
   const renderAvatar = () => {
-    if (usuario?.imagen) {
+    if (fotoPerfil) {
       return (
         <img
-          src={usuario.imagen}
+          src={fotoPerfil}
           alt="Avatar"
-          className="h-9 w-9 rounded-full object-cover"
+          className="h-9 w-9 rounded-full object-cover border-2 border-amber-300 shadow"
         />
       );
     }
-    return usuario?.correo?.[0]?.toUpperCase() || 'U';
+    if (usuario?.nombre) {
+      // Avatar colorido con inicial
+      const color = usuario.nombre.charCodeAt(0) % 5;
+      const bgList = [
+        'bg-amber-400',
+        'bg-blue-300',
+        'bg-emerald-300',
+        'bg-pink-300',
+        'bg-purple-400'
+      ];
+      return (
+        <span className={`h-9 w-9 rounded-full flex items-center justify-center font-bold text-lg ${bgList[color]} text-white shadow`}>
+          {usuario.nombre[0].toUpperCase()}
+        </span>
+      );
+    }
+    return (
+      <span className="h-9 w-9 rounded-full bg-gray-300 flex items-center justify-center font-bold text-lg text-white shadow">
+        U
+      </span>
+    );
   };
 
   return (
@@ -109,13 +156,33 @@ export default function UserMenu({
 
       {open && (
         <nav
-          className="absolute right-0 mt-2 w-56 origin-top-right rounded-xl border border-amber-200 bg-white shadow-xl z-50 animate-fade-scale dark:bg-zinc-900 dark:border-zinc-700"
+          className="absolute right-0 mt-2 w-60 origin-top-right rounded-xl border border-amber-200 bg-white shadow-xl z-50 animate-fade-scale dark:bg-zinc-900 dark:border-zinc-700"
           aria-label="Menú de usuario"
         >
           {/* Sesión activa */}
           {usuario ? (
             <div className="px-4 py-3">
-              <p className="text-sm font-semibold">{usuario?.nombre}</p>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-semibold">{usuario?.nombre}</span>
+                {/* PLAN */}
+                {usuario.plan && (
+                  <span className={clsx(
+                    "text-xs px-2 py-0.5 rounded-full ml-auto flex items-center gap-1",
+                    usuario.plan === "Pro"
+                      ? "bg-amber-100 text-amber-700 border border-amber-300"
+                      : usuario.plan === "Empresarial"
+                      ? "bg-sky-100 text-sky-700 border border-sky-300"
+                      : "bg-zinc-100 text-zinc-600 border border-zinc-200"
+                  )}>
+                    <BadgeCheck className="w-3 h-3" />
+                    {usuario.plan}
+                  </span>
+                )}
+                {/* 2FA */}
+                {usuario.tiene2FA && (
+                  <span title="2FA activo" className="ml-1 text-emerald-500"><ShieldCheck className="h-4 w-4 inline" /></span>
+                )}
+              </div>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 break-all">{usuario?.correo}</p>
             </div>
           ) : (
@@ -130,6 +197,10 @@ export default function UserMenu({
               <MenuLink href="/panel" icon={<LayoutDashboard className="h-4 w-4" />} label="Panel" tabIndex={open ? 0 : -1} />
               <MenuLink href="/configuracion" icon={<Settings className="h-4 w-4" />} label="Configuración" tabIndex={open ? 0 : -1} />
               <MenuLink href="/" icon={<Home className="h-4 w-4" />} label="Inicio" tabIndex={open ? 0 : -1} />
+              {/* Seguridad (2FA, solo acceso si está activo) */}
+              {usuario.tiene2FA && (
+                <MenuLink href="/configuracion#seguridad" icon={<ShieldCheck className="h-4 w-4 text-emerald-500" />} label="Seguridad" tabIndex={open ? 0 : -1} />
+              )}
             </div>
           )}
 
@@ -178,7 +249,8 @@ export default function UserMenu({
               className="block w-full px-4 py-3 text-center text-sm font-semibold text-white bg-amber-500 hover:bg-amber-600 transition flex items-center justify-center gap-2"
               tabIndex={open ? 0 : -1}
             >
-              Upgrade to Pro <ArrowUpRight className="h-4 w-4" />
+              {usuario?.plan === "Pro" || usuario?.plan === "Empresarial" ? "Gestionar mi Plan" : "Upgrade to Pro"}
+              <ArrowUpRight className="h-4 w-4" />
             </Link>
           </div>
         </nav>

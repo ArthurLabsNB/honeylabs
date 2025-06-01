@@ -106,6 +106,9 @@ export default function Configuracion() {
             contrasenaActual: "",
             nuevaContrasena: "",
           }));
+          if (newPerfil.usuario.fotoPerfilNombre) {
+            setFotoPreview(`/api/perfil/foto?nombre=${encodeURIComponent(newPerfil.usuario.fotoPerfilNombre)}`);
+          }
         }
       } else {
         setMensaje({ tipo: "error", texto: data.error || "Error al guardar cambios." });
@@ -120,7 +123,7 @@ export default function Configuracion() {
   // Exportar perfil (selección de secciones)
   async function handleExportarPerfil() {
     try {
-      const secciones = ["perfil", "almacenes", "bitacora"]; // puedes poner UI para elegir secciones si quieres
+      const secciones = ["perfil", "almacenes", "bitacora"];
       const res = await fetch(`/api/perfil/export?secciones=${secciones.join(",")}`, {
         method: "GET",
       });
@@ -144,23 +147,23 @@ export default function Configuracion() {
 
   if (cargando) {
     return (
-      <main className="min-h-[80vh] flex items-center justify-center">
-        <div className="text-amber-700 text-lg font-bold">Cargando perfil...</div>
+      <main className="min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-[#fffbe7] via-[#faf3e8] to-[#ffe06633]">
+        <div className="text-amber-700 text-lg font-bold animate-pulse">Cargando perfil...</div>
       </main>
     );
   }
 
   if (!perfil) {
     return (
-      <main className="min-h-[80vh] flex items-center justify-center">
+      <main className="min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-[#fffbe7] via-[#faf3e8] to-[#ffe06633]">
         <div className="text-red-600 text-lg font-bold">No se pudo cargar tu perfil.</div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-[80vh] bg-gradient-to-br from-[#fffbe7] via-[#faf3e8] to-[#ffe06633] flex flex-col items-center py-8">
-      <section className="w-full max-w-2xl rounded-2xl shadow-xl bg-white/80 p-6 border border-yellow-200 backdrop-blur-md">
+    <main className="min-h-[80vh] bg-gradient-to-br from-[#fffbe7] via-[#faf3e8] to-[#ffe06633] flex flex-col items-center py-8 font-main">
+      <section className="w-full max-w-2xl rounded-2xl shadow-2xl bg-white/90 p-6 border border-yellow-200 backdrop-blur-xl">
         <h1 className="text-3xl font-bold text-amber-700 font-caveat mb-2">
           Configuración de tu Perfil
         </h1>
@@ -169,10 +172,10 @@ export default function Configuracion() {
         </p>
         {mensaje && (
           <div
-            className={`mb-4 px-4 py-2 rounded-lg font-bold text-center ${
+            className={`mb-4 px-4 py-2 rounded-lg font-bold text-center transition-all duration-300 ${
               mensaje.tipo === "ok"
-                ? "bg-green-100 text-green-800 border border-green-200"
-                : "bg-red-100 text-red-700 border border-red-300"
+                ? "bg-green-100 text-green-800 border border-green-200 shadow-sm"
+                : "bg-red-100 text-red-700 border border-red-300 shadow-sm"
             }`}
           >
             {mensaje.texto}
@@ -181,14 +184,14 @@ export default function Configuracion() {
         <div className="flex flex-col md:flex-row gap-8 items-start">
           {/* FOTO DE PERFIL */}
           <div className="flex flex-col items-center gap-2">
-            <div className="relative">
+            <div className="relative group">
               <img
                 src={
                   fotoPreview ||
                   "/avatar-default.png"
                 }
                 alt="Foto de perfil"
-                className="w-28 h-28 rounded-full border-4 border-yellow-300 object-cover bg-yellow-100 shadow"
+                className="w-28 h-28 rounded-full border-4 border-yellow-300 object-cover bg-yellow-100 shadow-lg transition group-hover:ring-4 group-hover:ring-amber-200"
               />
               <button
                 className="absolute bottom-0 right-0 bg-amber-400 hover:bg-amber-500 text-white rounded-full p-2 shadow-md transition"
@@ -215,9 +218,9 @@ export default function Configuracion() {
           <form className="flex-1 flex flex-col gap-4" onSubmit={handleSubmit} autoComplete="off">
             <div className="flex gap-3">
               <div className="flex-1">
-                <label className="block text-sm font-medium text-amber-800">Nombre</label>
+                <label className="block text-sm font-semibold text-amber-800">Nombre</label>
                 <input
-                  className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-amber-300 bg-white/80"
+                  className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-amber-300 bg-white/90"
                   name="nombre"
                   value={form.nombre}
                   onChange={handleChange}
@@ -226,9 +229,9 @@ export default function Configuracion() {
                 />
               </div>
               <div className="flex-1">
-                <label className="block text-sm font-medium text-amber-800">Apellidos</label>
+                <label className="block text-sm font-semibold text-amber-800">Apellidos</label>
                 <input
-                  className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-amber-300 bg-white/80"
+                  className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-amber-300 bg-white/90"
                   name="apellidos"
                   value={form.apellidos}
                   onChange={handleChange}
@@ -238,9 +241,9 @@ export default function Configuracion() {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-amber-800">Correo</label>
+              <label className="block text-sm font-semibold text-amber-800">Correo</label>
               <input
-                className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-amber-300 bg-white/80"
+                className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-amber-300 bg-white/90"
                 name="correo"
                 type="email"
                 value={form.correo}
@@ -250,7 +253,7 @@ export default function Configuracion() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-amber-800">Tipo de cuenta</label>
+              <label className="block text-sm font-semibold text-amber-800">Tipo de cuenta</label>
               <input
                 className="w-full rounded-lg border border-yellow-200 p-2 mt-1 bg-gray-100 text-gray-600 cursor-not-allowed"
                 value={perfil.tipoCuenta}
@@ -258,11 +261,11 @@ export default function Configuracion() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-amber-800">
+              <label className="block text-sm font-semibold text-amber-800">
                 Preferencias (texto libre)
               </label>
               <textarea
-                className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-amber-300 bg-white/80"
+                className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-amber-300 bg-white/90"
                 name="preferencias"
                 value={form.preferencias}
                 onChange={handleChange}
@@ -272,25 +275,25 @@ export default function Configuracion() {
             {/* Cambiar contraseña */}
             <div className="flex gap-3">
               <div className="flex-1">
-                <label className="block text-sm font-medium text-amber-800">Contraseña actual</label>
+                <label className="block text-sm font-semibold text-amber-800">Contraseña actual</label>
                 <input
                   type="password"
                   name="contrasenaActual"
                   value={form.contrasenaActual}
                   onChange={handleChange}
-                  className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none bg-white/80"
+                  className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none bg-white/90"
                   autoComplete="current-password"
                   placeholder="Dejar vacío si no cambias"
                 />
               </div>
               <div className="flex-1">
-                <label className="block text-sm font-medium text-amber-800">Nueva contraseña</label>
+                <label className="block text-sm font-semibold text-amber-800">Nueva contraseña</label>
                 <input
                   type="password"
                   name="nuevaContrasena"
                   value={form.nuevaContrasena}
                   onChange={handleChange}
-                  className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none bg-white/80"
+                  className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none bg-white/90"
                   autoComplete="new-password"
                   placeholder="Dejar vacío si no cambias"
                 />
@@ -316,15 +319,15 @@ export default function Configuracion() {
           </form>
         </div>
         {/* Extras: sesiones y seguridad */}
-        <div className="border-t border-yellow-200 mt-8 pt-6 flex flex-col md:flex-row gap-8">
+        <div className="border-t border-yellow-200 mt-8 pt-6 flex flex-col md:flex-row gap-8 w-full max-w-2xl">
           <section className="flex-1">
-            <h2 className="text-lg font-semibold text-amber-700 mb-2">Sesiones activas</h2>
+            <h2 className="text-lg font-semibold text-amber-700 mb-2 font-caveat">Sesiones activas</h2>
             <div className="text-sm text-gray-600">
               Pronto podrás gestionar tus dispositivos activos y cerrar sesiones desde aquí.
             </div>
           </section>
           <section className="flex-1">
-            <h2 className="text-lg font-semibold text-amber-700 mb-2">Seguridad extra (2FA)</h2>
+            <h2 className="text-lg font-semibold text-amber-700 mb-2 font-caveat">Seguridad extra (2FA)</h2>
             <div className="text-sm text-gray-600">
               Muy pronto: activa verificación en dos pasos y otras opciones avanzadas de seguridad.
             </div>
