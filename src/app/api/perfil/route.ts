@@ -11,7 +11,9 @@ const COOKIE_NAME = 'hl_session';
 
 const TAMAÑO_MAXIMO_FOTO_MB = 2;
 const BYTES_MAXIMO_FOTO = TAMAÑO_MAXIMO_FOTO_MB * 1024 * 1024;
-const TIPOS_FOTO_PERMITIDOS = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
+const TIPOS_FOTO_PERMITIDOS = [
+  'image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif'
+];
 
 const bloqueos = new Map<string, { intentos: number; timestamp: number }>();
 const MAX_INTENTOS = 5;
@@ -23,24 +25,28 @@ function esCorreoValido(correo: string): boolean {
 }
 
 async function guardarBitacoraCambio(usuarioId: number, cambios: any) {
-  await prisma.bitacoraCambioPerfil.create({
-    data: {
-      usuarioId,
-      cambios: JSON.stringify(cambios),
-      fecha: new Date(),
-    }
-  });
+  try {
+    await prisma.bitacoraCambioPerfil.create({
+      data: {
+        usuarioId,
+        cambios: JSON.stringify(cambios),
+        fecha: new Date(),
+      }
+    });
+  } catch (err) { /* Silencioso para no romper la UX */ }
 }
 
 async function crearNotificacion(usuarioId: number, mensaje: string) {
-  await prisma.notificacion.create({
-    data: {
-      usuarioId,
-      mensaje,
-      tipo: 'perfil',
-      leida: false,
-    }
-  });
+  try {
+    await prisma.notificacion.create({
+      data: {
+        usuarioId,
+        mensaje,
+        tipo: 'perfil',
+        leida: false,
+      }
+    });
+  } catch (err) { /* Silencioso */ }
 }
 
 // ===============================

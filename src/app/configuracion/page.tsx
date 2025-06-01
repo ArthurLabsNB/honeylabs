@@ -27,7 +27,6 @@ export default function Configuracion() {
   const [mensaje, setMensaje] = useState<{ tipo: "ok" | "error"; texto: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Cargar perfil al montar
   useEffect(() => {
     async function cargarPerfil() {
       try {
@@ -57,7 +56,6 @@ export default function Configuracion() {
     cargarPerfil();
   }, []);
 
-  // Manejo de inputs
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
@@ -70,12 +68,10 @@ export default function Configuracion() {
     }
   }
 
-  // Guardar cambios
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setMensaje(null);
     setGuardando(true);
-
     try {
       const formData = new FormData();
       formData.append("nombre", form.nombre);
@@ -87,16 +83,13 @@ export default function Configuracion() {
         formData.append("contrasenaActual", form.contrasenaActual);
         formData.append("nuevaContrasena", form.nuevaContrasena);
       }
-
       const res = await fetch("/api/perfil", {
         method: "PUT",
         body: formData,
       });
       const data = await res.json();
-
       if (data.success) {
         setMensaje({ tipo: "ok", texto: "Perfil actualizado correctamente." });
-        // Vuelve a cargar el perfil para refrescar datos (correo, foto, etc.)
         const newPerfilRes = await fetch("/api/perfil", { method: "GET" });
         const newPerfil = await newPerfilRes.json();
         if (newPerfil.success && newPerfil.usuario) {
@@ -120,7 +113,6 @@ export default function Configuracion() {
     }
   }
 
-  // Exportar perfil (selección de secciones)
   async function handleExportarPerfil() {
     try {
       const secciones = ["perfil", "almacenes", "bitacora"];
@@ -147,35 +139,33 @@ export default function Configuracion() {
 
   if (cargando) {
     return (
-      <main className="min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-[#fffbe7] via-[#faf3e8] to-[#ffe06633]">
-        <div className="text-amber-700 text-lg font-bold animate-pulse">Cargando perfil...</div>
+      <main className="min-h-[80vh] flex items-center justify-center">
+        <div className="text-amber-700 text-lg font-bold animate-blink">Cargando perfil...</div>
       </main>
     );
   }
 
   if (!perfil) {
     return (
-      <main className="min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-[#fffbe7] via-[#faf3e8] to-[#ffe06633]">
+      <main className="min-h-[80vh] flex items-center justify-center">
         <div className="text-red-600 text-lg font-bold">No se pudo cargar tu perfil.</div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-[80vh] bg-gradient-to-br from-[#fffbe7] via-[#faf3e8] to-[#ffe06633] flex flex-col items-center py-8 font-main">
-      <section className="w-full max-w-2xl rounded-2xl shadow-2xl bg-white/90 p-6 border border-yellow-200 backdrop-blur-xl">
-        <h1 className="text-3xl font-bold text-amber-700 font-caveat mb-2">
-          Configuración de tu Perfil
-        </h1>
-        <p className="mb-6 text-gray-600">
-          Personaliza tus datos, tu seguridad y exporta tu información cuando lo necesites.
+    <main className="min-h-[80vh] w-full flex flex-col items-center py-8 bg-transparent">
+      <section className="w-full max-w-2xl rounded-2xl shadow-2xl bg-white/90 dark:bg-zinc-900/90 p-6 border border-yellow-200 dark:border-zinc-800 backdrop-blur-2xl transition-all">
+        <h1 className="text-3xl font-bold text-amber-700 font-caveat mb-2 animate-fade-in">Configuración de tu Perfil</h1>
+        <p className="mb-6 text-gray-600 dark:text-gray-300">
+          Personaliza tus datos, seguridad y exporta tu información cuando quieras.
         </p>
         {mensaje && (
           <div
-            className={`mb-4 px-4 py-2 rounded-lg font-bold text-center transition-all duration-300 ${
+            className={`mb-4 px-4 py-2 rounded-lg font-bold text-center animate-fade-in transition-all duration-300 ${
               mensaje.tipo === "ok"
-                ? "bg-green-100 text-green-800 border border-green-200 shadow-sm"
-                : "bg-red-100 text-red-700 border border-red-300 shadow-sm"
+                ? "bg-green-100 text-green-800 border border-green-200"
+                : "bg-red-100 text-red-700 border border-red-300"
             }`}
           >
             {mensaje.texto}
@@ -186,10 +176,7 @@ export default function Configuracion() {
           <div className="flex flex-col items-center gap-2">
             <div className="relative group">
               <img
-                src={
-                  fotoPreview ||
-                  "/avatar-default.png"
-                }
+                src={fotoPreview || "/avatar-default.png"}
                 alt="Foto de perfil"
                 className="w-28 h-28 rounded-full border-4 border-yellow-300 object-cover bg-yellow-100 shadow-lg transition group-hover:ring-4 group-hover:ring-amber-200"
               />
@@ -210,9 +197,7 @@ export default function Configuracion() {
                 onChange={handleFotoChange}
               />
             </div>
-            <div className="text-xs text-gray-500 mt-1">
-              PNG/JPG. Máx 2MB
-            </div>
+            <div className="text-xs text-gray-500 mt-1">PNG/JPG. Máx 2MB</div>
           </div>
           {/* FORMULARIO DE PERFIL */}
           <form className="flex-1 flex flex-col gap-4" onSubmit={handleSubmit} autoComplete="off">
@@ -220,7 +205,7 @@ export default function Configuracion() {
               <div className="flex-1">
                 <label className="block text-sm font-semibold text-amber-800">Nombre</label>
                 <input
-                  className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-amber-300 bg-white/90"
+                  className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-amber-300 bg-white/80 dark:bg-zinc-900/80"
                   name="nombre"
                   value={form.nombre}
                   onChange={handleChange}
@@ -231,7 +216,7 @@ export default function Configuracion() {
               <div className="flex-1">
                 <label className="block text-sm font-semibold text-amber-800">Apellidos</label>
                 <input
-                  className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-amber-300 bg-white/90"
+                  className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-amber-300 bg-white/80 dark:bg-zinc-900/80"
                   name="apellidos"
                   value={form.apellidos}
                   onChange={handleChange}
@@ -243,7 +228,7 @@ export default function Configuracion() {
             <div>
               <label className="block text-sm font-semibold text-amber-800">Correo</label>
               <input
-                className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-amber-300 bg-white/90"
+                className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-amber-300 bg-white/80 dark:bg-zinc-900/80"
                 name="correo"
                 type="email"
                 value={form.correo}
@@ -255,7 +240,7 @@ export default function Configuracion() {
             <div>
               <label className="block text-sm font-semibold text-amber-800">Tipo de cuenta</label>
               <input
-                className="w-full rounded-lg border border-yellow-200 p-2 mt-1 bg-gray-100 text-gray-600 cursor-not-allowed"
+                className="w-full rounded-lg border border-yellow-200 p-2 mt-1 bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-gray-300 cursor-not-allowed"
                 value={perfil.tipoCuenta}
                 disabled
               />
@@ -265,7 +250,7 @@ export default function Configuracion() {
                 Preferencias (texto libre)
               </label>
               <textarea
-                className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-amber-300 bg-white/90"
+                className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-amber-300 bg-white/80 dark:bg-zinc-900/80"
                 name="preferencias"
                 value={form.preferencias}
                 onChange={handleChange}
@@ -281,7 +266,7 @@ export default function Configuracion() {
                   name="contrasenaActual"
                   value={form.contrasenaActual}
                   onChange={handleChange}
-                  className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none bg-white/90"
+                  className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none bg-white/80 dark:bg-zinc-900/80"
                   autoComplete="current-password"
                   placeholder="Dejar vacío si no cambias"
                 />
@@ -293,7 +278,7 @@ export default function Configuracion() {
                   name="nuevaContrasena"
                   value={form.nuevaContrasena}
                   onChange={handleChange}
-                  className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none bg-white/90"
+                  className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none bg-white/80 dark:bg-zinc-900/80"
                   autoComplete="new-password"
                   placeholder="Dejar vacío si no cambias"
                 />
@@ -319,16 +304,16 @@ export default function Configuracion() {
           </form>
         </div>
         {/* Extras: sesiones y seguridad */}
-        <div className="border-t border-yellow-200 mt-8 pt-6 flex flex-col md:flex-row gap-8 w-full max-w-2xl">
+        <div className="border-t border-yellow-200 dark:border-zinc-700 mt-8 pt-6 flex flex-col md:flex-row gap-8 w-full max-w-2xl">
           <section className="flex-1">
             <h2 className="text-lg font-semibold text-amber-700 mb-2 font-caveat">Sesiones activas</h2>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-gray-600 dark:text-gray-300">
               Pronto podrás gestionar tus dispositivos activos y cerrar sesiones desde aquí.
             </div>
           </section>
           <section className="flex-1">
             <h2 className="text-lg font-semibold text-amber-700 mb-2 font-caveat">Seguridad extra (2FA)</h2>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-gray-600 dark:text-gray-300">
               Muy pronto: activa verificación en dos pasos y otras opciones avanzadas de seguridad.
             </div>
           </section>
