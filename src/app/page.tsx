@@ -344,7 +344,7 @@ function TestimonialsSection() {
         {testimonios.map((t, i) => (
           <div key={t.nombre}
             className={clsx(
-              "absolute top-0 left-[46%] -translate-x-1/2 flex flex-col items-center transition-all duration-700",
+              "absolute top-0 left-[16%] -translate-x-1/2 flex flex-col items-center transition-all duration-700",
               i === indice ? "opacity-100 scale-105 z-20" :
                 Math.abs(i - indice) === 1 ? "opacity-60 scale-95 z-10" : "opacity-0 scale-75 z-0",
               i > indice ? "translate-x-28" : i < indice ? "-translate-x-28" : "translate-x-0"
