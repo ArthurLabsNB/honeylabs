@@ -314,7 +314,7 @@ export default function Page() {
       }}
     >
       {/* Overlay para contraste */}
-      <div className="absolute inset-0 bg-black/100 pointer-events-none z-0" />
+      <div className="absolute inset-0 bg-black/40 pointer-events-none z-0" />
       <div className="relative z-10 flex flex-col min-h-screen">
         <HeroSection />
         <AboutSection />
