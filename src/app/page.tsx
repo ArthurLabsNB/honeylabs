@@ -2,9 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import clsx from 'clsx';
-import { ArrowDownCircle, ArrowUpCircle, Users, Warehouse, CheckCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import {
+  ArrowDownCircle, ArrowUpCircle, Users, Warehouse,
+  ChevronDown, ChevronUp
+} from 'lucide-react';
 
-// Fondo GIF global a pantalla completa
+// ===== FONDO GIF GLOBAL =====
 function FondoGIF() {
   return (
     <img
@@ -24,7 +27,7 @@ function FondoGIF() {
 }
 
 // ===== HERO SECTION =====
-function useTypewriter(text: string, speed = 36) {
+function useTypewriter(text, speed = 36) {
   const [displayed, setDisplayed] = useState('');
   useEffect(() => {
     setDisplayed('');
@@ -39,7 +42,7 @@ function useTypewriter(text: string, speed = 36) {
 }
 
 function HeroSection() {
-  const titulo = 'Gestión de mateiales eficiente';
+  const titulo = 'Gestión de materiales eficiente';
   const descripcion =
     'Gestiona, registra y visualiza materiales en almacenes, adaptándose a cada tipo de usuario. Accede desde cualquier lugar con dashboards personalizados para un control completo y fácil.';
   const textoTyped = useTypewriter(titulo, 36);
@@ -93,11 +96,11 @@ function AboutSection() {
 }
 
 // ===== KPI SECTION =====
-function useCountUp(to: number, duration = 1100) {
+function useCountUp(to, duration = 1100) {
   const [count, setCount] = useState(0);
   useEffect(() => {
-    let start = 0, raf: any, startTime: number;
-    function animate(ts: number) {
+    let start = 0, raf, startTime;
+    function animate(ts) {
       if (!startTime) startTime = ts;
       const progress = Math.min((ts - startTime) / duration, 1);
       setCount(Math.floor(start + (to - start) * progress));
@@ -111,7 +114,7 @@ function useCountUp(to: number, duration = 1100) {
 }
 
 function KpiSection() {
-  const [data, setData] = useState<{ entradas: number; salidas: number; usuarios: number; almacenes: number } | null>(null);
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -169,8 +172,7 @@ function KpiSection() {
     </section>
   );
 }
-
-function KpiCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+function KpiCard({ children, className = "" }) {
   return (
     <div className={`rounded-2xl bg-zinc-900/85 shadow-xl p-8 border border-amber-400/10 flex flex-col items-center transition-transform hover:scale-105 min-h-[170px] ${className}`}>
       {children}
@@ -206,7 +208,7 @@ function FeaturesSection() {
     </section>
   );
 }
-function FeatureCard({ title, desc, icon, big, small, animClass = "" }: any) {
+function FeatureCard({ title, desc, icon, big, small, animClass = "" }) {
   return (
     <div className={
       `bg-zinc-900/85 rounded-2xl shadow-xl border border-amber-200/10 flex flex-col items-center p-7
@@ -223,7 +225,7 @@ function FeatureCard({ title, desc, icon, big, small, animClass = "" }: any) {
   );
 }
 
-// ===== ROADMAP SECTION (línea de tiempo animada) =====
+// ===== ROADMAP SECTION =====
 function RoadmapSection() {
   const pasos = [
     { titulo: "Registro", texto: "Crea tu cuenta o únete a una organización", icon: "👤" },
@@ -231,7 +233,7 @@ function RoadmapSection() {
     { titulo: "Registra movimientos", texto: "Controla entradas y salidas en tiempo real", icon: "📦" },
     { titulo: "Analiza y mejora", texto: "Obtén reportes automáticos y sugerencias", icon: "📊" },
   ];
-  const [activo, setActivo] = useState(2); // Demo animada
+  const [activo, setActivo] = useState(2);
   useEffect(() => {
     const id = setInterval(() => setActivo(a => (a + 1) % pasos.length), 2900);
     return () => clearInterval(id);
@@ -267,9 +269,8 @@ function RoadmapSection() {
   );
 }
 
-// ===== TESTIMONIALS CAROUSEL SECTION (3D) =====
+// ===== TESTIMONIALS CAROUSEL SECTION =====
 function TestimonialsSection() {
-  // Simple demo, deberías traer de API real
   const testimonios = [
     { nombre: "Ana Sánchez", rol: "Docente", img: "/testimonios/ana.png", texto: "¡Organizar los materiales nunca fue tan fácil y visual! Mis alumnos pueden consultar y pedir lo que necesitan, y yo sé siempre quién usó qué." },
     { nombre: "Ing. López", rol: "Jefe de Almacén", img: "/testimonios/lopez.png", texto: "Integrar HoneyLabs con mis procesos de inventario digital fue inmediato. El reporte automático me ahorra horas cada semana." },
@@ -393,7 +394,6 @@ export default function Page() {
   return (
     <main className="relative min-h-screen w-full font-sans overflow-x-hidden">
       <FondoGIF />
-      {/* Overlay más sutil para no opacar el GIF */}
       <div className="absolute inset-0 bg-black/20 pointer-events-none z-0" />
       <div className="relative z-10 flex flex-col min-h-screen">
         <HeroSection />
