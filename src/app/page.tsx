@@ -1,16 +1,12 @@
 'use client';
 
-import { useState, useEffect, ReactNode } from 'react';
+import { useState, useEffect, ReactNode, useRef } from 'react';
 import clsx from 'clsx';
-import {
-  ArrowDownCircle, ArrowUpCircle, Users, Warehouse,
-  ChevronDown, ChevronUp
-} from 'lucide-react';
 
 // ========================
 // HERO SECTION
 // ========================
-function useTypewriter(text: string, speed = 36): string {
+function useTypewriter(text: string, speed = 60): string {
   const [displayed, setDisplayed] = useState('');
   useEffect(() => {
     setDisplayed('');
@@ -28,7 +24,7 @@ function HeroSection() {
   const titulo = 'Gestión de materiales eficiente';
   const descripcion =
     'Gestiona, registra y visualiza materiales en almacenes, adaptándose a cada tipo de usuario. Accede desde cualquier lugar con dashboards personalizados para un control completo y fácil.';
-  const textoTyped = useTypewriter(titulo, 36);
+  const textoTyped = useTypewriter(titulo, 60);
   const [showDesc, setShowDesc] = useState(false);
   useEffect(() => {
     setShowDesc(false);
@@ -38,7 +34,7 @@ function HeroSection() {
     }
   }, [textoTyped, titulo.length]);
   return (
-    <section className="flex flex-col items-center justify-center min-h-[75vh] py-28 md:py-36 px-4 text-center select-none space-y-8">
+    <section className="flex flex-col items-center justify-center min-h-[75vh] py-32 md:py-44 px-4 text-center select-none space-y-8">
       <h1 className={clsx(
         'text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-amber-200 drop-shadow-xl transition-all animate-typewriter'
       )} style={{ fontFamily: `'Nunito', 'Inter', Arial, sans-serif` }}>
@@ -67,7 +63,7 @@ function HeroSection() {
 // ========================
 function AboutSection() {
   return (
-    <section id="acerca" className="relative max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-14 py-24 md:py-32 px-4">
+    <section id="acerca" className="relative max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-14 py-28 md:py-40 px-4">
       <div className="flex-1 flex flex-col justify-center md:items-start items-center text-center md:text-left animate-fade-in-left">
         <h2 className="text-3xl md:text-4xl font-semibold text-amber-300 mb-4 tracking-tight">Acerca de HoneyLabs</h2>
         <p className="text-zinc-200 mb-6 max-w-lg text-lg md:text-xl font-normal">
@@ -137,18 +133,18 @@ function KpiSection() {
   const almacenes = useCountUp(data?.almacenes ?? 0, 800);
 
   return (
-    <section className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 py-20 px-4">
+    <section className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 py-24 px-4">
       <KpiCard className="animate-float-card">
         {loading ? <LoaderKPI /> : (
           <>
             <div className="flex gap-7 mb-1">
               <div className="flex flex-col items-center">
-                <ArrowDownCircle className="h-6 w-6 text-green-400" />
+                <span className="inline-block h-6 w-6 rounded-full bg-green-400/40 flex items-center justify-center"><span className="text-green-500">↓</span></span>
                 <span className="text-2xl font-semibold text-green-300">{entradas.toLocaleString()}</span>
                 <span className="text-xs text-zinc-100/70">Entradas</span>
               </div>
               <div className="flex flex-col items-center">
-                <ArrowUpCircle className="h-6 w-6 text-rose-400" />
+                <span className="inline-block h-6 w-6 rounded-full bg-rose-400/40 flex items-center justify-center"><span className="text-rose-400">↑</span></span>
                 <span className="text-2xl font-semibold text-rose-300">{salidas.toLocaleString()}</span>
                 <span className="text-xs text-zinc-100/70">Salidas</span>
               </div>
@@ -160,7 +156,7 @@ function KpiSection() {
       <KpiCard className="animate-float-card-delayed">
         {loading ? <LoaderKPI /> : (
           <>
-            <Users className="h-7 w-7 text-sky-400 mb-1" />
+            <span className="inline-block h-7 w-7 bg-sky-400/40 rounded-full mb-1" />
             <span className="text-3xl font-bold text-sky-100">{usuarios.toLocaleString()}</span>
             <span className="text-base text-zinc-200/90 mt-1">Usuarios registrados</span>
           </>
@@ -169,7 +165,7 @@ function KpiSection() {
       <KpiCard className="animate-float-card-delaymore">
         {loading ? <LoaderKPI /> : (
           <>
-            <Warehouse className="h-7 w-7 text-amber-400 mb-1" />
+            <span className="inline-block h-7 w-7 bg-amber-400/50 rounded-full mb-1" />
             <span className="text-3xl font-bold text-amber-100">{almacenes.toLocaleString()}</span>
             <span className="text-base text-zinc-200/90 mt-1">Almacenes creados</span>
           </>
@@ -195,203 +191,251 @@ function LoaderKPI() {
 }
 
 // ========================
-// FEATURES SECTION
+// FEATURES/ACCORDION CAROUSEL SECTION
 // ========================
-interface FeatureCardProps {
+interface Feature {
   title: string;
   desc: string;
   icon: string;
-  big?: boolean;
-  small?: boolean;
-  animClass?: string;
+  detalle: string;
 }
-function FeaturesSection() {
-  return (
-    <section className="max-w-7xl mx-auto py-24 px-4 space-y-10">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-        <FeatureCard title="Inventario de entradas y salidas" desc="Gestiona todos los movimientos de material de manera eficiente, con registro y seguimiento de cada acción." icon="/features/inventario.png" animClass="animate-feature-in-left" />
-        <FeatureCard title="Consulta y solicitudes" desc="Consulta materiales disponibles, solicita recursos y visualiza novedades, fechas y notificaciones." icon="/features/consulta.png" animClass="animate-feature-in-top" />
-        <FeatureCard title="Reportes automáticos" desc="Recibe informes automáticos de consumo y disponibilidad para mantener inventarios al día." icon="/features/reportes.png" animClass="animate-feature-in-right" />
-      </div>
-      <div className="grid grid-cols-3 gap-8">
-        <div className="col-span-2">
-          <FeatureCard title="Colaboración y permisos avanzados" desc="Crea almacenes, otorga permisos personalizados y trabaja en conjunto con tu equipo o institución." icon="/features/almacen.png" big animClass="animate-feature-in-bottom" />
-        </div>
-        <div>
-          <FeatureCard title="Gestión granular de roles" desc="Define quién puede consultar, editar o administrar inventarios, adaptando la plataforma a tu organización." icon="/features/permisos.png" small animClass="animate-feature-float-delay" />
-        </div>
-      </div>
-    </section>
-  );
-}
-function FeatureCard({ title, desc, icon, big, small, animClass = "" }: FeatureCardProps) {
-  return (
-    <div className={
-      `bg-zinc-900/85 rounded-2xl shadow-xl border border-amber-200/10 flex flex-col items-center p-7
-      transition-transform hover:scale-[1.04] hover:shadow-2xl duration-300
-      ${big ? 'min-h-[180px] text-base md:text-lg' : ''}
-      ${small ? 'min-h-[120px] text-sm md:text-base' : ''}
-      ${animClass}
-      float-card`
-    }>
-      <img src={icon} alt={title} className={`mb-3 ${big ? "w-20 h-20" : "w-12 h-12"} drop-shadow`} loading="lazy" />
-      <h3 className="font-semibold text-amber-200 mb-1 text-center">{title}</h3>
-      <p className="text-zinc-200 text-center">{desc}</p>
-    </div>
-  );
-}
+const features: Feature[] = [
+  {
+    title: "Inventario de entradas y salidas",
+    desc: "Registra cada movimiento de materiales.",
+    icon: "/features/inventario.png",
+    detalle: "Lleva el control histórico de entradas, salidas y transferencias, todo en tiempo real, con trazabilidad completa."
+  },
+  {
+    title: "Consulta y solicitudes",
+    desc: "Consulta materiales y haz solicitudes de uso.",
+    icon: "/features/consulta.png",
+    detalle: "Solicita materiales, visualiza disponibilidad y programa retiros anticipados sin filas ni papeleo."
+  },
+  {
+    title: "Reportes automáticos",
+    desc: "Recibe informes visuales automáticos.",
+    icon: "/features/reportes.png",
+    detalle: "Genera reportes dinámicos de inventario, consumo, stock mínimo, y proyecciones automáticas de abastecimiento."
+  },
+  {
+    title: "Gestión granular de roles",
+    desc: "Permisos y roles detallados.",
+    icon: "/features/permisos.png",
+    detalle: "Configura quién puede consultar, editar, aprobar o administrar materiales y almacenes, por persona o grupo."
+  },
+  {
+    title: "Colaboración avanzada",
+    desc: "Flujos multiusuario y trabajo en equipo.",
+    icon: "/features/almacen.png",
+    detalle: "Comparte tareas, delega, recibe notificaciones y aprovisiona recursos colaborando con todos los roles."
+  },
+  {
+    title: "Alertas inteligentes",
+    desc: "Recibe notificaciones automáticas.",
+    icon: "/features/alerta.png",
+    detalle: "Notifica por correo y en dashboard cuando hay faltantes, caducidades próximas, o solicitudes urgentes."
+  },
+  {
+    title: "Bitácora digital",
+    desc: "Seguimiento total de operaciones.",
+    icon: "/features/bitacora.png",
+    detalle: "Toda acción es registrada con fecha, usuario y detalle, generando un historial auditable para seguridad total."
+  },
+  {
+    title: "Exportación de datos",
+    desc: "Descarga información en Excel o PDF.",
+    icon: "/features/exportar.png",
+    detalle: "Exporta inventarios, movimientos y reportes en formatos profesionales para compartir o respaldar."
+  },
+  {
+    title: "Integración con IA",
+    desc: "Automatiza predicciones y tareas repetitivas.",
+    icon: "/features/ia.png",
+    detalle: "La IA sugiere pedidos, detecta anomalías y ayuda a optimizar inventarios reduciendo errores humanos."
+  },
+  {
+    title: "Acceso móvil y offline",
+    desc: "Gestiona desde cualquier dispositivo.",
+    icon: "/features/mobile.png",
+    detalle: "Consulta y gestiona tu inventario desde el móvil, con funciones offline para zonas sin Internet."
+  },
+];
 
-// ========================
-// ROADMAP SECTION (línea de tiempo circuito animada)
-// ========================
-interface RoadmapStep {
-  titulo: string;
-  texto: string;
-  icon: string;
-  detalle?: string;
-}
-function RoadmapSection() {
-  // ¡Personaliza tus pasos aquí! Más largo y visual.
-  const pasos: RoadmapStep[] = [
-    { titulo: "Registro", texto: "Crea tu cuenta personal o por código institucional.", icon: "👤", detalle: "Solo necesitas un correo válido o el código que te proporciona tu organización." },
-    { titulo: "Validación y bienvenida", texto: "Activa tu cuenta y recibe acceso inicial.", icon: "✅", detalle: "En caso de empresas o instituciones, el equipo valida tus datos manualmente." },
-    { titulo: "Configura tus almacenes", texto: "Agrega y personaliza almacenes, usuarios y permisos.", icon: "🏢", detalle: "Puedes crear almacenes, invitar colaboradores y definir roles." },
-    { titulo: "Inventario inicial", texto: "Carga el stock base de materiales y herramientas.", icon: "📦", detalle: "Carga masiva desde Excel/CSV, edición rápida y catálogos inteligentes." },
-    { titulo: "Registra movimientos", texto: "Controla entradas, salidas y transferencias.", icon: "🔄", detalle: "Todo movimiento queda registrado y es auditable, con alertas automáticas." },
-    { titulo: "Consulta y reportes", texto: "Visualiza inventarios y genera reportes automáticos.", icon: "📊", detalle: "Estadísticas en tiempo real, exportables y con filtros personalizados." },
-    { titulo: "Colaboración activa", texto: "Solicita materiales, comparte tareas, colabora.", icon: "🤝", detalle: "Flujos de aprobación, notificaciones y colaboración multiusuario." },
-    { titulo: "Optimiza y crece", texto: "Usa la IA y analítica para mejorar procesos.", icon: "🚀", detalle: "Sugerencias de optimización, predicción de faltantes y automatización de compras." }
-  ];
-  const [activo, setActivo] = useState(2);
-  const [expand, setExpand] = useState<number | null>(null);
-
+function FeaturesCarouselSection() {
+  const [active, setActive] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  // Swipe para mobile
   useEffect(() => {
-    const id = setInterval(() => setActivo(a => (a + 1) % pasos.length), 3500);
-    return () => clearInterval(id);
-  }, [pasos.length]);
-
+    const el = containerRef.current;
+    if (!el) return;
+    let startX = 0, scrollLeft = 0, isDown = false;
+    const start = (e: any) => {
+      isDown = true;
+      startX = e.touches ? e.touches[0].pageX : e.pageX;
+      scrollLeft = el.scrollLeft;
+    };
+    const move = (e: any) => {
+      if (!isDown) return;
+      const x = e.touches ? e.touches[0].pageX : e.pageX;
+      el.scrollLeft = scrollLeft - (x - startX);
+    };
+    const end = () => { isDown = false; };
+    el.addEventListener('mousedown', start); el.addEventListener('touchstart', start);
+    el.addEventListener('mousemove', move); el.addEventListener('touchmove', move);
+    el.addEventListener('mouseup', end); el.addEventListener('touchend', end);
+    el.addEventListener('mouseleave', end);
+    return () => {
+      el.removeEventListener('mousedown', start); el.removeEventListener('touchstart', start);
+      el.removeEventListener('mousemove', move); el.removeEventListener('touchmove', move);
+      el.removeEventListener('mouseup', end); el.removeEventListener('touchend', end);
+      el.removeEventListener('mouseleave', end);
+    };
+  }, []);
+  // Flechas
+  function scrollTo(idx: number) {
+    setActive(idx);
+    const el = containerRef.current;
+    if (el) {
+      const child = el.children[idx] as HTMLElement;
+      child?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+  }
   return (
-    <section className="max-w-6xl mx-auto py-32 px-4">
-      <h2 className="text-3xl md:text-4xl font-bold text-amber-300 mb-12 text-center">¿Cómo funciona?</h2>
-      <div className="w-full flex flex-col md:flex-row items-center justify-between gap-12 md:gap-0 relative z-0">
-        {pasos.map((paso, i) => (
-          <div key={paso.titulo} className="flex flex-col items-center relative group z-10">
-            {/* Icono y circuito */}
-            <button
-              onClick={() => setExpand(expand === i ? null : i)}
-              className={clsx(
-                "rounded-full flex items-center justify-center shadow-xl border-4 transition-all focus:outline-none",
-                activo === i ? "bg-gradient-to-br from-amber-300 to-yellow-400 border-amber-400 scale-125 animate-circuit-glow ring-4 ring-amber-200/30" :
-                  "bg-zinc-900 text-amber-200 border-amber-400 scale-100",
-                expand === i ? "ring-4 ring-amber-300/60" : ""
-              )}
-              style={{
-                width: expand === i ? 96 : 64,
-                height: expand === i ? 96 : 64,
-                fontSize: expand === i ? 42 : 34,
-                zIndex: 15,
-                boxShadow: activo === i ? "0 0 28px #ffe06699,0 0 12px #ffe06644" : undefined,
-                transition: "all 0.48s cubic-bezier(.26,1.2,.28,1)"
-              }}
-              aria-label={paso.titulo}
-            >
-              <span>{paso.icon}</span>
-            </button>
-            {/* Línea "circuito" RGB animada */}
-            {i < pasos.length - 1 && (
-              <div className="w-2 h-16 md:w-32 md:h-2 flex-shrink-0">
-                <div className="h-full w-full mx-auto md:my-auto bg-gradient-to-r from-[#ffe066] via-[#ffd23b] to-[#faf3e8] rounded-full shadow-lg relative overflow-hidden animate-circuit-cable"
-                  style={{
-                    filter: activo === i ? "drop-shadow(0 0 14px #ffe06688)" : undefined,
-                    boxShadow: activo === i ? "0 0 24px #ffe06655" : undefined
-                  }}
-                />
-                {/* SVG relieves circuito */}
-                <svg width="100%" height="100%" className="absolute top-0 left-0 pointer-events-none" style={{ zIndex: 0 }}>
-                  <defs>
-                    <linearGradient id={`circuit${i}`} x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#ffe066" />
-                      <stop offset="100%" stopColor="#ffd23b" />
-                    </linearGradient>
-                  </defs>
-                  <rect width="100%" height="100%" rx="12" fill={`url(#circuit${i})`} opacity="0.27" />
-                </svg>
-              </div>
-            )}
-            {/* Títulos y descripción */}
-            <span className={clsx(
-              "font-bold mt-4 text-center text-base md:text-lg select-none transition-all",
-              activo === i ? "text-amber-400 scale-110" : "text-amber-200"
-            )}>{paso.titulo}</span>
-            <span className="text-zinc-200 text-sm text-center mt-1 max-w-xs">{paso.texto}</span>
-            {/* Detalle expandible */}
-            {expand === i && (
-              <div className="mt-4 bg-zinc-900/95 rounded-2xl shadow-2xl border border-amber-100/15 px-8 py-6 max-w-xs text-zinc-100 animate-fade-in z-30 text-center text-base font-normal">
-                <div className="mb-2 text-amber-200 font-bold text-lg">{paso.titulo}</div>
-                <div>{paso.detalle}</div>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-// Animaciones personalizadas CSS (agrega a tu globals.css)
-/*
-@keyframes circuitGlow { 0%,100%{box-shadow:0 0 32px #ffe06644;} 50%{box-shadow:0 0 56px #ffd23b99;} }
-.animate-circuit-glow { animation: circuitGlow 2.6s infinite alternate; }
-@keyframes circuitCable { 0%{filter:brightness(1);} 50%{filter:brightness(1.27);} 100%{filter:brightness(1);} }
-.animate-circuit-cable { animation: circuitCable 2.4s infinite; }
-*/
-
-
-
-
-// ========================
-// TESTIMONIALS SECTION (3D Slider)
-// ========================
-interface Testimonial {
-  nombre: string;
-  rol: string;
-  img: string;
-  texto: string;
-}
-function TestimonialsSection() {
-  const testimonios: Testimonial[] = [
-    { nombre: "Ana Sánchez", rol: "Docente", img: "/testimonios/ana.png", texto: "¡Organizar los materiales nunca fue tan fácil y visual! Mis alumnos pueden consultar y pedir lo que necesitan, y yo sé siempre quién usó qué." },
-    { nombre: "Ing. López", rol: "Jefe de Almacén", img: "/testimonios/lopez.png", texto: "Integrar HoneyLabs con mis procesos de inventario digital fue inmediato. El reporte automático me ahorra horas cada semana." },
-    { nombre: "Luis Torres", rol: "Estudiante", img: "/testimonios/luis.png", texto: "Por fin puedo ver disponibilidad y pedir materiales para prácticas, sin filas y sin perder tiempo." },
-  ];
-  const [indice, setIndice] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => setIndice(i => (i + 1) % testimonios.length), 4500);
-    return () => clearInterval(id);
-  }, [testimonios.length]);
-  return (
-    <section className="max-w-5xl mx-auto py-24 px-4">
-      <h2 className="text-2xl md:text-3xl font-bold text-amber-300 mb-8 text-center">Lo que dicen de HoneyLabs</h2>
-      <div className="relative flex justify-center items-center h-56">
-        {testimonios.map((t, i) => (
-          <div key={t.nombre}
+    <section className="max-w-7xl mx-auto py-32 px-4 space-y-16 relative">
+      <h2 className="text-3xl md:text-4xl font-bold text-amber-300 mb-14 text-center">Funciones principales</h2>
+      {/* Flechas */}
+      <button
+        onClick={() => scrollTo(Math.max(0, active - 1))}
+        className="hidden md:flex absolute left-1 z-10 top-1/2 -translate-y-1/2 bg-amber-300/70 text-zinc-900 rounded-full w-12 h-12 shadow-lg border-4 border-amber-300/50 items-center justify-center hover:scale-110 transition disabled:opacity-50"
+        disabled={active === 0}
+        aria-label="Anterior"
+      >‹</button>
+      <button
+        onClick={() => scrollTo(Math.min(features.length - 1, active + 1))}
+        className="hidden md:flex absolute right-1 z-10 top-1/2 -translate-y-1/2 bg-amber-300/70 text-zinc-900 rounded-full w-12 h-12 shadow-lg border-4 border-amber-300/50 items-center justify-center hover:scale-110 transition disabled:opacity-50"
+        disabled={active === features.length - 1}
+        aria-label="Siguiente"
+      >›</button>
+      {/* Carrusel */}
+      <div
+        ref={containerRef}
+        className="carousel-acordeon flex gap-8 overflow-x-auto px-4 py-8 pb-12 snap-x snap-mandatory"
+        style={{
+          scrollbarWidth: "none",
+          msOverflowStyle: "none"
+        }}
+      >
+        {features.map((feature, idx) => (
+          <div
+            key={feature.title}
+            tabIndex={0}
             className={clsx(
-              "absolute top-0 left-1/2 -translate-x-1/2 flex flex-col items-center transition-all duration-700",
-              i === indice ? "opacity-100 scale-105 z-20" :
-                Math.abs(i - indice) === 1 ? "opacity-60 scale-95 z-10" : "opacity-0 scale-75 z-0",
-              i > indice ? "translate-x-28" : i < indice ? "-translate-x-28" : "translate-x-0"
+              "feature-card-acordeon snap-center flex flex-col items-center transition-all duration-700 cursor-pointer relative",
+              active === idx
+                ? "active shadow-2xl scale-110 z-30"
+                : Math.abs(active - idx) === 1
+                ? "neighbor scale-95 opacity-85 z-20"
+                : "inactive scale-90 opacity-60 z-0"
             )}
-            style={{ transition: "all 0.8s cubic-bezier(.18,.89,.32,1.28)", width: "350px" }}
+            style={{
+              minWidth: 320,
+              maxWidth: 340,
+              height: active === idx ? 410 : 320,
+              marginTop: active === idx ? 0 : 40,
+              marginBottom: active === idx ? 0 : 60,
+              background: "linear-gradient(120deg, #181325f8 60%, #ffe06622 100%)",
+              boxShadow: active === idx ? "0 0 32px #ffe06655,0 6px 28px #111" : undefined,
+            }}
+            onClick={() => scrollTo(idx)}
+            onFocus={() => scrollTo(idx)}
           >
-            <img src={t.img} alt={t.nombre} className="w-24 h-24 rounded-full object-cover border-4 border-amber-300 mb-3 shadow-lg" loading="lazy" />
-            <div className="bg-zinc-900/85 p-6 rounded-xl shadow-xl border border-amber-100/20 text-zinc-100 text-center font-normal text-lg">
-              <p className="mb-2">"{t.texto}"</p>
-              <span className="text-amber-200 font-bold">{t.nombre}</span>
-              <span className="ml-2 text-sm text-zinc-300">{t.rol}</span>
-            </div>
+            <img src={feature.icon} alt={feature.title} className="mb-2 w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-2xl mt-5" loading="lazy" />
+            <h3 className="font-semibold text-amber-200 mb-1 text-center text-lg md:text-xl px-2">{feature.title}</h3>
+            <p className="text-zinc-200 text-center text-base mb-2 px-3">{feature.desc}</p>
+            {active === idx && (
+              <div className="expanded-detail text-amber-100 text-base px-6 pb-6 pt-3 w-full animate-fade-in">
+                <div className="font-bold text-lg mb-1 text-amber-200">{feature.title}</div>
+                {feature.detalle}
+              </div>
+            )}
           </div>
         ))}
       </div>
+      {/* Indicadores puntos */}
+      <div className="flex justify-center gap-2 mt-2">
+        {features.map((_, idx) => (
+          <button
+            key={idx}
+            onClick={() => scrollTo(idx)}
+            aria-label={`Ir a la tarjeta ${idx + 1}`}
+            className={clsx(
+              "inline-block w-3 h-3 rounded-full mx-1 border border-amber-400 transition",
+              active === idx
+                ? "bg-amber-400 shadow-md"
+                : "bg-zinc-700 hover:bg-amber-300"
+            )}
+          />
+        ))}
+      </div>
+      {/* CSS en línea para el carrusel y animaciones */}
+      <style jsx global>{`
+        .carousel-acordeon::-webkit-scrollbar { display: none; }
+        .feature-card-acordeon {
+          border-radius: 1.7rem;
+          border: 1.5px solid #ffe06625;
+          box-shadow: 0 2px 14px #ffe06611;
+          background: linear-gradient(120deg, #181325f8 60%, #ffe06622 100%);
+          min-height: 320px;
+          max-height: 420px;
+          user-select: none;
+        }
+        .feature-card-acordeon.active {
+          box-shadow: 0 0 32px #ffe06655, 0 8px 48px #151425bb;
+          border: 2.5px solid #ffe06699;
+        }
+        .feature-card-acordeon.neighbor {
+          border: 2px solid #ffe06633;
+        }
+        .feature-card-acordeon.inactive {
+          filter: blur(0.5px) grayscale(.18);
+        }
+        .feature-card-acordeon:focus-visible {
+          outline: 3px solid #ffe06699;
+        }
+        .expanded-detail {
+          border-radius: 1.25rem;
+          margin-top: 1.1rem;
+          background: linear-gradient(120deg, #ffe06628 10%, #181325f8 80%);
+          box-shadow: 0 2px 14px #ffe06618;
+        }
+        /* Animaciones adicionales */
+        @keyframes blink { 50% { opacity: 0 } }
+        .animate-blink { animation: blink 1.05s steps(1) infinite; }
+        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+        .animate-fade-in { animation: fadeIn 0.8s cubic-bezier(.33,1,.68,1) both; }
+        .animate-typewriter {
+          overflow: hidden;
+          border-right: .15em solid #ffeb3b;
+          white-space: nowrap;
+          animation: blink-cursor 1s steps(1) infinite;
+        }
+        @keyframes blink-cursor {
+          0%,100% { border-color: #ffeb3b; }
+          50% { border-color: transparent; }
+        }
+        @keyframes fadeInLeft { from { opacity: 0; transform: translateX(-48px); } to { opacity: 1; transform: none; } }
+        .animate-fade-in-left { animation: fadeInLeft 0.9s cubic-bezier(.36,1.6,.28,1) both; }
+        @keyframes pop3D { from { opacity: 0; transform: scale(0.94) rotateY(7deg); } to { opacity: 1; transform: scale(1) rotateY(0deg); } }
+        .animate-3dpop { animation: pop3D 1.1s cubic-bezier(.22,.68,0,1.71) both; }
+        @keyframes ripple { 0% { box-shadow: 0 0 0 0 #ffe06666; } 70% { box-shadow: 0 0 0 8px #ffe06622; } 100% { box-shadow: 0 0 0 0 #ffe06600; } }
+        .animate-ripple:active { animation: ripple .6s; }
+        @keyframes floatCard { 0% { transform: translateY(0px) } 50% { transform: translateY(-10px) } 100% { transform: translateY(0px) } }
+        .animate-float-card { animation: floatCard 2.8s ease-in-out infinite; }
+        .animate-float-card-delayed { animation: floatCard 2.8s 0.33s ease-in-out infinite; }
+        .animate-float-card-delaymore { animation: floatCard 2.8s 0.7s ease-in-out infinite; }
+        .float-card { will-change: transform; }
+      `}</style>
     </section>
   );
 }
@@ -430,7 +474,7 @@ function PartnersSection() {
   ];
   const [open, setOpen] = useState(0);
   return (
-    <section className="max-w-5xl mx-auto py-24 px-4">
+    <section className="max-w-5xl mx-auto py-36 px-4">
       <h2 className="text-2xl md:text-3xl font-bold text-amber-300 mb-9 text-center">Colaboradores y aliados</h2>
       <div className="flex flex-col gap-6">
         {aliados.map((a, i) => (
@@ -445,7 +489,7 @@ function PartnersSection() {
                 <span className="text-zinc-200 text-sm">{a.desc}</span>
                 <a href={a.url} target="_blank" rel="noopener noreferrer" className="text-amber-300 mt-2 hover:underline">Visitar sitio</a>
               </div>
-              <div className="ml-auto">{open === i ? <ChevronUp className="text-amber-300" /> : <ChevronDown className="text-amber-300" />}</div>
+              <div className="ml-auto">{open === i ? <span className="text-amber-300">▲</span> : <span className="text-amber-300">▼</span>}</div>
             </button>
           </div>
         ))}
@@ -464,9 +508,7 @@ export default function Page() {
         <HeroSection />
         <AboutSection />
         <KpiSection />
-        <FeaturesSection />
-        <RoadmapSection />
-        <TestimonialsSection />
+        <FeaturesCarouselSection />
         <PartnersSection />
       </div>
     </main>
