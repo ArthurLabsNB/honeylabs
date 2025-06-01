@@ -267,55 +267,183 @@ function FeatureCard({ title, desc, icon, big, small, animClass = "" }: FeatureC
 }
 
 // ========================
-// ROADMAP SECTION (línea de tiempo animada)
+// ROADMAP SECTION (línea de tiempo animada estilo circuito)
 // ========================
+import { useState, useEffect } from "react";
+import clsx from "clsx";
+
 interface RoadmapStep {
   titulo: string;
   texto: string;
   icon: string;
+  detalle?: string;
 }
-function RoadmapSection() {
-  const pasos: RoadmapStep[] = [
-    { titulo: "Registro", texto: "Crea tu cuenta o únete a una organización", icon: "👤" },
-    { titulo: "Configura tus almacenes", texto: "Agrega y personaliza tus almacenes, usuarios y permisos", icon: "🏢" },
-    { titulo: "Registra movimientos", texto: "Controla entradas y salidas en tiempo real", icon: "📦" },
-    { titulo: "Analiza y mejora", texto: "Obtén reportes automáticos y sugerencias", icon: "📊" },
-  ];
+const pasos: RoadmapStep[] = [
+  {
+    titulo: "Registro",
+    texto: "Crea tu cuenta o únete a una organización",
+    icon: "👤",
+    detalle:
+      "El primer paso es crear tu cuenta como individuo, empresa o institución. Puedes usar un código de invitación o registrarte directamente. Seguridad y validación avanzada.",
+  },
+  {
+    titulo: "Configura tus almacenes",
+    texto: "Agrega y personaliza tus almacenes, usuarios y permisos",
+    icon: "🏢",
+    detalle:
+      "Crea y personaliza tus almacenes digitales. Asigna roles, conecta colaboradores y define permisos precisos para cada usuario y cada material.",
+  },
+  {
+    titulo: "Registra movimientos",
+    texto: "Controla entradas y salidas en tiempo real",
+    icon: "📦",
+    detalle:
+      "Agrega, registra y rastrea todos los movimientos: altas, bajas, transferencias, devoluciones y solicitudes. Control total con reportes de auditoría en tiempo real.",
+  },
+  {
+    titulo: "Analiza y mejora",
+    texto: "Obtén reportes automáticos y sugerencias",
+    icon: "📊",
+    detalle:
+      "Analiza consumo, inventario y tendencias. Accede a reportes automáticos, alertas y sugerencias inteligentes para optimizar recursos y procesos.",
+  },
+];
+
+export function RoadmapSection() {
   const [activo, setActivo] = useState(2);
+
+  // Avance automático cada 3s pero se detiene si el usuario selecciona manualmente
   useEffect(() => {
-    const id = setInterval(() => setActivo(a => (a + 1) % pasos.length), 2900);
+    const id = setInterval(() => setActivo((a) => (a + 1) % pasos.length), 3200);
     return () => clearInterval(id);
   }, []);
+
   return (
-    <section className="max-w-5xl mx-auto py-24 px-4">
-      <h2 className="text-2xl md:text-3xl font-bold text-amber-300 mb-10 text-center">¿Cómo funciona?</h2>
-      <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-0">
+    <section className="max-w-6xl mx-auto py-24 px-4">
+      <h2 className="text-2xl md:text-3xl font-bold text-amber-300 mb-12 text-center drop-shadow">
+        ¿Cómo funciona?
+      </h2>
+      <div className="flex flex-col md:flex-row items-center justify-between relative gap-12 md:gap-0">
+
+        {/* LINEA RGB de conexión */}
+        <div className="absolute hidden md:block left-0 right-0 top-1/2 -translate-y-1/2 h-0 pointer-events-none z-0">
+          <svg width="100%" height="18" style={{ overflow: "visible" }}>
+            <defs>
+              <linearGradient id="cable-rgb" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#ffe066" />
+                <stop offset="30%" stopColor="#33e0ff" />
+                <stop offset="60%" stopColor="#b966ff" />
+                <stop offset="100%" stopColor="#ffe066" />
+              </linearGradient>
+              <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+                <feMerge>
+                  <feMergeNode in="coloredBlur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            {/* cable principal */}
+            <rect x="6%" y="7" width="88%" height="4" rx="8" fill="url(#cable-rgb)" filter="url(#glow)" />
+            {/* “Pulso de energía” animado */}
+            <circle>
+              <animate
+                attributeName="cx"
+                values="6%;94%"
+                dur="2.2s"
+                repeatCount="indefinite"
+              />
+              <animate
+                attributeName="r"
+                values="11;19;11"
+                dur="2.2s"
+                repeatCount="indefinite"
+              />
+            </circle>
+            <circle r="13">
+              <animate
+                attributeName="cx"
+                values="6%;94%"
+                dur="2.2s"
+                repeatCount="indefinite"
+              />
+              <animate
+                attributeName="opacity"
+                values="0.5;0;0.5"
+                dur="2.2s"
+                repeatCount="indefinite"
+              />
+            </circle>
+          </svg>
+        </div>
+
+        {/* PASOS DEL ROADMAP */}
         {pasos.map((paso, i) => (
-          <div key={paso.titulo} className="flex flex-col items-center relative">
-            <div className={clsx(
-              "rounded-full flex items-center justify-center shadow-xl border-2 transition-all",
-              activo === i ? "bg-amber-400 text-black border-amber-400 scale-110" : "bg-zinc-800 text-amber-200 border-amber-300 scale-100"
-            )} style={{ width: 64, height: 64, fontSize: 34 }}>
-              <span>{paso.icon}</span>
-            </div>
-            <div className="absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2">
-              {i < pasos.length - 1 && (
-                <div className="w-32 h-2 bg-gradient-to-r from-amber-400 to-amber-300/60 rounded-full animate-pulse md:block hidden"
-                  style={{ marginLeft: 32 }}
-                />
+          <div key={paso.titulo} className="relative z-10 flex flex-col items-center group">
+            {/* Nodo con efecto RGB */}
+            <button
+              className={clsx(
+                "rounded-full flex items-center justify-center shadow-2xl border-2 border-amber-400 transition-all duration-400 outline-none focus:outline-none ring-amber-400 focus:ring-4 hover:ring-2",
+                activo === i
+                  ? "bg-gradient-to-tr from-amber-300 via-amber-100 to-pink-300 text-black scale-125 ring-4"
+                  : "bg-zinc-800 text-amber-200 border-amber-300 scale-100 hover:scale-110"
+              )}
+              style={{
+                width: activo === i ? 86 : 64,
+                height: activo === i ? 86 : 64,
+                fontSize: activo === i ? 40 : 32,
+                boxShadow: activo === i ? "0 0 36px #ffe06655, 0 0 14px #33e0ff44" : "0 3px 12px #111a",
+                zIndex: 10 + (activo === i ? 1 : 0),
+                transition: "all .36s cubic-bezier(.6,1.4,.4,1.05)"
+              }}
+              onClick={() => setActivo(i)}
+              aria-label={paso.titulo}
+            >
+              <span className="animate-pulse">{paso.icon}</span>
+            </button>
+
+            {/* Titulo, texto principal */}
+            <span
+              className={clsx(
+                "font-semibold mt-4 text-center transition-all duration-300",
+                activo === i
+                  ? "text-amber-400 scale-105 text-lg md:text-xl"
+                  : "text-amber-200 text-base"
+              )}
+            >
+              {paso.titulo}
+            </span>
+            <span className="text-zinc-200 text-sm text-center mt-1 max-w-xs">{paso.texto}</span>
+
+            {/* Info detallada visible solo en activo */}
+            <div
+              className={clsx(
+                "overflow-hidden transition-all duration-700 ease-in-out",
+                activo === i ? "max-h-36 py-5 opacity-100" : "max-h-0 py-0 opacity-0"
+              )}
+              style={{
+                minWidth: 230,
+                maxWidth: 340,
+                marginTop: 4,
+                background: activo === i ? "rgba(25,21,32,0.91)" : "none",
+                borderRadius: 18,
+                boxShadow: activo === i ? "0 6px 28px #ffe06633" : "none",
+                border: activo === i ? "1.5px solid #ffe06655" : "none",
+              }}
+            >
+              {paso.detalle && (
+                <div className="text-base text-amber-50 px-4 pb-2 pt-1 text-center animate-fade-in">
+                  {paso.detalle}
+                </div>
               )}
             </div>
-            <span className={clsx(
-              "font-semibold mt-4 text-center",
-              activo === i ? "text-amber-400 scale-105" : "text-amber-200"
-            )}>{paso.titulo}</span>
-            <span className="text-zinc-200 text-sm text-center mt-1 max-w-xs">{paso.texto}</span>
           </div>
         ))}
       </div>
     </section>
   );
 }
+
 
 // ========================
 // TESTIMONIALS SECTION (3D Slider)
@@ -344,7 +472,7 @@ function TestimonialsSection() {
         {testimonios.map((t, i) => (
           <div key={t.nombre}
             className={clsx(
-              "absolute top-0 left-[9%] -translate-x-1/2 flex flex-col items-center transition-all duration-700",
+              "absolute top-0 left-[10%] -translate-x-1/2 flex flex-col items-center transition-all duration-700",
               i === indice ? "opacity-100 scale-105 z-20" :
                 Math.abs(i - indice) === 1 ? "opacity-60 scale-95 z-10" : "opacity-0 scale-75 z-0",
               i > indice ? "translate-x-28" : i < indice ? "-translate-x-28" : "translate-x-0"
