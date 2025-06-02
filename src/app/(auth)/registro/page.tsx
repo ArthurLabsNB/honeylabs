@@ -16,17 +16,13 @@ export default function RegistroPage() {
     nombreRef.current?.focus();
   }, []);
 
-  // Si ya hay sesión, redirige al home (o al panel)
+  // Revisa sesión REAL (cookie): si ya tiene, redirige a /dashboard
   useEffect(() => {
-    const datos = localStorage.getItem('usuario');
-    if (datos) {
-      try {
-        const user = JSON.parse(datos);
-        if (user && user.correo) {
-          router.replace('/'); // O "/panel"
-        }
-      } catch {}
-    }
+    fetch('/api/login', { credentials: 'include' })
+      .then(r => r.json())
+      .then(data => {
+        if (data?.success && data?.usuario) router.replace('/dashboard');
+      });
   }, [router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -36,7 +32,7 @@ export default function RegistroPage() {
 
     const formData = new FormData(e.currentTarget);
 
-    // Validación rápida
+    // Validación rápida en frontend
     if (
       !formData.get('nombre') ||
       !formData.get('apellidos') ||
@@ -48,8 +44,6 @@ export default function RegistroPage() {
       setCargando(false);
       return;
     }
-
-    // Aquí podrías hacer una validación extra del código invitación si quieres
 
     try {
       const res = await fetch('/api/registro', {
@@ -64,10 +58,9 @@ export default function RegistroPage() {
       setMensaje(data.mensaje || '✔️ Registro exitoso');
 
       if (data.success) {
-        setTimeout(() => router.replace('/login'), 2200);
+        setTimeout(() => router.replace('/login'), 1700);
       }
     } catch (err: any) {
-      console.error('❌ Error en el registro:', err);
       setMensaje(`❌ ${err.message || 'Fallo en el registro'}`);
     } finally {
       setCargando(false);

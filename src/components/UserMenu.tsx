@@ -20,7 +20,7 @@ import { usePathname, useRouter } from 'next/navigation';
 interface UsuarioData {
   nombre: string;
   correo: string;
-  imagen?: string | null; // url del avatar en endpoint /api/perfil/foto?nombre=
+  imagen?: string | null;
   plan?: string;
   tiene2FA?: boolean;
 }
@@ -33,13 +33,12 @@ export default function UserMenu({
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [temaOscuro, setTemaOscuro] = useState(true); // Oscuro por default
+  const [temaOscuro, setTemaOscuro] = useState(true);
   const refMenu = useRef<HTMLDivElement>(null);
 
   // Avatar image url (si existe)
   const [fotoPerfil, setFotoPerfil] = useState<string | null>(null);
 
-  // Inicializa tema desde localStorage o sistema, por default oscuro
   useEffect(() => {
     let temaGuardado = localStorage.getItem('tema');
     if (!temaGuardado) {
@@ -51,7 +50,7 @@ export default function UserMenu({
     document.documentElement.classList.toggle('light', temaGuardado === 'light');
   }, []);
 
-  // Cerrar menú al click fuera o Escape
+  // Cierra menú al click fuera o Escape
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (refMenu.current && !refMenu.current.contains(e.target as Node)) {
@@ -69,17 +68,14 @@ export default function UserMenu({
     };
   }, []);
 
-  // Cierra menú al cambiar de ruta
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
 
-  // Carga foto de perfil desde el backend si está disponible (llama una sola vez)
   useEffect(() => {
     if (usuario?.imagen) {
       setFotoPerfil(usuario.imagen);
     } else if (usuario?.correo) {
-      // Si usas endpoint propio: `/api/perfil/foto?correo=...`
       fetch(`/api/perfil/foto?correo=${encodeURIComponent(usuario.correo)}`)
         .then(r => r.ok ? r.blob() : null)
         .then(blob => {
@@ -90,7 +86,6 @@ export default function UserMenu({
     }
   }, [usuario]);
 
-  // Switch Tema: actualiza html y localStorage
   const alternarTema = () => {
     setTemaOscuro((prev) => {
       const nextIsDark = !prev;
@@ -101,14 +96,13 @@ export default function UserMenu({
     });
   };
 
-  // Cerrar sesión de verdad (endpoint)
+  // --- Nuevo logout sin contexto ---
   const cerrarSesion = async () => {
     setOpen(false);
     await fetch('/api/login', { method: 'DELETE' });
     router.replace('/login');
   };
 
-  // Avatar rendering (image, svg avatar, or initial)
   const renderAvatar = () => {
     if (fotoPerfil) {
       return (
@@ -120,7 +114,6 @@ export default function UserMenu({
       );
     }
     if (usuario?.nombre) {
-      // Avatar colorido con inicial
       const color = usuario.nombre.charCodeAt(0) % 5;
       const bgList = [
         'bg-amber-400',
@@ -164,21 +157,19 @@ export default function UserMenu({
             <div className="px-4 py-3">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold">{usuario?.nombre}</span>
-                {/* PLAN */}
                 {usuario.plan && (
                   <span className={clsx(
                     "text-xs px-2 py-0.5 rounded-full ml-auto flex items-center gap-1",
                     usuario.plan === "Pro"
                       ? "bg-amber-100 text-amber-700 border border-amber-300"
                       : usuario.plan === "Empresarial"
-                      ? "bg-sky-100 text-sky-700 border border-sky-300"
-                      : "bg-zinc-100 text-zinc-600 border border-zinc-200"
+                        ? "bg-sky-100 text-sky-700 border-sky-300"
+                        : "bg-zinc-100 text-zinc-600 border-zinc-200"
                   )}>
                     <BadgeCheck className="w-3 h-3" />
                     {usuario.plan}
                   </span>
                 )}
-                {/* 2FA */}
                 {usuario.tiene2FA && (
                   <span title="2FA activo" className="ml-1 text-emerald-500"><ShieldCheck className="h-4 w-4 inline" /></span>
                 )}
@@ -197,7 +188,6 @@ export default function UserMenu({
               <MenuLink href="/dashboard" icon={<LayoutDashboard className="h-4 w-4" />} label="Dashboard" tabIndex={open ? 0 : -1} />
               <MenuLink href="/configuracion" icon={<Settings className="h-4 w-4" />} label="Configuración" tabIndex={open ? 0 : -1} />
               <MenuLink href="/" icon={<Home className="h-4 w-4" />} label="Inicio" tabIndex={open ? 0 : -1} />
-              {/* Seguridad (2FA, solo acceso si está activo) */}
               {usuario.tiene2FA && (
                 <MenuLink href="/configuracion#seguridad" icon={<ShieldCheck className="h-4 w-4 text-emerald-500" />} label="Seguridad" tabIndex={open ? 0 : -1} />
               )}

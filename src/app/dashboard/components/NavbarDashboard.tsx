@@ -13,7 +13,6 @@ import {
   User,
   ChevronDown,
 } from "lucide-react";
-import { useUser } from "../contexts/UserContext";
 
 // Simulación de resultados (reemplázalo por tu API/fetch real)
 const MOCK_RESULTS = [
@@ -24,15 +23,31 @@ const MOCK_RESULTS = [
 ];
 
 export default function NavbarDashboard() {
+  // Estado de usuario y loading
+  const [usuario, setUsuario] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Estado UI
   const [crearOpen, setCrearOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [buscador, setBuscador] = useState("");
   const [buscadorFocus, setBuscadorFocus] = useState(false);
   const [resultados, setResultados] = useState<typeof MOCK_RESULTS>([]);
-  const { usuario, loading, logout } = useUser();
   const navRef = useRef<HTMLDivElement>(null);
 
-  // Filtrado del buscador (simulación, reemplaza por fetch/endpoint si necesitas)
+  // ---- Obtener usuario de la sesión vía API (sin contexto)
+  useEffect(() => {
+    setLoading(true);
+    fetch("/api/login", { method: "GET" })
+      .then(r => r.json())
+      .then(data => {
+        if (data?.success && data?.usuario) setUsuario(data.usuario);
+        else setUsuario(null);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  // ---- Filtrado del buscador
   useEffect(() => {
     if (buscador.trim().length === 0) {
       setResultados([]);
@@ -47,7 +62,7 @@ export default function NavbarDashboard() {
     }
   }, [buscador]);
 
-  // Cierra menús al hacer click fuera o Escape
+  // ---- Cierra menús al hacer click fuera o Escape
   useEffect(() => {
     function handler(e: MouseEvent | TouchEvent) {
       if (navRef.current && !navRef.current.contains(e.target as Node)) {
@@ -71,6 +86,13 @@ export default function NavbarDashboard() {
       document.removeEventListener("keydown", handleEsc);
     };
   }, []);
+
+  // ---- Logout
+  const logout = async (redirectUrl?: string) => {
+    await fetch("/api/login", { method: "DELETE" });
+    setUsuario(null);
+    if (redirectUrl) window.location.href = redirectUrl;
+  };
 
   if (loading) {
     return (
@@ -168,7 +190,7 @@ export default function NavbarDashboard() {
             value={buscador}
             onChange={e => setBuscador(e.target.value)}
             onFocus={() => setBuscadorFocus(true)}
-            onBlur={() => setTimeout(() => setBuscadorFocus(false), 120)} // Permite clickear resultado
+            onBlur={() => setTimeout(() => setBuscadorFocus(false), 120)}
             autoComplete="off"
           />
           {/* Resultados */}

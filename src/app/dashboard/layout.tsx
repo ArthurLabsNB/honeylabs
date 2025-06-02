@@ -1,8 +1,7 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import NavbarDashboard from "./components/NavbarDashboard";
-import { UserProvider, useUser } from "./contexts/UserContext"; // <-- IMPORT RELATIVO CORRECTO
 import { useRouter } from "next/navigation";
 // Si luego agregas más contextos, descomenta estos
 // import { ThemeProvider } from "./contexts/ThemeContext";
@@ -10,12 +9,33 @@ import { useRouter } from "next/navigation";
 
 // --- Wrapper para proteger y redirigir ---
 function ProtectedDashboard({ children }: { children: React.ReactNode }) {
-  const { usuario, loading } = useUser();
   const router = useRouter();
+  const [usuario, setUsuario] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Obtiene usuario desde backend
+  useEffect(() => {
+    const cargarUsuario = async () => {
+      try {
+        const res = await fetch("/api/login", { credentials: "include" });
+        const data = await res.json();
+        if (data?.success && data?.usuario) {
+          setUsuario(data.usuario);
+        } else {
+          setUsuario(null);
+        }
+      } catch {
+        setUsuario(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    cargarUsuario();
+  }, []);
 
   useEffect(() => {
     if (!loading && !usuario) {
-      router.push("/login");
+      router.replace("/login");
     }
   }, [usuario, loading, router]);
 
@@ -34,11 +54,11 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen bg-[var(--dashboard-bg)] transition-colors duration-300">
       {/* --- SIDEBAR --- */}
-      <Sidebar />
+      <Sidebar usuario={usuario} />
       {/* --- ZONA CENTRAL --- */}
       <main className="flex-1 flex flex-col min-h-screen">
         {/* --- NAVBAR EXCLUSIVO DASHBOARD --- */}
-        <NavbarDashboard />
+        <NavbarDashboard usuario={usuario} />
         {/* --- CONTENIDO MODULAR --- */}
         <section className="
           flex-1 p-0 sm:p-8
@@ -57,12 +77,10 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <UserProvider>
-      {/* <ThemeProvider> */}
-      {/* <NotificationProvider> */}
-      <ProtectedDashboard>{children}</ProtectedDashboard>
-      {/* </NotificationProvider> */}
-      {/* </ThemeProvider> */}
-    </UserProvider>
+    // <ThemeProvider>
+    // <NotificationProvider>
+    <ProtectedDashboard>{children}</ProtectedDashboard>
+    // </NotificationProvider>
+    // </ThemeProvider>
   );
 }

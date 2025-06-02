@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // Para serverless: migrar a Redis/Upstash/DynamoDB, etc.
 const limiterMemory = new Map<string, { count: number; lastRequest: number }>();
 
-const RATE_LIMIT_MAX = 5;                 // Máximo por ventana
+const RATE_LIMIT_MAX = 65;                 // Máximo por ventana
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;   // 1 minuto
 
 // Limpieza periódica para liberar memoria

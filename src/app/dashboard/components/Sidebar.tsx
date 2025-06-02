@@ -16,7 +16,14 @@ import {
   ChevronRight,
   User,
 } from "lucide-react";
-import { useUser } from "../contexts/UserContext";
+
+// El tipo mínimo del usuario (ajusta según tu modelo)
+type Usuario = {
+  nombre: string;
+  avatarUrl?: string | null;
+  rol?: string;
+  tipoCuenta?: string;
+};
 
 const sidebarMenu = [
   {
@@ -84,13 +91,13 @@ const sidebarMenu = [
   },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ usuario }: { usuario: Usuario }) {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const { usuario, loading } = useUser();
 
-  if (loading || !usuario || (!usuario.rol && !usuario.tipoCuenta) || !usuario.nombre) {
+  // Puedes agregar un loading aquí si lo quieres (pero normalmente ya está resuelto antes de cargar el dashboard)
+  if (!usuario || (!usuario.rol && !usuario.tipoCuenta) || !usuario.nombre) {
     return (
       <aside className="dashboard-sidebar flex flex-col w-20 h-screen sticky top-0 z-30 justify-center items-center">
         <span className="text-[var(--dashboard-accent)]">Cargando...</span>

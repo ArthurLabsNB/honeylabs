@@ -1,23 +1,17 @@
 'use client';
 
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
 // SCHEMA VALIDACIÓN ZOD
 const loginSchema = z.object({
-  correo: z
-    .string({ required_error: 'Correo obligatorio' })
-    .nonempty({ message: 'Correo obligatorio' })
-    .email({ message: 'Correo inválido' }),
-  contrasena: z
-    .string({ required_error: 'Contraseña obligatoria' })
-    .nonempty({ message: 'Contraseña obligatoria' })
-    .min(6, { message: 'Mínimo 6 caracteres' }),
+  correo: z.string().nonempty('Correo obligatorio').email('Correo inválido'),
+  contrasena: z.string().nonempty('Contraseña obligatoria').min(6, 'Mínimo 6 caracteres'),
 });
 type LoginData = z.infer<typeof loginSchema>;
 
@@ -38,24 +32,23 @@ export default function LoginPage() {
     mode: 'onTouched',
   });
 
+  // Enfoca el correo al cargar
   useEffect(() => {
     setFocus('correo');
   }, [setFocus]);
 
+  // --- Si ya tienes sesión, te manda a dashboard ---
   useEffect(() => {
-    const datos = localStorage.getItem('usuario');
-    if (datos) {
-      try {
-        const user = JSON.parse(datos);
-        if (user?.correo) router.replace('/');
-      } catch {}
-    }
+    fetch('/api/login', { credentials: 'include' })
+      .then(r => r.json())
+      .then(data => {
+        if (data?.success && data?.usuario) router.replace('/dashboard');
+      });
   }, [router]);
 
   const onSubmit = async (datos: LoginData) => {
     setMensaje('');
     setCargando(true);
-
     try {
       const res = await fetch('/api/login', {
         method: 'POST',
@@ -64,19 +57,11 @@ export default function LoginPage() {
       });
 
       const data = await res.json();
-
-      if (!res.ok) throw new Error(data?.error || 'Credenciales inválidas');
-
-      // Guardar solo el objeto usuario para mayor claridad
-      if (data.usuario) {
-        localStorage.setItem('usuario', JSON.stringify(data.usuario));
-      } else {
-        throw new Error('Respuesta inválida del servidor');
-      }
+      if (!res.ok || !data?.success) throw new Error(data?.error || 'Credenciales inválidas');
 
       setMensaje('✔️ Inicio de sesión exitoso');
       reset();
-      setTimeout(() => router.replace('/'), 800);
+      setTimeout(() => router.replace('/dashboard'), 800);
     } catch (error: any) {
       setMensaje(`❌ ${error.message}`);
     } finally {
