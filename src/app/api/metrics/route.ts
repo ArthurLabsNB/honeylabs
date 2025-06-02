@@ -1,41 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@lib/prisma'; // Asegúrate que tu tsconfig tiene "@lib/*": ["./lib/*"]
+import prisma from '@lib/prisma'; // Asegúrate que el alias es correcto
 
-// Obtiene usuario desde JWT si lo necesitas en el futuro
+// Función auxiliar para obtener usuario desde JWT (por implementar)
 async function getUsuarioFromRequest(req: NextRequest) {
-  // Aquí iría lógica para extraer el usuario desde la cookie/JWT si tu endpoint lo requiere
-  // Por ahora, retorna null para métricas globales
+  // Lógica para extraer usuario de cookie JWT (si necesario)
+  // Por ahora devuelve null
   return null;
 }
 
 export async function GET(req: NextRequest) {
   try {
-    // Si quieres que las métricas dependan del usuario, puedes descomentar esto:
+    // Puedes descomentar para filtrar según usuario o entidad
     // const usuario = await getUsuarioFromRequest(req);
 
-    // Ejemplo de métricas globales (admin) o filtradas por entidad/usuario
-    // Si quieres filtrar por entidad, añade el filtro a los count()
-
+    // Conteos globales o con filtros según entidad/usuario
     const [entradas, salidas, usuarios, almacenes] = await Promise.all([
       prisma.movimiento.count({ where: { tipo: 'entrada' } }),
-      prisma.movimiento.count({ where: { tipo: 'salida'  } }),
+      prisma.movimiento.count({ where: { tipo: 'salida' } }),
       prisma.usuario.count(),
       prisma.almacen.count(),
     ]);
-
-    // Aquí puedes luego agregar límites permitidos por plan y devolver advertencias
-    // Ejemplo:
-    // const limiteAlmacenes = usuario?.plan?.limites?.almacenes ?? 2;
-    // const advertencia = almacenes >= limiteAlmacenes ? 'Has alcanzado el límite de almacenes' : null;
 
     return NextResponse.json({
       entradas,
       salidas,
       usuarios,
       almacenes,
-      // advertencia
+      // advertencia: 'Límite alcanzado', // puedes añadir si quieres
     });
   } catch (error) {
+    console.error('[ERROR_METRICAS]', error);
     return NextResponse.json(
       { error: 'No se pudieron recuperar las métricas', details: String(error) },
       { status: 500 }

@@ -49,6 +49,8 @@ export default function RegistroPage() {
       return;
     }
 
+    // Aquí podrías hacer una validación extra del código invitación si quieres
+
     try {
       const res = await fetch('/api/registro', {
         method: 'POST',

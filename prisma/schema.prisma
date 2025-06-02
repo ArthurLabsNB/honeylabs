@@ -1,6 +1,6 @@
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-// 🌐 Generador y fuente de datos
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+// ================================
+// Prisma Schema para HoneyLabs
+// ================================
 
 generator client {
   provider = "prisma-client-js"
@@ -11,16 +11,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-//
-// 🏆 PLANES Y SUSCRIPCIONES
-//
+// ================================
+// Planes y Suscripciones
+// ================================
 model Plan {
-  id           Int        @id @default(autoincrement())
-  nombre       String     // Ej: 'Free', 'Pro', 'Empresarial'
+  id           Int          @id @default(autoincrement())
+  nombre       String       // Ej: 'Free', 'Pro', 'Empresarial'
   descripcion  String?
   precio       Float?
-  periodicidad String?    // 'mensual', 'anual'
-  limites      String?    // JSON: {almacenes: 2, colaboradores: 5, ...}
+  periodicidad String?      // 'mensual', 'anual'
+  limites      String?      // JSON string con límites: {almacenes: 2, colaboradores: 5, ...}
+  
   usuarios     Usuario[]
   entidades    Entidad[]
   suscripciones Suscripcion[]
@@ -34,72 +35,72 @@ model Suscripcion {
   fechaInicio  DateTime   @default(now())
   fechaFin     DateTime?
   activo       Boolean    @default(true)
+
   usuario      Usuario?   @relation(fields: [usuarioId], references: [id])
   entidad      Entidad?   @relation(fields: [entidadId], references: [id])
   plan         Plan       @relation(fields: [planId], references: [id])
 }
 
-//
-// 🏢 ENTIDADES (empresas, instituciones, etc.)
-//
+// ================================
+// Entidades (Empresas, Instituciones, etc.)
+// ================================
 model Entidad {
   id             Int          @id @default(autoincrement())
   nombre         String
-  tipo           String                     // ej: 'institucional', 'empresarial'
+  tipo           String       // ej: 'institucional', 'empresarial'
   correoContacto String
   telefono       String?
   direccion      String?
-  fechaCreacion  DateTime      @default(now())
+  fechaCreacion  DateTime     @default(now())
+  
   almacenes      Almacen[]
   roles          Rol[]
   usuarios       Usuario[]
-  planId         Int?          // Plan activo para la entidad
-  plan           Plan?         @relation(fields: [planId], references: [id])
+  
+  planId         Int?         
+  plan           Plan?        @relation(fields: [planId], references: [id])
+  
   suscripciones  Suscripcion[]
 }
 
-//
-// 👤 USUARIOS
-//
+// ================================
+// Usuarios
+// ================================
 model Usuario {
   id            Int              @id @default(autoincrement())
   nombre        String
   apellidos     String
   correo        String           @unique
   contrasena    String
-  googleId      String?          // Para login alternativo con Google (futuro)
+  googleId      String?          // Login alternativo Google (futuro)
   tipoCuenta    String           // 'estandar', 'institucional', etc.
   estado        String           @default("pendiente")  // 'pendiente', 'activo'
   fechaRegistro DateTime         @default(now())
 
-  // 🔗 Asociación con entidad si aplica
   entidadId     Int?
   entidad       Entidad?         @relation(fields: [entidadId], references: [id])
 
-  // Plan y suscripciones
-  planId        Int?             // Plan activo del usuario (si aplica)
+  planId        Int?
   plan          Plan?            @relation(fields: [planId], references: [id])
+  
   suscripciones Suscripcion[]
 
-  // 📎 Soporte para validación de cuenta
   archivoBuffer Bytes?
   archivoNombre String?
   codigoUsado   String?
 
-  // 🔑 Seguridad y opciones avanzadas
-  fotoPerfil        Bytes?          // Imagen de perfil (BLOB)
+  fotoPerfil        Bytes?          
   fotoPerfilNombre  String?
   preferencias      String?         // JSON o texto de preferencias/ajustes
-  tiene2FA         Boolean?         @default(false)
-  metodo2FA        String?          // 'email', 'app', etc.
-  codigo2FASecret  String?          // secreto para autenticador
+  tiene2FA          Boolean?        @default(false)
+  metodo2FA         String?         // 'email', 'app', etc.
+  codigo2FASecret   String?         // secreto para autenticador
 
-  // 🔗 Relaciones múltiples
   almacenes     UsuarioAlmacen[]
   roles         Rol[]            @relation("RolToUsuario")
   movimientos   Movimiento[]
 
-  // 🔗 Relaciones con minijuegos
+  // Minijuegos
   puntajesPacman       PuntajePacman[]
   puntajesMario        PuntajeMario[]
   puntajesSnake        PuntajeSnake[]
@@ -109,7 +110,6 @@ model Usuario {
   puntajesFlappyBee    PuntajeFlappyBee[]
   puntajesSpaceShooter PuntajeSpaceShooter[]
 
-  // Relaciones a otros módulos
   eventosCreados       EventoAlmacen[]      @relation("EventosCreados")
   novedadesCreadas     NovedadAlmacen[]     @relation("NovedadesCreadas")
   documentosSubidos    DocumentoAlmacen[]   @relation("DocumentosSubidos")
@@ -120,20 +120,21 @@ model Usuario {
   sesiones            SesionUsuario[]
 }
 
-//
-// 👁️‍🗨️ BITÁCORA DE CAMBIOS DE PERFIL
-//
+// ================================
+// Bitácora de cambios de perfil
+// ================================
 model BitacoraCambioPerfil {
   id         Int      @id @default(autoincrement())
   usuarioId  Int
   cambios    String
   fecha      DateTime @default(now())
+
   usuario    Usuario  @relation(fields: [usuarioId], references: [id])
 }
 
-//
-// 🖥️ HISTORIAL DE SESIONES DE USUARIO
-//
+// ================================
+// Historial de sesiones de usuario
+// ================================
 model SesionUsuario {
   id           Int      @id @default(autoincrement())
   usuarioId    Int
@@ -142,12 +143,13 @@ model SesionUsuario {
   fechaInicio  DateTime @default(now())
   fechaUltima  DateTime @default(now())
   activa       Boolean  @default(true)
+
   usuario      Usuario  @relation(fields: [usuarioId], references: [id])
 }
 
-//
-// 🎭 ROLES PERSONALIZADOS
-//
+// ================================
+// Roles personalizados
+// ================================
 model Rol {
   id          Int       @id @default(autoincrement())
   nombre      String
@@ -158,9 +160,9 @@ model Rol {
   usuarios    Usuario[] @relation("RolToUsuario")
 }
 
-//
-// 📦 ALMACENES
-//
+// ================================
+// Almacenes
+// ================================
 model Almacen {
   id                      Int              @id @default(autoincrement())
   nombre                  String
@@ -171,26 +173,24 @@ model Almacen {
   permisosPredeterminados String?
   fechaCreacion           DateTime         @default(now())
 
-  // 🔗 Relación con Entidad
   entidadId   Int
   entidad     Entidad          @relation(fields: [entidadId], references: [id])
 
-  // 🔗 Códigos de registro, usuarios conectados
   codigos     CodigoAlmacen[]
   usuarios    UsuarioAlmacen[]
   movimientos Movimiento[]
 
-  // Nuevos módulos
   eventos         EventoAlmacen[]
   novedades       NovedadAlmacen[]
   documentos      DocumentoAlmacen[]
   incidencias     Incidencia[]
   notificaciones  Notificacion[]
+  alertas                 Alerta[]
 }
 
-//
-// 🔑 Relación muchos-a-muchos entre usuarios y almacenes
-//
+// ================================
+// Relación muchos-a-muchos usuarios-almacenes
+// ================================
 model UsuarioAlmacen {
   id            Int     @id @default(autoincrement())
   usuarioId     Int
@@ -201,12 +201,12 @@ model UsuarioAlmacen {
   usuario       Usuario @relation(fields: [usuarioId], references: [id])
   almacen       Almacen @relation(fields: [almacenId], references: [id])
 
-  @@unique([usuarioId, almacenId]) // No puede estar dos veces en el mismo almacén
+  @@unique([usuarioId, almacenId])
 }
 
-//
-// 🧾 Códigos generados por entidades para registrar afiliados
-//
+// ================================
+// Códigos para registro en almacenes
+// ================================
 model CodigoAlmacen {
   id              Int       @id @default(autoincrement())
   almacenId       Int
@@ -222,9 +222,9 @@ model CodigoAlmacen {
   almacen         Almacen   @relation(fields: [almacenId], references: [id])
 }
 
-//
-// 📊 MOVIMIENTOS DE ALMACÉN (entradas y salidas)
-//
+// ================================
+// Movimientos de almacén (entradas y salidas)
+// ================================
 model Movimiento {
   id          Int       @id @default(autoincrement())
   tipo        String    // 'entrada' o 'salida'
@@ -232,18 +232,16 @@ model Movimiento {
   fecha       DateTime  @default(now())
   descripcion String?
 
-  // 🔗 Relación con almacén
   almacenId   Int
   almacen     Almacen   @relation(fields: [almacenId], references: [id], onDelete: Cascade)
 
-  // 🔗 Relación opcional con usuario que hizo el movimiento
   usuarioId   Int?
   usuario     Usuario?  @relation(fields: [usuarioId], references: [id])
 }
 
-//
-// 📅 EVENTOS DE CALENDARIO POR ALMACÉN
-//
+// ================================
+// Eventos de calendario por almacén
+// ================================
 model EventoAlmacen {
   id           Int       @id @default(autoincrement())
   titulo       String
@@ -258,9 +256,9 @@ model EventoAlmacen {
   creadoPor    Usuario        @relation("EventosCreados", fields: [creadoPorId], references: [id])
 }
 
-//
-// 📰 NOVEDADES Y ANUNCIOS POR ALMACÉN
-//
+// ================================
+// Novedades y anuncios por almacén
+// ================================
 model NovedadAlmacen {
   id          Int      @id @default(autoincrement())
   titulo      String
@@ -272,9 +270,9 @@ model NovedadAlmacen {
   creadoPor   Usuario  @relation("NovedadesCreadas", fields: [creadoPorId], references: [id])
 }
 
-//
-// 🔔 NOTIFICACIONES (usuario + almacén opcional)
-//
+// ================================
+// Notificaciones (usuario + almacén opcional)
+// ================================
 model Notificacion {
   id          Int      @id @default(autoincrement())
   usuarioId   Int
@@ -287,9 +285,9 @@ model Notificacion {
   almacenes   Almacen? @relation(fields: [almacenId], references: [id])
 }
 
-//
-// 📁 DOCUMENTOS OFICIALES POR ALMACÉN
-//
+// ================================
+// Documentos oficiales por almacén
+// ================================
 model DocumentoAlmacen {
   id          Int      @id @default(autoincrement())
   nombre      String
@@ -303,9 +301,9 @@ model DocumentoAlmacen {
   subidoPor   Usuario  @relation("DocumentosSubidos", fields: [subidoPorId], references: [id])
 }
 
-//
-// ⚠️ INCIDENCIAS
-//
+// ================================
+// Incidencias
+// ================================
 model Incidencia {
   id            Int      @id @default(autoincrement())
   titulo        String
@@ -321,9 +319,9 @@ model Incidencia {
   fechaResuelta DateTime?
 }
 
-//
-// 🎮 MINIJUEGOS (no cambian)
-//
+// ================================
+// Minijuegos (sin cambios)
+// ================================
 model PuntajePacman {
   id        Int      @id @default(autoincrement())
   usuario   Usuario  @relation(fields: [usuarioId], references: [id])
@@ -393,4 +391,25 @@ model PuntajeSpaceShooter {
   enemigos  Int
   puntaje   Int
   fecha     DateTime @default(now())
+}
+
+// ================================
+// Alertas por almacén (NUEVO)
+// ================================
+enum PrioridadAlerta {
+  ALTA
+  MEDIA
+  BAJA
+}
+
+model Alerta {
+  id          Int              @id @default(autoincrement())
+  titulo      String
+  mensaje     String?
+  fecha       DateTime         @default(now())
+  prioridad   PrioridadAlerta  @default(MEDIA)
+  activa      Boolean          @default(true)
+  tipo        String?          // Ej: 'producto_critico', 'auditoria', etc.
+  almacenId   Int
+  almacen     Almacen          @relation(fields: [almacenId], references: [id])
 }

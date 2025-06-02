@@ -27,7 +27,6 @@ export default function LoginPage() {
   const [mensaje, setMensaje] = useState('');
   const [cargando, setCargando] = useState(false);
 
-  // React Hook Form
   const {
     register,
     handleSubmit,
@@ -68,7 +67,12 @@ export default function LoginPage() {
 
       if (!res.ok) throw new Error(data?.error || 'Credenciales inválidas');
 
-      localStorage.setItem('usuario', JSON.stringify(data));
+      // Guardar solo el objeto usuario para mayor claridad
+      if (data.usuario) {
+        localStorage.setItem('usuario', JSON.stringify(data.usuario));
+      } else {
+        throw new Error('Respuesta inválida del servidor');
+      }
 
       setMensaje('✔️ Inicio de sesión exitoso');
       reset();

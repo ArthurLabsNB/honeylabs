@@ -18,35 +18,34 @@ import {
 } from "lucide-react";
 import { useUser } from "../contexts/UserContext";
 
-// Menú lateral según roles de tu sistema
 const sidebarMenu = [
   {
     key: "dashboard",
     label: "Dashboard",
     icon: <Home className="dashboard-sidebar-icon" />,
     path: "/dashboard",
-    allowed: ["admin", "encargado", "empleado", "institucional"],
+    allowed: ["admin", "institucional", "empresarial", "estandar"],
   },
   {
     key: "almacenes",
     label: "Almacenes",
     icon: <Boxes className="dashboard-sidebar-icon" />,
     path: "/dashboard/almacenes",
-    allowed: ["admin", "encargado", "empleado", "institucional"],
+    allowed: ["admin", "institucional", "empresarial", "estandar"],
   },
   {
     key: "alertas",
     label: "Alertas",
     icon: <Bell className="dashboard-sidebar-icon" />,
     path: "/dashboard/alertas",
-    allowed: ["admin", "encargado", "empleado", "institucional"],
+    allowed: ["admin", "institucional", "empresarial", "estandar"],
   },
   {
     key: "appcenter",
     label: "App Center",
     icon: <AppWindow className="dashboard-sidebar-icon" />,
     path: "/dashboard/app-center",
-    allowed: ["admin", "encargado", "institucional"],
+    allowed: ["admin", "institucional", "empresarial"],
   },
   {
     key: "network",
@@ -60,14 +59,14 @@ const sidebarMenu = [
     label: "Plantillas",
     icon: <FileStack className="dashboard-sidebar-icon" />,
     path: "/dashboard/plantillas",
-    allowed: ["admin", "encargado", "institucional", "empleado"],
+    allowed: ["admin", "institucional", "empresarial", "estandar"],
   },
   {
     key: "reportes",
     label: "Reportes",
     icon: <FileText className="dashboard-sidebar-icon" />,
     path: "/dashboard/reportes",
-    allowed: ["admin", "encargado", "institucional"],
+    allowed: ["admin", "institucional", "empresarial"],
   },
   {
     key: "billing",
@@ -91,8 +90,7 @@ export default function Sidebar() {
   const router = useRouter();
   const { usuario, loading } = useUser();
 
-  // Estado de carga o usuario inválido
-  if (loading || !usuario || !usuario.rol || !usuario.nombre) {
+  if (loading || !usuario || (!usuario.rol && !usuario.tipoCuenta) || !usuario.nombre) {
     return (
       <aside className="dashboard-sidebar flex flex-col w-20 h-screen sticky top-0 z-30 justify-center items-center">
         <span className="text-[var(--dashboard-accent)]">Cargando...</span>
@@ -100,12 +98,13 @@ export default function Sidebar() {
     );
   }
 
-  // Filtra menús por rol real del usuario
-  const userRol = usuario.rol || "empleado";
-  const userNombre = usuario.nombre || "Usuario";
+  const tipo =
+    usuario.rol === "admin"
+      ? "admin"
+      : usuario.tipoCuenta ?? "estandar";
 
   const filteredMenu = sidebarMenu.filter((item) =>
-    item.allowed.includes(userRol)
+    item.allowed.includes(tipo)
   );
 
   return (
@@ -153,6 +152,7 @@ export default function Sidebar() {
                 active:bg-white/20
               `}
               title={collapsed ? item.label : ""}
+              tabIndex={0}
             >
               {item.icon}
               <span
@@ -164,7 +164,6 @@ export default function Sidebar() {
               >
                 {item.label}
               </span>
-              {/* Indicator */}
               {active && !collapsed && (
                 <span className="absolute right-2 w-2 h-2 rounded-full bg-[var(--dashboard-accent)]"></span>
               )}
@@ -175,7 +174,6 @@ export default function Sidebar() {
 
       {/* Footer: usuario */}
       <div className="dashboard-sidebar-footer">
-        {/* Avatar */}
         {usuario.avatarUrl ? (
           <img
             src={usuario.avatarUrl}
@@ -187,12 +185,13 @@ export default function Sidebar() {
             <User className="w-7 h-7 text-[var(--dashboard-navbar)]" />
           </div>
         )}
-        {/* Nombre/rol */}
         <span className={`font-bold text-sm ${collapsed ? "hidden" : "block"}`}>
-          {userNombre}
+          {usuario.nombre}
         </span>
         <span className={`text-xs text-[var(--dashboard-accent)] opacity-80 ${collapsed ? "hidden" : "block"}`}>
-          {userRol.charAt(0).toUpperCase() + userRol.slice(1)}
+          {typeof tipo === "string"
+            ? tipo.charAt(0).toUpperCase() + tipo.slice(1)
+            : "Invitado"}
         </span>
       </div>
     </aside>

@@ -1,20 +1,34 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 
-// --- Modelo de usuario (adáptalo a tu backend real) ---
+// === Modelo del usuario desde API ===
 type Usuario = {
   id: number;
   nombre: string;
   correo: string;
-  rol: string;         // admin, encargado, empleado, institucional, etc.
-  plan: string;        // Free, Pro, Empresarial, Institucional
-  avatarUrl?: string;
-  entidad?: { id: number; nombre: string; tipo: string };
-  // Puedes añadir más campos según tus necesidades
+  rol: string; // Puede venir desde algún campo personalizado o calculado
+  tipoCuenta: string; // estandar, institucional, empresarial
+  plan?: {
+    id: number;
+    nombre: string; // Free, Pro, Empresarial, Institucional
+    limites?: Record<string, any>;
+  } | null;
+  entidad?: {
+    id: number;
+    nombre: string;
+    tipo: string;
+    planId?: number;
+  } | null;
+  avatarUrl?: string; // Calculado en el servidor si se guarda como buffer
 };
 
-// --- Modelo del context ---
 interface UserContextType {
   usuario: Usuario | null;
   loading: boolean;
@@ -24,55 +38,58 @@ interface UserContextType {
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-// --- Función que asegura que usuario tenga todos los campos necesarios ---
-function userWithDefaults(user: any): Usuario {
+// === Normaliza estructura del usuario ===
+function userWithDefaults(data: any): Usuario {
   return {
-    id: user?.id ?? 0,
-    nombre: user?.nombre ?? "Usuario",
-    correo: user?.correo ?? "",
-    rol: user?.rol ?? "empleado",        // O "usuario" o tu default seguro
-    plan: user?.plan ?? "Free",
-    avatarUrl: user?.avatarUrl,
-    entidad: user?.entidad,
+    id: data?.id ?? 0,
+    nombre: data?.nombre ?? "Usuario",
+    correo: data?.correo ?? "",
+    rol: data?.roles?.[0]?.nombre ?? "estandar",
+    tipoCuenta: data?.tipoCuenta ?? "estandar",
+    plan: data?.plan ?? null,
+    entidad: data?.entidad ?? null,
+    avatarUrl: data?.fotoPerfilNombre
+      ? `/api/perfil/foto?nombre=${encodeURIComponent(data.fotoPerfilNombre)}`
+      : undefined,
   };
 }
 
-// --- Provider real ---
+// === Proveedor del contexto ===
 export function UserProvider({ children }: { children: ReactNode }) {
   const [usuario, setUsuarioState] = useState<Usuario | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Carga el usuario al montar el provider (ejemplo: fetch a /api/login)
   useEffect(() => {
     const fetchUser = async () => {
       try {
         setLoading(true);
         const res = await fetch("/api/login", { method: "GET" });
         const data = await res.json();
+
         if (data?.success && data?.usuario) {
           setUsuarioState(userWithDefaults(data.usuario));
         } else {
           setUsuarioState(null);
         }
-      } catch {
+      } catch (err) {
+        console.warn("❌ Error cargando sesión:", err);
         setUsuarioState(null);
       } finally {
         setLoading(false);
       }
     };
+
     fetchUser();
   }, []);
 
-  // Siempre asegura que usuario esté "limpio" al usar setUsuario
   const setUsuario = (u: Usuario | null) => {
     setUsuarioState(u ? userWithDefaults(u) : null);
   };
 
-  // Función de logout
   const logout = async () => {
     await fetch("/api/login", { method: "DELETE" });
     setUsuarioState(null);
-    window.location.href = "/login"; // o la ruta que prefieras
+    window.location.href = "/login";
   };
 
   return (
@@ -82,9 +99,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// --- Custom hook para consumir el usuario desde cualquier componente ---
+// === Hook personalizado ===
 export function useUser() {
   const ctx = useContext(UserContext);
-  if (!ctx) throw new Error("useUser debe usarse dentro de <UserProvider>");
+  if (!ctx)
+    throw new Error("useUser debe usarse dentro de <UserProvider>");
   return ctx;
 }

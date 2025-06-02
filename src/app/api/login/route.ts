@@ -13,34 +13,39 @@ const prisma = globalForPrisma.prisma ?? new PrismaClient();
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 // --- CONFIGURACIÓN SEGURA ---
-const JWT_SECRET = process.env.JWT_SECRET ?? 'mi_clave_de_emergencia';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET no está definido en variables de entorno');
+}
 const COOKIE_NAME = 'hl_session';
 const COOKIE_EXPIRES = 60 * 60 * 24 * 7; // 7 días en segundos
 
-// Utilidad: obtiene plan activo y límites del usuario
+// Utilidad: obtiene plan activo y límites del usuario o entidad
 async function obtenerPlanYLimites(usuario: any) {
-  // Si usuario tiene plan propio, ese es prioritario
+  // Prioridad: plan de usuario
   if (usuario.planId) {
     const plan = await prisma.plan.findUnique({ where: { id: usuario.planId } });
-    return plan ? {
-      tipo: 'usuario',
-      nombre: plan.nombre,
-      limites: plan.limites ? JSON.parse(plan.limites) : {},
-      id: plan.id
-    } : null;
+    if (plan) {
+      return {
+        tipo: 'usuario',
+        nombre: plan.nombre,
+        limites: plan.limites ? JSON.parse(plan.limites) : {},
+        id: plan.id,
+      };
+    }
   }
-  // Si usuario tiene entidad con plan, usar ese
+  // Si no, plan de entidad si aplica
   if (usuario.entidadId) {
     const entidad = await prisma.entidad.findUnique({
       where: { id: usuario.entidadId },
-      include: { plan: true }
+      include: { plan: true },
     });
     if (entidad?.plan) {
       return {
         tipo: 'entidad',
         nombre: entidad.plan.nombre,
         limites: entidad.plan.limites ? JSON.parse(entidad.plan.limites) : {},
-        id: entidad.plan.id
+        id: entidad.plan.id,
       };
     }
   }
@@ -59,19 +64,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Busca el usuario (correo minúsculas y sin espacios)
+    // Busca usuario con relaciones necesarias
     const usuario = await prisma.usuario.findUnique({
       where: { correo: correo.toLowerCase().trim() },
       include: {
-        entidad: {
-          select: { id: true, nombre: true, tipo: true, planId: true }
-        },
+        entidad: { select: { id: true, nombre: true, tipo: true, planId: true } },
         roles: { select: { id: true, nombre: true, descripcion: true, permisos: true } },
         suscripciones: {
           where: { activo: true },
-          select: { id: true, plan: { select: { nombre: true, limites: true } }, fechaFin: true }
+          select: { id: true, plan: { select: { nombre: true, limites: true } }, fechaFin: true },
         },
-      }
+      },
     });
 
     if (!usuario) {
@@ -96,10 +99,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Obtén info de plan activo y límites
+    // Obtiene plan activo y límites
     const planActivo = await obtenerPlanYLimites(usuario);
 
-    // Opcional: extrae roles en formato simple
+    // Extrae roles en formato limpio y parsea permisos JSON
     const roles = (usuario.roles ?? []).map((r: any) => ({
       id: r.id,
       nombre: r.nombre,
@@ -107,7 +110,7 @@ export async function POST(req: NextRequest) {
       permisos: r.permisos ? JSON.parse(r.permisos) : {},
     }));
 
-    // Opcional: suscripción directa
+    // Extrae suscripción activa si existe
     const suscripcionActiva = usuario.suscripciones?.length > 0
       ? {
           id: usuario.suscripciones[0].id,
@@ -119,7 +122,7 @@ export async function POST(req: NextRequest) {
         }
       : null;
 
-    // Payload para JWT (nunca contraseña)
+    // Payload para JWT (sin contraseña ni datos sensibles)
     const payload = {
       id: usuario.id,
       nombre: usuario.nombre,
@@ -131,16 +134,17 @@ export async function POST(req: NextRequest) {
         id: usuario.entidad.id,
         nombre: usuario.entidad.nombre,
         tipo: usuario.entidad.tipo,
-        planId: usuario.entidad.planId
+        planId: usuario.entidad.planId,
       } : null,
       roles,
       plan: planActivo,
       suscripcion: suscripcionActiva,
     };
 
+    // Firma JWT
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: COOKIE_EXPIRES });
 
-    // Set cookie segura
+    // Respuesta con cookie httpOnly
     const res = NextResponse.json(
       { success: true, mensaje: 'Inicio de sesión exitoso.', usuario: payload },
       { status: 200 }

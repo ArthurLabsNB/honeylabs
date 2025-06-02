@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Home,
@@ -19,6 +19,31 @@ export default function NavbarDashboard() {
   const [crearOpen, setCrearOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { usuario, loading, logout } = useUser();
+  const navRef = useRef<HTMLDivElement>(null);
+
+  // Cierra menús al hacer click fuera o Escape
+  useEffect(() => {
+    function handler(e: MouseEvent | TouchEvent) {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setCrearOpen(false);
+        setUserMenuOpen(false);
+      }
+    }
+    function handleEsc(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setCrearOpen(false);
+        setUserMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handler);
+    document.addEventListener("touchstart", handler);
+    document.addEventListener("keydown", handleEsc);
+    return () => {
+      document.removeEventListener("mousedown", handler);
+      document.removeEventListener("touchstart", handler);
+      document.removeEventListener("keydown", handleEsc);
+    };
+  }, []);
 
   if (loading) {
     return (
@@ -36,17 +61,24 @@ export default function NavbarDashboard() {
     );
   }
 
-  // Cierra el menú si das click fuera (mejor UX)
-  function closeMenus() {
-    setCrearOpen(false);
-    setUserMenuOpen(false);
-  }
+  const puedeCrear = (
+    usuario.rol === "admin" || // desarrollador
+    usuario.tipoCuenta === "empresarial" ||
+    usuario.tipoCuenta === "institucional" ||
+    usuario.tipoCuenta === "estandar"
+  );
+
+  const puedeInvitarUsuarios = (
+    usuario.rol === "admin" ||
+    usuario.tipoCuenta === "empresarial" ||
+    usuario.tipoCuenta === "institucional"
+  );
 
   return (
     <header
+      ref={navRef}
       className="dashboard-navbar flex items-center px-8 py-2 justify-between sticky top-0 z-20 shadow"
       style={{ minHeight: "70px" }}
-      onBlur={closeMenus}
     >
       {/* --- IZQUIERDA: Home, Crear, Buscador --- */}
       <div className="flex gap-4 items-center relative">
@@ -60,18 +92,13 @@ export default function NavbarDashboard() {
         </Link>
 
         {/* Botón Crear */}
-        {(usuario.rol === "admin" ||
-          usuario.rol === "encargado" ||
-          usuario.plan === "Pro" ||
-          usuario.plan === "Empresarial" ||
-          usuario.plan === "Institucional") && (
+        {puedeCrear && (
           <div className="relative">
             <button
               className="
-                dashboard-btn flex items-center gap-2 shadow-sm hover:scale-105
-                hover:bg-white/15 hover:backdrop-blur-sm
-                focus:bg-white/20
-                active:bg-white/25
+                dashboard-btn flex items-center gap-2 shadow-sm
+                hover:scale-105 hover:bg-white/15 hover:backdrop-blur-sm
+                focus:bg-white/20 active:bg-white/25
                 transition
               "
               onClick={() => {
@@ -85,22 +112,18 @@ export default function NavbarDashboard() {
               <span className="hidden sm:block">Crear</span>
             </button>
             {crearOpen && (
-              <div
-                className="absolute left-0 mt-2 w-56 rounded-xl bg-white dark:bg-[var(--dashboard-navbar)] shadow-xl border border-[var(--dashboard-border)] z-50 animate-fade-in"
-                onMouseLeave={() => setCrearOpen(false)}
-              >
-                {(usuario.rol === "admin" || usuario.rol === "encargado") && (
-                  <button className="w-full text-left px-5 py-3 hover:bg-white/15 dark:hover:bg-[var(--dashboard-bg)] transition rounded-t-xl">
-                    + Almacén
-                  </button>
-                )}
-                {(usuario.rol === "admin" ||
-                  usuario.plan === "Empresarial" ||
-                  usuario.plan === "Institucional") && (
+              <div className="absolute left-0 mt-2 w-56 rounded-xl bg-white dark:bg-[var(--dashboard-navbar)] shadow-xl border border-[var(--dashboard-border)] z-50 animate-fade-in">
+                {/* Crear almacén */}
+                <button className="w-full text-left px-5 py-3 hover:bg-white/15 dark:hover:bg-[var(--dashboard-bg)] transition rounded-t-xl">
+                  + Almacén
+                </button>
+                {/* Invitar usuarios */}
+                {puedeInvitarUsuarios && (
                   <button className="w-full text-left px-5 py-3 hover:bg-white/15 dark:hover:bg-[var(--dashboard-bg)] transition">
                     + Usuario
                   </button>
                 )}
+                {/* Otros */}
                 <button className="w-full text-left px-5 py-3 hover:bg-white/15 dark:hover:bg-[var(--dashboard-bg)] transition">
                   + Reporte
                 </button>
@@ -123,34 +146,22 @@ export default function NavbarDashboard() {
         </div>
       </div>
 
-      {/* --- DERECHA: Widgets, Tema, Mensajes, Notif, Avatar --- */}
+      {/* --- DERECHA: Widgets, Tema, Mensajes, Notificaciones, Avatar --- */}
       <div className="flex items-center gap-3">
-        <button
-          className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
-          title="Widgets"
-        >
+        <button className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition" title="Widgets">
           <AppWindow className="w-6 h-6 text-[var(--dashboard-accent)] transition" />
         </button>
-        <button
-          className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
-          title="Tema"
-          // onClick={...} // Aquí irá tu toggle de tema
-        >
+        <button className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition" title="Tema">
           <SunMoon className="w-6 h-6 text-[var(--dashboard-accent)] transition" />
         </button>
-        <button
-          className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
-          title="Mensajes"
-        >
+        <button className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition" title="Mensajes">
           <MessageSquare className="w-6 h-6 text-[var(--dashboard-accent)] transition" />
         </button>
-        <button
-          className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
-          title="Notificaciones"
-        >
+        <button className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition" title="Notificaciones">
           <Bell className="w-6 h-6 text-[var(--dashboard-accent)] transition" />
         </button>
-        {/* Avatar + menú usuario */}
+
+        {/* Avatar + Menú Usuario */}
         <div className="relative ml-2">
           <button
             className="
@@ -184,11 +195,10 @@ export default function NavbarDashboard() {
           {userMenuOpen && (
             <div
               className="absolute right-0 mt-2 w-44 rounded-xl bg-white dark:bg-[var(--dashboard-navbar)] shadow-xl border border-[var(--dashboard-border)] z-50 animate-fade-in"
-              onMouseLeave={() => setUserMenuOpen(false)}
             >
               <div className="px-5 py-3 font-bold">{usuario.nombre}</div>
               <div className="px-5 pb-2 text-xs text-[var(--dashboard-accent)]">
-                {usuario.rol} • {usuario.plan}
+                {usuario.tipoCuenta} • {usuario.plan?.nombre ?? "Sin plan"}
               </div>
               <button className="w-full text-left px-5 py-3 hover:bg-white/15 dark:hover:bg-[var(--dashboard-bg)] transition">
                 Mi cuenta

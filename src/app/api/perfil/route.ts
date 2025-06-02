@@ -1,5 +1,3 @@
-export const runtime = 'nodejs';
-
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
@@ -12,11 +10,10 @@ if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 const JWT_SECRET = process.env.JWT_SECRET ?? 'mi_clave_de_emergencia';
 const COOKIE_NAME = 'hl_session';
 
-// ========== AJUSTA EL LÍMITE AQUÍ ==========
-const TAMAÑO_MAXIMO_FOTO_MB = 10;   // <<< NUEVO LÍMITE (10 MB)
+const TAMAÑO_MAXIMO_FOTO_MB = 10;
 const BYTES_MAXIMO_FOTO = TAMAÑO_MAXIMO_FOTO_MB * 1024 * 1024;
 const TIPOS_FOTO_PERMITIDOS = [
-  'image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif', // + más si agregas
+  'image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif',
 ];
 
 const bloqueos = new Map<string, { intentos: number; timestamp: number }>();
@@ -35,9 +32,11 @@ async function guardarBitacoraCambio(usuarioId: number, cambios: any) {
         usuarioId,
         cambios: JSON.stringify(cambios),
         fecha: new Date(),
-      }
+      },
     });
-  } catch (err) { /* Silencioso */ }
+  } catch {
+    // Silencioso
+  }
 }
 
 async function crearNotificacion(usuarioId: number, mensaje: string) {
@@ -48,30 +47,48 @@ async function crearNotificacion(usuarioId: number, mensaje: string) {
         mensaje,
         tipo: 'perfil',
         leida: false,
-      }
+      },
     });
-  } catch (err) { /* Silencioso */ }
+  } catch {
+    // Silencioso
+  }
 }
 
 // ===============================
-//      GET: Perfil Actual
+//      GET: Obtener Perfil Actual
 // ===============================
 export async function GET(req: NextRequest) {
   try {
     const token = req.cookies.get(COOKIE_NAME)?.value;
     if (!token) return NextResponse.json({ error: 'No autenticado.' }, { status: 401 });
+
     let payload: any;
-    try { payload = jwt.verify(token, JWT_SECRET); }
-    catch { return NextResponse.json({ error: 'Sesión inválida o expirada.' }, { status: 401 }); }
+    try {
+      payload = jwt.verify(token, JWT_SECRET);
+    } catch {
+      return NextResponse.json({ error: 'Sesión inválida o expirada.' }, { status: 401 });
+    }
 
     const usuario = await prisma.usuario.findUnique({
       where: { id: payload.id },
       select: {
-        id: true, nombre: true, apellidos: true, correo: true, tipoCuenta: true,
-        entidadId: true, estado: true, fechaRegistro: true, fotoPerfilNombre: true,
-        preferencias: true, tiene2FA: true, metodo2FA: true
-      }
+        id: true,
+        nombre: true,
+        apellidos: true,
+        correo: true,
+        tipoCuenta: true,
+        entidadId: true,
+        estado: true,
+        fechaRegistro: true,
+        fotoPerfilNombre: true,
+        preferencias: true,
+        tiene2FA: true,
+        metodo2FA: true,
+      },
     });
+
+    if (!usuario) return NextResponse.json({ error: 'Usuario no encontrado.' }, { status: 404 });
+
     return NextResponse.json({ success: true, usuario }, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ error: 'No se pudo cargar tu perfil.' }, { status: 500 });
@@ -88,11 +105,14 @@ export async function PUT(req: NextRequest) {
     if (!token) return NextResponse.json({ error: 'No autenticado.' }, { status: 401 });
 
     let payload: any;
-    try { payload = jwt.verify(token, JWT_SECRET); }
-    catch { return NextResponse.json({ error: 'Sesión inválida o expirada.' }, { status: 401 }); }
+    try {
+      payload = jwt.verify(token, JWT_SECRET);
+    } catch {
+      return NextResponse.json({ error: 'Sesión inválida o expirada.' }, { status: 401 });
+    }
     const usuarioId = payload.id;
 
-    // --- Manejamos tanto JSON como multipart ---
+    // Manejo de JSON o multipart/form-data
     let body: any = {};
     let fotoBuffer: Buffer | null = null;
     let fotoNombre: string | null = null;
@@ -107,13 +127,12 @@ export async function PUT(req: NextRequest) {
         contrasenaActual: String(formData.get('contrasenaActual') ?? ''),
         preferencias: String(formData.get('preferencias') ?? ''),
       };
+
       const foto = formData.get('foto') as File | null;
       if (foto) {
-        // Verifica tipo
         if (!TIPOS_FOTO_PERMITIDOS.includes(foto.type)) {
           return NextResponse.json({ error: 'Formato de imagen no permitido.' }, { status: 415 });
         }
-        // Verifica tamaño
         const buffer = await foto.arrayBuffer();
         if (buffer.byteLength > BYTES_MAXIMO_FOTO) {
           return NextResponse.json({ error: `Imagen demasiado grande. Máx: ${TAMAÑO_MAXIMO_FOTO_MB}MB.` }, { status: 413 });
@@ -127,7 +146,6 @@ export async function PUT(req: NextRequest) {
 
     const { nombre, apellidos, correo, nuevaContrasena, contrasenaActual, preferencias } = body;
 
-    // Validaciones
     if (!nombre || !apellidos || !correo) {
       return NextResponse.json({ error: 'Faltan campos obligatorios.' }, { status: 400 });
     }
@@ -135,13 +153,13 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'Correo inválido.' }, { status: 400 });
     }
 
-    // Checa si el correo está en uso por otro usuario
+    // Verificar si el correo está en uso
     const correoExistente = await prisma.usuario.findUnique({ where: { correo } });
     if (correoExistente && correoExistente.id !== usuarioId) {
       return NextResponse.json({ error: 'Ese correo ya está registrado en otra cuenta.' }, { status: 409 });
     }
 
-    // Si cambia contraseña, proteger con bloqueo simple
+    // Cambio de contraseña
     let nuevoHash: string | undefined = undefined;
     if (nuevaContrasena) {
       if (nuevaContrasena.length < 6) {
@@ -163,12 +181,7 @@ export async function PUT(req: NextRequest) {
       nuevoHash = await bcrypt.hash(nuevaContrasena, 10);
     }
 
-    // Actualiza datos y registra bitácora
-    const data: any = {
-      nombre,
-      apellidos,
-      correo,
-    };
+    const data: any = { nombre, apellidos, correo };
     if (nuevoHash) data.contrasena = nuevoHash;
     if (fotoBuffer && fotoNombre) {
       data.fotoPerfil = fotoBuffer;
@@ -194,6 +207,7 @@ export async function PUT(req: NextRequest) {
       { success: true, mensaje: 'Perfil actualizado correctamente.' },
       { status: 200 }
     );
+
     if (tokenRefrescado) {
       res.cookies.set(COOKIE_NAME, tokenRefrescado, {
         httpOnly: true,
@@ -203,13 +217,11 @@ export async function PUT(req: NextRequest) {
         path: '/',
       });
     }
+
     return res;
   } catch (error: any) {
     console.error('[ERROR_UPDATE_PERFIL]', error);
-    return NextResponse.json({
-      error: 'Error al actualizar perfil.',
-      detalle: error.message,
-    }, { status: 500 });
+    return NextResponse.json({ error: 'Error al actualizar perfil.', detalle: error.message }, { status: 500 });
   }
 }
 
@@ -220,15 +232,20 @@ export async function POST(req: NextRequest) {
   try {
     const token = req.cookies.get(COOKIE_NAME)?.value;
     if (!token) return NextResponse.json({ error: 'No autenticado.' }, { status: 401 });
+
     let payload: any;
-    try { payload = jwt.verify(token, JWT_SECRET); }
-    catch { return NextResponse.json({ error: 'Sesión inválida o expirada.' }, { status: 401 }); }
+    try {
+      payload = jwt.verify(token, JWT_SECRET);
+    } catch {
+      return NextResponse.json({ error: 'Sesión inválida o expirada.' }, { status: 401 });
+    }
     const usuarioId = payload.id;
 
     const { activar2FA, metodo2FA } = await req.json();
     if (typeof activar2FA !== 'boolean' || (activar2FA && !['email', 'app'].includes(metodo2FA))) {
       return NextResponse.json({ error: 'Parámetros de 2FA inválidos.' }, { status: 400 });
     }
+
     await prisma.usuario.update({
       where: { id: usuarioId },
       data: {
@@ -236,7 +253,12 @@ export async function POST(req: NextRequest) {
         metodo2FA: activar2FA ? metodo2FA : null,
       }
     });
-    return NextResponse.json({ success: true, mensaje: activar2FA ? '2FA activado' : '2FA desactivado' }, { status: 200 });
+
+    return NextResponse.json({
+      success: true,
+      mensaje: activar2FA ? '2FA activado' : '2FA desactivado'
+    }, { status: 200 });
+
   } catch (error: any) {
     return NextResponse.json({ error: 'Error al gestionar 2FA.', detalle: error.message }, { status: 500 });
   }
