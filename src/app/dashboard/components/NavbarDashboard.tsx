@@ -54,6 +54,10 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    setLoading(false);
+  }, []);
+
   // ---- Filtrado del buscador
   useEffect(() => {
     if (buscador.trim().length === 0) {
