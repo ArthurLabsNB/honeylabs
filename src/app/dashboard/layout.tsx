@@ -8,9 +8,17 @@ import { useRouter } from "next/navigation";
 // import { NotificationProvider } from "./contexts/NotificationContext";
 
 // --- Wrapper para proteger y redirigir ---
+// Define the shape of usuario according to your backend response
+interface Usuario {
+  id: number;
+  nombre: string;
+  email: string;
+  // Agrega aquí otras propiedades según tu modelo de usuario
+}
+
 function ProtectedDashboard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const [usuario, setUsuario] = useState<any>(null);
+  const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Obtiene usuario desde backend
