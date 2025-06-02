@@ -42,7 +42,7 @@ export default function LoginPage() {
     fetch('/api/login', { credentials: 'include' })
       .then(r => r.json())
       .then(data => {
-        if (data?.success && data?.usuario) router.replace('/dashboard');
+        if (data?.success && data?.usuario) router.replace('/');
       });
   }, [router]);
 
