@@ -1,5 +1,3 @@
-// src/app/api/login/route.ts
-
 export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -13,16 +11,16 @@ const prisma = globalForPrisma.prisma ?? new PrismaClient();
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 // --- CONFIGURACIÓN SEGURA ---
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET no está definido en variables de entorno');
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) throw new Error('JWT_SECRET no está definido en variables de entorno');
+  return secret;
 }
 const COOKIE_NAME = 'hl_session';
 const COOKIE_EXPIRES = 60 * 60 * 24 * 7; // 7 días en segundos
 
 // Utilidad: obtiene plan activo y límites del usuario o entidad
 async function obtenerPlanYLimites(usuario: any) {
-  // Prioridad: plan de usuario
   if (usuario.planId) {
     const plan = await prisma.plan.findUnique({ where: { id: usuario.planId } });
     if (plan) {
@@ -34,7 +32,6 @@ async function obtenerPlanYLimites(usuario: any) {
       };
     }
   }
-  // Si no, plan de entidad si aplica
   if (usuario.entidadId) {
     const entidad = await prisma.entidad.findUnique({
       where: { id: usuario.entidadId },
@@ -49,7 +46,7 @@ async function obtenerPlanYLimites(usuario: any) {
       };
     }
   }
-  return null; // Sin plan explícito
+  return null;
 }
 
 // ---- POST: Login ----
@@ -64,7 +61,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Busca usuario con relaciones necesarias
     const usuario = await prisma.usuario.findUnique({
       where: { correo: correo.toLowerCase().trim() },
       include: {
@@ -141,8 +137,8 @@ export async function POST(req: NextRequest) {
       suscripcion: suscripcionActiva,
     };
 
-    // Firma JWT
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: COOKIE_EXPIRES });
+    // Firma JWT de manera segura
+    const token = jwt.sign(payload, getJwtSecret(), { expiresIn: COOKIE_EXPIRES });
 
     // Respuesta con cookie httpOnly
     const res = NextResponse.json(
@@ -180,7 +176,7 @@ export async function GET(req: NextRequest) {
     }
 
     try {
-      const decoded = jwt.verify(token, JWT_SECRET);
+      const decoded = jwt.verify(token, getJwtSecret());
       return NextResponse.json(
         { success: true, usuario: decoded },
         { status: 200 }
