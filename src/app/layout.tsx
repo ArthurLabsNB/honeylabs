@@ -5,7 +5,7 @@ import ConditionalLayout from '@/components/ConditionalLayout';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 // ¡Usa la ruta RELATIVA real si no tienes alias configurado!
-import { UserProvider } from '../dashboard/contexts/UserContext'; // <--- OJO: un nivel arriba si estás en /src/app/layout.tsx
+import { UserProvider } from "./contexts/UserContext";
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'], display: 'swap' });
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'], display: 'swap' });
