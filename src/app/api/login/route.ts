@@ -108,14 +108,14 @@ export async function POST(req: NextRequest) {
     // Generar JWT
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: COOKIE_EXPIRES });
 
-    // Set cookie segura
+    // --- TRUCO IMPORTANTE: secure solo en producción ---
     const res = NextResponse.json(
       { success: true, mensaje: 'Inicio de sesión exitoso.', usuario: payload },
       { status: 200 }
     );
     res.cookies.set(COOKIE_NAME, token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV === 'production', // true solo si usas HTTPS
       sameSite: 'lax',
       maxAge: COOKIE_EXPIRES,
       path: '/',
@@ -176,7 +176,7 @@ export async function DELETE(req: NextRequest) {
     // Elimina la cookie del cliente
     res.cookies.set(COOKIE_NAME, '', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV === 'production', // true solo si usas HTTPS
       sameSite: 'lax',
       expires: new Date(0),
       maxAge: 0,
