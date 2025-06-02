@@ -4,8 +4,8 @@ import './globals.css';
 import ConditionalLayout from '@/components/ConditionalLayout';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-// Si tienes contexto de usuario:
-import { UserProvider } from '@/contexts/UserContext'; // Descomenta si tienes UserContext
+// ¡Usa la ruta RELATIVA real si no tienes alias configurado!
+import { UserProvider } from '../dashboard/contexts/UserContext'; // <--- OJO: un nivel arriba si estás en /src/app/layout.tsx
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'], display: 'swap' });
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'], display: 'swap' });
@@ -25,11 +25,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         font-sans antialiased transition-colors duration-300
         overflow-x-hidden
       `}>
-        {/* <UserProvider> Si tienes contexto de usuario, descomenta esto */}
+        <UserProvider>
           <ConditionalLayout>
             {children}
           </ConditionalLayout>
-        {/* </UserProvider> */}
+        </UserProvider>
         <Analytics />
         <SpeedInsights />
       </body>
