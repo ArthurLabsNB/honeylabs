@@ -61,7 +61,7 @@ export default function LoginPage() {
 
       setMensaje('✔️ Inicio de sesión exitoso');
       reset();
-      setTimeout(() => router.replace('/dashboard'), 800);
+      setTimeout(() => router.replace('/'), 800);
     } catch (error: any) {
       setMensaje(`❌ ${error.message}`);
     } finally {
