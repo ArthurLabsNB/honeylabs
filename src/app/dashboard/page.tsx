@@ -60,7 +60,7 @@ export default function DashboardPage() {
         setCatalogo(permitidos);
 
         const mapa: Record<string, any> = {};
-        permitidos.forEach(widget => {
+        permitidos.forEach((widget: WidgetMeta) => {
           mapa[widget.key] = dynamic(() => import(`./components/widgets/${widget.file}`), { ssr: false });
         });
         setComponentes(mapa);
