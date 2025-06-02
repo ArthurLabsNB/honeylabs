@@ -22,9 +22,16 @@ const MOCK_RESULTS = [
   { tipo: "almacén", nombre: "Almacén de Química", url: "/almacenes/quimica" },
 ];
 
-export default function NavbarDashboard() {
+// Asegúrate de que la interfaz Usuario coincida con la de layout.tsx
+interface Usuario {
+  id: number;
+  nombre: string;
+  email: string;
+  // ...otras propiedades si las usas...
+}
+
+export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
   // Estado de usuario y loading
-  const [usuario, setUsuario] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   // Estado UI
