@@ -15,11 +15,37 @@ import {
 } from "lucide-react";
 import { useUser } from "../contexts/UserContext";
 
+// Simulación de resultados (reemplázalo por tu API/fetch real)
+const MOCK_RESULTS = [
+  { tipo: "almacén", nombre: "Almacén Central", url: "/almacenes/central" },
+  { tipo: "widget", nombre: "Inventario Rápido", url: "/widgets/inventario" },
+  { tipo: "usuario", nombre: "Luis Hernández", url: "/usuarios/luis" },
+  { tipo: "almacén", nombre: "Almacén de Química", url: "/almacenes/quimica" },
+];
+
 export default function NavbarDashboard() {
   const [crearOpen, setCrearOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [buscador, setBuscador] = useState("");
+  const [buscadorFocus, setBuscadorFocus] = useState(false);
+  const [resultados, setResultados] = useState<typeof MOCK_RESULTS>([]);
   const { usuario, loading, logout } = useUser();
   const navRef = useRef<HTMLDivElement>(null);
+
+  // Filtrado del buscador (simulación, reemplaza por fetch/endpoint si necesitas)
+  useEffect(() => {
+    if (buscador.trim().length === 0) {
+      setResultados([]);
+    } else {
+      const query = buscador.toLowerCase();
+      setResultados(
+        MOCK_RESULTS.filter((r) =>
+          r.nombre.toLowerCase().includes(query) ||
+          r.tipo.toLowerCase().includes(query)
+        )
+      );
+    }
+  }, [buscador]);
 
   // Cierra menús al hacer click fuera o Escape
   useEffect(() => {
@@ -33,6 +59,7 @@ export default function NavbarDashboard() {
       if (e.key === "Escape") {
         setCrearOpen(false);
         setUserMenuOpen(false);
+        setBuscadorFocus(false);
       }
     }
     document.addEventListener("mousedown", handler);
@@ -62,7 +89,7 @@ export default function NavbarDashboard() {
   }
 
   const puedeCrear = (
-    usuario.rol === "admin" || // desarrollador
+    usuario.rol === "admin" ||
     usuario.tipoCuenta === "empresarial" ||
     usuario.tipoCuenta === "institucional" ||
     usuario.tipoCuenta === "estandar"
@@ -77,7 +104,7 @@ export default function NavbarDashboard() {
   return (
     <header
       ref={navRef}
-      className="dashboard-navbar flex items-center px-8 py-2 justify-between sticky top-0 z-20 shadow"
+      className="dashboard-navbar flex items-center px-8 py-2 justify-between sticky top-0 z-20 shadow bg-[var(--dashboard-navbar)]"
       style={{ minHeight: "70px" }}
     >
       {/* --- IZQUIERDA: Home, Crear, Buscador --- */}
@@ -95,12 +122,7 @@ export default function NavbarDashboard() {
         {puedeCrear && (
           <div className="relative">
             <button
-              className="
-                dashboard-btn flex items-center gap-2 shadow-sm
-                hover:scale-105 hover:bg-white/15 hover:backdrop-blur-sm
-                focus:bg-white/20 active:bg-white/25
-                transition
-              "
+              className="dashboard-btn flex items-center gap-2 shadow-sm hover:scale-105 hover:bg-white/15 hover:backdrop-blur-sm focus:bg-white/20 active:bg-white/25 transition"
               onClick={() => {
                 setCrearOpen((v) => !v);
                 setUserMenuOpen(false);
@@ -113,17 +135,14 @@ export default function NavbarDashboard() {
             </button>
             {crearOpen && (
               <div className="absolute left-0 mt-2 w-56 rounded-xl bg-white dark:bg-[var(--dashboard-navbar)] shadow-xl border border-[var(--dashboard-border)] z-50 animate-fade-in">
-                {/* Crear almacén */}
                 <button className="w-full text-left px-5 py-3 hover:bg-white/15 dark:hover:bg-[var(--dashboard-bg)] transition rounded-t-xl">
                   + Almacén
                 </button>
-                {/* Invitar usuarios */}
                 {puedeInvitarUsuarios && (
                   <button className="w-full text-left px-5 py-3 hover:bg-white/15 dark:hover:bg-[var(--dashboard-bg)] transition">
                     + Usuario
                   </button>
                 )}
-                {/* Otros */}
                 <button className="w-full text-left px-5 py-3 hover:bg-white/15 dark:hover:bg-[var(--dashboard-bg)] transition">
                   + Reporte
                 </button>
@@ -136,13 +155,47 @@ export default function NavbarDashboard() {
         )}
 
         {/* Buscador */}
-        <div className="relative flex items-center ml-3">
-          <Search className="w-5 h-5 absolute left-4 text-[var(--dashboard-muted)] pointer-events-none" />
+        <div className="relative flex items-center ml-3 w-52 sm:w-64">
+          <Search className={`w-5 h-5 absolute left-4 top-2.5 text-[var(--dashboard-muted)] pointer-events-none transition ${buscadorFocus ? 'text-[var(--dashboard-accent)] scale-110' : ''}`} />
           <input
-            className="dashboard-input pl-12 pr-3 py-2 w-52 sm:w-64 transition"
+            className={`
+              dashboard-input pl-12 pr-3 py-2 w-full transition rounded-2xl border
+              ${buscadorFocus ? "border-[var(--dashboard-accent)] ring-2 ring-[var(--dashboard-accent)] bg-white dark:bg-[var(--dashboard-bg)] shadow-lg" : "border-[var(--dashboard-border)]"}
+              focus:outline-none
+            `}
             style={{ minWidth: 180 }}
-            placeholder="Buscar…"
+            placeholder="Buscar almacenes, widgets, usuarios…"
+            value={buscador}
+            onChange={e => setBuscador(e.target.value)}
+            onFocus={() => setBuscadorFocus(true)}
+            onBlur={() => setTimeout(() => setBuscadorFocus(false), 120)} // Permite clickear resultado
+            autoComplete="off"
           />
+          {/* Resultados */}
+          {buscadorFocus && resultados.length > 0 && (
+            <div className="absolute left-0 top-12 w-full rounded-2xl bg-white dark:bg-[var(--dashboard-bg)] shadow-xl border border-[var(--dashboard-border)] z-50 animate-fade-in overflow-y-auto max-h-64">
+              {resultados.map((res, i) => (
+                <Link
+                  href={res.url}
+                  key={res.url + i}
+                  className="flex items-center gap-2 px-4 py-2 hover:bg-[var(--dashboard-accent)]/15 transition cursor-pointer"
+                  onClick={() => {
+                    setBuscador("");
+                    setBuscadorFocus(false);
+                  }}
+                >
+                  <span className="text-xs px-2 py-1 rounded bg-[var(--dashboard-accent)] text-[var(--dashboard-navbar)] font-bold">{res.tipo}</span>
+                  <span className="font-semibold">{res.nombre}</span>
+                </Link>
+              ))}
+            </div>
+          )}
+          {/* Sin resultados */}
+          {buscadorFocus && buscador.length > 0 && resultados.length === 0 && (
+            <div className="absolute left-0 top-12 w-full rounded-2xl bg-white dark:bg-[var(--dashboard-bg)] shadow-xl border border-[var(--dashboard-border)] z-50 p-4 text-center text-[var(--dashboard-muted)]">
+              Sin resultados
+            </div>
+          )}
         </div>
       </div>
 
@@ -164,11 +217,7 @@ export default function NavbarDashboard() {
         {/* Avatar + Menú Usuario */}
         <div className="relative ml-2">
           <button
-            className="
-              flex items-center gap-2 bg-[var(--dashboard-accent)]/20 px-3 py-1.5 rounded-xl
-              hover:bg-white/25 hover:backdrop-blur-md
-              transition
-            "
+            className="flex items-center gap-2 bg-[var(--dashboard-accent)]/20 px-3 py-1.5 rounded-xl hover:bg-white/25 hover:backdrop-blur-md transition"
             onClick={() => {
               setUserMenuOpen((v) => !v);
               setCrearOpen(false);
@@ -208,7 +257,7 @@ export default function NavbarDashboard() {
               </button>
               <button
                 className="w-full text-left px-5 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-[var(--dashboard-bg)] transition rounded-b-xl"
-                onClick={logout}
+                onClick={() => logout("/login")}
               >
                 Cerrar sesión
               </button>
