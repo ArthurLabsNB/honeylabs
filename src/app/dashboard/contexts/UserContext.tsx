@@ -6,18 +6,19 @@ import React, {
   useEffect,
   useState,
   ReactNode,
+  useCallback,
 } from "react";
 
 // === Modelo del usuario desde API ===
-type Usuario = {
+export type Usuario = {
   id: number;
   nombre: string;
   correo: string;
-  rol: string; // Puede venir desde algún campo personalizado o calculado
+  rol: string;
   tipoCuenta: string; // estandar, institucional, empresarial
   plan?: {
     id: number;
-    nombre: string; // Free, Pro, Empresarial, Institucional
+    nombre: string;
     limites?: Record<string, any>;
   } | null;
   entidad?: {
@@ -26,14 +27,15 @@ type Usuario = {
     tipo: string;
     planId?: number;
   } | null;
-  avatarUrl?: string; // Calculado en el servidor si se guarda como buffer
+  avatarUrl?: string;
 };
 
 interface UserContextType {
   usuario: Usuario | null;
   loading: boolean;
   setUsuario: (u: Usuario | null) => void;
-  logout: () => void;
+  logout: (redirectUrl?: string) => Promise<void>;
+  refrescarUsuario: () => Promise<void>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -54,53 +56,61 @@ function userWithDefaults(data: any): Usuario {
   };
 }
 
-// === Proveedor del contexto ===
 export function UserProvider({ children }: { children: ReactNode }) {
   const [usuario, setUsuarioState] = useState<Usuario | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch("/api/login", { method: "GET" });
-        const data = await res.json();
-
-        if (data?.success && data?.usuario) {
-          setUsuarioState(userWithDefaults(data.usuario));
-        } else {
-          setUsuarioState(null);
-        }
-      } catch (err) {
-        console.warn("❌ Error cargando sesión:", err);
+  // Fetch de usuario reutilizable (para refrescar tras login, registro, etc)
+  const refrescarUsuario = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/login", { method: "GET" });
+      const data = await res.json();
+      if (data?.success && data?.usuario) {
+        setUsuarioState(userWithDefaults(data.usuario));
+      } else {
         setUsuarioState(null);
-      } finally {
-        setLoading(false);
       }
-    };
-
-    fetchUser();
+    } catch (err) {
+      setUsuarioState(null);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    refrescarUsuario();
+  }, [refrescarUsuario]);
 
   const setUsuario = (u: Usuario | null) => {
     setUsuarioState(u ? userWithDefaults(u) : null);
   };
 
-  const logout = async () => {
+  const logout = async (redirectUrl?: string) => {
     await fetch("/api/login", { method: "DELETE" });
     setUsuarioState(null);
-    window.location.href = "/login";
+    if (redirectUrl !== undefined) {
+      window.location.href = redirectUrl;
+    }
   };
 
   return (
-    <UserContext.Provider value={{ usuario, loading, setUsuario, logout }}>
+    <UserContext.Provider
+      value={{
+        usuario,
+        loading,
+        setUsuario,
+        logout,
+        refrescarUsuario,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );
 }
 
 // === Hook personalizado ===
-export function useUser() {
+export function useUser(): UserContextType {
   const ctx = useContext(UserContext);
   if (!ctx)
     throw new Error("useUser debe usarse dentro de <UserProvider>");
