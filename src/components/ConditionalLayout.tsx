@@ -2,7 +2,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import ClientLayout from "@/components/ClientLayout";
 // Cambia este import al relativo correcto para tu estructura:
-import { useUser } from "../dashboard/components/contexts/UserContext";
+import { useUser } from "./contexts/UserContext";
 import { useEffect } from "react";
 
 // Define aquí las rutas públicas de tu app
