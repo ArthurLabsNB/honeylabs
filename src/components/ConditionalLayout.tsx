@@ -1,7 +1,7 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
 import ClientLayout from "@/components/ClientLayout";
-// Cambia este import al relativo correcto para tu estructura:
+// IMPORT CORRECTO SEGÚN TU ESTRUCTURA:
 import { useUser } from "../../dashboard/components/contexts/UserContext";
 import { useEffect } from "react";
 
