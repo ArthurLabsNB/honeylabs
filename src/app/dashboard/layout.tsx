@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import NavbarDashboard from "./components/NavbarDashboard";
-import { UserProvider } from "./contexts/UserContext";
+import { UserProvider, useUser } from "./contexts/UserContext"; // <-- IMPORT RELATIVO CORRECTO
 import { useRouter } from "next/navigation";
 // Si luego agregas más contextos, descomenta estos
 // import { ThemeProvider } from "./contexts/ThemeContext";
