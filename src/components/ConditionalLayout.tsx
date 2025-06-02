@@ -1,7 +1,8 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
 import ClientLayout from "@/components/ClientLayout";
-import { useUser } from "@/contexts/UserContext";
+// Cambia este import al relativo correcto para tu estructura:
+import { useUser } from "../dashboard/components/contexts/UserContext";
 import { useEffect } from "react";
 
 // Define aquí las rutas públicas de tu app
@@ -28,13 +29,12 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
 
   // --- Protección automática de rutas privadas ---
   useEffect(() => {
-    // Si termina de cargar, no hay usuario y no es pública → redirige a login
     if (!loading && !usuario && !isPublic(pathname)) {
       router.push("/login");
     }
   }, [usuario, loading, pathname, router]);
 
-  // Mientras revisa sesión, puedes mostrar un loader o null (para evitar FOUC/flashes)
+  // Loader mientras revisa sesión (opcional, para evitar flashes)
   if (!loading && !usuario && !isPublic(pathname)) {
     return null;
   }
