@@ -121,22 +121,22 @@ export default function Navbar() {
         style={{ willChange: "transform, opacity" }}
         role="banner"
         aria-label="Barra superior"
-        data-oid="8u61x9c"
+        data-oid=".4ew1es"
       >
         <div
           className="flex items-center justify-between w-full max-w-7xl mx-auto px-3 md:px-6 py-2 gap-2 min-h-[64px]"
-          data-oid="idshvr0"
+          data-oid="r86vila"
         >
           {/* Logo */}
           <div
             className="flex-shrink-0 flex items-center mr-2"
-            data-oid="rlk615w"
+            data-oid="i4c3:bi"
           >
             <Link
               href="/"
               className="flex items-center gap-2 focus:outline-none select-none"
               aria-label="Ir al inicio"
-              data-oid="v18d4yu"
+              data-oid="y9-25bn"
             >
               <Image
                 src="/logo-honeylabs.png"
@@ -147,7 +147,7 @@ export default function Navbar() {
                 draggable={false}
                 priority
                 style={{ userSelect: "none" }}
-                data-oid="s6py6ud"
+                data-oid=":2pgqhv"
               />
             </Link>
           </div>
@@ -159,10 +159,10 @@ export default function Navbar() {
               title={usuario.nombre}
               className="hidden md:inline-block text-base font-semibold text-amber-100 ml-3 mr-2 drop-shadow max-w-[260px] truncate hover:underline cursor-pointer transition"
               style={{ lineHeight: "1.2" }}
-              data-oid="f7tca2z"
+              data-oid="-z888.a"
             >
               Bienvenido,{" "}
-              <span className="font-bold" data-oid="p6xz0-e">
+              <span className="font-bold" data-oid="awyaucd">
                 {usuario.nombre}
               </span>
             </Link>
@@ -171,7 +171,7 @@ export default function Navbar() {
           {/* Botones de navegación */}
           <nav
             className="hidden md:flex items-center gap-2 mx-2"
-            data-oid="n67wi20"
+            data-oid="18umfbg"
           >
             {navLinks.map((link) => (
               <Link
@@ -192,7 +192,7 @@ export default function Navbar() {
                   minWidth: 92,
                   textAlign: "center",
                 }}
-                data-oid="j5nwk6j"
+                data-oid="097o3ao"
               >
                 {link.label}
               </Link>
@@ -205,13 +205,13 @@ export default function Navbar() {
             className="hidden md:inline-flex ml-2 p-2 rounded-full hover:bg-[#222]/60 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
             aria-label="Ir a la Wiki"
             tabIndex={0}
-            data-oid="l4tcq2i"
+            data-oid="aezm-pc"
           >
-            <BookOpen className="w-5 h-5 text-amber-200" data-oid="znu9qxc" />
+            <BookOpen className="w-5 h-5 text-amber-200" data-oid="81yb8.f" />
           </Link>
 
           {/* Botón Comenzar Ahora */}
-          <div className="flex-shrink-0 ml-2" data-oid=".28ts69">
+          <div className="flex-shrink-0 ml-2" data-oid="cyf-lxc">
             {usuario ? (
               <Link
                 href="/dashboard"
@@ -219,7 +219,7 @@ export default function Navbar() {
                 style={{ letterSpacing: "0.02em" }}
                 onClick={rippleEffect}
                 tabIndex={0}
-                data-oid="7jw1c-f"
+                data-oid="h9iwv:g"
               >
                 Comenzar Ahora!
               </Link>
@@ -232,7 +232,7 @@ export default function Navbar() {
                   rippleEffect(e);
                 }}
                 tabIndex={0}
-                data-oid="946e0_-"
+                data-oid="9x26h.v"
               >
                 Comenzar Ahora!
                 <span
@@ -243,7 +243,7 @@ export default function Navbar() {
                   ${showTooltip ? "opacity-100 scale-100 drop-shadow-2xl" : "opacity-0 scale-95"}
                 `}
                   style={{ zIndex: 200 }}
-                  data-oid="mktii_j"
+                  data-oid="5shtfos"
                 >
                   Debes iniciar sesión antes
                 </span>
@@ -262,7 +262,7 @@ export default function Navbar() {
               }}
               tabIndex={0}
               onClick={rippleEffect}
-              data-oid=".oetz25"
+              data-oid="p-3dpf3"
             >
               Regístrate
             </Link>
@@ -271,9 +271,9 @@ export default function Navbar() {
           {/* Avatar/UserMenu hasta la derecha */}
           <div
             className="flex-shrink-0 flex items-center ml-2"
-            data-oid="w1on56a"
+            data-oid="jerh7sa"
           >
-            <UserMenu usuario={usuario} data-oid="9q0oj9." />
+            <UserMenu usuario={usuario} data-oid="9o0h1j_" />
           </div>
 
           {/* Botón hamburguesa solo móvil/tablet */}
@@ -283,9 +283,9 @@ export default function Navbar() {
             onClick={() => setMenuOpen(true)}
             type="button"
             tabIndex={0}
-            data-oid="xuf4vwr"
+            data-oid="frxfudo"
           >
-            <Menu className="text-amber-100" data-oid="b.e-vv0" />
+            <Menu className="text-amber-100" data-oid="9ig:p-d" />
           </button>
         </div>
       </div>
@@ -298,7 +298,7 @@ export default function Navbar() {
         `}
         aria-hidden={!menuOpen}
         onClick={() => setMenuOpen(false)}
-        data-oid="3335s8-"
+        data-oid="lgg-g1t"
       >
         <div
           ref={drawerRef}
@@ -310,15 +310,15 @@ export default function Navbar() {
           onClick={(e) => e.stopPropagation()}
           role="dialog"
           aria-label="Menú móvil"
-          data-oid="wxflkjk"
+          data-oid="ed.1fts"
         >
           <button
             className="self-end mb-4 p-2 rounded hover:bg-[#332711]/30 focus:outline-none"
             onClick={() => setMenuOpen(false)}
             aria-label="Cerrar menú"
-            data-oid="c6iz:u5"
+            data-oid="hkvhlnr"
           >
-            <X className="text-amber-200" data-oid="h4llfja" />
+            <X className="text-amber-200" data-oid="xd5p.86" />
           </button>
           {navLinks.map((link) => (
             <Link
@@ -326,7 +326,7 @@ export default function Navbar() {
               href={link.href}
               className="py-2 px-3 rounded-xl hover:bg-amber-400/90 hover:text-[#101014] text-lg text-amber-100 transition-all duration-300"
               onClick={() => setMenuOpen(false)}
-              data-oid="vilt721"
+              data-oid="veureat"
             >
               {link.label}
             </Link>
@@ -335,9 +335,9 @@ export default function Navbar() {
             href="/wiki"
             className="py-2 px-3 rounded-xl hover:bg-amber-400/90 hover:text-[#101014] text-lg text-amber-100 flex items-center gap-2 transition-all duration-300"
             onClick={() => setMenuOpen(false)}
-            data-oid="p6q:fna"
+            data-oid="qo1l5sm"
           >
-            <BookOpen className="w-5 h-5" data-oid="j:x1euq" /> Wiki
+            <BookOpen className="w-5 h-5" data-oid=".we6d.-" /> Wiki
           </Link>
           {usuario ? (
             <Link
@@ -345,7 +345,7 @@ export default function Navbar() {
               className="py-2 px-3 rounded-xl font-semibold bg-navglass/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 shadow text-lg"
               style={{ minWidth: 120, textAlign: "center" }}
               onClick={() => setMenuOpen(false)}
-              data-oid="n7elcbw"
+              data-oid="kz6p21:"
             >
               Comenzar Ahora!
             </Link>
@@ -355,7 +355,7 @@ export default function Navbar() {
                 className="py-2 px-3 rounded-xl font-semibold bg-navglass/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 shadow text-lg relative"
                 style={{ minWidth: 120, textAlign: "center" }}
                 onClick={handleComenzar}
-                data-oid="zerwcvp"
+                data-oid="5-:mww-"
               >
                 Comenzar Ahora!
                 <span
@@ -366,7 +366,7 @@ export default function Navbar() {
                   ${showTooltip ? "opacity-100 scale-100 drop-shadow-2xl" : "opacity-0 scale-95"}
                 `}
                   style={{ zIndex: 200 }}
-                  data-oid=".aaqivr"
+                  data-oid="kx3tu:t"
                 >
                   Debes iniciar sesión antes
                 </span>
@@ -376,7 +376,7 @@ export default function Navbar() {
                 className="mt-2 py-2 px-3 rounded-xl font-semibold bg-[#222]/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 shadow text-lg"
                 style={{ minWidth: 120, textAlign: "center" }}
                 onClick={() => setMenuOpen(false)}
-                data-oid="ay.t3n_"
+                data-oid="kmsp6sb"
               >
                 Regístrate
               </Link>
@@ -389,10 +389,10 @@ export default function Navbar() {
       <div
         className="h-[80px] sm:h-[88px]"
         aria-hidden="true"
-        data-oid="e9dn.f-"
+        data-oid="vc:blhs"
       />
 
-      <style jsx global data-oid="6:53tt1">{`
+      <style jsx global data-oid="qyzsxs-">{`
         .ripple {
           position: absolute;
           background: rgba(255, 193, 7, 0.13);

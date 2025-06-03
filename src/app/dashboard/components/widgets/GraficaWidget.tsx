@@ -5,7 +5,7 @@ export default function GraficaWidget({ usuario }: { usuario: any }) {
   return (
     <div
       className="h-32 flex items-center justify-center text-[var(--dashboard-muted)] opacity-70"
-      data-oid="as66u29"
+      data-oid="z:h4bw:"
     >
       [Aquí irá la gráfica de actividad]
     </div>

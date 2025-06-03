@@ -51,11 +51,11 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
     return (
       <div
         className="flex min-h-screen items-center justify-center bg-[var(--dashboard-bg)]"
-        data-oid=".bd:wse"
+        data-oid="fg.5god"
       >
         <span
           className="text-[var(--dashboard-accent)] text-lg font-bold animate-pulse"
-          data-oid="4bw5nz9"
+          data-oid="9iqeiry"
         >
           Cargando...
         </span>
@@ -68,14 +68,14 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
   return (
     <div
       className="flex min-h-screen bg-[var(--dashboard-bg)] transition-colors duration-300"
-      data-oid="9bcbnqc"
+      data-oid="agicnbm"
     >
       {/* --- SIDEBAR --- */}
-      <Sidebar usuario={usuario} data-oid="czatapy" />
+      <Sidebar usuario={usuario} data-oid="zs00-jl" />
       {/* --- ZONA CENTRAL --- */}
-      <main className="flex-1 flex flex-col min-h-screen" data-oid="seqsyyy">
+      <main className="flex-1 flex flex-col min-h-screen" data-oid="b0.nwxn">
         {/* --- NAVBAR EXCLUSIVO DASHBOARD --- */}
-        <NavbarDashboard usuario={usuario} data-oid="l83odg." />
+        <NavbarDashboard usuario={usuario} data-oid="f2812xq" />
         {/* --- CONTENIDO MODULAR --- */}
         <section
           className="
@@ -86,7 +86,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
           animate-fade-in
           transition-colors duration-300
         "
-          data-oid="z:5d36r"
+          data-oid="74v:xgb"
         >
           {children}
         </section>
@@ -103,7 +103,7 @@ export default function DashboardLayout({
   return (
     // <ThemeProvider>
     // <NotificationProvider>
-    <ProtectedDashboard data-oid="9phng6o">{children}</ProtectedDashboard>
+    <ProtectedDashboard data-oid="1baelfe">{children}</ProtectedDashboard>
     // </NotificationProvider>
     // </ThemeProvider>
   );

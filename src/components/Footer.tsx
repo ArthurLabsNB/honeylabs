@@ -54,43 +54,43 @@ export default function Footer() {
     <footer
       className="bg-[var(--color-background)] border-t border-amber-200 dark:border-zinc-700 py-6 text-sm text-[var(--color-foreground)]"
       role="contentinfo"
-      data-oid="1x_v_1z"
+      data-oid="y05nir:"
     >
       <div
         className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-8"
-        data-oid="14vdg9:"
+        data-oid="g6dtsd4"
       >
         {/* 🔗 Navegación principal */}
         <nav
           className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-6"
           aria-label="Navegación de footer"
-          data-oid="e2u_t5y"
+          data-oid="9qbc6hu"
         >
           <Link
             href="/"
             className="hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
-            data-oid="e08otu:"
+            data-oid="oryo:rf"
           >
             Inicio
           </Link>
           <Link
             href="/docs"
             className="hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
-            data-oid="nkm5rqt"
+            data-oid="c.eqm1e"
           >
             Documentación
           </Link>
           <Link
             href="/ayuda"
             className="hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
-            data-oid="cr_-rca"
+            data-oid="w63i:vb"
           >
             Soporte
           </Link>
           <Link
             href="/contacto"
             className="hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
-            data-oid="efluyvv"
+            data-oid="n4z62m8"
           >
             Contacto
           </Link>
@@ -99,19 +99,19 @@ export default function Footer() {
             className="hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
             target="_blank"
             rel="noopener noreferrer"
-            data-oid="xkyc.sn"
+            data-oid="kbv_msr"
           >
             GitHub
           </Link>
           <Link
             href="/estado"
             className="hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
-            data-oid="ypvww6q"
+            data-oid="svsdb3i"
           >
             Estado del sistema
           </Link>
           {/* LEGAL DROPDOWN */}
-          <div className="relative" ref={legalRef} data-oid="95i30bj">
+          <div className="relative" ref={legalRef} data-oid="15f:3k-">
             <button
               onClick={() => setShowLegal((v) => !v)}
               className="flex items-center gap-1 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
@@ -120,10 +120,10 @@ export default function Footer() {
               aria-controls="legal-dropdown"
               tabIndex={0}
               type="button"
-              data-oid="7d0_-xu"
+              data-oid="8qbx-jn"
             >
               Legal
-              <ChevronDown className="w-4 h-4" data-oid="9.1hb0k" />
+              <ChevronDown className="w-4 h-4" data-oid="bzj4aeb" />
             </button>
             <div
               ref={dropdownRef}
@@ -138,65 +138,65 @@ export default function Footer() {
               role="menu"
               aria-label="Políticas legales"
               onClick={() => setShowLegal(false)}
-              data-oid="if45dvi"
+              data-oid="otxfztm"
             >
               <h3
                 className="text-xs font-semibold text-zinc-500 mb-2"
-                data-oid="k:-gyol"
+                data-oid="8jrlzxl"
               >
                 Políticas HoneyLabs
               </h3>
-              <ul className="space-y-1 text-sm" data-oid="or2_zx3">
-                <li data-oid="ogw832:">
+              <ul className="space-y-1 text-sm" data-oid="nezh9qu">
+                <li data-oid="j3pbt96">
                   <Link
                     href="/legal/privacidad"
                     className="hover:underline"
-                    data-oid="kajd_k."
+                    data-oid="x5yqh9u"
                   >
                     Política de Privacidad
                   </Link>
                 </li>
-                <li data-oid="uf86qlk">
+                <li data-oid="e4dxrpm">
                   <Link
                     href="/legal/terminos"
                     className="hover:underline"
-                    data-oid="h1plk2d"
+                    data-oid=":oo7pnb"
                   >
                     Términos de Servicio
                   </Link>
                 </li>
-                <li data-oid="6.tsdi-">
+                <li data-oid="hbdaxhz">
                   <Link
                     href="/legal/cookies"
                     className="hover:underline"
-                    data-oid="jliu.y3"
+                    data-oid="al14qum"
                   >
                     Política de Cookies
                   </Link>
                 </li>
-                <li data-oid="l9hrycy">
+                <li data-oid="pcq1yc6">
                   <Link
                     href="/legal/derechos"
                     className="hover:underline"
-                    data-oid="_u2i5:5"
+                    data-oid="frtl0d2"
                   >
                     Aviso de Derechos
                   </Link>
                 </li>
-                <li data-oid="hayryt5">
+                <li data-oid="g.efw8-">
                   <Link
                     href="/legal/conducta"
                     className="hover:underline"
-                    data-oid="ihfda8s"
+                    data-oid="xgtoulh"
                   >
                     Código de Conducta
                   </Link>
                 </li>
-                <li data-oid="psutm:e">
+                <li data-oid="z2t6c7z">
                   <Link
                     href="/legal/accesibilidad"
                     className="hover:underline"
-                    data-oid="_ketpko"
+                    data-oid="20ecp37"
                   >
                     Accesibilidad
                   </Link>
@@ -206,25 +206,25 @@ export default function Footer() {
           </div>
         </nav>
         {/* ℹ️ Info adicional */}
-        <div className="text-center md:text-right" data-oid="lju-0n_">
+        <div className="text-center md:text-right" data-oid="ukyux75">
           <p
             className="text-xs text-zinc-500 dark:text-zinc-400"
-            data-oid="y97sf6f"
+            data-oid="nox_iem"
           >
             © {new Date().getFullYear()} HoneyLabs. Todos los derechos
             reservados.
           </p>
-          <p className="text-xs text-zinc-400 mt-1" data-oid="zkt-7q1">
+          <p className="text-xs text-zinc-400 mt-1" data-oid="3zcytvb">
             Plataforma para gestión de inventarios educativos y empresariales.
-            <br data-oid="h7_5o3:" />
-            <span className="text-amber-600" data-oid="7puof4l">
+            <br data-oid=".u5n75_" />
+            <span className="text-amber-600" data-oid="n41yjz4">
               Versión beta.
             </span>
           </p>
         </div>
       </div>
       {/* Animación simple */}
-      <style jsx data-oid="o0.l5br">{`
+      <style jsx data-oid="_0:ste9">{`
         .animate-fade-scale {
           transition: all 0.16s cubic-bezier(0.4, 0, 0.2, 1);
           transform: scale(0.98);

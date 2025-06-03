@@ -76,7 +76,7 @@ export default function LoginPage() {
   return (
     <main
       className="min-h-screen w-full flex items-center justify-center"
-      data-oid="d7k.03s"
+      data-oid="z01dvcc"
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -84,7 +84,7 @@ export default function LoginPage() {
         autoComplete="on"
         aria-labelledby="login-title"
         noValidate
-        data-oid=":dhfqlh"
+        data-oid="32ds6_w"
       >
         <h1
           id="login-title"
@@ -93,13 +93,13 @@ export default function LoginPage() {
             animationDuration: "2.1s",
             animationTimingFunction: "steps(25, end)",
           }}
-          data-oid="2:n69ze"
+          data-oid="8cow870"
         >
           Iniciar Sesión
         </h1>
 
         {/* 📧 Correo */}
-        <div className="space-y-1" data-oid="kbgfydi">
+        <div className="space-y-1" data-oid="eu3m4xy">
           <input
             {...register("correo")}
             placeholder="Correo electrónico"
@@ -111,14 +111,14 @@ export default function LoginPage() {
             }`}
             aria-invalid={!!errors.correo}
             aria-describedby="error-correo"
-            data-oid="sbpq6jq"
+            data-oid=":jr5_al"
           />
 
           {errors.correo && (
             <p
               id="error-correo"
               className="text-sm text-red-500"
-              data-oid="8wp_w_g"
+              data-oid="6p.pt07"
             >
               {errors.correo.message}
             </p>
@@ -126,7 +126,7 @@ export default function LoginPage() {
         </div>
 
         {/* 🔒 Contraseña */}
-        <div className="relative space-y-1" data-oid="4vv7fxs">
+        <div className="relative space-y-1" data-oid="gyrhz_p">
           <input
             {...register("contrasena")}
             placeholder="Contraseña"
@@ -138,7 +138,7 @@ export default function LoginPage() {
             }`}
             aria-invalid={!!errors.contrasena}
             aria-describedby="error-contrasena"
-            data-oid="88gb4hk"
+            data-oid="54j9g7w"
           />
 
           <button
@@ -150,19 +150,19 @@ export default function LoginPage() {
               verContrasena ? "Ocultar contraseña" : "Mostrar contraseña"
             }
             disabled={cargando}
-            data-oid="m5ar3kf"
+            data-oid="m:-8iyf"
           >
             {verContrasena ? (
-              <EyeOff className="w-5 h-5" data-oid="7:nicu8" />
+              <EyeOff className="w-5 h-5" data-oid="xxrca4-" />
             ) : (
-              <Eye className="w-5 h-5" data-oid="omc8iho" />
+              <Eye className="w-5 h-5" data-oid="11pa8wl" />
             )}
           </button>
           {errors.contrasena && (
             <p
               id="error-contrasena"
               className="text-sm text-red-500"
-              data-oid="t__9rvo"
+              data-oid=".8395om"
             >
               {errors.contrasena.message}
             </p>
@@ -177,11 +177,11 @@ export default function LoginPage() {
           className={`w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-md transition flex justify-center items-center gap-2 ${
             cargando ? "opacity-70 cursor-not-allowed" : ""
           }`}
-          data-oid="tbxy2al"
+          data-oid="-21979t"
         >
           {cargando ? (
             <>
-              <Loader2 className="animate-spin h-5 w-5" data-oid="0tdxv4h" />{" "}
+              <Loader2 className="animate-spin h-5 w-5" data-oid="d30k.m8" />{" "}
               Verificando...
             </>
           ) : (
@@ -192,13 +192,13 @@ export default function LoginPage() {
         {/* 💡 Registro */}
         <p
           className="text-center text-sm text-gray-600 dark:text-zinc-300"
-          data-oid="2deb6pb"
+          data-oid="9k_w9ua"
         >
           ¿No tienes cuenta?{" "}
           <Link
             href="/registro"
             className="text-amber-700 underline hover:text-amber-900 dark:text-amber-300 font-medium transition"
-            data-oid="-_k-a5_"
+            data-oid="a62yz-3"
           >
             Crear cuenta
           </Link>
@@ -211,7 +211,7 @@ export default function LoginPage() {
               mensaje.startsWith("✔️") ? "text-green-600" : "text-red-600"
             }`}
             aria-live="polite"
-            data-oid="ao0jcjj"
+            data-oid="2zm_i7o"
           >
             {mensaje}
           </div>

@@ -113,7 +113,7 @@ export default function UserMenu({ usuario }: { usuario: UsuarioData | null }) {
           src={fotoPerfil}
           alt="Avatar"
           className="h-9 w-9 rounded-full object-cover border-2 border-amber-300 shadow"
-          data-oid="th7vkmj"
+          data-oid="b5wc80s"
         />
       );
     }
@@ -130,7 +130,7 @@ export default function UserMenu({ usuario }: { usuario: UsuarioData | null }) {
       return (
         <span
           className={`h-9 w-9 rounded-full flex items-center justify-center font-bold text-lg ${bgList[color]} text-white shadow`}
-          data-oid="5.3i99g"
+          data-oid="p06g3io"
         >
           {usuario.nombre[0].toUpperCase()}
         </span>
@@ -139,7 +139,7 @@ export default function UserMenu({ usuario }: { usuario: UsuarioData | null }) {
     return (
       <span
         className="h-9 w-9 rounded-full bg-gray-300 flex items-center justify-center font-bold text-lg text-white shadow"
-        data-oid="b0gvib_"
+        data-oid="st60zt5"
       >
         U
       </span>
@@ -147,14 +147,14 @@ export default function UserMenu({ usuario }: { usuario: UsuarioData | null }) {
   };
 
   return (
-    <div className="relative" ref={refMenu} data-oid="32daohh">
+    <div className="relative" ref={refMenu} data-oid="v5p4.:j">
       <button
         aria-label="Abrir menú de usuario"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
         className="h-9 w-9 rounded-full bg-amber-600 text-white font-bold text-sm flex items-center justify-center hover:ring-2 ring-amber-400 transition"
         tabIndex={0}
-        data-oid="v:a86:e"
+        data-oid="-6gs4k9"
       >
         {renderAvatar()}
       </button>
@@ -163,13 +163,13 @@ export default function UserMenu({ usuario }: { usuario: UsuarioData | null }) {
         <nav
           className="absolute right-0 mt-2 w-60 origin-top-right rounded-xl border border-amber-200 bg-white shadow-xl z-50 animate-fade-scale dark:bg-zinc-900 dark:border-zinc-700"
           aria-label="Menú de usuario"
-          data-oid="c1xoti0"
+          data-oid="0w5pm_r"
         >
           {/* Sesión activa */}
           {usuario ? (
-            <div className="px-4 py-3" data-oid="uhiux8u">
-              <div className="flex items-center gap-2" data-oid="p1g9g8v">
-                <span className="text-sm font-semibold" data-oid="ao-sasc">
+            <div className="px-4 py-3" data-oid="pjswov-">
+              <div className="flex items-center gap-2" data-oid="it_jknp">
+                <span className="text-sm font-semibold" data-oid="ozcown.">
                   {usuario?.nombre}
                 </span>
                 {usuario.plan && (
@@ -182,9 +182,9 @@ export default function UserMenu({ usuario }: { usuario: UsuarioData | null }) {
                           ? "bg-sky-100 text-sky-700 border-sky-300"
                           : "bg-zinc-100 text-zinc-600 border-zinc-200",
                     )}
-                    data-oid="7avkuii"
+                    data-oid="e_zxlbv"
                   >
-                    <BadgeCheck className="w-3 h-3" data-oid="e-wufx4" />
+                    <BadgeCheck className="w-3 h-3" data-oid="ttja0c9" />
                     {usuario.plan}
                   </span>
                 )}
@@ -192,18 +192,18 @@ export default function UserMenu({ usuario }: { usuario: UsuarioData | null }) {
                   <span
                     title="2FA activo"
                     className="ml-1 text-emerald-500"
-                    data-oid="oy.y8-m"
+                    data-oid="76ov1k3"
                   >
                     <ShieldCheck
                       className="h-4 w-4 inline"
-                      data-oid="kkq-tto"
+                      data-oid="ngz6sj3"
                     />
                   </span>
                 )}
               </div>
               <p
                 className="text-xs text-zinc-500 dark:text-zinc-400 break-all"
-                data-oid="wknef20"
+                data-oid="fjvt7my"
               >
                 {usuario?.correo}
               </p>
@@ -211,7 +211,7 @@ export default function UserMenu({ usuario }: { usuario: UsuarioData | null }) {
           ) : (
             <div
               className="px-4 py-3 text-center text-sm text-zinc-500"
-              data-oid="w1.j5i_"
+              data-oid="8rzmd9q"
             >
               No has iniciado sesión
             </div>
@@ -221,43 +221,46 @@ export default function UserMenu({ usuario }: { usuario: UsuarioData | null }) {
           {usuario && (
             <div
               className="border-t dark:border-zinc-700 py-2"
-              data-oid="vvhjlju"
+              data-oid="a0wnbze"
             >
               <MenuLink
                 href="/dashboard"
                 icon={
-                  <LayoutDashboard className="h-4 w-4" data-oid="myeoim." />
+                  <LayoutDashboard className="h-4 w-4" data-oid="fawohvy" />
                 }
                 label="Dashboard"
                 tabIndex={open ? 0 : -1}
-                data-oid="368ko5_"
+                data-oid="rsfsr2."
               />
+
               <MenuLink
                 href="/configuracion"
-                icon={<Settings className="h-4 w-4" data-oid="3_sb_xz" />}
+                icon={<Settings className="h-4 w-4" data-oid="xwpeao9" />}
                 label="Configuración"
                 tabIndex={open ? 0 : -1}
-                data-oid="yiu9:r3"
+                data-oid="4a5c0bc"
               />
+
               <MenuLink
                 href="/"
-                icon={<Home className="h-4 w-4" data-oid="i:4enmg" />}
+                icon={<Home className="h-4 w-4" data-oid="nbcd5ka" />}
                 label="Inicio"
                 tabIndex={open ? 0 : -1}
-                data-oid="ydn7o13"
+                data-oid="1gws43m"
               />
+
               {usuario.tiene2FA && (
                 <MenuLink
                   href="/configuracion#seguridad"
                   icon={
                     <ShieldCheck
                       className="h-4 w-4 text-emerald-500"
-                      data-oid="sq8kkui"
+                      data-oid="j6merum"
                     />
                   }
                   label="Seguridad"
                   tabIndex={open ? 0 : -1}
-                  data-oid="t::og20"
+                  data-oid="vfol.pg"
                 />
               )}
             </div>
@@ -266,11 +269,11 @@ export default function UserMenu({ usuario }: { usuario: UsuarioData | null }) {
           {/* Tema claro/oscuro */}
           <div
             className="border-t dark:border-zinc-700 px-4 py-3 flex items-center justify-between text-sm"
-            data-oid="dcnfoq_"
+            data-oid="4ni879u"
           >
             <span
               className="text-zinc-500 dark:text-zinc-400"
-              data-oid="bs8gfnd"
+              data-oid="2nm9j79"
             >
               Tema
             </span>
@@ -285,51 +288,51 @@ export default function UserMenu({ usuario }: { usuario: UsuarioData | null }) {
               aria-label={
                 temaOscuro ? "Cambiar a tema claro" : "Cambiar a tema oscuro"
               }
-              data-oid="rv44axf"
+              data-oid="3r_v:dq"
             >
               {temaOscuro ? (
-                <Sun className="h-4 w-4" data-oid=":8rck0p" />
+                <Sun className="h-4 w-4" data-oid="huo5:lx" />
               ) : (
-                <Moon className="h-4 w-4" data-oid="rn_ci.n" />
+                <Moon className="h-4 w-4" data-oid="f7dhfcu" />
               )}
             </button>
           </div>
 
           {/* Login / Logout */}
-          <div className="border-t dark:border-zinc-700" data-oid="fysmff4">
+          <div className="border-t dark:border-zinc-700" data-oid="p1ehb25">
             {usuario ? (
               <button
                 onClick={cerrarSesion}
                 className="w-full px-4 py-2 flex items-center gap-2 text-red-600 hover:bg-red-50 dark:hover:bg-zinc-800 dark:text-red-400 text-sm"
                 tabIndex={open ? 0 : -1}
-                data-oid="s.brx:t"
+                data-oid="8wswv3f"
               >
-                <LogOut className="h-4 w-4" data-oid="1z60s69" /> Cerrar sesión
+                <LogOut className="h-4 w-4" data-oid="nxzvv:7" /> Cerrar sesión
               </button>
             ) : (
               <Link
                 href="/login"
                 className="w-full px-4 py-2 flex items-center gap-2 text-amber-700 hover:bg-amber-50 dark:hover:bg-zinc-800 text-sm"
                 tabIndex={open ? 0 : -1}
-                data-oid="3hso6n:"
+                data-oid="wkns2eh"
               >
-                <LogIn className="h-4 w-4" data-oid="h1-28hl" /> Iniciar sesión
+                <LogIn className="h-4 w-4" data-oid="vwi-1v:" /> Iniciar sesión
               </Link>
             )}
           </div>
 
           {/* Upgrade */}
-          <div className="border-t dark:border-zinc-700" data-oid="y.87e-d">
+          <div className="border-t dark:border-zinc-700" data-oid="x.khpkj">
             <Link
               href="/servicios"
               className="block w-full px-4 py-3 text-center text-sm font-semibold text-white bg-amber-500 hover:bg-amber-600 transition flex items-center justify-center gap-2"
               tabIndex={open ? 0 : -1}
-              data-oid="6ewegp_"
+              data-oid="b9xeosc"
             >
               {usuario?.plan === "Pro" || usuario?.plan === "Empresarial"
                 ? "Gestionar mi Plan"
                 : "Upgrade to Pro"}
-              <ArrowUpRight className="h-4 w-4" data-oid="5-d_zsz" />
+              <ArrowUpRight className="h-4 w-4" data-oid="otdmpqh" />
             </Link>
           </div>
         </nav>
@@ -354,7 +357,7 @@ function MenuLink({
       href={href}
       tabIndex={tabIndex}
       className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-amber-50 dark:hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-amber-400 rounded-md"
-      data-oid="rasrixf"
+      data-oid="q:3r48e"
     >
       {icon}
       {label}

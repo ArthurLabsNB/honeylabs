@@ -17,12 +17,12 @@ export default function AuthLayout({
         relative
       "
       tabIndex={-1} // Accesibilidad: permite salto con tab al inicio de layout
-      data-oid="jgxw0-w"
+      data-oid="1:pses8"
     >
       {/* Espacio para un posible logo */}
       {/* <div className="mb-8">
-         <Logo width={64} height={64} />
-        </div> */}
+            <Logo width={64} height={64} />
+           </div> */}
       {children}
       {/* Pie de página opcional para branding o links legales */}
       {/* <footer className="mt-12 text-xs text-center text-gray-400">HoneyLabs &copy; {new Date().getFullYear()}</footer> */}

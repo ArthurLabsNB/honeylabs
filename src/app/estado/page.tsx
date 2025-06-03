@@ -1,18 +1,18 @@
 // src/app/estado/page.tsx
 export default function EstadoPage() {
   return (
-    <main className="max-w-3xl mx-auto p-8" data-oid="cp9uuen">
-      <h1 className="text-3xl font-bold mb-2 text-amber-700" data-oid="iw28:jj">
+    <main className="max-w-3xl mx-auto p-8" data-oid="rwgjygl">
+      <h1 className="text-3xl font-bold mb-2 text-amber-700" data-oid="_v9xrot">
         Estado del sistema
       </h1>
-      <p className="text-zinc-600 mb-4" data-oid="y0otkx5">
+      <p className="text-zinc-600 mb-4" data-oid="ye:e2.r">
         Consulta aquí el estado actual de los servicios y funcionalidades de
         HoneyLabs. Si algún servicio presenta problemas, aparecerá una
         notificación en esta sección.
       </p>
       <div
         className="p-4 bg-green-50 rounded-lg border border-green-200 text-green-700 font-semibold"
-        data-oid="554ccfd"
+        data-oid="y:fuh_i"
       >
         Todos los sistemas funcionan normalmente. Última actualización:{" "}
         {new Date().toLocaleString()}

@@ -36,19 +36,19 @@ function HeroSection() {
   return (
     <section
       className="flex flex-col items-center justify-center min-h-[75vh] py-32 md:py-44 px-4 text-center select-none space-y-8"
-      data-oid="yjzc8z2"
+      data-oid="7cq6xg2"
     >
       <h1
         className={clsx(
           "text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-amber-200 drop-shadow-xl transition-all animate-typewriter",
         )}
         style={{ fontFamily: `'Nunito', 'Inter', Arial, sans-serif` }}
-        data-oid="4t98fx2"
+        data-oid="9kn9.d-"
       >
         {textoTyped}
         <span
           className="ml-1 animate-blink text-amber-300 rounded-none"
-          data-oid="w:jorlo"
+          data-oid="514la7p"
         >
           |
         </span>
@@ -60,7 +60,7 @@ function HeroSection() {
             ? "opacity-100 animate-fade-in animate-float-text"
             : "opacity-0",
         )}
-        data-oid="q5hw8wk"
+        data-oid="7n23ih."
       >
         {showDesc && descripcion}
       </div>
@@ -68,7 +68,7 @@ function HeroSection() {
         href="#acerca"
         className="bg-amber-400 hover:bg-amber-500 text-black font-semibold px-8 py-3 rounded-lg shadow-lg mt-3 animate-ripple transition focus:outline-none focus:ring-2 focus:ring-amber-200"
         aria-label="Explorar HoneyLabs"
-        data-oid="y5r2:dk"
+        data-oid="eu82917"
       >
         Explorar HoneyLabs
       </a>
@@ -84,21 +84,21 @@ function AboutSection() {
     <section
       id="acerca"
       className="relative max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-14 py-28 md:py-40 px-4"
-      data-oid="q.l:s7e"
+      data-oid="87tep6g"
     >
       <div
         className="flex-1 flex flex-col justify-center md:items-start items-center text-center md:text-left animate-fade-in-left"
-        data-oid="npa2g:f"
+        data-oid="9sl.q-k"
       >
         <h2
           className="text-3xl md:text-4xl font-semibold text-amber-300 mb-4 tracking-tight"
-          data-oid="q_p6s:2"
+          data-oid="iiz:g4i"
         >
           Acerca de HoneyLabs
         </h2>
         <p
           className="text-zinc-200 mb-6 max-w-lg text-lg md:text-xl font-normal"
-          data-oid="nmnrq3z"
+          data-oid="7zs-ovb"
         >
           HoneyLabs es la solución moderna para la gestión logística y
           digitalización de inventarios en laboratorios, empresas e
@@ -109,20 +109,20 @@ function AboutSection() {
           href="/acerca"
           className="inline-block bg-amber-400 hover:bg-amber-500 text-black font-medium px-6 py-2 rounded-lg shadow transition animate-ripple"
           aria-label="Saber más sobre HoneyLabs"
-          data-oid="2kcp_qv"
+          data-oid="6or6n4v"
         >
           Saber más
         </a>
       </div>
       <div
         className="flex-1 flex justify-center items-center animate-3dpop"
-        data-oid="p5wgw:o"
+        data-oid="x6pjt-t"
       >
         <div
           className="relative group transition-transform duration-700 will-change-transform"
           tabIndex={0}
           style={{ perspective: "1000px", outline: "none" }}
-          data-oid="iheq1uh"
+          data-oid="sux9ygc"
         >
           <img
             src="/ilustracion-almacen-3d.png"
@@ -130,7 +130,7 @@ function AboutSection() {
             className="w-80 h-80 md:w-[26rem] md:h-[26rem] object-cover rounded-2xl shadow-2xl border-2 border-amber-100 group-hover:scale-105 group-hover:rotate-2 group-hover:shadow-3xl transition-transform duration-500"
             draggable={false}
             loading="lazy"
-            data-oid=":2rd1dr"
+            data-oid="5:7jpmd"
           />
         </div>
       </div>
@@ -190,103 +190,103 @@ function KpiSection() {
   return (
     <section
       className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 py-24 px-4"
-      data-oid="rf5babj"
+      data-oid="c2t3bp_"
     >
-      <KpiCard className="animate-float-card" data-oid="qk3y.ky">
+      <KpiCard className="animate-float-card" data-oid="nh.aox-">
         {loading ? (
-          <LoaderKPI data-oid="fnwc6o4" />
+          <LoaderKPI data-oid="2_hddhp" />
         ) : (
           <>
-            <div className="flex gap-7 mb-1" data-oid="ymwqy7p">
-              <div className="flex flex-col items-center" data-oid="4gtmxq6">
+            <div className="flex gap-7 mb-1" data-oid="l73ov-v">
+              <div className="flex flex-col items-center" data-oid="t-:-iof">
                 <span
                   className="inline-block h-6 w-6 rounded-full bg-green-400/40 flex items-center justify-center"
-                  data-oid="og:-jr6"
+                  data-oid="pjpdlih"
                 >
-                  <span className="text-green-500" data-oid="dx2eee:">
+                  <span className="text-green-500" data-oid="-d6jts:">
                     ↓
                   </span>
                 </span>
                 <span
                   className="text-2xl font-semibold text-green-300"
-                  data-oid="7mqhhlh"
+                  data-oid="-h4z:np"
                 >
                   {entradas.toLocaleString()}
                 </span>
-                <span className="text-xs text-zinc-100/70" data-oid="od2zij8">
+                <span className="text-xs text-zinc-100/70" data-oid="viii3qq">
                   Entradas
                 </span>
               </div>
-              <div className="flex flex-col items-center" data-oid="kx.qp0w">
+              <div className="flex flex-col items-center" data-oid="p-q5_8h">
                 <span
                   className="inline-block h-6 w-6 rounded-full bg-rose-400/40 flex items-center justify-center"
-                  data-oid="m86s-_0"
+                  data-oid="g8i76w0"
                 >
-                  <span className="text-rose-400" data-oid="odenynm">
+                  <span className="text-rose-400" data-oid="yos5ka5">
                     ↑
                   </span>
                 </span>
                 <span
                   className="text-2xl font-semibold text-rose-300"
-                  data-oid="b1lf8yf"
+                  data-oid=".t1t_:7"
                 >
                   {salidas.toLocaleString()}
                 </span>
-                <span className="text-xs text-zinc-100/70" data-oid="0l7uw8c">
+                <span className="text-xs text-zinc-100/70" data-oid="wkxzp7f">
                   Salidas
                 </span>
               </div>
             </div>
-            <span className="text-sm text-zinc-400" data-oid=".ryolig">
+            <span className="text-sm text-zinc-400" data-oid="4gnlhre">
               Movimientos registrados
             </span>
           </>
         )}
       </KpiCard>
-      <KpiCard className="animate-float-card-delayed" data-oid="ed-qz31">
+      <KpiCard className="animate-float-card-delayed" data-oid="_o.xfvx">
         {loading ? (
-          <LoaderKPI data-oid="mcdvisn" />
+          <LoaderKPI data-oid="k_hpzq0" />
         ) : (
           <>
             <span
               className="inline-block h-7 w-7 bg-sky-400/40 rounded-full mb-1"
-              data-oid="zhfmehx"
+              data-oid="d6uj9on"
             />
 
             <span
               className="text-3xl font-bold text-sky-100"
-              data-oid="3r_ayp8"
+              data-oid="zr2pjyi"
             >
               {usuarios.toLocaleString()}
             </span>
             <span
               className="text-base text-zinc-200/90 mt-1"
-              data-oid="53wvbzi"
+              data-oid="29ra-4e"
             >
               Usuarios registrados
             </span>
           </>
         )}
       </KpiCard>
-      <KpiCard className="animate-float-card-delaymore" data-oid="qq-p4z4">
+      <KpiCard className="animate-float-card-delaymore" data-oid="3.ff_mw">
         {loading ? (
-          <LoaderKPI data-oid="dkq-ma_" />
+          <LoaderKPI data-oid="q1mpr3s" />
         ) : (
           <>
             <span
               className="inline-block h-7 w-7 bg-amber-400/50 rounded-full mb-1"
-              data-oid="pze4bun"
+              data-oid="soldnfi"
             />
 
             <span
               className="text-3xl font-bold text-amber-100"
-              data-oid="_-x:v40"
+              data-oid="jqt0ub0"
             >
               {almacenes.toLocaleString()}
             </span>
             <span
               className="text-base text-zinc-200/90 mt-1"
-              data-oid="rlfsin1"
+              data-oid="7vurkv:"
             >
               Almacenes creados
             </span>
@@ -306,7 +306,7 @@ function KpiCard({
   return (
     <div
       className={`rounded-2xl bg-zinc-900/85 shadow-xl p-8 border border-amber-400/10 flex flex-col items-center transition-transform hover:scale-105 min-h-[170px] ${className}`}
-      data-oid="z8c7klf"
+      data-oid="29n..u."
     >
       {children}
     </div>
@@ -316,13 +316,13 @@ function LoaderKPI() {
   return (
     <div
       className="flex flex-col items-center justify-center gap-2 min-h-[80px]"
-      data-oid="nvs-m3j"
+      data-oid="qly5rm1"
     >
       <span
         className="inline-block h-7 w-7 border-2 border-amber-300 border-t-transparent rounded-full animate-spin"
-        data-oid="j7::t:g"
+        data-oid="dazs7o3"
       ></span>
-      <span className="text-xs text-zinc-400" data-oid="m660sem">
+      <span className="text-xs text-zinc-400" data-oid="a9mv7el">
         Cargando…
       </span>
     </div>
@@ -467,11 +467,11 @@ function FeaturesCarouselSection() {
   return (
     <section
       className="max-w-7xl mx-auto py-32 px-4 space-y-16 relative"
-      data-oid="3zublb8"
+      data-oid="8:xdcwb"
     >
       <h2
         className="text-3xl md:text-4xl font-bold text-amber-300 mb-14 text-center"
-        data-oid="b0weglh"
+        data-oid="c0fhb-y"
       >
         Funciones principales
       </h2>
@@ -481,7 +481,7 @@ function FeaturesCarouselSection() {
         className="hidden md:flex absolute left-1 z-10 top-1/2 -translate-y-1/2 bg-amber-300/70 text-zinc-900 rounded-full w-12 h-12 shadow-lg border-4 border-amber-300/50 items-center justify-center hover:scale-110 transition disabled:opacity-50"
         disabled={active === 0}
         aria-label="Anterior"
-        data-oid="3jgh1al"
+        data-oid="b:sn0ea"
       >
         ‹
       </button>
@@ -490,7 +490,7 @@ function FeaturesCarouselSection() {
         className="hidden md:flex absolute right-1 z-10 top-1/2 -translate-y-1/2 bg-amber-300/70 text-zinc-900 rounded-full w-12 h-12 shadow-lg border-4 border-amber-300/50 items-center justify-center hover:scale-110 transition disabled:opacity-50"
         disabled={active === features.length - 1}
         aria-label="Siguiente"
-        data-oid="2ic4:u0"
+        data-oid="72twdhk"
       >
         ›
       </button>
@@ -502,7 +502,7 @@ function FeaturesCarouselSection() {
           scrollbarWidth: "none",
           msOverflowStyle: "none",
         }}
-        data-oid="4w0j.:_"
+        data-oid="skl3zjd"
       >
         {features.map((feature, idx) => (
           <div
@@ -531,36 +531,36 @@ function FeaturesCarouselSection() {
             }}
             onClick={() => scrollTo(idx)}
             onFocus={() => scrollTo(idx)}
-            data-oid="5p6105e"
+            data-oid="1csad4m"
           >
             <img
               src={feature.icon}
               alt={feature.title}
               className="mb-2 w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-2xl mt-5"
               loading="lazy"
-              data-oid="rmx0tce"
+              data-oid="ltlh985"
             />
 
             <h3
               className="font-semibold text-amber-200 mb-1 text-center text-lg md:text-xl px-2"
-              data-oid="s0x51k6"
+              data-oid="_5s0:hc"
             >
               {feature.title}
             </h3>
             <p
               className="text-zinc-200 text-center text-base mb-2 px-3"
-              data-oid="01nwlm4"
+              data-oid="w1wu19w"
             >
               {feature.desc}
             </p>
             {active === idx && (
               <div
                 className="expanded-detail text-amber-100 text-base px-6 pb-6 pt-3 w-full animate-fade-in"
-                data-oid="rwp-:ai"
+                data-oid="1eqhhy."
               >
                 <div
                   className="font-bold text-lg mb-1 text-amber-200"
-                  data-oid=":s:1uk1"
+                  data-oid="47f5hmd"
                 >
                   {feature.title}
                 </div>
@@ -571,7 +571,7 @@ function FeaturesCarouselSection() {
         ))}
       </div>
       {/* Indicadores puntos */}
-      <div className="flex justify-center gap-2 mt-2" data-oid="xhes5.5">
+      <div className="flex justify-center gap-2 mt-2" data-oid="oif3yki">
         {features.map((_, idx) => (
           <button
             key={idx}
@@ -583,12 +583,12 @@ function FeaturesCarouselSection() {
                 ? "bg-amber-400 shadow-md"
                 : "bg-zinc-700 hover:bg-amber-300",
             )}
-            data-oid="t71e8.2"
+            data-oid="62uo_3x"
           />
         ))}
       </div>
       {/* CSS en línea para el carrusel y animaciones */}
-      <style jsx global data-oid="jg5aasc">{`
+      <style jsx global data-oid="tl:9f_z">{`
         .carousel-acordeon::-webkit-scrollbar {
           display: none;
         }
@@ -775,14 +775,14 @@ function PartnersSection() {
 
   const [open, setOpen] = useState(0);
   return (
-    <section className="max-w-5xl mx-auto py-36 px-4" data-oid="328.9e5">
+    <section className="max-w-5xl mx-auto py-36 px-4" data-oid="-8ly.b_">
       <h2
         className="text-2xl md:text-3xl font-bold text-amber-300 mb-9 text-center"
-        data-oid="df0zi4q"
+        data-oid="iwi8nqy"
       >
         Colaboradores y aliados
       </h2>
-      <div className="flex flex-col gap-6" data-oid="8mq8pdv">
+      <div className="flex flex-col gap-6" data-oid="6:zc_r6">
         {aliados.map((a, i) => (
           <div
             key={a.nombre}
@@ -792,13 +792,13 @@ function PartnersSection() {
                 ? "scale-100 shadow-2xl border-amber-300/30"
                 : "scale-95 opacity-70",
             )}
-            data-oid="kuh4w6p"
+            data-oid="s74r55o"
           >
             <button
               className="flex items-center w-full p-5 gap-6 focus:outline-none"
               onClick={() => setOpen(i)}
               aria-expanded={open === i}
-              data-oid="6_g3fi0"
+              data-oid="03zkin1"
             >
               <img
                 src={a.img}
@@ -810,20 +810,20 @@ function PartnersSection() {
                     : "w-20 h-20 border-amber-200",
                 )}
                 loading="lazy"
-                data-oid="287rloi"
+                data-oid="sscoas."
               />
 
-              <div className="flex flex-col items-start" data-oid="txxoc3s">
+              <div className="flex flex-col items-start" data-oid="2a.kdwo">
                 <span
                   className={clsx(
                     "font-bold text-lg",
                     a.principal ? "text-amber-200" : "text-amber-100",
                   )}
-                  data-oid="4h4_yje"
+                  data-oid="jgp9tkh"
                 >
                   {a.nombre}
                 </span>
-                <span className="text-zinc-200 text-sm" data-oid="b8diyu3">
+                <span className="text-zinc-200 text-sm" data-oid="5fceb1e">
                   {a.desc}
                 </span>
                 <a
@@ -831,18 +831,18 @@ function PartnersSection() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-amber-300 mt-2 hover:underline"
-                  data-oid="ugk9g--"
+                  data-oid="jwae-k6"
                 >
                   Visitar sitio
                 </a>
               </div>
-              <div className="ml-auto" data-oid="r98dp4j">
+              <div className="ml-auto" data-oid="6hpw-r.">
                 {open === i ? (
-                  <span className="text-amber-300" data-oid="l2c7kf3">
+                  <span className="text-amber-300" data-oid="1g85xf5">
                     ▲
                   </span>
                 ) : (
-                  <span className="text-amber-300" data-oid="b17_nq-">
+                  <span className="text-amber-300" data-oid="i8eza:c">
                     ▼
                   </span>
                 )}
@@ -862,17 +862,17 @@ export default function Page() {
   return (
     <main
       className="relative min-h-screen w-full font-sans overflow-x-hidden"
-      data-oid="wmnjgwf"
+      data-oid="tw.fw2i"
     >
       <div
         className="relative z-10 flex flex-col min-h-screen"
-        data-oid="raq963y"
+        data-oid="23co7-1"
       >
-        <HeroSection data-oid="8pv.gtg" />
-        <AboutSection data-oid="hba7j2i" />
-        <KpiSection data-oid="tqe:zki" />
-        <FeaturesCarouselSection data-oid="esd75kn" />
-        <PartnersSection data-oid="tsf_rw8" />
+        <HeroSection data-oid="4jppz9q" />
+        <AboutSection data-oid="j9jvep3" />
+        <KpiSection data-oid="f6su96t" />
+        <FeaturesCarouselSection data-oid="rz_m_gp" />
+        <PartnersSection data-oid="28z42rg" />
       </div>
     </main>
   );
