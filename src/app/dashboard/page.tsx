@@ -86,12 +86,12 @@ export default function DashboardPage() {
       .catch((err) => console.error("Error al cargar widgets:", err));
   }, [usuario]);
 
-  if (loadingUsuario) return <div data-oid="e-6y6np">Cargando usuario...</div>;
+  if (loadingUsuario) return <div data-oid="lwpjukq">Cargando usuario...</div>;
   if (errorUsuario || !usuario)
     return (
-      <div data-oid="lkfh-mz">
+      <div data-oid=".l_nz-z">
         {errorUsuario || "Sesión inválida"}{" "}
-        <a href="/login" data-oid="_xseusl">
+        <a href="/login" data-oid="_z2psz7">
           Iniciar sesión
         </a>
       </div>
@@ -123,26 +123,26 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen p-4 sm:p-8" data-oid="jm7rk:_">
+    <div className="min-h-screen p-4 sm:p-8" data-oid="7h725.b">
       <div
         className="flex items-center justify-between mb-5"
-        data-oid="0vj63xs"
+        data-oid="bjx2qyk"
       >
-        <h1 className="text-2xl font-bold" data-oid="o3vtqel">
+        <h1 className="text-2xl font-bold" data-oid="4rx1xg2">
           Panel principal
         </h1>
         <select
           onChange={(e) => handleAddWidget(e.target.value)}
           value=""
-          data-oid="l_hpktd"
+          data-oid=".afd4c5"
         >
-          <option disabled value="" data-oid="89724..">
+          <option disabled value="" data-oid="6wcsx7v">
             Agregar widget...
           </option>
           {catalogo
             .filter((w) => !widgets.includes(w.key))
             .map((w) => (
-              <option key={w.key} value={w.key} data-oid="oz-pfdc">
+              <option key={w.key} value={w.key} data-oid="z4paaf7">
                 {w.title}
               </option>
             ))}
@@ -159,16 +159,16 @@ export default function DashboardPage() {
         onLayoutChange={setLayout}
         draggableHandle=".dashboard-widget-card"
         margin={[18, 18]}
-        data-oid="hoki4:k"
+        data-oid="6l8-9mp"
       >
         {widgets.map((key) => {
           const Widget = componentes[key];
           return (
-            <div key={key} className="dashboard-widget-card" data-oid="8z6e3pz">
-              <Widget usuario={usuario} data-oid="j0othxi" />
+            <div key={key} className="dashboard-widget-card" data-oid="z6wmao4">
+              <Widget usuario={usuario} data-oid="4aelqx5" />
               <button
                 onClick={() => handleRemoveWidget(key)}
-                data-oid="x9v9n32"
+                data-oid="ib037i_"
               >
                 ✕
               </button>

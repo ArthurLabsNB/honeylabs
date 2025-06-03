@@ -70,7 +70,7 @@ export default function RegistroPage() {
   return (
     <main
       className="min-h-screen w-full flex items-center justify-center"
-      data-oid="ejfnjy0"
+      data-oid=".xiapnw"
     >
       <form
         onSubmit={handleSubmit}
@@ -79,7 +79,7 @@ export default function RegistroPage() {
         autoComplete="on"
         aria-labelledby="register-title"
         noValidate
-        data-oid="l.6ofzn"
+        data-oid="d6q-mnf"
       >
         <h1
           id="register-title"
@@ -88,7 +88,7 @@ export default function RegistroPage() {
             animationDuration: "2s",
             animationTimingFunction: "steps(25, end)",
           }}
-          data-oid="8wqi.5w"
+          data-oid="t0:rwn8"
         >
           Crear cuenta
         </h1>
@@ -100,7 +100,7 @@ export default function RegistroPage() {
           placeholder="Nombre"
           className="input"
           autoComplete="given-name"
-          data-oid="jevuym:"
+          data-oid="5wqg4:z"
         />
 
         <input
@@ -109,7 +109,7 @@ export default function RegistroPage() {
           placeholder="Apellidos"
           className="input"
           autoComplete="family-name"
-          data-oid="3_r-9sf"
+          data-oid="z.8rz2_"
         />
 
         <input
@@ -119,7 +119,7 @@ export default function RegistroPage() {
           placeholder="Correo electrónico"
           className="input"
           autoComplete="email"
-          data-oid="g_-vyu1"
+          data-oid="oi_y327"
         />
 
         <input
@@ -129,20 +129,20 @@ export default function RegistroPage() {
           placeholder="Contraseña"
           className="input"
           autoComplete="new-password"
-          data-oid="_b4k1oh"
+          data-oid="i6gaz9j"
         />
 
-        <select name="tipoCuenta" required className="input" data-oid="nl4djyl">
-          <option value="" data-oid="-e7qchm">
+        <select name="tipoCuenta" required className="input" data-oid="qimliea">
+          <option value="" data-oid="obh74f3">
             Tipo de cuenta
           </option>
-          <option value="estandar" data-oid="01pryse">
+          <option value="estandar" data-oid="pvr.pf:">
             Usuario individual
           </option>
-          <option value="empresarial" data-oid="i-lvw0q">
+          <option value="empresarial" data-oid=".lfpwl7">
             Empresa
           </option>
-          <option value="institucional" data-oid="4svn3oi">
+          <option value="institucional" data-oid="db:0fu5">
             Institución
           </option>
         </select>
@@ -151,14 +151,14 @@ export default function RegistroPage() {
           name="codigo"
           placeholder="Código de invitación (opcional)"
           className="input"
-          data-oid="ww2inj9"
+          data-oid="1f-fskc"
         />
 
-        <div data-oid="wzl455d">
+        <div data-oid="jwj:f-_">
           <label
             htmlFor="archivo"
             className="block text-sm text-gray-600 mb-1"
-            data-oid="e-w.l7z"
+            data-oid="_cpu7tj"
           >
             Archivo de validación (PDF o imagen, si aplica)
           </label>
@@ -167,7 +167,7 @@ export default function RegistroPage() {
             type="file"
             accept=".pdf,.png,.jpg,.jpeg"
             className="input file:bg-white file:border file:border-gray-300 file:rounded file:px-3"
-            data-oid="u5:8qaq"
+            data-oid="bagzr:5"
           />
         </div>
 
@@ -177,20 +177,20 @@ export default function RegistroPage() {
           className={`w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded transition ${
             cargando ? "opacity-70 cursor-not-allowed" : ""
           }`}
-          data-oid="zu_7ye4"
+          data-oid=":6qdl-1"
         >
           {cargando ? "Registrando..." : "Crear cuenta"}
         </button>
 
         <p
           className="text-center text-sm text-gray-600 mt-1"
-          data-oid="015726v"
+          data-oid="t3-d.hm"
         >
           ¿Ya tienes cuenta?{" "}
           <Link
             href="/login"
             className="text-amber-700 underline hover:text-amber-900 font-medium transition"
-            data-oid="0y2txf7"
+            data-oid="82mef4k"
           >
             Inicia sesión
           </Link>
@@ -201,14 +201,14 @@ export default function RegistroPage() {
             className={`text-center text-sm font-medium mt-3 ${
               mensaje.startsWith("✔️") ? "text-green-600" : "text-red-600"
             }`}
-            data-oid="22-1ocu"
+            data-oid="iddoll8"
           >
             {mensaje}
           </p>
         )}
       </form>
 
-      <style jsx data-oid="7nlxk75">{`
+      <style jsx data-oid="q8h5ih7">{`
         .input {
           width: 100%;
           padding: 0.5rem 0.75rem;

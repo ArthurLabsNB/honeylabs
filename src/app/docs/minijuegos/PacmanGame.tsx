@@ -9,82 +9,102 @@ const MAZE = [
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1,
   ],
+
   [
     1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
     2, 1,
   ],
+
   [
     1, 3, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1,
     3, 1,
   ],
+
   [
     1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1,
     2, 1,
   ],
+
   [
     1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
     2, 1,
   ],
+
   [
     1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1,
     2, 1,
   ],
+
   [
     1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 1, 1, 1, 2, 1, 1,
     2, 1,
   ],
+
   [
     1, 2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2,
     2, 1,
   ],
+
   [
     1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1, 1,
     1, 1,
   ],
+
   [
     1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 1, 1, 4, 1, 1, 2, 2, 2, 1, 1, 1, 2, 1, 1,
     1, 1,
   ],
+
   [
     0, 2, 2, 2, 2, 1, 1, 1, 2, 1, 2, 1, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 2, 2, 2,
     2, 0,
   ],
+
   [
     1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1,
     1, 1,
   ],
+
   [
     1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1,
     1, 1,
   ],
+
   [
     1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
     2, 1,
   ],
+
   [
     1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1,
     2, 1,
   ],
+
   [
     1, 3, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2,
     3, 1,
   ],
+
   [
     1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 2, 1,
     1, 1,
   ],
+
   [
     1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2,
     2, 1,
   ],
+
   [
     1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1,
     2, 1,
   ],
+
   [
     1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
     2, 1,
   ],
+
   [
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1,
@@ -260,9 +280,9 @@ function PacmanSprite({
       }}
       animate={{ rotate }}
       transition={{ type: "tween", duration: 0.5 }}
-      data-oid="ou5o5kx"
+      data-oid="jfjqfnm"
     >
-      <svg width={size} height={size} viewBox="0 0 88 88" data-oid="vw:5ms:">
+      <svg width={size} height={size} viewBox="0 0 88 88" data-oid="l1a89.w">
         <motion.path
           d={
             mouthOpen
@@ -274,10 +294,10 @@ function PacmanSprite({
           strokeWidth="1.4"
           animate={{ rotate: [0, 13, 0] }}
           transition={{ repeat: Infinity, duration: 0.19 }}
-          data-oid="vllg:8x"
+          data-oid="t.id-hg"
         />
 
-        <circle cx="62" cy="32" r="5" fill="#22223b" data-oid="7qtxwbu" />
+        <circle cx="62" cy="32" r="5" fill="#22223b" data-oid="zko9hrj" />
       </svg>
     </motion.div>
   );
@@ -298,20 +318,21 @@ function GhostSprite({ g, size }: { g: Ghost; size: number }) {
       }}
       animate={{ scale: [1, 1.14, 1], y: [0, 2, 0] }}
       transition={{ repeat: Infinity, duration: 0.8 }}
-      data-oid=":vbt.bp"
+      data-oid="z.jitda"
     >
-      <svg width={size} height={size} viewBox="0 0 24 24" data-oid="tpq_gvb">
+      <svg width={size} height={size} viewBox="0 0 24 24" data-oid="pbds3h_">
         <path
           d="M4 20 L4 8 Q12 1, 20 8 L20 20 Q18 18, 16 20 Q14 18, 12 20 Q10 18, 8 20 Q6 18, 4 20 Z"
           fill={g.vulnerable ? "#fff" : g.color}
           stroke={g.vulnerable ? "#70cfff" : "#222"}
           strokeWidth="1.2"
-          data-oid="ocpk7:."
+          data-oid="zq4kybv"
         />
-        <circle cx="8.5" cy="12" r="2" fill="#fff" data-oid="40jiz27" />
-        <circle cx="15.5" cy="12" r="2" fill="#fff" data-oid="65_4181" />
-        <circle cx="9" cy="12" r="1" fill="#222" data-oid="z00y2cx" />
-        <circle cx="16" cy="12" r="1" fill="#222" data-oid="j.6obrt" />
+
+        <circle cx="8.5" cy="12" r="2" fill="#fff" data-oid="d4vj7fe" />
+        <circle cx="15.5" cy="12" r="2" fill="#fff" data-oid="wr18731" />
+        <circle cx="9" cy="12" r="1" fill="#222" data-oid="1dhvf8g" />
+        <circle cx="16" cy="12" r="1" fill="#222" data-oid="g5rnzp-" />
         {g.vulnerable && (
           <ellipse
             cx="12"
@@ -319,11 +340,11 @@ function GhostSprite({ g, size }: { g: Ghost; size: number }) {
             rx="4"
             ry="1.5"
             fill="#70cfff"
-            data-oid="5x9eu2q"
+            data-oid="gq0qvrd"
           />
         )}
       </svg>
-      <AnimatePresence data-oid="e::i:5b">
+      <AnimatePresence data-oid="2tsf2r-">
         {g.message && (
           <motion.div
             initial={{ opacity: 0, y: 8, scale: 0.95 }}
@@ -347,7 +368,7 @@ function GhostSprite({ g, size }: { g: Ghost; size: number }) {
               fontWeight: 700,
               border: "1.5px solid #ffe066",
             }}
-            data-oid="6sk0:_q"
+            data-oid="gu1pu5a"
           >
             {g.message}
           </motion.div>
@@ -374,7 +395,7 @@ function MazeBoard({ maze, pos, ghosts, mouthOpen, direction, size }: any) {
         filter: "blur(0.5px) contrast(1.05)",
       }}
       className="select-none"
-      data-oid="0btiiau"
+      data-oid="bmf.uol"
     >
       {maze.map((row: number[], y: number) =>
         row.map((cell: number, x: number) => (
@@ -389,7 +410,7 @@ function MazeBoard({ maze, pos, ghosts, mouthOpen, direction, size }: any) {
               zIndex: 1,
               boxSizing: "border-box",
             }}
-            data-oid="2qg8t1e"
+            data-oid="1l.cp-j"
           >
             {cell === 1 && (
               <div
@@ -401,7 +422,7 @@ function MazeBoard({ maze, pos, ghosts, mouthOpen, direction, size }: any) {
                   borderRadius: 8,
                   boxShadow: "inset 0 0 10px #ffe066aa, 0 0 3px #ffe06666",
                 }}
-                data-oid="3itydwr"
+                data-oid="mle9vl5"
               />
             )}
             {cell === 2 && (
@@ -415,7 +436,7 @@ function MazeBoard({ maze, pos, ghosts, mouthOpen, direction, size }: any) {
                 }}
                 animate={{ scale: [1, 1.26, 1] }}
                 transition={{ duration: 0.67, repeat: Infinity }}
-                data-oid="jza1waw"
+                data-oid="uximvw3"
               />
             )}
             {cell === 3 && (
@@ -429,7 +450,7 @@ function MazeBoard({ maze, pos, ghosts, mouthOpen, direction, size }: any) {
                 }}
                 animate={{ scale: [1, 1.22, 1] }}
                 transition={{ duration: 0.64, repeat: Infinity }}
-                data-oid="40ccg9p"
+                data-oid="qkkv_m0"
               />
             )}
             {cell === 4 && (
@@ -442,7 +463,7 @@ function MazeBoard({ maze, pos, ghosts, mouthOpen, direction, size }: any) {
                   borderRadius: 2,
                   boxShadow: "0 0 8px #ffd23baa",
                 }}
-                data-oid="c:6b.j."
+                data-oid="n:i9yqg"
               />
             )}
           </div>
@@ -454,10 +475,11 @@ function MazeBoard({ maze, pos, ghosts, mouthOpen, direction, size }: any) {
         mouthOpen={mouthOpen}
         direction={direction}
         size={size}
-        data-oid="05zmm-d"
+        data-oid="n2_w3w4"
       />
+
       {ghosts.map((g: Ghost, i: number) => (
-        <GhostSprite key={i} g={g} size={size} data-oid="slzzptt" />
+        <GhostSprite key={i} g={g} size={size} data-oid="vj0n52n" />
       ))}
     </div>
   );
@@ -685,10 +707,10 @@ export default function PacmanGamePRO() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center w-full" data-oid="osh:gmq">
+    <div className="flex flex-col items-center w-full" data-oid="42nk3.e">
       <h3
         className="text-3xl font-extrabold text-yellow-300 drop-shadow mb-2"
-        data-oid="f7lf6t6"
+        data-oid="_-b..zn"
       >
         Pac-Man PRO!
       </h3>
@@ -709,7 +731,7 @@ export default function PacmanGamePRO() {
         }}
         className="mb-2 grid"
         onClick={() => boardRef.current?.focus()}
-        data-oid="z1x7_sg"
+        data-oid="2s2zjmz"
       >
         <MazeBoard
           maze={maze}
@@ -718,9 +740,10 @@ export default function PacmanGamePRO() {
           mouthOpen={mouthOpen}
           direction={pos.dir}
           size={size}
-          data-oid="6n04w3d"
+          data-oid="fvlakw4"
         />
-        <AnimatePresence data-oid="tpo3dn1">
+
+        <AnimatePresence data-oid="mr0id2x">
           {!running && !gameOver && !victory && (
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
@@ -743,9 +766,9 @@ export default function PacmanGamePRO() {
                 fontSize: 38,
                 textShadow: "0 4px 16px #000",
               }}
-              data-oid="pw5day."
+              data-oid=".dle9vi"
             >
-              <span data-oid="ys28ywe">¡Perdiste una vida!</span>
+              <span data-oid="dh-lqq4">¡Perdiste una vida!</span>
             </motion.div>
           )}
           {gameOver && (
@@ -770,9 +793,9 @@ export default function PacmanGamePRO() {
                 fontSize: 38,
                 textShadow: "0 4px 22px #000",
               }}
-              data-oid="7mv4zx5"
+              data-oid="oae9mcm"
             >
-              <span data-oid="na65oiw">GAME OVER</span>
+              <span data-oid="9frzovg">GAME OVER</span>
             </motion.div>
           )}
           {victory && (
@@ -797,33 +820,33 @@ export default function PacmanGamePRO() {
                 fontSize: 35,
                 textShadow: "0 2px 8px #fff",
               }}
-              data-oid="a-lxyh1"
+              data-oid="w2u3f0f"
             >
-              <span data-oid="9hds21a">¡Victoria! 🎉</span>
+              <span data-oid="dz_pdrp">¡Victoria! 🎉</span>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
-      <div className="flex gap-6 items-center mb-2" data-oid="q.::1k-">
-        <span className="text-yellow-300 font-bold text-xl" data-oid="ycycmou">
+      <div className="flex gap-6 items-center mb-2" data-oid="6xv2fe4">
+        <span className="text-yellow-300 font-bold text-xl" data-oid="i:ppe_0">
           Puntos: {score}
         </span>
-        <span className="text-blue-300 font-bold text-lg" data-oid="xftauub">
+        <span className="text-blue-300 font-bold text-lg" data-oid="e2l-5n8">
           Vidas: {lives}
         </span>
       </div>
       <button
         onClick={restart}
         className="mt-1 px-6 py-2 bg-yellow-300 text-[#22223b] text-lg font-bold rounded-lg shadow-lg hover:scale-105 transition-all"
-        data-oid="o81xxrt"
+        data-oid="v4zplo_"
       >
         Reiniciar
       </button>
-      <p className="mt-2 text-zinc-400 text-xs text-center" data-oid="50c07hu">
-        Usa <b data-oid="7o45vps">WASD</b> para moverte.
-        <br data-oid="1ap0wgl" />
+      <p className="mt-2 text-zinc-400 text-xs text-center" data-oid="cit915_">
+        Usa <b data-oid="7gyo36z">WASD</b> para moverte.
+        <br data-oid="dq96hum" />
         ¡Evita a los fantasmas y come todos los puntos!
-        <br data-oid="jyfg.:1" />
+        <br data-oid="xwm4hw4" />
         Los fantasmas dicen cosas si se aburren... 😈
       </p>
     </div>

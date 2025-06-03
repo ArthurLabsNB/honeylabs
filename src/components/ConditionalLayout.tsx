@@ -15,5 +15,5 @@ export default function ConditionalLayout({
     return <>{children}</>;
   }
   // Si no, usa el layout global normal
-  return <ClientLayout data-oid="y5bg.rj">{children}</ClientLayout>;
+  return <ClientLayout data-oid="6do8dy:">{children}</ClientLayout>;
 }

@@ -1,15 +1,15 @@
 // src/app/legal/conducta/page.tsx
 export default function ConductaPage() {
   return (
-    <main className="max-w-2xl mx-auto px-4 py-12" data-oid="exram7i">
-      <h1 className="text-3xl font-bold mb-4 text-amber-700" data-oid="0g887qv">
+    <main className="max-w-2xl mx-auto px-4 py-12" data-oid="ktk0oa9">
+      <h1 className="text-3xl font-bold mb-4 text-amber-700" data-oid="4acmpup">
         Código de Conducta
       </h1>
-      <p className="text-zinc-700 dark:text-zinc-300 mb-6" data-oid="fgzii45">
+      <p className="text-zinc-700 dark:text-zinc-300 mb-6" data-oid="7wx_dy2">
         Fomentamos un ambiente seguro y respetuoso para todos los usuarios.
         Pronto compartiremos nuestro código de conducta.
       </p>
-      <p className="text-sm text-zinc-500" data-oid="kihf5ew">
+      <p className="text-sm text-zinc-500" data-oid="79:zzgr">
         Última actualización: {new Date().toLocaleDateString()}
       </p>
     </main>

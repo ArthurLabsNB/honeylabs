@@ -159,11 +159,11 @@ export default function Configuracion() {
     return (
       <main
         className="min-h-[80vh] flex items-center justify-center"
-        data-oid="._c-562"
+        data-oid="mr7iwzn"
       >
         <div
           className="text-amber-700 text-lg font-bold animate-blink"
-          data-oid="70m_25v"
+          data-oid="v6v0:r8"
         >
           Cargando perfil...
         </div>
@@ -175,9 +175,9 @@ export default function Configuracion() {
     return (
       <main
         className="min-h-[80vh] flex items-center justify-center"
-        data-oid="kc9t1l."
+        data-oid="gdhixe3"
       >
-        <div className="text-red-600 text-lg font-bold" data-oid="0wk4xiq">
+        <div className="text-red-600 text-lg font-bold" data-oid="5ykzchk">
           No se pudo cargar tu perfil.
         </div>
       </main>
@@ -187,19 +187,19 @@ export default function Configuracion() {
   return (
     <main
       className="min-h-[80vh] w-full flex flex-col items-center py-8 bg-transparent"
-      data-oid="33vru81"
+      data-oid="ffho5y8"
     >
       <section
         className="w-full max-w-2xl rounded-2xl shadow-2xl bg-white/90 dark:bg-zinc-900/90 p-6 border border-yellow-200 dark:border-zinc-800 backdrop-blur-2xl transition-all"
-        data-oid="q7svn2n"
+        data-oid="k::r44w"
       >
         <h1
           className="text-3xl font-bold text-amber-700 font-caveat mb-2 animate-fade-in"
-          data-oid="ll6:1:."
+          data-oid="ad1pdo6"
         >
           Configuración de tu Perfil
         </h1>
-        <p className="mb-6 text-gray-600 dark:text-gray-300" data-oid="ft8w5mm">
+        <p className="mb-6 text-gray-600 dark:text-gray-300" data-oid="bz7c85p">
           Personaliza tus datos, seguridad y exporta tu información cuando
           quieras.
         </p>
@@ -210,23 +210,23 @@ export default function Configuracion() {
                 ? "bg-green-100 text-green-800 border border-green-200"
                 : "bg-red-100 text-red-700 border border-red-300"
             }`}
-            data-oid="bulqymf"
+            data-oid="grskn8t"
           >
             {mensaje.texto}
           </div>
         )}
         <div
           className="flex flex-col md:flex-row gap-8 items-start"
-          data-oid="v1-7y0u"
+          data-oid="bea:m:n"
         >
           {/* FOTO DE PERFIL */}
-          <div className="flex flex-col items-center gap-2" data-oid="k5pwliy">
-            <div className="relative group" data-oid="9:_m-cj">
+          <div className="flex flex-col items-center gap-2" data-oid="m3t51i5">
+            <div className="relative group" data-oid="j.q.:ns">
               <img
                 src={fotoPreview || "/avatar-default.png"}
                 alt="Foto de perfil"
                 className="w-28 h-28 rounded-full border-4 border-yellow-300 object-cover bg-yellow-100 shadow-lg transition group-hover:ring-4 group-hover:ring-amber-200"
-                data-oid="xzj.1tg"
+                data-oid="dzg6du1"
               />
 
               <button
@@ -234,9 +234,9 @@ export default function Configuracion() {
                 title="Cambiar foto"
                 onClick={() => fileInputRef.current?.click()}
                 type="button"
-                data-oid="5_.0h46"
+                data-oid="00uvsgy"
               >
-                <span className="sr-only" data-oid="y64a57.">
+                <span className="sr-only" data-oid="eg-8q_c">
                   Cambiar foto
                 </span>
                 <svg
@@ -245,13 +245,13 @@ export default function Configuracion() {
                   fill="none"
                   stroke="currentColor"
                   strokeWidth={2}
-                  data-oid="nkrp7j_"
+                  data-oid="oymwil:"
                 >
                   <path
                     d="M16.5 7.5l-1-1a2 2 0 00-2.8 0l-6 6a2 2 0 000 2.8l1 1a2 2 0 002.8 0l6-6a2 2 0 000-2.8z"
-                    data-oid="x:w3t3n"
+                    data-oid="mvcs4fe"
                   ></path>
-                  <circle cx="12" cy="12" r="3" data-oid="yc5w6f-"></circle>
+                  <circle cx="12" cy="12" r="3" data-oid="czsvch8"></circle>
                 </svg>
               </button>
               <input
@@ -260,10 +260,10 @@ export default function Configuracion() {
                 ref={fileInputRef}
                 className="hidden"
                 onChange={handleFotoChange}
-                data-oid="yro-ad7"
+                data-oid="6.oxdb2"
               />
             </div>
-            <div className="text-xs text-gray-500 mt-1" data-oid="p9:8eoq">
+            <div className="text-xs text-gray-500 mt-1" data-oid="brk7y_c">
               PNG/JPG. Máx 2MB
             </div>
           </div>
@@ -272,13 +272,13 @@ export default function Configuracion() {
             className="flex-1 flex flex-col gap-4"
             onSubmit={handleSubmit}
             autoComplete="off"
-            data-oid="pibevh:"
+            data-oid="6mhoyb8"
           >
-            <div className="flex gap-3" data-oid="o77xt8u">
-              <div className="flex-1" data-oid="8u.ymdx">
+            <div className="flex gap-3" data-oid="9u_1x0j">
+              <div className="flex-1" data-oid="6on2bo.">
                 <label
                   className="block text-sm font-semibold text-amber-800"
-                  data-oid="wmh8_ko"
+                  data-oid="nxye.u."
                 >
                   Nombre
                 </label>
@@ -289,13 +289,13 @@ export default function Configuracion() {
                   onChange={handleChange}
                   autoComplete="given-name"
                   required
-                  data-oid="ykdmh-c"
+                  data-oid="8h4whnh"
                 />
               </div>
-              <div className="flex-1" data-oid="z1nm9-a">
+              <div className="flex-1" data-oid="khv6t-n">
                 <label
                   className="block text-sm font-semibold text-amber-800"
-                  data-oid="tzx8wuv"
+                  data-oid="3g1r-ah"
                 >
                   Apellidos
                 </label>
@@ -306,14 +306,14 @@ export default function Configuracion() {
                   onChange={handleChange}
                   autoComplete="family-name"
                   required
-                  data-oid="qr7z::2"
+                  data-oid="9qgqb1y"
                 />
               </div>
             </div>
-            <div data-oid="xd6r2z4">
+            <div data-oid="ie5ar5l">
               <label
                 className="block text-sm font-semibold text-amber-800"
-                data-oid="cigptju"
+                data-oid="hq18-gn"
               >
                 Correo
               </label>
@@ -325,13 +325,13 @@ export default function Configuracion() {
                 onChange={handleChange}
                 autoComplete="email"
                 required
-                data-oid="xbcfwtj"
+                data-oid="k:ypbl_"
               />
             </div>
-            <div data-oid=".0vy6uj">
+            <div data-oid="kwid845">
               <label
                 className="block text-sm font-semibold text-amber-800"
-                data-oid="pcv9me-"
+                data-oid="7a20wro"
               >
                 Tipo de cuenta
               </label>
@@ -339,13 +339,13 @@ export default function Configuracion() {
                 className="w-full rounded-lg border border-yellow-200 p-2 mt-1 bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-gray-300 cursor-not-allowed"
                 value={perfil.tipoCuenta}
                 disabled
-                data-oid="2vs-rgi"
+                data-oid="716-7rp"
               />
             </div>
-            <div data-oid="h24-in4">
+            <div data-oid="qhsfwu-">
               <label
                 className="block text-sm font-semibold text-amber-800"
-                data-oid="wuxlhyy"
+                data-oid="e3uc.7v"
               >
                 Preferencias (texto libre)
               </label>
@@ -355,15 +355,15 @@ export default function Configuracion() {
                 value={form.preferencias}
                 onChange={handleChange}
                 rows={2}
-                data-oid="95n3p6x"
+                data-oid="ts7ifc."
               />
             </div>
             {/* Cambiar contraseña */}
-            <div className="flex gap-3" data-oid="bh8ouvn">
-              <div className="flex-1" data-oid="tk_b83-">
+            <div className="flex gap-3" data-oid="vy_0ljj">
+              <div className="flex-1" data-oid="zpvoaoi">
                 <label
                   className="block text-sm font-semibold text-amber-800"
-                  data-oid="xavpx0-"
+                  data-oid="pa2hgut"
                 >
                   Contraseña actual
                 </label>
@@ -375,13 +375,13 @@ export default function Configuracion() {
                   className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none bg-white/80 dark:bg-zinc-900/80"
                   autoComplete="current-password"
                   placeholder="Dejar vacío si no cambias"
-                  data-oid="qw82uu_"
+                  data-oid="9ghjtpe"
                 />
               </div>
-              <div className="flex-1" data-oid="qpdnyih">
+              <div className="flex-1" data-oid="m95_f85">
                 <label
                   className="block text-sm font-semibold text-amber-800"
-                  data-oid="89oo2-s"
+                  data-oid=".kut2r4"
                 >
                   Nueva contraseña
                 </label>
@@ -393,17 +393,17 @@ export default function Configuracion() {
                   className="w-full rounded-lg border border-yellow-200 p-2 mt-1 focus:outline-none bg-white/80 dark:bg-zinc-900/80"
                   autoComplete="new-password"
                   placeholder="Dejar vacío si no cambias"
-                  data-oid="rbrqwwt"
+                  data-oid="wkqglfw"
                 />
               </div>
             </div>
             {/* Acciones */}
-            <div className="flex gap-3 mt-2" data-oid="0og.9yt">
+            <div className="flex gap-3 mt-2" data-oid="_5r1jpl">
               <button
                 type="submit"
                 disabled={guardando}
                 className="flex-1 py-2 rounded-lg bg-amber-400 hover:bg-amber-500 text-white font-bold transition shadow-lg disabled:opacity-70"
-                data-oid="949rd.w"
+                data-oid="yw4wptu"
               >
                 {guardando ? "Guardando..." : "Guardar cambios"}
               </button>
@@ -411,7 +411,7 @@ export default function Configuracion() {
                 type="button"
                 onClick={handleExportarPerfil}
                 className="flex-1 py-2 rounded-lg bg-white border border-amber-300 text-amber-800 font-bold hover:bg-amber-50 transition"
-                data-oid="4662toh"
+                data-oid="c.32f.v"
               >
                 Exportar perfil
               </button>
@@ -421,33 +421,33 @@ export default function Configuracion() {
         {/* Extras: sesiones y seguridad */}
         <div
           className="border-t border-yellow-200 dark:border-zinc-700 mt-8 pt-6 flex flex-col md:flex-row gap-8 w-full max-w-2xl"
-          data-oid="fhdiyxf"
+          data-oid="44c1vn7"
         >
-          <section className="flex-1" data-oid="2:2fjs4">
+          <section className="flex-1" data-oid="zy8-7pd">
             <h2
               className="text-lg font-semibold text-amber-700 mb-2 font-caveat"
-              data-oid="ap7qdqv"
+              data-oid="47lrxmm"
             >
               Sesiones activas
             </h2>
             <div
               className="text-sm text-gray-600 dark:text-gray-300"
-              data-oid="r8nc3jc"
+              data-oid=":j731t0"
             >
               Pronto podrás gestionar tus dispositivos activos y cerrar sesiones
               desde aquí.
             </div>
           </section>
-          <section className="flex-1" data-oid="d18y.z8">
+          <section className="flex-1" data-oid="uplm.f0">
             <h2
               className="text-lg font-semibold text-amber-700 mb-2 font-caveat"
-              data-oid="py6fd:n"
+              data-oid="3:sjs97"
             >
               Seguridad extra (2FA)
             </h2>
             <div
               className="text-sm text-gray-600 dark:text-gray-300"
-              data-oid="uayx531"
+              data-oid="amukqa6"
             >
               Muy pronto: activa verificación en dos pasos y otras opciones
               avanzadas de seguridad.
