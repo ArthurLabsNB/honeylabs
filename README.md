@@ -110,9 +110,8 @@ honeylabs/
 
 ## Parches
 
-- Se actualizó la paleta de colores del dashboard a tonos más oscuros.
-- Se añadió modo de pantalla completa con barra de herramientas para widgets.
-- El tablero ahora guarda la posición de los widgets en el navegador.
+- Se agregó `lib/widgets.json` como catálogo estático de widgets.
+- La ruta `/api/widgets` ahora lee desde este archivo sin acceder al sistema de archivos.
 
 ---
 
