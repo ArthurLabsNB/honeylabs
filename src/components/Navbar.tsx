@@ -341,7 +341,7 @@ export default function Navbar() {
           </Link>
           {usuario ? (
             <Link
-              href="/panel"
+              href="/dashboard"
               className="py-2 px-3 rounded-xl font-semibold bg-navglass/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 shadow text-lg"
               style={{ minWidth: 120, textAlign: "center" }}
               onClick={() => setMenuOpen(false)}

@@ -125,7 +125,7 @@ function AboutSection() {
           data-oid="sux9ygc"
         >
           <img
-            src="/ilustracion-almacen-3d.png"
+            src="/ilustracion-almacen-3d.svg"
             alt="Ilustración Almacén"
             className="w-80 h-80 md:w-[26rem] md:h-[26rem] object-cover rounded-2xl shadow-2xl border-2 border-amber-100 group-hover:scale-105 group-hover:rotate-2 group-hover:shadow-3xl transition-transform duration-500"
             draggable={false}
