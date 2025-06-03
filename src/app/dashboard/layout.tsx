@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import NavbarDashboard from "./components/NavbarDashboard";
+import WidgetToolbar from "./components/WidgetToolbar";
+import { DashboardUIProvider, useDashboardUI } from "./ui";
 import { useRouter } from "next/navigation";
 // Si luego agregas más contextos, descomenta estos
 // import { ThemeProvider } from "./contexts/ThemeContext";
@@ -17,6 +19,7 @@ interface Usuario {
 }
 
 function ProtectedDashboard({ children }: { children: React.ReactNode }) {
+  const { fullscreen } = useDashboardUI();
   const router = useRouter();
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [loading, setLoading] = useState(true);
@@ -67,7 +70,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className="flex min-h-screen bg-[var(--dashboard-bg)] transition-colors duration-300"
+      className={`flex min-h-screen bg-[var(--dashboard-bg)] transition-colors duration-300 ${fullscreen ? 'dashboard-full' : ''}`}
       data-oid="agicnbm"
     >
       {/* --- SIDEBAR --- */}
@@ -90,6 +93,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
         >
           {children}
         </section>
+        <WidgetToolbar />
       </main>
     </div>
   );
@@ -103,7 +107,9 @@ export default function DashboardLayout({
   return (
     // <ThemeProvider>
     // <NotificationProvider>
-    <ProtectedDashboard data-oid="1baelfe">{children}</ProtectedDashboard>
+    <DashboardUIProvider>
+      <ProtectedDashboard data-oid="1baelfe">{children}</ProtectedDashboard>
+    </DashboardUIProvider>
     // </NotificationProvider>
     // </ThemeProvider>
   );

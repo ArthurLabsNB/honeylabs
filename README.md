@@ -108,6 +108,12 @@ honeylabs/
 - [ ] Reporte de incidencias
 - [ ] Notificaciones y alertas
 
+## Parches
+
+- Se actualizó la paleta de colores del dashboard a tonos más oscuros.
+- Se añadió modo de pantalla completa con barra de herramientas para widgets.
+- El tablero ahora guarda la posición de los widgets en el navegador.
+
 ---
 
 ## Contribución
