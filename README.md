@@ -110,8 +110,7 @@ honeylabs/
 
 ## Parches
 
-- Se corrigió el enlace de navegación principal para dirigir al panel de *dashboard* evitando errores 404.
-- Se agregó la ilustración predeterminada `ilustracion-almacen-3d.svg` para prevenir recursos faltantes en la página principal.
+- Se corrigió un error al cargar el *dashboard* que mostraba el mensaje "Minified React error #310". Ahora los widgets se importan correctamente.
 
 ---
 
