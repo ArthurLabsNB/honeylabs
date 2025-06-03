@@ -110,8 +110,9 @@ honeylabs/
 
 ## Parches
 
-- Se agregó el archivo `.env.example` con variables de entorno de referencia.
-- La guía de instalación ahora indica copiar este archivo a `.env`.
+- Se añadieron endpoints de API para varias secciones del dashboard.
+- Cada página del dashboard ahora carga datos reales con estados de carga y error.
+- También se verifican los permisos del usuario antes de mostrar la información.
 
 ---
 

@@ -1,17 +1,37 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export default function NovedadesWidget({ usuario }: { usuario: any }) {
-  // Aquí fetch real a eventos/novedades
+  const [items, setItems] = useState<{ id: number; titulo: string; fecha: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!usuario) return;
+    setLoading(true);
+    fetch("/api/novedades")
+      .then((res) => res.json())
+      .then((d) => setItems(d.novedades || []))
+      .catch((e) => setErr(e.message))
+      .finally(() => setLoading(false));
+  }, [usuario]);
+
   return (
     <div data-oid="7h44f8l">
-      <span className="font-semibold" data-oid="8i4gclv">
-        Próximos eventos:
-      </span>
-      <ul className="list-disc pl-5 mt-1" data-oid="-ql:w3k">
-        <li data-oid="uc0fci8">Visita programada mañana</li>
-        <li data-oid="f3j_d_2">Inventario trimestral</li>
-      </ul>
+      <span className="font-semibold" data-oid="8i4gclv">Próximas novedades:</span>
+      {loading ? (
+        <div className="py-2">Cargando...</div>
+      ) : err ? (
+        <div className="text-red-400 py-2">Error: {err}</div>
+      ) : items.length === 0 ? (
+        <div className="py-2 text-[var(--dashboard-muted)]">Sin novedades</div>
+      ) : (
+        <ul className="list-disc pl-5 mt-1" data-oid="-ql:w3k">
+          {items.map((n) => (
+            <li key={n.id}>{n.titulo}</li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

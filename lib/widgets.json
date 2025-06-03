@@ -1,0 +1,46 @@
+[
+  {
+    "key": "alertas",
+    "title": "Alertas",
+    "file": "AlertasWidget",
+    "category": "General",
+    "w": 2,
+    "h": 2,
+    "minW": 2,
+    "minH": 2,
+    "plans": ["Free", "Pro", "Empresarial", "Institucional"]
+  },
+  {
+    "key": "almacenes",
+    "title": "Almacenes",
+    "file": "AlmacenesWidget",
+    "category": "General",
+    "w": 2,
+    "h": 2,
+    "minW": 2,
+    "minH": 2,
+    "plans": ["Free", "Pro", "Empresarial", "Institucional"]
+  },
+  {
+    "key": "grafica",
+    "title": "Grafica",
+    "file": "GraficaWidget",
+    "category": "General",
+    "w": 2,
+    "h": 2,
+    "minW": 2,
+    "minH": 2,
+    "plans": ["Free", "Pro", "Empresarial", "Institucional"]
+  },
+  {
+    "key": "novedades",
+    "title": "Novedades",
+    "file": "NovedadesWidget",
+    "category": "General",
+    "w": 2,
+    "h": 2,
+    "minW": 2,
+    "minH": 2,
+    "plans": ["Free", "Pro", "Empresarial", "Institucional"]
+  }
+]
