@@ -110,7 +110,7 @@ honeylabs/
 
 ## Parches
 
-- Se corrigió un error al cargar el *dashboard* que mostraba el mensaje "Minified React error #310". Ahora los widgets se importan correctamente.
+- Se ajustó nuevamente la importación dinámica de widgets eliminando la extensión `.tsx` para evitar el error "Minified React error #310" al cargar el *dashboard*.
 
 ---
 
