@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   ArrowUpRight,
@@ -11,11 +11,11 @@ import {
   Settings,
   ShieldCheck,
   BadgeCheck,
-} from 'lucide-react';
-import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
-import clsx from 'clsx';
-import { usePathname, useRouter } from 'next/navigation';
+} from "lucide-react";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import clsx from "clsx";
+import { usePathname, useRouter } from "next/navigation";
 
 interface UsuarioData {
   nombre: string;
@@ -25,11 +25,7 @@ interface UsuarioData {
   tiene2FA?: boolean;
 }
 
-export default function UserMenu({
-  usuario,
-}: {
-  usuario: UsuarioData | null;
-}) {
+export default function UserMenu({ usuario }: { usuario: UsuarioData | null }) {
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -40,14 +36,21 @@ export default function UserMenu({
   const [fotoPerfil, setFotoPerfil] = useState<string | null>(null);
 
   useEffect(() => {
-    let temaGuardado = localStorage.getItem('tema');
+    let temaGuardado = localStorage.getItem("tema");
     if (!temaGuardado) {
-      const preferenciaSistema = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-      temaGuardado = preferenciaSistema || 'dark';
+      const preferenciaSistema = window.matchMedia(
+        "(prefers-color-scheme: light)",
+      ).matches
+        ? "light"
+        : "dark";
+      temaGuardado = preferenciaSistema || "dark";
     }
-    setTemaOscuro(temaGuardado === 'dark');
-    document.documentElement.classList.toggle('dark', temaGuardado === 'dark');
-    document.documentElement.classList.toggle('light', temaGuardado === 'light');
+    setTemaOscuro(temaGuardado === "dark");
+    document.documentElement.classList.toggle("dark", temaGuardado === "dark");
+    document.documentElement.classList.toggle(
+      "light",
+      temaGuardado === "light",
+    );
   }, []);
 
   // Cierra menú al click fuera o Escape
@@ -58,13 +61,13 @@ export default function UserMenu({
       }
     };
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key === "Escape") setOpen(false);
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleEsc);
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEsc);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEsc);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEsc);
     };
   }, []);
 
@@ -77,8 +80,8 @@ export default function UserMenu({
       setFotoPerfil(usuario.imagen);
     } else if (usuario?.correo) {
       fetch(`/api/perfil/foto?correo=${encodeURIComponent(usuario.correo)}`)
-        .then(r => r.ok ? r.blob() : null)
-        .then(blob => {
+        .then((r) => (r.ok ? r.blob() : null))
+        .then((blob) => {
           if (blob) setFotoPerfil(URL.createObjectURL(blob));
         });
     } else {
@@ -89,9 +92,9 @@ export default function UserMenu({
   const alternarTema = () => {
     setTemaOscuro((prev) => {
       const nextIsDark = !prev;
-      document.documentElement.classList.toggle('dark', nextIsDark);
-      document.documentElement.classList.toggle('light', !nextIsDark);
-      localStorage.setItem('tema', nextIsDark ? 'dark' : 'light');
+      document.documentElement.classList.toggle("dark", nextIsDark);
+      document.documentElement.classList.toggle("light", !nextIsDark);
+      localStorage.setItem("tema", nextIsDark ? "dark" : "light");
       return nextIsDark;
     });
   };
@@ -99,8 +102,8 @@ export default function UserMenu({
   // --- Nuevo logout sin contexto ---
   const cerrarSesion = async () => {
     setOpen(false);
-    await fetch('/api/login', { method: 'DELETE' });
-    router.replace('/login');
+    await fetch("/api/login", { method: "DELETE" });
+    router.replace("/login");
   };
 
   const renderAvatar = () => {
@@ -110,39 +113,48 @@ export default function UserMenu({
           src={fotoPerfil}
           alt="Avatar"
           className="h-9 w-9 rounded-full object-cover border-2 border-amber-300 shadow"
+          data-oid="9ybw5xs"
         />
       );
     }
     if (usuario?.nombre) {
       const color = usuario.nombre.charCodeAt(0) % 5;
       const bgList = [
-        'bg-amber-400',
-        'bg-blue-300',
-        'bg-emerald-300',
-        'bg-pink-300',
-        'bg-purple-400'
+        "bg-amber-400",
+        "bg-blue-300",
+        "bg-emerald-300",
+        "bg-pink-300",
+        "bg-purple-400",
       ];
+
       return (
-        <span className={`h-9 w-9 rounded-full flex items-center justify-center font-bold text-lg ${bgList[color]} text-white shadow`}>
+        <span
+          className={`h-9 w-9 rounded-full flex items-center justify-center font-bold text-lg ${bgList[color]} text-white shadow`}
+          data-oid="7ynyu:t"
+        >
           {usuario.nombre[0].toUpperCase()}
         </span>
       );
     }
     return (
-      <span className="h-9 w-9 rounded-full bg-gray-300 flex items-center justify-center font-bold text-lg text-white shadow">
+      <span
+        className="h-9 w-9 rounded-full bg-gray-300 flex items-center justify-center font-bold text-lg text-white shadow"
+        data-oid="lz77nr7"
+      >
         U
       </span>
     );
   };
 
   return (
-    <div className="relative" ref={refMenu}>
+    <div className="relative" ref={refMenu} data-oid="0gbp024">
       <button
         aria-label="Abrir menú de usuario"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
         className="h-9 w-9 rounded-full bg-amber-600 text-white font-bold text-sm flex items-center justify-center hover:ring-2 ring-amber-400 transition"
         tabIndex={0}
+        data-oid="v7b2xd5"
       >
         {renderAvatar()}
       </button>
@@ -151,96 +163,173 @@ export default function UserMenu({
         <nav
           className="absolute right-0 mt-2 w-60 origin-top-right rounded-xl border border-amber-200 bg-white shadow-xl z-50 animate-fade-scale dark:bg-zinc-900 dark:border-zinc-700"
           aria-label="Menú de usuario"
+          data-oid="majviwz"
         >
           {/* Sesión activa */}
           {usuario ? (
-            <div className="px-4 py-3">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold">{usuario?.nombre}</span>
+            <div className="px-4 py-3" data-oid=":lw6mye">
+              <div className="flex items-center gap-2" data-oid="gshiwos">
+                <span className="text-sm font-semibold" data-oid="k.7h.0r">
+                  {usuario?.nombre}
+                </span>
                 {usuario.plan && (
-                  <span className={clsx(
-                    "text-xs px-2 py-0.5 rounded-full ml-auto flex items-center gap-1",
-                    usuario.plan === "Pro"
-                      ? "bg-amber-100 text-amber-700 border border-amber-300"
-                      : usuario.plan === "Empresarial"
-                        ? "bg-sky-100 text-sky-700 border-sky-300"
-                        : "bg-zinc-100 text-zinc-600 border-zinc-200"
-                  )}>
-                    <BadgeCheck className="w-3 h-3" />
+                  <span
+                    className={clsx(
+                      "text-xs px-2 py-0.5 rounded-full ml-auto flex items-center gap-1",
+                      usuario.plan === "Pro"
+                        ? "bg-amber-100 text-amber-700 border border-amber-300"
+                        : usuario.plan === "Empresarial"
+                          ? "bg-sky-100 text-sky-700 border-sky-300"
+                          : "bg-zinc-100 text-zinc-600 border-zinc-200",
+                    )}
+                    data-oid="l_me.8:"
+                  >
+                    <BadgeCheck className="w-3 h-3" data-oid="c_icee:" />
                     {usuario.plan}
                   </span>
                 )}
                 {usuario.tiene2FA && (
-                  <span title="2FA activo" className="ml-1 text-emerald-500"><ShieldCheck className="h-4 w-4 inline" /></span>
+                  <span
+                    title="2FA activo"
+                    className="ml-1 text-emerald-500"
+                    data-oid="wajnv0m"
+                  >
+                    <ShieldCheck
+                      className="h-4 w-4 inline"
+                      data-oid="w1873ox"
+                    />
+                  </span>
                 )}
               </div>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 break-all">{usuario?.correo}</p>
+              <p
+                className="text-xs text-zinc-500 dark:text-zinc-400 break-all"
+                data-oid="51f7q95"
+              >
+                {usuario?.correo}
+              </p>
             </div>
           ) : (
-            <div className="px-4 py-3 text-center text-sm text-zinc-500">
+            <div
+              className="px-4 py-3 text-center text-sm text-zinc-500"
+              data-oid="r5k.edj"
+            >
               No has iniciado sesión
             </div>
           )}
 
           {/* Accesos rápidos */}
           {usuario && (
-            <div className="border-t dark:border-zinc-700 py-2">
-              <MenuLink href="/dashboard" icon={<LayoutDashboard className="h-4 w-4" />} label="Dashboard" tabIndex={open ? 0 : -1} />
-              <MenuLink href="/configuracion" icon={<Settings className="h-4 w-4" />} label="Configuración" tabIndex={open ? 0 : -1} />
-              <MenuLink href="/" icon={<Home className="h-4 w-4" />} label="Inicio" tabIndex={open ? 0 : -1} />
+            <div
+              className="border-t dark:border-zinc-700 py-2"
+              data-oid="ms:ea1k"
+            >
+              <MenuLink
+                href="/dashboard"
+                icon={
+                  <LayoutDashboard className="h-4 w-4" data-oid="fp4uhkr" />
+                }
+                label="Dashboard"
+                tabIndex={open ? 0 : -1}
+                data-oid="44h_b19"
+              />
+              <MenuLink
+                href="/configuracion"
+                icon={<Settings className="h-4 w-4" data-oid="85ptcp:" />}
+                label="Configuración"
+                tabIndex={open ? 0 : -1}
+                data-oid="2_0vkg8"
+              />
+              <MenuLink
+                href="/"
+                icon={<Home className="h-4 w-4" data-oid="dos18an" />}
+                label="Inicio"
+                tabIndex={open ? 0 : -1}
+                data-oid="qgd5656"
+              />
               {usuario.tiene2FA && (
-                <MenuLink href="/configuracion#seguridad" icon={<ShieldCheck className="h-4 w-4 text-emerald-500" />} label="Seguridad" tabIndex={open ? 0 : -1} />
+                <MenuLink
+                  href="/configuracion#seguridad"
+                  icon={
+                    <ShieldCheck
+                      className="h-4 w-4 text-emerald-500"
+                      data-oid="u5y5y2w"
+                    />
+                  }
+                  label="Seguridad"
+                  tabIndex={open ? 0 : -1}
+                  data-oid="w3l0rbv"
+                />
               )}
             </div>
           )}
 
           {/* Tema claro/oscuro */}
-          <div className="border-t dark:border-zinc-700 px-4 py-3 flex items-center justify-between text-sm">
-            <span className="text-zinc-500 dark:text-zinc-400">Tema</span>
+          <div
+            className="border-t dark:border-zinc-700 px-4 py-3 flex items-center justify-between text-sm"
+            data-oid=".1igvn9"
+          >
+            <span
+              className="text-zinc-500 dark:text-zinc-400"
+              data-oid="9aizhpb"
+            >
+              Tema
+            </span>
             <button
               onClick={alternarTema}
               className={clsx(
-                'rounded-full p-1 transition',
+                "rounded-full p-1 transition",
                 temaOscuro
-                  ? 'bg-zinc-700 text-yellow-400 hover:bg-zinc-600'
-                  : 'bg-amber-500 text-white hover:bg-amber-600'
+                  ? "bg-zinc-700 text-yellow-400 hover:bg-zinc-600"
+                  : "bg-amber-500 text-white hover:bg-amber-600",
               )}
-              aria-label={temaOscuro ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
+              aria-label={
+                temaOscuro ? "Cambiar a tema claro" : "Cambiar a tema oscuro"
+              }
+              data-oid="xcdmcsh"
             >
-              {temaOscuro ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              {temaOscuro ? (
+                <Sun className="h-4 w-4" data-oid="_cg8tfa" />
+              ) : (
+                <Moon className="h-4 w-4" data-oid="ef8_yx4" />
+              )}
             </button>
           </div>
 
           {/* Login / Logout */}
-          <div className="border-t dark:border-zinc-700">
+          <div className="border-t dark:border-zinc-700" data-oid="dkz2z3k">
             {usuario ? (
               <button
                 onClick={cerrarSesion}
                 className="w-full px-4 py-2 flex items-center gap-2 text-red-600 hover:bg-red-50 dark:hover:bg-zinc-800 dark:text-red-400 text-sm"
                 tabIndex={open ? 0 : -1}
+                data-oid="es:ub9g"
               >
-                <LogOut className="h-4 w-4" /> Cerrar sesión
+                <LogOut className="h-4 w-4" data-oid="v2srodc" /> Cerrar sesión
               </button>
             ) : (
               <Link
                 href="/login"
                 className="w-full px-4 py-2 flex items-center gap-2 text-amber-700 hover:bg-amber-50 dark:hover:bg-zinc-800 text-sm"
                 tabIndex={open ? 0 : -1}
+                data-oid="oosjm7d"
               >
-                <LogIn className="h-4 w-4" /> Iniciar sesión
+                <LogIn className="h-4 w-4" data-oid="1a1iwwx" /> Iniciar sesión
               </Link>
             )}
           </div>
 
           {/* Upgrade */}
-          <div className="border-t dark:border-zinc-700">
+          <div className="border-t dark:border-zinc-700" data-oid="o7rrlwa">
             <Link
               href="/servicios"
               className="block w-full px-4 py-3 text-center text-sm font-semibold text-white bg-amber-500 hover:bg-amber-600 transition flex items-center justify-center gap-2"
               tabIndex={open ? 0 : -1}
+              data-oid="vvrz-5f"
             >
-              {usuario?.plan === "Pro" || usuario?.plan === "Empresarial" ? "Gestionar mi Plan" : "Upgrade to Pro"}
-              <ArrowUpRight className="h-4 w-4" />
+              {usuario?.plan === "Pro" || usuario?.plan === "Empresarial"
+                ? "Gestionar mi Plan"
+                : "Upgrade to Pro"}
+              <ArrowUpRight className="h-4 w-4" data-oid=":ts-urg" />
             </Link>
           </div>
         </nav>
@@ -265,6 +354,7 @@ function MenuLink({
       href={href}
       tabIndex={tabIndex}
       className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-amber-50 dark:hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-amber-400 rounded-md"
+      data-oid="7wr06y1"
     >
       {icon}
       {label}

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
@@ -30,7 +30,7 @@ interface Usuario {
 export default function DashboardPage() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [loadingUsuario, setLoadingUsuario] = useState(true);
-  const [errorUsuario, setErrorUsuario] = useState('');
+  const [errorUsuario, setErrorUsuario] = useState("");
 
   const [catalogo, setCatalogo] = useState<WidgetMeta[]>([]);
   const [widgets, setWidgets] = useState<string[]>([]);
@@ -38,13 +38,13 @@ export default function DashboardPage() {
   const [componentes, setComponentes] = useState<{ [key: string]: any }>({});
 
   useEffect(() => {
-    fetch('/api/login', { credentials: 'include' })
-      .then(res => res.json())
-      .then(data => {
-        if (!data?.success) throw new Error('Sesión no válida');
+    fetch("/api/login", { credentials: "include" })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data?.success) throw new Error("Sesión no válida");
         setUsuario(data.usuario);
       })
-      .catch(() => setErrorUsuario('Debes iniciar sesión'))
+      .catch(() => setErrorUsuario("Debes iniciar sesión"))
       .finally(() => setLoadingUsuario(false));
   }, []);
 
@@ -54,14 +54,19 @@ export default function DashboardPage() {
     const plan = usuario.plan?.nombre || "Free";
 
     fetch("/api/widgets")
-      .then(res => res.json())
-      .then(data => {
-        const permitidos = data.widgets.filter((w: WidgetMeta) => !w.plans || w.plans.includes(plan));
+      .then((res) => res.json())
+      .then((data) => {
+        const permitidos = data.widgets.filter(
+          (w: WidgetMeta) => !w.plans || w.plans.includes(plan),
+        );
         setCatalogo(permitidos);
 
         const mapa: Record<string, any> = {};
         permitidos.forEach((widget: WidgetMeta) => {
-          mapa[widget.key] = dynamic(() => import(`./components/widgets/${widget.file}`), { ssr: false });
+          mapa[widget.key] = dynamic(
+            () => import(`./components/widgets/${widget.file}`),
+            { ssr: false },
+          );
         });
         setComponentes(mapa);
 
@@ -78,44 +83,69 @@ export default function DashboardPage() {
         setLayout(defaultLayout);
         setWidgets(permitidos.map((w: WidgetMeta) => w.key));
       })
-      .catch(err => console.error("Error al cargar widgets:", err));
-
+      .catch((err) => console.error("Error al cargar widgets:", err));
   }, [usuario]);
 
-  if (loadingUsuario) return <div>Cargando usuario...</div>;
-  if (errorUsuario || !usuario) return <div>{errorUsuario || "Sesión inválida"} <a href="/login">Iniciar sesión</a></div>;
+  if (loadingUsuario) return <div data-oid="e-6y6np">Cargando usuario...</div>;
+  if (errorUsuario || !usuario)
+    return (
+      <div data-oid="lkfh-mz">
+        {errorUsuario || "Sesión inválida"}{" "}
+        <a href="/login" data-oid="_xseusl">
+          Iniciar sesión
+        </a>
+      </div>
+    );
 
   const handleAddWidget = (key: string) => {
     if (widgets.includes(key)) return;
-    const widget = catalogo.find(w => w.key === key);
+    const widget = catalogo.find((w) => w.key === key);
     if (!widget) return;
 
     setWidgets([...widgets, key]);
-    setLayout([...layout, {
-      i: key,
-      x: 0,
-      y: Infinity,
-      w: widget.w || 2,
-      h: widget.h || 2,
-      minW: widget.minW || 2,
-      minH: widget.minH || 2,
-    }]);
+    setLayout([
+      ...layout,
+      {
+        i: key,
+        x: 0,
+        y: Infinity,
+        w: widget.w || 2,
+        h: widget.h || 2,
+        minW: widget.minW || 2,
+        minH: widget.minH || 2,
+      },
+    ]);
   };
 
   const handleRemoveWidget = (key: string) => {
-    setWidgets(widgets.filter(k => k !== key));
-    setLayout(layout.filter(item => item.i !== key));
+    setWidgets(widgets.filter((k) => k !== key));
+    setLayout(layout.filter((item) => item.i !== key));
   };
 
   return (
-    <div className="min-h-screen p-4 sm:p-8">
-      <div className="flex items-center justify-between mb-5">
-        <h1 className="text-2xl font-bold">Panel principal</h1>
-        <select onChange={e => handleAddWidget(e.target.value)} value="">
-          <option disabled value="">Agregar widget...</option>
-          {catalogo.filter(w => !widgets.includes(w.key)).map(w => (
-            <option key={w.key} value={w.key}>{w.title}</option>
-          ))}
+    <div className="min-h-screen p-4 sm:p-8" data-oid="jm7rk:_">
+      <div
+        className="flex items-center justify-between mb-5"
+        data-oid="0vj63xs"
+      >
+        <h1 className="text-2xl font-bold" data-oid="o3vtqel">
+          Panel principal
+        </h1>
+        <select
+          onChange={(e) => handleAddWidget(e.target.value)}
+          value=""
+          data-oid="l_hpktd"
+        >
+          <option disabled value="" data-oid="89724..">
+            Agregar widget...
+          </option>
+          {catalogo
+            .filter((w) => !widgets.includes(w.key))
+            .map((w) => (
+              <option key={w.key} value={w.key} data-oid="oz-pfdc">
+                {w.title}
+              </option>
+            ))}
         </select>
       </div>
 
@@ -129,13 +159,19 @@ export default function DashboardPage() {
         onLayoutChange={setLayout}
         draggableHandle=".dashboard-widget-card"
         margin={[18, 18]}
+        data-oid="hoki4:k"
       >
-        {widgets.map(key => {
+        {widgets.map((key) => {
           const Widget = componentes[key];
           return (
-            <div key={key} className="dashboard-widget-card">
-              <Widget usuario={usuario} />
-              <button onClick={() => handleRemoveWidget(key)}>✕</button>
+            <div key={key} className="dashboard-widget-card" data-oid="8z6e3pz">
+              <Widget usuario={usuario} data-oid="j0othxi" />
+              <button
+                onClick={() => handleRemoveWidget(key)}
+                data-oid="x9v9n32"
+              >
+                ✕
+              </button>
             </div>
           );
         })}

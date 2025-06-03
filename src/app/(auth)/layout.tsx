@@ -1,6 +1,10 @@
 // src/app/(auth)/layout.tsx
 
-export default function AuthLayout({ children }: { children: React.ReactNode }) {
+export default function AuthLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <section
       aria-label="Área de autenticación"
@@ -13,11 +17,12 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         relative
       "
       tabIndex={-1} // Accesibilidad: permite salto con tab al inicio de layout
+      data-oid="kycia8i"
     >
       {/* Espacio para un posible logo */}
       {/* <div className="mb-8">
-        <Logo width={64} height={64} />
-      </div> */}
+         <Logo width={64} height={64} />
+        </div> */}
       {children}
       {/* Pie de página opcional para branding o links legales */}
       {/* <footer className="mt-12 text-xs text-center text-gray-400">HoneyLabs &copy; {new Date().getFullYear()}</footer> */}
