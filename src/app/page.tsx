@@ -46,14 +46,19 @@ function HeroSection() {
         data-oid="4t98fx2"
       >
         {textoTyped}
-        <span className="ml-1 animate-blink text-amber-300" data-oid="w:jorlo">
+        <span
+          className="ml-1 animate-blink text-amber-300 rounded-none"
+          data-oid="w:jorlo"
+        >
           |
         </span>
       </h1>
       <div
         className={clsx(
           "max-w-2xl text-lg md:text-xl text-zinc-200 font-normal transition-opacity duration-600",
-          showDesc ? "opacity-100 animate-fade-in" : "opacity-0",
+          showDesc
+            ? "opacity-100 animate-fade-in animate-float-text"
+            : "opacity-0",
         )}
         data-oid="q5hw8wk"
       >
@@ -247,6 +252,7 @@ function KpiSection() {
               className="inline-block h-7 w-7 bg-sky-400/40 rounded-full mb-1"
               data-oid="zhfmehx"
             />
+
             <span
               className="text-3xl font-bold text-sky-100"
               data-oid="3r_ayp8"
@@ -271,6 +277,7 @@ function KpiSection() {
               className="inline-block h-7 w-7 bg-amber-400/50 rounded-full mb-1"
               data-oid="pze4bun"
             />
+
             <span
               className="text-3xl font-bold text-amber-100"
               data-oid="_-x:v40"
@@ -533,6 +540,7 @@ function FeaturesCarouselSection() {
               loading="lazy"
               data-oid="rmx0tce"
             />
+
             <h3
               className="font-semibold text-amber-200 mb-1 text-center text-lg md:text-xl px-2"
               data-oid="s0x51k6"
@@ -712,6 +720,21 @@ function FeaturesCarouselSection() {
         .float-card {
           will-change: transform;
         }
+        @keyframes floatText {
+          0% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-6px);
+          }
+          100% {
+            transform: translateY(0px);
+          }
+        }
+        .animate-float-text {
+          animation: floatText 3.5s ease-in-out infinite;
+          will-change: transform;
+        }
       `}</style>
     </section>
   );
@@ -789,6 +812,7 @@ function PartnersSection() {
                 loading="lazy"
                 data-oid="287rloi"
               />
+
               <div className="flex flex-col items-start" data-oid="txxoc3s">
                 <span
                   className={clsx(
