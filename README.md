@@ -110,9 +110,8 @@ honeylabs/
 
 ## Parches
 
-- Se añadieron endpoints de API para varias secciones del dashboard.
-- Cada página del dashboard ahora carga datos reales con estados de carga y error.
-- También se verifican los permisos del usuario antes de mostrar la información.
+- Se corrigió el enlace de navegación principal para dirigir al panel de *dashboard* evitando errores 404.
+- Se agregó la ilustración predeterminada `ilustracion-almacen-3d.svg` para prevenir recursos faltantes en la página principal.
 
 ---
 
