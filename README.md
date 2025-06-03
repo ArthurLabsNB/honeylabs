@@ -64,7 +64,7 @@ cd honeylabs
 npm install
 ```
 
-Configura las variables de entorno según el archivo `.env.example`.
+Configura las variables de entorno copiando `.env.example` a `.env` y ajustando los valores necesarios.
 
 ---
 
@@ -109,8 +109,6 @@ honeylabs/
 - [ ] Notificaciones y alertas
 
 ## Parches
-
-
 
 - Se añadieron endpoints de API para varias secciones del dashboard.
 - Cada página del dashboard ahora carga datos reales con estados de carga y error.
