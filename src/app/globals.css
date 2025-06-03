@@ -7,13 +7,13 @@
   --foreground: #171717;
 
   /* Dashboard */
-  --dashboard-bg: #16171a;
-  --dashboard-sidebar: #23272f;
-  --dashboard-navbar: #141519;
-  --dashboard-table-bg: #191b20;
-  --dashboard-table-row: #23232b;
-  --dashboard-table-hover: #282b31;
-  --dashboard-card: #1e1f25;
+  --dashboard-bg: #131219;
+  --dashboard-sidebar: #1A1A1D;
+  --dashboard-navbar: #0D0B11;
+  --dashboard-table-bg: #23232B;
+  --dashboard-table-row: #23232B;
+  --dashboard-table-hover: #1A1A1D;
+  --dashboard-card: #23232B;
   --dashboard-accent: #ffe066;
   --dashboard-accent-hover: #fff3a1;
   --dashboard-border: #2a2a33;
@@ -30,14 +30,14 @@
     --background: #0a0a0a;
     --foreground: #ededed;
 
-    --dashboard-bg: #181325;
-    --dashboard-sidebar: #20223a;
-    --dashboard-navbar: #181325;
-    --dashboard-card: #18191f;
-    --dashboard-border: #232336;
-    --dashboard-table-bg: #191a1f;
-    --dashboard-table-row: #23233b;
-    --dashboard-table-hover: #29293f;
+    --dashboard-bg: #131219;
+    --dashboard-sidebar: #1A1A1D;
+    --dashboard-navbar: #0D0B11;
+    --dashboard-card: #23232B;
+    --dashboard-border: #23232B;
+    --dashboard-table-bg: #23232B;
+    --dashboard-table-row: #23232B;
+    --dashboard-table-hover: #1A1A1D;
     --dashboard-shadow: 0 2px 18px #0008;
   }
 }
@@ -243,6 +243,12 @@ html, body {
   border-color: var(--dashboard-accent);
   box-shadow: 0 6px 24px #ffe06628, 0 2px 18px #0007;
   background: linear-gradient(104deg, var(--dashboard-card) 85%, var(--dashboard-glass) 100%);
+}
+
+/* --------- FULLSCREEN MODE --------- */
+.dashboard-full .dashboard-navbar,
+.dashboard-full .dashboard-sidebar {
+  display: none;
 }
 .dashboard-widget-card button[title="Eliminar widget"] {
   position: absolute;

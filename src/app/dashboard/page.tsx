@@ -80,8 +80,19 @@ export default function DashboardPage() {
           minH: w.minH || 2,
         }));
 
-        setLayout(defaultLayout);
-        setWidgets(permitidos.map((w: WidgetMeta) => w.key));
+        let saved: { widgets: string[]; layout: Layout[] } | null = null;
+        try {
+          const raw = localStorage.getItem(`dashboardLayout_${usuario.id}`);
+          if (raw) saved = JSON.parse(raw);
+        } catch {}
+
+        if (saved && Array.isArray(saved.widgets) && Array.isArray(saved.layout)) {
+          setLayout(saved.layout);
+          setWidgets(saved.widgets);
+        } else {
+          setLayout(defaultLayout);
+          setWidgets(permitidos.map((w: WidgetMeta) => w.key));
+        }
       })
       .catch((err) => console.error("Error al cargar widgets:", err));
   }, [usuario]);
@@ -121,6 +132,14 @@ export default function DashboardPage() {
     setWidgets(widgets.filter((k) => k !== key));
     setLayout(layout.filter((item) => item.i !== key));
   };
+
+  useEffect(() => {
+    if (!usuario) return;
+    const data = JSON.stringify({ widgets, layout });
+    try {
+      localStorage.setItem(`dashboardLayout_${usuario.id}`, data);
+    } catch {}
+  }, [widgets, layout, usuario]);
 
   return (
     <div className="min-h-screen p-4 sm:p-8" data-oid="7h725.b">

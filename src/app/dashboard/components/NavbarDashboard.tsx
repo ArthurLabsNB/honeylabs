@@ -12,7 +12,10 @@ import {
   Bell,
   User,
   ChevronDown,
+  Maximize,
+  Minimize,
 } from "lucide-react";
+import { useDashboardUI } from "../ui";
 
 const MOCK_RESULTS = [
   { tipo: "almacén", nombre: "Almacén Central", url: "/almacenes/central" },
@@ -38,6 +41,7 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
   const [buscadorFocus, setBuscadorFocus] = useState(false);
   const [resultados, setResultados] = useState<typeof MOCK_RESULTS>([]);
   const navRef = useRef<HTMLDivElement>(null);
+  const { fullscreen, toggleFullscreen } = useDashboardUI();
 
   useEffect(() => {
     if (buscador.trim().length === 0) {
@@ -222,6 +226,13 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
           data-oid="o:97jba"
         >
           <AppWindow data-oid="t2g8ffg" />
+        </button>
+        <button
+          className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
+          onClick={toggleFullscreen}
+          title={fullscreen ? "Salir de pantalla completa" : "Pantalla completa"}
+        >
+          {fullscreen ? <Minimize /> : <Maximize />}
         </button>
         <button
           className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
