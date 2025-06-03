@@ -110,9 +110,7 @@ honeylabs/
 
 ## Parches
 
-- Se actualizó la paleta de colores del dashboard a tonos más oscuros.
-- Se añadió modo de pantalla completa con barra de herramientas para widgets.
-- El tablero ahora guarda la posición de los widgets en el navegador.
+- Se añadió el módulo **App Center** con integración para tableros de Miro y diagramas de Lucidchart. Ahora es posible elegir y cambiar el recurso a mostrar directamente desde el dashboard.
 
 ---
 
