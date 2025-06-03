@@ -110,9 +110,11 @@ honeylabs/
 
 ## Parches
 
-- Los widgets del dashboard ahora consumen datos reales desde la API.
-- Se añadió un gráfico con Chart.js para mostrar métricas desde `/api/metrics`.
-- Los almacenes y novedades se cargan según el usuario autenticado.
+
+=======
+- Se añadieron endpoints de API para varias secciones del dashboard.
+- Cada página del dashboard ahora carga datos reales con estados de carga y error.
+- También se verifican los permisos del usuario antes de mostrar la información.
 
 ---
 
