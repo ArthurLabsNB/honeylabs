@@ -3,6 +3,7 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
+import { SESSION_COOKIE } from '@lib/constants';
 
 // Instancia Prisma singleton-safe para dev y prod
 const globalForPrisma = global as unknown as { prisma?: PrismaClient };
@@ -13,7 +14,6 @@ const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
   throw new Error('JWT_SECRET no definido en el entorno');
 }
-const COOKIE_NAME = 'hl_session';
 
 // Set de secciones permitidas para exportar
 const SECCIONES_VALIDAS = new Set([
@@ -26,7 +26,7 @@ const SECCIONES_VALIDAS = new Set([
 export async function GET(req: NextRequest) {
   try {
     // ======= 1. Autenticación =======
-    const token = req.cookies.get(COOKIE_NAME)?.value;
+    const token = req.cookies.get(SESSION_COOKIE)?.value;
     if (!token) {
       return NextResponse.json({ error: 'No autenticado.' }, { status: 401 });
     }

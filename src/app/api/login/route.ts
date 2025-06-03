@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { SESSION_COOKIE, sessionCookieOptions } from '@lib/constants';
 
 // Prisma singleton
 const globalForPrisma = global as unknown as { prisma?: PrismaClient };
@@ -14,7 +15,6 @@ const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
   throw new Error('JWT_SECRET no definido en el entorno');
 }
-const COOKIE_NAME = 'hl_session';
 const COOKIE_EXPIRES = 60 * 60 * 24 * 7; // 7 días
 
 // POST Login
@@ -89,12 +89,9 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
 
-    res.cookies.set(COOKIE_NAME, token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+    res.cookies.set(SESSION_COOKIE, token, {
+      ...sessionCookieOptions,
       maxAge: COOKIE_EXPIRES,
-      path: '/',
     });
 
     return res;
@@ -107,7 +104,7 @@ export async function POST(req: NextRequest) {
 // GET verificar sesión
 export async function GET(req: NextRequest) {
   try {
-    const token = req.cookies.get(COOKIE_NAME)?.value;
+    const token = req.cookies.get(SESSION_COOKIE)?.value;
     if (!token) {
       return NextResponse.json({ success: false, error: 'No autenticado.' }, { status: 401 });
     }
@@ -126,13 +123,10 @@ export async function GET(req: NextRequest) {
 // DELETE Logout
 export async function DELETE(req: NextRequest) {
   const res = NextResponse.json({ success: true }, { status: 200 });
-  res.cookies.set(COOKIE_NAME, '', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+  res.cookies.set(SESSION_COOKIE, '', {
+    ...sessionCookieOptions,
     expires: new Date(0),
     maxAge: 0,
-    path: '/',
   });
   return res;
 }

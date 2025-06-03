@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { SESSION_COOKIE, sessionCookieOptions } from '@lib/constants';
 
 const globalForPrisma = global as unknown as { prisma?: PrismaClient };
 const prisma = globalForPrisma.prisma ?? new PrismaClient();
@@ -11,7 +12,6 @@ const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
   throw new Error('JWT_SECRET no definido en el entorno');
 }
-const COOKIE_NAME = 'hl_session';
 
 const TAMAÑO_MAXIMO_FOTO_MB = 10;
 const BYTES_MAXIMO_FOTO = TAMAÑO_MAXIMO_FOTO_MB * 1024 * 1024;
@@ -62,7 +62,7 @@ async function crearNotificacion(usuarioId: number, mensaje: string) {
 // ===============================
 export async function GET(req: NextRequest) {
   try {
-    const token = req.cookies.get(COOKIE_NAME)?.value;
+    const token = req.cookies.get(SESSION_COOKIE)?.value;
     if (!token) return NextResponse.json({ error: 'No autenticado.' }, { status: 401 });
 
     let payload: any;
@@ -104,7 +104,7 @@ export async function GET(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   try {
     // Autenticación
-    const token = req.cookies.get(COOKIE_NAME)?.value;
+    const token = req.cookies.get(SESSION_COOKIE)?.value;
     if (!token) return NextResponse.json({ error: 'No autenticado.' }, { status: 401 });
 
     let payload: any;
@@ -212,12 +212,9 @@ export async function PUT(req: NextRequest) {
     );
 
     if (tokenRefrescado) {
-      res.cookies.set(COOKIE_NAME, tokenRefrescado, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+      res.cookies.set(SESSION_COOKIE, tokenRefrescado, {
+        ...sessionCookieOptions,
         maxAge: 60 * 60 * 24 * 7,
-        path: '/',
       });
     }
 
@@ -233,7 +230,7 @@ export async function PUT(req: NextRequest) {
 // ===============================
 export async function POST(req: NextRequest) {
   try {
-    const token = req.cookies.get(COOKIE_NAME)?.value;
+    const token = req.cookies.get(SESSION_COOKIE)?.value;
     if (!token) return NextResponse.json({ error: 'No autenticado.' }, { status: 401 });
 
     let payload: any;
