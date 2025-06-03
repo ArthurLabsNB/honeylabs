@@ -110,9 +110,8 @@ honeylabs/
 
 ## Parches
 
-- Se actualizó la paleta de colores del dashboard a tonos más oscuros.
-- Se añadió modo de pantalla completa con barra de herramientas para widgets.
-- El tablero ahora guarda la posición de los widgets en el navegador.
+- Se añadió verificación de la variable de entorno `JWT_SECRET` en las rutas de autenticación.
+- Nuevo archivo `.env.example` para documentar las variables de entorno requeridas.
 
 ---
 

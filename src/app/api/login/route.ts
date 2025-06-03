@@ -10,7 +10,10 @@ const globalForPrisma = global as unknown as { prisma?: PrismaClient };
 const prisma = globalForPrisma.prisma ?? new PrismaClient();
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
-const JWT_SECRET = process.env.JWT_SECRET ?? 'mi_clave_de_emergencia';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET no definido en el entorno');
+}
 const COOKIE_NAME = 'hl_session';
 const COOKIE_EXPIRES = 60 * 60 * 24 * 7; // 7 días
 
