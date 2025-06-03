@@ -110,8 +110,11 @@ honeylabs/
 
 ## Parches
 
-- Se añadió verificación de la variable de entorno `JWT_SECRET` en las rutas de autenticación.
-- Nuevo archivo `.env.example` para documentar las variables de entorno requeridas.
+
+
+- Se añadieron endpoints de API para varias secciones del dashboard.
+- Cada página del dashboard ahora carga datos reales con estados de carga y error.
+- También se verifican los permisos del usuario antes de mostrar la información.
 
 ---
 
