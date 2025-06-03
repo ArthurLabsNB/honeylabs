@@ -110,9 +110,9 @@ honeylabs/
 
 ## Parches
 
-- Se actualizó la paleta de colores del dashboard a tonos más oscuros.
-- Se añadió modo de pantalla completa con barra de herramientas para widgets.
-- El tablero ahora guarda la posición de los widgets en el navegador.
+- Los widgets del dashboard ahora consumen datos reales desde la API.
+- Se añadió un gráfico con Chart.js para mostrar métricas desde `/api/metrics`.
+- Los almacenes y novedades se cargan según el usuario autenticado.
 
 ---
 

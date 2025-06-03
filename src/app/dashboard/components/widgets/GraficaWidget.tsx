@@ -1,13 +1,59 @@
 "use client";
-import React from "react";
-// Aquí puedes importar tu gráfica real (ej: Recharts/Chart.js)
+import React, { useEffect, useState } from "react";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+
 export default function GraficaWidget({ usuario }: { usuario: any }) {
-  return (
-    <div
-      className="h-32 flex items-center justify-center text-[var(--dashboard-muted)] opacity-70"
-      data-oid="z:h4bw:"
-    >
-      [Aquí irá la gráfica de actividad]
-    </div>
-  );
+  const [metrics, setMetrics] = useState<any>(null);
+
+  useEffect(() => {
+    fetch("/api/metrics")
+      .then((res) => res.json())
+      .then(setMetrics)
+      .catch(() => setMetrics(null));
+  }, []);
+
+  if (!metrics)
+    return (
+      <div
+        className="h-32 flex items-center justify-center text-[var(--dashboard-muted)] opacity-70"
+        data-oid="z:h4bw:"
+      >
+        Cargando...
+      </div>
+    );
+
+  const chartData = {
+    labels: ["Entradas", "Salidas", "Usuarios", "Almacenes"],
+    datasets: [
+      {
+        label: "Total",
+        data: [
+          metrics.entradas,
+          metrics.salidas,
+          metrics.usuarios,
+          metrics.almacenes,
+        ],
+        backgroundColor: "#fbbf24",
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: { y: { beginAtZero: true } },
+  } as const;
+
+  return <Bar options={options} data={chartData} />;
 }
