@@ -49,8 +49,14 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--dashboard-bg)]">
-        <span className="text-[var(--dashboard-accent)] text-lg font-bold animate-pulse">
+      <div
+        className="flex min-h-screen items-center justify-center bg-[var(--dashboard-bg)]"
+        data-oid=".bd:wse"
+      >
+        <span
+          className="text-[var(--dashboard-accent)] text-lg font-bold animate-pulse"
+          data-oid="4bw5nz9"
+        >
           Cargando...
         </span>
       </div>
@@ -60,22 +66,28 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
   if (!usuario) return null; // Bloquea UI hasta redirigir
 
   return (
-    <div className="flex min-h-screen bg-[var(--dashboard-bg)] transition-colors duration-300">
+    <div
+      className="flex min-h-screen bg-[var(--dashboard-bg)] transition-colors duration-300"
+      data-oid="9bcbnqc"
+    >
       {/* --- SIDEBAR --- */}
-      <Sidebar usuario={usuario} />
+      <Sidebar usuario={usuario} data-oid="czatapy" />
       {/* --- ZONA CENTRAL --- */}
-      <main className="flex-1 flex flex-col min-h-screen">
+      <main className="flex-1 flex flex-col min-h-screen" data-oid="seqsyyy">
         {/* --- NAVBAR EXCLUSIVO DASHBOARD --- */}
-        <NavbarDashboard usuario={usuario} />
+        <NavbarDashboard usuario={usuario} data-oid="l83odg." />
         {/* --- CONTENIDO MODULAR --- */}
-        <section className="
+        <section
+          className="
           flex-1 p-0 sm:p-8
           bg-[var(--dashboard-bg)]
           text-[var(--dashboard-text)]
           overflow-y-auto
           animate-fade-in
           transition-colors duration-300
-        ">
+        "
+          data-oid="z:5d36r"
+        >
           {children}
         </section>
       </main>
@@ -83,11 +95,15 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     // <ThemeProvider>
     // <NotificationProvider>
-    <ProtectedDashboard>{children}</ProtectedDashboard>
+    <ProtectedDashboard data-oid="9phng6o">{children}</ProtectedDashboard>
     // </NotificationProvider>
     // </ThemeProvider>
   );

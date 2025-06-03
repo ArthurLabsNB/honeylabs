@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function RegistroPage() {
   const router = useRouter();
-  const [mensaje, setMensaje] = useState('');
+  const [mensaje, setMensaje] = useState("");
   const [cargando, setCargando] = useState(false);
 
   const nombreRef = useRef<HTMLInputElement>(null);
@@ -18,57 +18,60 @@ export default function RegistroPage() {
 
   // Revisa sesión REAL (cookie): si ya tiene, redirige a /dashboard
   useEffect(() => {
-    fetch('/api/login', { credentials: 'include' })
-      .then(r => r.json())
-      .then(data => {
-        if (data?.success && data?.usuario) router.replace('/dashboard');
+    fetch("/api/login", { credentials: "include" })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.success && data?.usuario) router.replace("/dashboard");
       });
   }, [router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setMensaje('');
+    setMensaje("");
     setCargando(true);
 
     const formData = new FormData(e.currentTarget);
 
     // Validación rápida en frontend
     if (
-      !formData.get('nombre') ||
-      !formData.get('apellidos') ||
-      !formData.get('correo') ||
-      !formData.get('contrasena') ||
-      !formData.get('tipoCuenta')
+      !formData.get("nombre") ||
+      !formData.get("apellidos") ||
+      !formData.get("correo") ||
+      !formData.get("contrasena") ||
+      !formData.get("tipoCuenta")
     ) {
-      setMensaje('Por favor, completa todos los campos obligatorios.');
+      setMensaje("Por favor, completa todos los campos obligatorios.");
       setCargando(false);
       return;
     }
 
     try {
-      const res = await fetch('/api/registro', {
-        method: 'POST',
+      const res = await fetch("/api/registro", {
+        method: "POST",
         body: formData,
       });
 
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data.error || 'Error desconocido');
+      if (!res.ok) throw new Error(data.error || "Error desconocido");
 
-      setMensaje(data.mensaje || '✔️ Registro exitoso');
+      setMensaje(data.mensaje || "✔️ Registro exitoso");
 
       if (data.success) {
-        setTimeout(() => router.replace('/login'), 1700);
+        setTimeout(() => router.replace("/login"), 1700);
       }
     } catch (err: any) {
-      setMensaje(`❌ ${err.message || 'Fallo en el registro'}`);
+      setMensaje(`❌ ${err.message || "Fallo en el registro"}`);
     } finally {
       setCargando(false);
     }
   };
 
   return (
-    <main className="min-h-screen w-full flex items-center justify-center">
+    <main
+      className="min-h-screen w-full flex items-center justify-center"
+      data-oid="z04iwxg"
+    >
       <form
         onSubmit={handleSubmit}
         encType="multipart/form-data"
@@ -76,11 +79,16 @@ export default function RegistroPage() {
         autoComplete="on"
         aria-labelledby="register-title"
         noValidate
+        data-oid="59cl9ra"
       >
         <h1
           id="register-title"
           className="text-2xl font-bold text-center text-amber-700 dark:text-amber-300 mb-2 animate-typewriter"
-          style={{ animationDuration: '2s', animationTimingFunction: 'steps(25, end)' }}
+          style={{
+            animationDuration: "2s",
+            animationTimingFunction: "steps(25, end)",
+          }}
+          data-oid="f_p4ghz"
         >
           Crear cuenta
         </h1>
@@ -92,14 +100,18 @@ export default function RegistroPage() {
           placeholder="Nombre"
           className="input"
           autoComplete="given-name"
+          data-oid="g_w8pp:"
         />
+
         <input
           name="apellidos"
           required
           placeholder="Apellidos"
           className="input"
           autoComplete="family-name"
+          data-oid="4lpa54f"
         />
+
         <input
           name="correo"
           type="email"
@@ -107,7 +119,9 @@ export default function RegistroPage() {
           placeholder="Correo electrónico"
           className="input"
           autoComplete="email"
+          data-oid="29az7z4"
         />
+
         <input
           name="contrasena"
           type="password"
@@ -115,23 +129,37 @@ export default function RegistroPage() {
           placeholder="Contraseña"
           className="input"
           autoComplete="new-password"
+          data-oid="xmx439-"
         />
 
-        <select name="tipoCuenta" required className="input">
-          <option value="">Tipo de cuenta</option>
-          <option value="estandar">Usuario individual</option>
-          <option value="empresarial">Empresa</option>
-          <option value="institucional">Institución</option>
+        <select name="tipoCuenta" required className="input" data-oid="ysdd8vw">
+          <option value="" data-oid="yixuxsy">
+            Tipo de cuenta
+          </option>
+          <option value="estandar" data-oid="f6gryif">
+            Usuario individual
+          </option>
+          <option value="empresarial" data-oid="ku16p1s">
+            Empresa
+          </option>
+          <option value="institucional" data-oid="tt1fqh2">
+            Institución
+          </option>
         </select>
 
         <input
           name="codigo"
           placeholder="Código de invitación (opcional)"
           className="input"
+          data-oid="38njdid"
         />
 
-        <div>
-          <label htmlFor="archivo" className="block text-sm text-gray-600 mb-1">
+        <div data-oid="mube4or">
+          <label
+            htmlFor="archivo"
+            className="block text-sm text-gray-600 mb-1"
+            data-oid="dl6s5m9"
+          >
             Archivo de validación (PDF o imagen, si aplica)
           </label>
           <input
@@ -139,6 +167,7 @@ export default function RegistroPage() {
             type="file"
             accept=".pdf,.png,.jpg,.jpeg"
             className="input file:bg-white file:border file:border-gray-300 file:rounded file:px-3"
+            data-oid="537o2u-"
           />
         </div>
 
@@ -146,17 +175,22 @@ export default function RegistroPage() {
           type="submit"
           disabled={cargando}
           className={`w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded transition ${
-            cargando ? 'opacity-70 cursor-not-allowed' : ''
+            cargando ? "opacity-70 cursor-not-allowed" : ""
           }`}
+          data-oid="-0.d2.g"
         >
-          {cargando ? 'Registrando...' : 'Crear cuenta'}
+          {cargando ? "Registrando..." : "Crear cuenta"}
         </button>
 
-        <p className="text-center text-sm text-gray-600 mt-1">
-          ¿Ya tienes cuenta?{' '}
+        <p
+          className="text-center text-sm text-gray-600 mt-1"
+          data-oid="yvh1je:"
+        >
+          ¿Ya tienes cuenta?{" "}
           <Link
             href="/login"
             className="text-amber-700 underline hover:text-amber-900 font-medium transition"
+            data-oid="s.b1oss"
           >
             Inicia sesión
           </Link>
@@ -165,15 +199,16 @@ export default function RegistroPage() {
         {mensaje && (
           <p
             className={`text-center text-sm font-medium mt-3 ${
-              mensaje.startsWith('✔️') ? 'text-green-600' : 'text-red-600'
+              mensaje.startsWith("✔️") ? "text-green-600" : "text-red-600"
             }`}
+            data-oid="t82ughe"
           >
             {mensaje}
           </p>
         )}
       </form>
 
-      <style jsx>{`
+      <style jsx data-oid="8kb9.mu">{`
         .input {
           width: 100%;
           padding: 0.5rem 0.75rem;

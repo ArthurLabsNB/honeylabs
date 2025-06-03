@@ -1,24 +1,27 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useRouter } from 'next/navigation';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import Link from 'next/link';
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import Link from "next/link";
 
 // SCHEMA VALIDACIÓN ZOD
 const loginSchema = z.object({
-  correo: z.string().nonempty('Correo obligatorio').email('Correo inválido'),
-  contrasena: z.string().nonempty('Contraseña obligatoria').min(6, 'Mínimo 6 caracteres'),
+  correo: z.string().nonempty("Correo obligatorio").email("Correo inválido"),
+  contrasena: z
+    .string()
+    .nonempty("Contraseña obligatoria")
+    .min(6, "Mínimo 6 caracteres"),
 });
 type LoginData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
   const [verContrasena, setVerContrasena] = useState(false);
-  const [mensaje, setMensaje] = useState('');
+  const [mensaje, setMensaje] = useState("");
   const [cargando, setCargando] = useState(false);
 
   const {
@@ -29,39 +32,40 @@ export default function LoginPage() {
     reset,
   } = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
-    mode: 'onTouched',
+    mode: "onTouched",
   });
 
   // Enfoca el correo al cargar
   useEffect(() => {
-    setFocus('correo');
+    setFocus("correo");
   }, [setFocus]);
 
   // --- Si ya tienes sesión, te manda a dashboard ---
   useEffect(() => {
-    fetch('/api/login', { credentials: 'include' })
-      .then(r => r.json())
-      .then(data => {
-        if (data?.success && data?.usuario) router.replace('/');
+    fetch("/api/login", { credentials: "include" })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.success && data?.usuario) router.replace("/");
       });
   }, [router]);
 
   const onSubmit = async (datos: LoginData) => {
-    setMensaje('');
+    setMensaje("");
     setCargando(true);
     try {
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(datos),
       });
 
       const data = await res.json();
-      if (!res.ok || !data?.success) throw new Error(data?.error || 'Credenciales inválidas');
+      if (!res.ok || !data?.success)
+        throw new Error(data?.error || "Credenciales inválidas");
 
-      setMensaje('✔️ Inicio de sesión exitoso');
+      setMensaje("✔️ Inicio de sesión exitoso");
       reset();
-      setTimeout(() => router.replace('/'), 800);
+      setTimeout(() => router.replace("/"), 800);
     } catch (error: any) {
       setMensaje(`❌ ${error.message}`);
     } finally {
@@ -70,67 +74,98 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen w-full flex items-center justify-center">
+    <main
+      className="min-h-screen w-full flex items-center justify-center"
+      data-oid="d7k.03s"
+    >
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white dark:bg-zinc-900 shadow-xl border border-amber-300 dark:border-zinc-700 p-8 rounded-2xl max-w-md w-full space-y-5 animate-fade-in"
         autoComplete="on"
         aria-labelledby="login-title"
         noValidate
+        data-oid=":dhfqlh"
       >
         <h1
           id="login-title"
           className="text-3xl font-bold text-center text-amber-700 dark:text-amber-300 animate-typewriter"
-          style={{ animationDuration: '2.1s', animationTimingFunction: 'steps(25, end)' }}
+          style={{
+            animationDuration: "2.1s",
+            animationTimingFunction: "steps(25, end)",
+          }}
+          data-oid="2:n69ze"
         >
           Iniciar Sesión
         </h1>
 
         {/* 📧 Correo */}
-        <div className="space-y-1">
+        <div className="space-y-1" data-oid="kbgfydi">
           <input
-            {...register('correo')}
+            {...register("correo")}
             placeholder="Correo electrónico"
             type="email"
             autoComplete="email"
             disabled={cargando}
             className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 ${
-              errors.correo ? 'border-red-400' : ''
+              errors.correo ? "border-red-400" : ""
             }`}
             aria-invalid={!!errors.correo}
             aria-describedby="error-correo"
+            data-oid="sbpq6jq"
           />
+
           {errors.correo && (
-            <p id="error-correo" className="text-sm text-red-500">{errors.correo.message}</p>
+            <p
+              id="error-correo"
+              className="text-sm text-red-500"
+              data-oid="8wp_w_g"
+            >
+              {errors.correo.message}
+            </p>
           )}
         </div>
 
         {/* 🔒 Contraseña */}
-        <div className="relative space-y-1">
+        <div className="relative space-y-1" data-oid="4vv7fxs">
           <input
-            {...register('contrasena')}
+            {...register("contrasena")}
             placeholder="Contraseña"
-            type={verContrasena ? 'text' : 'password'}
+            type={verContrasena ? "text" : "password"}
             autoComplete="current-password"
             disabled={cargando}
             className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 pr-10 ${
-              errors.contrasena ? 'border-red-400' : ''
+              errors.contrasena ? "border-red-400" : ""
             }`}
             aria-invalid={!!errors.contrasena}
             aria-describedby="error-contrasena"
+            data-oid="88gb4hk"
           />
+
           <button
             type="button"
             tabIndex={-1}
-            onClick={() => setVerContrasena(v => !v)}
+            onClick={() => setVerContrasena((v) => !v)}
             className="absolute right-3 top-[10px] text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
-            aria-label={verContrasena ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+            aria-label={
+              verContrasena ? "Ocultar contraseña" : "Mostrar contraseña"
+            }
             disabled={cargando}
+            data-oid="m5ar3kf"
           >
-            {verContrasena ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            {verContrasena ? (
+              <EyeOff className="w-5 h-5" data-oid="7:nicu8" />
+            ) : (
+              <Eye className="w-5 h-5" data-oid="omc8iho" />
+            )}
           </button>
           {errors.contrasena && (
-            <p id="error-contrasena" className="text-sm text-red-500">{errors.contrasena.message}</p>
+            <p
+              id="error-contrasena"
+              className="text-sm text-red-500"
+              data-oid="t__9rvo"
+            >
+              {errors.contrasena.message}
+            </p>
           )}
         </div>
 
@@ -140,24 +175,30 @@ export default function LoginPage() {
           disabled={cargando}
           aria-busy={cargando}
           className={`w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-md transition flex justify-center items-center gap-2 ${
-            cargando ? 'opacity-70 cursor-not-allowed' : ''
+            cargando ? "opacity-70 cursor-not-allowed" : ""
           }`}
+          data-oid="tbxy2al"
         >
           {cargando ? (
             <>
-              <Loader2 className="animate-spin h-5 w-5" /> Verificando...
+              <Loader2 className="animate-spin h-5 w-5" data-oid="0tdxv4h" />{" "}
+              Verificando...
             </>
           ) : (
-            'Entrar'
+            "Entrar"
           )}
         </button>
 
         {/* 💡 Registro */}
-        <p className="text-center text-sm text-gray-600 dark:text-zinc-300">
-          ¿No tienes cuenta?{' '}
+        <p
+          className="text-center text-sm text-gray-600 dark:text-zinc-300"
+          data-oid="2deb6pb"
+        >
+          ¿No tienes cuenta?{" "}
           <Link
             href="/registro"
             className="text-amber-700 underline hover:text-amber-900 dark:text-amber-300 font-medium transition"
+            data-oid="-_k-a5_"
           >
             Crear cuenta
           </Link>
@@ -167,9 +208,10 @@ export default function LoginPage() {
         {mensaje && (
           <div
             className={`text-center text-sm mt-2 font-semibold ${
-              mensaje.startsWith('✔️') ? 'text-green-600' : 'text-red-600'
+              mensaje.startsWith("✔️") ? "text-green-600" : "text-red-600"
             }`}
             aria-live="polite"
+            data-oid="ao0jcjj"
           >
             {mensaje}
           </div>
