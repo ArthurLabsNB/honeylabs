@@ -2,7 +2,10 @@ import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
 import prisma from '@lib/prisma'
 
-const JWT_SECRET = process.env.JWT_SECRET!
+const JWT_SECRET = process.env.JWT_SECRET
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET no definido en el entorno')
+}
 const COOKIE_NAME = 'hl_session'
 
 export async function getUsuarioFromSession() {
