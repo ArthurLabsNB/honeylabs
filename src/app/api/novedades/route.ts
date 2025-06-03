@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@lib/prisma'
 import jwt from 'jsonwebtoken'
+import { SESSION_COOKIE } from '@lib/constants'
 
 const JWT_SECRET = process.env.JWT_SECRET ?? 'mi_clave_de_emergencia'
-const COOKIE_NAME = 'hl_session'
 
 export async function GET(req: NextRequest) {
   try {
-    const token = req.cookies.get(COOKIE_NAME)?.value
+    const token = req.cookies.get(SESSION_COOKIE)?.value
     if (!token) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     let payload: any
     try {

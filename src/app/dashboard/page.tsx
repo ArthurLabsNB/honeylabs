@@ -64,7 +64,12 @@ export default function DashboardPage() {
         const mapa: Record<string, any> = {};
         permitidos.forEach((widget: WidgetMeta) => {
           mapa[widget.key] = dynamic(
-            () => import(`./components/widgets/${widget.file}`),
+            () =>
+              import(`./components/widgets/${widget.file}`).catch(() => ({
+                default: () => (
+                  <div className="p-4 text-red-600">Error al cargar widget</div>
+                ),
+              })),
             { ssr: false },
           );
         });
@@ -84,11 +89,17 @@ export default function DashboardPage() {
         try {
           const raw = localStorage.getItem(`dashboardLayout_${usuario.id}`);
           if (raw) saved = JSON.parse(raw);
-        } catch {}
+        } catch {
+          // si el JSON es inválido, ignoramos
+        }
 
         if (saved && Array.isArray(saved.widgets) && Array.isArray(saved.layout)) {
-          setLayout(saved.layout);
-          setWidgets(saved.widgets);
+          const validKeys = permitidos.map((w) => w.key);
+          const filteredWidgets = saved.widgets.filter((k) => validKeys.includes(k));
+          const filteredLayout = saved.layout.filter((item) => validKeys.includes(item.i));
+
+          setLayout(filteredLayout.length ? filteredLayout : defaultLayout);
+          setWidgets(filteredWidgets.length ? filteredWidgets : validKeys);
         } else {
           setLayout(defaultLayout);
           setWidgets(permitidos.map((w: WidgetMeta) => w.key));
@@ -113,13 +124,18 @@ export default function DashboardPage() {
     const widget = catalogo.find((w) => w.key === key);
     if (!widget) return;
 
+    const nextY = layout.reduce(
+      (max, item) => Math.max(max, item.y + (item.h || 0)),
+      0,
+    );
+
     setWidgets([...widgets, key]);
     setLayout([
       ...layout,
       {
         i: key,
         x: 0,
-        y: Infinity,
+        y: nextY,
         w: widget.w || 2,
         h: widget.h || 2,
         minW: widget.minW || 2,

@@ -110,7 +110,9 @@ honeylabs/
 
 ## Parches
 
-- Se corrigió la ruta de importación de widgets en el *dashboard* eliminando la extensión `.tsx`. Esto resuelve el error "Minified React error #310" al cargar la página.
+- Se centralizó el nombre de la cookie de sesión en `lib/constants.ts` y todas las APIs la utilizan.
+- El dashboard valida los datos almacenados en `localStorage` y calcula la posición de nuevos widgets sin usar `Infinity`.
+- Los widgets importados dinámicamente muestran un aviso cuando su archivo no existe.
 
 ---
 
