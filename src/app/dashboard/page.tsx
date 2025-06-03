@@ -64,7 +64,7 @@ export default function DashboardPage() {
         const mapa: Record<string, any> = {};
         permitidos.forEach((widget: WidgetMeta) => {
           mapa[widget.key] = dynamic(
-            () => import(`./components/widgets/${widget.file}.tsx`),
+            () => import(`./components/widgets/${widget.file}`),
             { ssr: false },
           );
         });
