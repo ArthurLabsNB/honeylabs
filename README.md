@@ -110,7 +110,10 @@ honeylabs/
 
 ## Parches
 
-- Se añadió el módulo **App Center** con integración para tableros de Miro y diagramas de Lucidchart. Ahora es posible elegir y cambiar el recurso a mostrar directamente desde el dashboard.
+
+- Se añadieron endpoints de API para varias secciones del dashboard.
+- Cada página del dashboard ahora carga datos reales con estados de carga y error.
+- También se verifican los permisos del usuario antes de mostrar la información.
 
 ---
 
