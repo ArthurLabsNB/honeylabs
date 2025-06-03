@@ -1,7 +1,15 @@
+export const ContentSecurityPolicy = `
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' vitals.vercel-insights.com;
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' https: data:;
+  object-src 'none';
+`;
+
 export const securityHeaders = [
   {
     key: 'Content-Security-Policy',
-    value: "default-src 'self'; img-src 'self' data: https:; object-src 'none';" ,
+    value: ContentSecurityPolicy.replace(/\n/g, ''),
   },
   {
     key: 'Referrer-Policy',
