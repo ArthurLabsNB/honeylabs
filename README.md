@@ -110,9 +110,9 @@ honeylabs/
 
 ## Parches
 
-- Se actualizó la paleta de colores del dashboard a tonos más oscuros.
-- Se añadió modo de pantalla completa con barra de herramientas para widgets.
-- El tablero ahora guarda la posición de los widgets en el navegador.
+- Se añadieron endpoints de API para varias secciones del dashboard.
+- Cada página del dashboard ahora carga datos reales con estados de carga y error.
+- También se verifican los permisos del usuario antes de mostrar la información.
 
 ---
 
