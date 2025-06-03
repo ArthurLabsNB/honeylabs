@@ -1,0 +1,32 @@
+import { NextRequest, NextResponse } from 'next/server'
+import prisma from '@lib/prisma'
+import jwt from 'jsonwebtoken'
+
+const JWT_SECRET = process.env.JWT_SECRET ?? 'mi_clave_de_emergencia'
+const COOKIE_NAME = 'hl_session'
+
+export async function GET(req: NextRequest) {
+  try {
+    const token = req.cookies.get(COOKIE_NAME)?.value
+    if (!token) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
+    let payload: any
+    try {
+      payload = jwt.verify(token, JWT_SECRET)
+    } catch {
+      return NextResponse.json({ error: 'Sesión inválida' }, { status: 401 })
+    }
+    const usuarioId = Number(payload.id)
+    const rel = await prisma.usuarioAlmacen.findMany({ where: { usuarioId }, select: { almacenId: true } })
+    const almacenIds = rel.map(r => r.almacenId)
+    const novedades = await prisma.novedadAlmacen.findMany({
+      where: { almacenId: { in: almacenIds } },
+      orderBy: { fecha: 'desc' },
+      take: 5,
+      select: { id: true, titulo: true, fecha: true }
+    })
+    return NextResponse.json({ novedades })
+  } catch (error) {
+    console.error('Error en /api/novedades:', error)
+    return NextResponse.json({ error: 'Error interno' }, { status: 500 })
+  }
+}
