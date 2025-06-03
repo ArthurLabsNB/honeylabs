@@ -64,7 +64,7 @@ cd honeylabs
 npm install
 ```
 
-Configura las variables de entorno según el archivo `.env.example`.
+Configura las variables de entorno copiando `.env.example` a `.env` y ajustando los valores necesarios.
 
 ---
 
@@ -110,9 +110,8 @@ honeylabs/
 
 ## Parches
 
-- Se actualizó la paleta de colores del dashboard a tonos más oscuros.
-- Se añadió modo de pantalla completa con barra de herramientas para widgets.
-- El tablero ahora guarda la posición de los widgets en el navegador.
+- Se agregó el archivo `.env.example` con variables de entorno de referencia.
+- La guía de instalación ahora indica copiar este archivo a `.env`.
 
 ---
 
