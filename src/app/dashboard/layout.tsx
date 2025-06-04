@@ -5,26 +5,22 @@ import NavbarDashboard from "./components/NavbarDashboard";
 import WidgetToolbar from "./components/WidgetToolbar";
 import { DashboardUIProvider, useDashboardUI } from "./ui";
 import { useRouter } from "next/navigation";
-// Si luego agregas más contextos, descomenta estos
-// import { ThemeProvider } from "./contexts/ThemeContext";
-// import { NotificationProvider } from "./contexts/NotificationContext";
 
-// --- Wrapper para proteger y redirigir ---
-// Define the shape of usuario according to your backend response
+// Define tu tipo de usuario
 interface Usuario {
   id: number;
   nombre: string;
   email: string;
-  // Agrega aquí otras propiedades según tu modelo de usuario
+  // ...otras propiedades
 }
 
+// Sidebar fijo, padding del main igual al ancho del sidebar
 function ProtectedDashboard({ children }: { children: React.ReactNode }) {
   const { fullscreen } = useDashboardUI();
   const router = useRouter();
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Obtiene usuario desde backend
   useEffect(() => {
     const cargarUsuario = async () => {
       try {
@@ -66,29 +62,34 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (!usuario) return null; // Bloquea UI hasta redirigir
+  if (!usuario) return null;
 
+  // Sidebar ancho fijo 256px (w-64) siempre
   return (
     <div
-      className={`flex min-h-screen bg-[var(--dashboard-bg)] transition-colors duration-300 ${fullscreen ? 'dashboard-full' : ''}`}
+      className={`min-h-screen bg-[var(--dashboard-bg)] transition-colors duration-300 relative ${fullscreen ? 'dashboard-full' : ''}`}
       data-oid="agicnbm"
     >
-      {/* --- SIDEBAR --- */}
+      {/* --- SIDEBAR FIJO --- */}
       <Sidebar usuario={usuario} data-oid="zs00-jl" />
       {/* --- ZONA CENTRAL --- */}
-      <main className="flex-1 flex flex-col min-h-screen" data-oid="b0.nwxn">
-        {/* --- NAVBAR EXCLUSIVO DASHBOARD --- */}
+      <main
+        className="flex flex-col min-h-screen"
+        style={{ paddingLeft: "256px" /* igual a w-64 */ }}
+        data-oid="b0.nwxn"
+      >
+        {/* NAVBAR DASHBOARD */}
         <NavbarDashboard usuario={usuario} data-oid="f2812xq" />
-        {/* --- CONTENIDO MODULAR --- */}
+        {/* CONTENIDO MODULAR */}
         <section
           className="
-          flex-1 p-0 sm:p-8
-          bg-[var(--dashboard-bg)]
-          text-[var(--dashboard-text)]
-          overflow-y-auto
-          animate-fade-in
-          transition-colors duration-300
-        "
+            flex-1 p-0 sm:p-8
+            bg-[var(--dashboard-bg)]
+            text-[var(--dashboard-text)]
+            overflow-y-auto
+            animate-fade-in
+            transition-colors duration-300
+          "
           data-oid="74v:xgb"
         >
           {children}
@@ -99,18 +100,11 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+// Layout principal
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    // <ThemeProvider>
-    // <NotificationProvider>
     <DashboardUIProvider>
       <ProtectedDashboard data-oid="1baelfe">{children}</ProtectedDashboard>
     </DashboardUIProvider>
-    // </NotificationProvider>
-    // </ThemeProvider>
   );
 }

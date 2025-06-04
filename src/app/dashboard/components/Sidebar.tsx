@@ -96,11 +96,10 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
   const pathname = usePathname();
   const router = useRouter();
 
-  // Puedes agregar un loading aquí si lo quieres (pero normalmente ya está resuelto antes de cargar el dashboard)
   if (!usuario || (!usuario.rol && !usuario.tipoCuenta) || !usuario.nombre) {
     return (
       <aside
-        className="dashboard-sidebar flex flex-col w-20 h-screen sticky top-0 z-30 justify-center items-center"
+        className="dashboard-sidebar flex flex-col w-20 h-screen fixed top-0 left-0 z-30 justify-center items-center bg-[var(--dashboard-sidebar)] shadow-xl"
         data-oid="xh-w7cu"
       >
         <span className="text-[var(--dashboard-accent)]" data-oid="2v_z_xg">
@@ -111,7 +110,7 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
   }
 
   const tipo =
-    usuario.rol === "admin" ? "admin" : (usuario.tipoCuenta ?? "estandar");
+    usuario.rol === "admin" ? "admin" : usuario.tipoCuenta ?? "estandar";
 
   const filteredMenu = sidebarMenu.filter((item) =>
     item.allowed.includes(tipo),
@@ -119,9 +118,15 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
 
   return (
     <aside
-      className={`dashboard-sidebar flex flex-col transition-all duration-200 shadow-xl ${
-        collapsed ? "w-20" : "w-64"
-      } h-screen sticky top-0 z-30`}
+      className={`
+        dashboard-sidebar flex flex-col transition-all duration-200 shadow-xl
+        ${collapsed ? "w-20" : "w-64"}
+        h-screen fixed top-0 left-0 z-30
+        bg-[var(--dashboard-sidebar)] border-r border-[var(--dashboard-border)]
+      `}
+      style={{
+        minHeight: "100vh",
+      }}
       data-oid="5bc7f7v"
     >
       {/* Logo y botón colapsar */}
@@ -144,15 +149,9 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
           data-oid="_1n:9hf"
         >
           {collapsed ? (
-            <ChevronRight
-              className="w-6 h-6 text-[var(--dashboard-accent)]"
-              data-oid="g0cnjbp"
-            />
+            <ChevronRight className="w-6 h-6 text-[var(--dashboard-accent)]" data-oid="g0cnjbp" />
           ) : (
-            <ChevronLeft
-              className="w-6 h-6 text-[var(--dashboard-accent)]"
-              data-oid=".ezj2xq"
-            />
+            <ChevronLeft className="w-6 h-6 text-[var(--dashboard-accent)]" data-oid=".ezj2xq" />
           )}
         </button>
       </div>
@@ -200,7 +199,7 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
       </nav>
 
       {/* Footer: usuario */}
-      <div className="dashboard-sidebar-footer" data-oid="m8ufrcm">
+      <div className="dashboard-sidebar-footer mb-4" data-oid="m8ufrcm">
         {usuario.avatarUrl ? (
           <img
             src={usuario.avatarUrl}
@@ -213,22 +212,13 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
             className="w-12 h-12 rounded-full bg-[var(--dashboard-accent)]/30 flex items-center justify-center mb-2"
             data-oid="o2nhv:6"
           >
-            <User
-              className="w-7 h-7 text-[var(--dashboard-navbar)]"
-              data-oid="0p00fpi"
-            />
+            <User className="w-7 h-7 text-[var(--dashboard-navbar)]" data-oid="0p00fpi" />
           </div>
         )}
-        <span
-          className={`font-bold text-sm ${collapsed ? "hidden" : "block"}`}
-          data-oid="0l2o3_x"
-        >
+        <span className={`font-bold text-sm ${collapsed ? "hidden" : "block"}`} data-oid="0l2o3_x">
           {usuario.nombre}
         </span>
-        <span
-          className={`text-xs text-[var(--dashboard-accent)] opacity-80 ${collapsed ? "hidden" : "block"}`}
-          data-oid="purvdjd"
-        >
+        <span className={`text-xs text-[var(--dashboard-accent)] opacity-80 ${collapsed ? "hidden" : "block"}`} data-oid="purvdjd">
           {typeof tipo === "string"
             ? tipo.charAt(0).toUpperCase() + tipo.slice(1)
             : "Invitado"}

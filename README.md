@@ -5,17 +5,20 @@
 
 ## Tabla de Contenidos
 
-- [Descripción](#descripción)
-- [Estado del Proyecto](#estado-del-proyecto)
-- [Características](#características)
-- [Tecnologías](#tecnologías)
-- [Instalación](#instalación)
-- [Uso](#uso)
-- [Estructura del Proyecto](#estructura-del-proyecto)
-- [Roadmap](#roadmap)
-- [Contribución](#contribución)
-- [Licencia](#licencia)
-- [Contacto](#contacto)
+- [🍯 HoneyLabs – Plataforma Integral de Gestión de Laboratorios y Almacenes](#-honeylabs--plataforma-integral-de-gestión-de-laboratorios-y-almacenes)
+  - [Tabla de Contenidos](#tabla-de-contenidos)
+  - [Descripción](#descripción)
+  - [Estado del Proyecto](#estado-del-proyecto)
+  - [Características](#características)
+  - [Tecnologías](#tecnologías)
+  - [Instalación](#instalación)
+  - [Uso](#uso)
+  - [Estructura del Proyecto](#estructura-del-proyecto)
+  - [Roadmap](#roadmap)
+  - [Parches](#parches)
+  - [Contribución](#contribución)
+  - [Licencia](#licencia)
+  - [Contacto](#contacto)
 
 ---
 
@@ -59,9 +62,14 @@ Actualmente se están implementando las funcionalidades principales. Se aceptan 
 Clona el repositorio y ejecuta los siguientes comandos:
 
 ```sh
-git clone https://github.com/tu-org/honeylabs.git
+git clone https://github.com/ArthurLabsNB/honeylabs.git
 cd honeylabs
 npm install
+npm install -D prisma 
+npm install prisma --save-dev
+npx prisma migrate dev
+npx prisma migrate deploy
+vercel --prod
 ```
 
 Configura las variables de entorno copiando `.env.example` a `.env` y ajustando los valores necesarios.
