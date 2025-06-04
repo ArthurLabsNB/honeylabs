@@ -4,14 +4,21 @@ import Sidebar from "./components/Sidebar";
 import NavbarDashboard from "./components/NavbarDashboard";
 import WidgetToolbar from "./components/WidgetToolbar";
 import { DashboardUIProvider, useDashboardUI } from "./ui";
+import {
+  SIDEBAR_GLOBAL_WIDTH,
+  SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
+} from "./constants";
 import { useRouter } from "next/navigation";
 
 // Puedes controlar el colapso con un estado global/context
-const SIDEBAR_WIDTH = 256; // px
 
 function ProtectedDashboard({ children }: { children: React.ReactNode }) {
   // Añade en tu context esta propiedad si quieres permitir colapsar
-  const { fullscreen, sidebarGlobalVisible = true } = useDashboardUI();
+  const {
+    fullscreen,
+    sidebarGlobalVisible = true,
+    sidebarGlobalCollapsed,
+  } = useDashboardUI();
   const router = useRouter();
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [loading, setLoading] = useState(true);
@@ -53,8 +60,12 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
 
   if (!usuario) return null;
 
-  // El margen izquierdo del contenido depende si el sidebar global está visible o no
-  const marginLeft = !fullscreen && sidebarGlobalVisible ? SIDEBAR_WIDTH : 0;
+  const sidebarWidth = sidebarGlobalVisible
+    ? sidebarGlobalCollapsed
+      ? SIDEBAR_GLOBAL_COLLAPSED_WIDTH
+      : SIDEBAR_GLOBAL_WIDTH
+    : 0;
+  const marginLeft = !fullscreen ? sidebarWidth : 0;
 
   return (
     <div
@@ -66,8 +77,8 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
       {!fullscreen && sidebarGlobalVisible && (
         <div
           style={{
-            width: SIDEBAR_WIDTH,
-            minWidth: SIDEBAR_WIDTH,
+            width: sidebarWidth,
+            minWidth: sidebarWidth,
             left: 0,
           }}
           className="fixed top-0 left-0 h-screen z-40 border-r border-[var(--dashboard-border)] bg-[var(--dashboard-sidebar)] transition-all duration-300"

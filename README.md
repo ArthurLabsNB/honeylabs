@@ -117,7 +117,7 @@ honeylabs/
 - [ ] Notificaciones y alertas
 
 ## Parches
-* Se solucionó un bucle de actualizaciones infinitas en el contexto de Almacenes al memorizar la función `registerCreate` con `useCallback`.
+* Se agregó un estado global para controlar el colapso del sidebar del dashboard y se sincronizó el desplazamiento del sidebar de Almacenes.
 
 
 ---
