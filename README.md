@@ -118,8 +118,8 @@ honeylabs/
 
 ## Parches
 
-- La **Pizarra Infinita** ahora se integra directamente en la página principal del dashboard.
-- Su estado se guarda automáticamente y se mantiene al usar el modo de pantalla completa.
+
+- Se añadió una estructura base para la **Pizarra Infinita** accesible solo desde el panel principal del dashboard.
 
 ---
 
