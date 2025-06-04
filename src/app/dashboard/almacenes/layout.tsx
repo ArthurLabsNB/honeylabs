@@ -101,13 +101,13 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
 
       {/* --- CONTENIDO PRINCIPAL desplazado --- */}
       <div
-        className="min-h-screen flex flex-col transition-all duration-300"
+        className="min-h-screen flex flex-col transition-all duration-300 sm:-mt-8"
         style={{
           marginLeft: mainMarginLeft,
         }}
       >
         {!fullscreen && <AlmacenesNavbar />}
-        <section className="flex-1 p-4 overflow-y-auto bg-[var(--dashboard-bg)] text-[var(--dashboard-text)]">
+        <section className="flex-1 p-4 sm:pt-0 overflow-y-auto bg-[var(--dashboard-bg)] text-[var(--dashboard-text)]">
           {children}
         </section>
       </div>

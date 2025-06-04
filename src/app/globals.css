@@ -317,11 +317,15 @@ html, body {
 /* --------- BUSCADOR Y INPUTS --------- */
 .dashboard-input {
   @apply rounded-md px-4 py-2;
-  background: #23232b;
+  background: #1e1e26;
   color: var(--dashboard-text);
   border: 1.5px solid var(--dashboard-border);
   font-size: 1rem;
   transition: border-color 0.2s, box-shadow 0.2s;
+}
+.dashboard-input::placeholder {
+  color: var(--dashboard-muted);
+  opacity: 0.9;
 }
 .dashboard-input:focus {
   outline: none;
@@ -336,8 +340,8 @@ html, body {
     padding-right: 1rem;
   }
   .dashboard-sidebar {
-    width: 16rem;
-    min-width: 16rem;
+    width: 14rem;
+    min-width: 14rem;
     transform: translateX(-100%);
     position: fixed;
     z-index: 50;

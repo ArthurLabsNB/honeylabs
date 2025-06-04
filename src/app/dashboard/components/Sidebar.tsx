@@ -102,7 +102,7 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
   if (!usuario || (!usuario.rol && !usuario.tipoCuenta) || !usuario.nombre) {
     return (
       <aside
-        className="dashboard-sidebar flex flex-col w-20 h-screen fixed top-0 left-0 z-30 justify-center items-center bg-[var(--dashboard-sidebar)] shadow-xl"
+        className="dashboard-sidebar flex flex-col w-[72px] h-screen fixed top-0 left-0 z-30 justify-center items-center bg-[var(--dashboard-sidebar)] shadow-xl"
         data-oid="xh-w7cu"
       >
         <span className="text-[var(--dashboard-accent)]" data-oid="2v_z_xg">
@@ -123,7 +123,7 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
     <aside
       className={`
         dashboard-sidebar flex flex-col transition-all duration-200 shadow-xl
-        ${collapsed ? "w-20" : "w-64"}
+        ${collapsed ? "w-[72px]" : "w-56"}
         h-screen fixed top-0 left-0 z-30
         bg-[var(--dashboard-sidebar)] border-r border-[var(--dashboard-border)]
       `}

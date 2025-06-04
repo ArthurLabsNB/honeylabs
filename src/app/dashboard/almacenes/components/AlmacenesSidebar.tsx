@@ -17,7 +17,6 @@ import {
   BookMarked,
   HelpCircle,
   Zap,
-  PlusCircle,
 } from "lucide-react";
 import { useDashboardUI } from "../../ui";
 import {
@@ -83,32 +82,20 @@ export default function AlmacenesSidebar() {
       <hr className="my-3 border-[var(--dashboard-border)]" />
 
       <span className="px-2 py-1 font-bold text-xs text-[var(--dashboard-muted)] uppercase tracking-widest">
-        Notificaciones y Alertas
+        Operaciones
       </span>
       <nav className="flex flex-col gap-1 text-sm">
-        <Link href="/dashboard/almacenes/alertas" className="sidebar-link">
-          <AlertTriangle className="w-4 h-4 mr-2 inline-block" />
-          Alertas / Bajo stock
-        </Link>
-        <Link href="/dashboard/almacenes/notificaciones" className="sidebar-link">
-          <Bell className="w-4 h-4 mr-2 inline-block" />
-          Notificaciones
-        </Link>
-      </nav>
-
-      <hr className="my-3 border-[var(--dashboard-border)]" />
-
-      <span className="px-2 py-1 font-bold text-xs text-[var(--dashboard-muted)] uppercase tracking-widest">
-        Gestión y Reportes
-      </span>
-      <nav className="flex flex-col gap-1 text-sm">
-        <Link href="/dashboard/almacenes/reportes" className="sidebar-link">
-          <FileBarChart className="w-4 h-4 mr-2 inline-block" />
-          Analíticas y reportes
+        <Link href="/dashboard/almacenes/pendientes" className="sidebar-link">
+          <Inbox className="w-4 h-4 mr-2 inline-block" />
+          Tareas y pendientes
         </Link>
         <Link href="/dashboard/almacenes/categorias" className="sidebar-link">
           <Layers className="w-4 h-4 mr-2 inline-block" />
           Categorías y ubicaciones
+        </Link>
+        <Link href="/dashboard/almacenes/plantillas" className="sidebar-link">
+          <FolderKanban className="w-4 h-4 mr-2 inline-block" />
+          Plantillas y bancos
         </Link>
         <Link href="/dashboard/almacenes/importaciones" className="sidebar-link">
           <FileUp className="w-4 h-4 mr-2 inline-block" />
@@ -118,13 +105,25 @@ export default function AlmacenesSidebar() {
           <FileDown className="w-4 h-4 mr-2 inline-block" />
           Exportaciones recientes
         </Link>
-        <Link href="/dashboard/almacenes/plantillas" className="sidebar-link">
-          <FolderKanban className="w-4 h-4 mr-2 inline-block" />
-          Plantillas y bancos
+      </nav>
+
+      <hr className="my-3 border-[var(--dashboard-border)]" />
+
+      <span className="px-2 py-1 font-bold text-xs text-[var(--dashboard-muted)] uppercase tracking-widest">
+        Reportes y Alertas
+      </span>
+      <nav className="flex flex-col gap-1 text-sm">
+        <Link href="/dashboard/almacenes/reportes" className="sidebar-link">
+          <FileBarChart className="w-4 h-4 mr-2 inline-block" />
+          Analíticas y reportes
         </Link>
-        <Link href="/dashboard/almacenes/pendientes" className="sidebar-link">
-          <Inbox className="w-4 h-4 mr-2 inline-block" />
-          Tareas y pendientes
+        <Link href="/dashboard/almacenes/alertas" className="sidebar-link">
+          <AlertTriangle className="w-4 h-4 mr-2 inline-block" />
+          Alertas / Bajo stock
+        </Link>
+        <Link href="/dashboard/almacenes/notificaciones" className="sidebar-link">
+          <Bell className="w-4 h-4 mr-2 inline-block" />
+          Notificaciones
         </Link>
       </nav>
 
@@ -152,16 +151,7 @@ export default function AlmacenesSidebar() {
         </Link>
       </nav>
 
-      {/* Botón para crear almacén fijo abajo */}
-      <div className="mt-auto mb-2 px-2">
-        <Link
-          href="/dashboard/almacenes/nuevo"
-          className="sidebar-link bg-[var(--dashboard-accent)]/20 text-[var(--dashboard-accent)] font-semibold rounded-md py-2 flex items-center justify-center gap-2 hover:bg-[var(--dashboard-accent)]/40 transition"
-        >
-          <PlusCircle className="w-5 h-5" />
-          Crear almacén
-        </Link>
-      </div>
+      <div className="mt-auto" />
     </aside>
   );
 }
