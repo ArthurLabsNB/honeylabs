@@ -117,8 +117,9 @@ honeylabs/
 - [ ] Notificaciones y alertas
 
 ## Parches
-- Se añadió la sección de **Almacenes** con barra lateral y navbar propios,
-  permitiendo cambiar entre vista de lista y cuadrícula.
+- Se implementó la creación de **Almacenes** asociados al usuario con vista de detalle y navegación propia.
+- El panel principal guarda ahora la configuración de widgets en la base de datos.
+
 
 ---
 

@@ -96,11 +96,9 @@ export default function DashboardPage() {
 
         let saved: { widgets: string[]; layout: Layout[] } | null = null;
         try {
-          const raw = localStorage.getItem(`dashboardLayout_${usuario.id}`);
-          if (raw) saved = JSON.parse(raw);
-        } catch {
-          // si el JSON es inválido, ignoramos
-        }
+          const res = await fetch('/api/dashboard/layout');
+          if (res.ok) saved = await res.json();
+        } catch {}
 
         if (saved && Array.isArray(saved.widgets) && Array.isArray(saved.layout)) {
           const validKeys = permitidos.map((w) => w.key);
@@ -117,13 +115,15 @@ export default function DashboardPage() {
       .catch((err) => console.error("Error al cargar widgets:", err));
   }, [usuario]);
 
-  // Guardar en localStorage cada que cambian widgets o layout
+  // Guardar en DB cada que cambian widgets o layout
   useEffect(() => {
     if (!usuario) return;
-    const data = JSON.stringify({ widgets, layout });
-    try {
-      localStorage.setItem(`dashboardLayout_${usuario.id}`, data);
-    } catch {}
+    const data = { widgets, layout };
+    fetch('/api/dashboard/layout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).catch(() => {});
   }, [widgets, layout, usuario]);
 
   // Agregar widget

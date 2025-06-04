@@ -2,20 +2,32 @@
 import { createContext, useContext, useState } from "react";
 
 type View = "list" | "grid";
+type Filter = "todos" | "favoritos";
 interface AlmacenesUIState {
   view: View;
   setView: (view: View) => void;
+  filter: Filter;
+  setFilter: (f: Filter) => void;
+  onCreate?: (nombre: string, descripcion: string) => void;
+  registerCreate: (fn: (nombre: string, descripcion: string) => void) => void;
+
 }
 
 const AlmacenesUIContext = createContext<AlmacenesUIState>({
   view: "list",
   setView: () => {},
+  filter: "todos",
+  setFilter: () => {},
 });
 
-export function AlmacenesUIProvider({ children }: { children: React.ReactNode }) {
+export function AlmacenesUIProvider({ children, onCreate }: { children: React.ReactNode; onCreate?: (nombre: string, descripcion: string) => void }) {
   const [view, setView] = useState<View>("list");
+  const [filter, setFilter] = useState<Filter>("todos");
+  const [createFn, setCreateFn] = useState<((nombre: string, descripcion: string) => void) | undefined>(onCreate);
+  const registerCreate = (fn: (nombre: string, descripcion: string) => void) => setCreateFn(() => fn);
   return (
-    <AlmacenesUIContext.Provider value={{ view, setView }}>
+    <AlmacenesUIContext.Provider value={{ view, setView, filter, setFilter, onCreate: createFn, registerCreate }}>
+
       {children}
     </AlmacenesUIContext.Provider>
   );

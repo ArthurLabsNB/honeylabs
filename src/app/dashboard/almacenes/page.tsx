@@ -22,7 +22,8 @@ export default function AlmacenesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const router = useRouter();
-  const { view } = useAlmacenesUI();
+  const { view, filter, registerCreate } = useAlmacenesUI();
+
 
   useEffect(() => {
     fetch("/api/login", { credentials: "include" })
@@ -43,15 +44,38 @@ export default function AlmacenesPage() {
       });
   }, []);
 
+  const crearAlmacen = async (nombre: string, descripcion: string) => {
+    try {
+      const res = await fetch('/api/almacenes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre, descripcion })
+      });
+      const data = await res.json();
+      if (res.ok && data.almacen) {
+        setAlmacenes((a) => [...a, data.almacen]);
+      } else {
+        alert(data.error || 'Error al crear');
+      }
+    } catch {
+      alert('Error de red');
+    }
+  };
+
+  useEffect(() => {
+    registerCreate(crearAlmacen);
+  }, [registerCreate]);
+
   useEffect(() => {
     if (!usuario) return;
     setLoading(true);
-    fetch(`/api/almacenes?usuarioId=${usuario.id}`)
+    const fav = filter === 'favoritos' ? '&favoritos=1' : '';
+    fetch(`/api/almacenes?usuarioId=${usuario.id}${fav}`)
       .then((res) => res.json())
       .then((data) => setAlmacenes(data.almacenes || []))
       .catch(() => setError("Error al cargar datos"))
       .finally(() => setLoading(false));
-  }, [usuario]);
+  }, [usuario, filter]);
 
   if (error) return <div className="p-4 text-red-500">{error}</div>;
   if (loading) return <div className="p-4">Cargando...</div>;
