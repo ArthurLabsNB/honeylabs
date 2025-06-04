@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import PizarraCanvas from "./components/pizarra/PizarraCanvas";
 import dynamic from "next/dynamic";
 import GridLayout, { Layout } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
@@ -37,6 +38,7 @@ export default function DashboardPage() {
   const [layout, setLayout] = useState<Layout[]>([]);
   const [componentes, setComponentes] = useState<{ [key: string]: any }>({});
   const [errores, setErrores] = useState<{ [key: string]: boolean }>({});
+  const [showPizarra, setShowPizarra] = useState(false);
 
   // 1. Obtener usuario logueado
   useEffect(() => {
@@ -176,22 +178,31 @@ export default function DashboardPage() {
         <h1 className="text-2xl font-bold" data-oid="4rx1xg2">
           Panel principal
         </h1>
-        <select
-          onChange={(e) => handleAddWidget(e.target.value)}
-          value=""
-          data-oid=".afd4c5"
-        >
-          <option disabled value="" data-oid="6wcsx7v">
-            Agregar widget...
-          </option>
-          {catalogo
-            .filter((w) => !widgets.includes(w.key))
-            .map((w) => (
-              <option key={w.key} value={w.key} data-oid="z4paaf7">
-                {w.title}
-              </option>
-            ))}
-        </select>
+        <div className="flex items-center gap-2">
+          <select
+            onChange={(e) => handleAddWidget(e.target.value)}
+            value=""
+            data-oid=".afd4c5"
+          >
+            <option disabled value="" data-oid="6wcsx7v">
+              Agregar widget...
+            </option>
+            {catalogo
+              .filter((w) => !widgets.includes(w.key))
+              .map((w) => (
+                <option key={w.key} value={w.key} data-oid="z4paaf7">
+                  {w.title}
+                </option>
+              ))}
+          </select>
+          <button
+            onClick={() => setShowPizarra(true)}
+            className="dashboard-btn"
+            data-oid="open-pizarra"
+          >
+            Abrir Pizarra
+          </button>
+        </div>
       </div>
 
       <GridLayout
@@ -255,6 +266,9 @@ export default function DashboardPage() {
           );
         })}
       </GridLayout>
+      {showPizarra && (
+        <PizarraCanvas onClose={() => setShowPizarra(false)} />
+      )}
     </div>
   );
 }
