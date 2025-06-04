@@ -117,7 +117,7 @@ honeylabs/
 - [ ] Notificaciones y alertas
 
 ## Parches
-- Se corrigió un error de compilación al utilizar `await` dentro de una función no asincrónica en el panel principal.
+- Se actualizó la barra de navegación de Almacenes con nuevas vistas (lista, cuadrícula y árbol) y botones adicionales para gestión y reportes.
 
 
 ---

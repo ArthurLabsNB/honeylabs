@@ -80,43 +80,93 @@ export default function AlmacenesPage() {
   if (error) return <div className="p-4 text-red-500">{error}</div>;
   if (loading) return <div className="p-4">Cargando...</div>;
 
+  const moveUp = (idx: number) => {
+    if (idx === 0) return;
+    setAlmacenes((a) => {
+      const arr = [...a];
+      [arr[idx - 1], arr[idx]] = [arr[idx], arr[idx - 1]];
+      return arr;
+    });
+  };
+
+  const moveDown = (idx: number) => {
+    if (idx === almacenes.length - 1) return;
+    setAlmacenes((a) => {
+      const arr = [...a];
+      [arr[idx], arr[idx + 1]] = [arr[idx + 1], arr[idx]];
+      return arr;
+    });
+  };
+
+  const eliminar = async (id: number) => {
+    if (!confirm('¿Eliminar almacén?')) return;
+    const res = await fetch(`/api/almacenes/${id}`, { method: 'DELETE' });
+    if (res.ok) {
+      setAlmacenes((a) => a.filter((x) => x.id !== id));
+    } else {
+      alert('Error al eliminar');
+    }
+  };
+
+  const renderList = () => (
+    <ul className="divide-y">
+      {almacenes.map((a, idx) => (
+        <li key={a.id} className="p-2 hover:bg-white/5 flex justify-between">
+          <div
+            className="cursor-pointer"
+            onClick={() => router.push(`/dashboard/almacenes/${a.id}`)}
+          >
+            <h3 className="font-semibold">{a.nombre}</h3>
+            {a.descripcion && (
+              <p className="text-sm text-[var(--dashboard-muted)]">
+                {a.descripcion}
+              </p>
+            )}
+          </div>
+          <div className="flex items-center gap-1 text-sm">
+            <button onClick={() => moveUp(idx)} className="px-1">↑</button>
+            <button onClick={() => moveDown(idx)} className="px-1">↓</button>
+            <button onClick={() => eliminar(a.id)} className="px-1 text-red-500">✕</button>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+
+  const renderGrid = () => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {almacenes.map((a) => (
+        <div
+          key={a.id}
+          className="p-4 border rounded-lg cursor-pointer hover:bg-white/5"
+          onClick={() => router.push(`/dashboard/almacenes/${a.id}`)}
+        >
+          <h3 className="font-semibold mb-1">{a.nombre}</h3>
+          {a.descripcion && (
+            <p className="text-sm text-[var(--dashboard-muted)]">{a.descripcion}</p>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+
+  const renderTree = () => (
+    <ul className="list-disc pl-4">
+      {almacenes.map((a) => (
+        <li
+          key={a.id}
+          className="cursor-pointer hover:underline"
+          onClick={() => router.push(`/dashboard/almacenes/${a.id}`)}
+        >
+          {a.nombre}
+        </li>
+      ))}
+    </ul>
+  );
+
   return (
     <div className="p-4" data-oid="almacenes-page">
-      {view === "list" ? (
-        <ul className="divide-y">
-          {almacenes.map((a) => (
-            <li
-              key={a.id}
-              className="p-2 cursor-pointer hover:bg-white/5"
-              onClick={() => router.push(`/dashboard/almacenes/${a.id}`)}
-            >
-              <h3 className="font-semibold">{a.nombre}</h3>
-              {a.descripcion && (
-                <p className="text-sm text-[var(--dashboard-muted)]">
-                  {a.descripcion}
-                </p>
-              )}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {almacenes.map((a) => (
-            <div
-              key={a.id}
-              className="p-4 border rounded-lg cursor-pointer hover:bg-white/5"
-              onClick={() => router.push(`/dashboard/almacenes/${a.id}`)}
-            >
-              <h3 className="font-semibold mb-1">{a.nombre}</h3>
-              {a.descripcion && (
-                <p className="text-sm text-[var(--dashboard-muted)]">
-                  {a.descripcion}
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+      {view === 'list' ? renderList() : view === 'grid' ? renderGrid() : renderTree()}
     </div>
   );
 }
