@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import PizarraSidebar from "./components/pizarra/PizarraSidebar";
+import PizarraNavbar from "./components/pizarra/PizarraNavbar";
+import { useDashboardUI } from "./ui";
 import dynamic from "next/dynamic";
 import GridLayout, { Layout } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
@@ -37,6 +40,7 @@ export default function DashboardPage() {
   const [layout, setLayout] = useState<Layout[]>([]);
   const [componentes, setComponentes] = useState<{ [key: string]: any }>({});
   const [errores, setErrores] = useState<{ [key: string]: boolean }>({});
+  const { fullscreen, toggleFullscreen } = useDashboardUI();
 
   // 1. Obtener usuario logueado
   useEffect(() => {
@@ -171,44 +175,52 @@ export default function DashboardPage() {
     );
 
   return (
-    <div className="min-h-screen p-4 sm:p-8" data-oid="7h725.b">
-      <div className="flex items-center justify-between mb-5" data-oid="bjx2qyk">
-        <h1 className="text-2xl font-bold" data-oid="4rx1xg2">
-          Panel principal
-        </h1>
-        <select
-          onChange={(e) => handleAddWidget(e.target.value)}
-          value=""
-          data-oid=".afd4c5"
-        >
-          <option disabled value="" data-oid="6wcsx7v">
-            Agregar widget...
-          </option>
-          {catalogo
-            .filter((w) => !widgets.includes(w.key))
-            .map((w) => (
-              <option key={w.key} value={w.key} data-oid="z4paaf7">
-                {w.title}
+    <div
+      className={`flex bg-[var(--dashboard-bg)] ${fullscreen ? 'fixed inset-0 z-50 dashboard-full' : 'min-h-screen'}`}
+      data-oid="7h725.b"
+    >
+      <PizarraSidebar />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <PizarraNavbar onToggleFullscreen={toggleFullscreen} fullscreen={fullscreen} />
+        <div className="flex-1 overflow-auto p-4 sm:p-8">
+          <div className="flex items-center justify-between mb-5" data-oid="bjx2qyk">
+            <h1 className="text-2xl font-bold" data-oid="4rx1xg2">
+              Panel principal
+            </h1>
+            <select
+              onChange={(e) => handleAddWidget(e.target.value)}
+              value=""
+              data-oid=".afd4c5"
+              className="dashboard-input"
+            >
+              <option disabled value="" data-oid="6wcsx7v">
+                Agregar widget...
               </option>
-            ))}
-        </select>
-      </div>
+              {catalogo
+                .filter((w) => !widgets.includes(w.key))
+                .map((w) => (
+                  <option key={w.key} value={w.key} data-oid="z4paaf7">
+                    {w.title}
+                  </option>
+                ))}
+            </select>
+          </div>
 
-      <GridLayout
-        layout={layout}
-        cols={6}
-        rowHeight={95}
-        width={1100}
-        isResizable
-        isDraggable
-        onLayoutChange={setLayout}
-        draggableHandle=".dashboard-widget-card"
-        margin={[18, 18]}
-        data-oid="6l8-9mp"
-      >
-        {widgets.map((key) => {
-          const Widget = componentes[key];
-          const widgetMeta = catalogo.find(w => w.key === key);
+          <GridLayout
+            layout={layout}
+            cols={6}
+            rowHeight={95}
+            width={1100}
+            isResizable
+            isDraggable
+            onLayoutChange={setLayout}
+            draggableHandle=".dashboard-widget-card"
+            margin={[18, 18]}
+            data-oid="6l8-9mp"
+          >
+            {widgets.map((key) => {
+              const Widget = componentes[key];
+              const widgetMeta = catalogo.find(w => w.key === key);
 
           // No renderiza hasta que esté listo el componente dinámico
           if (!Widget) {
@@ -254,7 +266,9 @@ export default function DashboardPage() {
             </div>
           );
         })}
-      </GridLayout>
+          </GridLayout>
+        </div>
+      </div>
     </div>
   );
 }

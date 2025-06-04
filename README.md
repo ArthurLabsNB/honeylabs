@@ -118,9 +118,8 @@ honeylabs/
 
 ## Parches
 
-- Se centralizó el nombre de la cookie de sesión en `lib/constants.ts` y todas las APIs la utilizan.
-- El dashboard valida los datos almacenados en `localStorage` y calcula la posición de nuevos widgets sin usar `Infinity`.
-- Los widgets importados dinámicamente muestran un aviso cuando su archivo no existe.
+- La **Pizarra Infinita** ahora se integra directamente en la página principal del dashboard.
+- Su estado se guarda automáticamente y se mantiene al usar el modo de pantalla completa.
 
 ---
 
