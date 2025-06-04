@@ -22,6 +22,14 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 640);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const cargarUsuario = async () => {
@@ -65,23 +73,28 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
       ? SIDEBAR_GLOBAL_COLLAPSED_WIDTH
       : SIDEBAR_GLOBAL_WIDTH
     : 0;
-  const marginLeft = !fullscreen ? sidebarWidth : 0;
+  const marginLeft = !fullscreen && !isMobile ? sidebarWidth : 0;
 
   return (
     <div
       className={`min-h-screen bg-[var(--dashboard-bg)] transition-colors duration-300 relative ${
         fullscreen ? "dashboard-full" : ""
-      }`}
+      } ${isMobile ? 'dashboard-layout-mobile' : ''}`}
     >
       {/* --- SIDEBAR FIJO --- */}
-      {!fullscreen && sidebarGlobalVisible && (
+      {!fullscreen && (isMobile || sidebarGlobalVisible) && (
         <div
           style={{
             width: sidebarWidth,
             minWidth: sidebarWidth,
             left: 0,
+            transform: isMobile
+              ? sidebarGlobalVisible
+                ? "translateX(0)"
+                : "translateX(-100%)"
+              : undefined,
           }}
-          className="fixed top-0 left-0 h-screen z-40 border-r border-[var(--dashboard-border)] bg-[var(--dashboard-sidebar)] transition-all duration-300"
+          className={`fixed top-0 left-0 h-screen z-40 border-r border-[var(--dashboard-border)] bg-[var(--dashboard-sidebar)] transition-all duration-300 dashboard-sidebar ${isMobile && sidebarGlobalVisible ? 'open' : ''}`}
         >
           <Sidebar usuario={usuario} />
         </div>

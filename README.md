@@ -117,8 +117,8 @@ honeylabs/
 - [ ] Notificaciones y alertas
 
 ## Parches
-* Se ajustaron los layouts de **Almacenes** para alinear correctamente su sidebar junto al sidebar global sin cubrir el navbar del dashboard.
-* Se añadieron páginas para crear y editar almacenes y se implementó la ruta API para actualizar información.
+* Los formularios de creación y edición de **Almacenes** ahora usan ancho completo para adaptarse mejor a pantallas pequeñas.
+* Se añadieron estilos responsive al sidebar del dashboard para mejorar la experiencia en móviles.
 
 
 ---
