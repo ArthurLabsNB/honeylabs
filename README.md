@@ -117,8 +117,7 @@ honeylabs/
 - [ ] Notificaciones y alertas
 
 ## Parches
-- Se implementó la creación de **Almacenes** asociados al usuario con vista de detalle y navegación propia.
-- El panel principal guarda ahora la configuración de widgets en la base de datos.
+- Se corrigió un error de compilación al utilizar `await` dentro de una función no asincrónica en el panel principal.
 
 
 ---
