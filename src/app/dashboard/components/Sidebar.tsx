@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useDashboardUI } from "../ui";
 import {
   Home,
   Boxes,
@@ -92,7 +92,10 @@ const sidebarMenu = [
 ];
 
 export default function Sidebar({ usuario }: { usuario: Usuario }) {
-  const [collapsed, setCollapsed] = useState(false);
+  const {
+    sidebarGlobalCollapsed: collapsed,
+    toggleSidebarCollapsed,
+  } = useDashboardUI();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -143,7 +146,7 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
           HoneyLabs
         </span>
         <button
-          onClick={() => setCollapsed((c) => !c)}
+          onClick={toggleSidebarCollapsed}
           className="rounded-full p-2 hover:bg-white/15 hover:backdrop-blur-sm transition"
           aria-label={collapsed ? "Expandir menú" : "Colapsar menú"}
           data-oid="_1n:9hf"

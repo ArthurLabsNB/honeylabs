@@ -19,17 +19,25 @@ import {
   Zap,
   PlusCircle,
 } from "lucide-react";
-import { useDashboardUI } from "../../ui"; // Ajusta el import según tu estructura
-
-const SIDEBAR_GLOBAL_WIDTH = 256; // Debe coincidir con el layout global
-const SIDEBAR_ALMACENES_WIDTH = 192;
+import { useDashboardUI } from "../../ui";
+import {
+  SIDEBAR_GLOBAL_WIDTH,
+  SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
+  SIDEBAR_ALMACENES_WIDTH,
+} from "../../constants";
 
 export default function AlmacenesSidebar() {
   // Lo ideal es que esto venga del context global de dashboard
-  const { sidebarGlobalVisible = true } = useDashboardUI();
+  const {
+    sidebarGlobalVisible = true,
+    sidebarGlobalCollapsed,
+  } = useDashboardUI();
 
-  // Calcula el left dinámico según el estado global
-  const sidebarLeft = sidebarGlobalVisible ? SIDEBAR_GLOBAL_WIDTH : 0;
+  const sidebarLeft = sidebarGlobalVisible
+    ? sidebarGlobalCollapsed
+      ? SIDEBAR_GLOBAL_COLLAPSED_WIDTH
+      : SIDEBAR_GLOBAL_WIDTH
+    : 0;
 
   return (
     <aside
@@ -142,7 +150,7 @@ export default function AlmacenesSidebar() {
       </nav>
 
       {/* Botón para crear almacén fijo abajo */}
-      <div className="mt-auto mb-2">
+      <div className="mt-auto mb-2 px-2">
         <Link
           href="/dashboard/almacenes/nuevo"
           className="sidebar-link bg-[var(--dashboard-accent)]/20 text-[var(--dashboard-accent)] font-semibold rounded-md py-2 flex items-center justify-center gap-2 hover:bg-[var(--dashboard-accent)]/40 transition"

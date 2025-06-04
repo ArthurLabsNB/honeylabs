@@ -1,6 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { DashboardUIProvider, useDashboardUI } from "../ui";
+import {
+  SIDEBAR_GLOBAL_WIDTH,
+  SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
+  SIDEBAR_ALMACENES_WIDTH,
+} from "../constants";
 import { useRouter } from "next/navigation";
 import AlmacenesNavbar from "./components/AlmacenesNavbar";
 import AlmacenesSidebar from "./components/AlmacenesSidebar";
@@ -12,13 +17,15 @@ interface Usuario {
   email?: string;
 }
 
-// Deben coincidir con el global
-const SIDEBAR_GLOBAL_WIDTH = 256; // Igual al global
-const SIDEBAR_ALMACENES_WIDTH = 192;
+// Las constantes de ancho se comparten con el layout principal
 
 function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
   // Ahora puedes controlar ambos desde tu context global (¡ajusta tu DashboardUIProvider!)
-  const { fullscreen, sidebarGlobalVisible = true } = useDashboardUI();
+  const {
+    fullscreen,
+    sidebarGlobalVisible = true,
+    sidebarGlobalCollapsed,
+  } = useDashboardUI();
   const router = useRouter();
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [loading, setLoading] = useState(true);
@@ -60,14 +67,13 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
 
   if (!usuario) return null;
 
-  // Sidebar almacenes SIEMPRE pegado a la derecha del sidebar global si está visible
-  const sidebarLeft = sidebarGlobalVisible ? SIDEBAR_GLOBAL_WIDTH : 0;
-  // El main debe empujarse a la derecha por la suma de ambos
-  const mainMarginLeft = !fullscreen
-    ? (sidebarGlobalVisible
-      ? SIDEBAR_GLOBAL_WIDTH + SIDEBAR_ALMACENES_WIDTH
-      : SIDEBAR_ALMACENES_WIDTH)
+  const globalWidth = sidebarGlobalVisible
+    ? sidebarGlobalCollapsed
+      ? SIDEBAR_GLOBAL_COLLAPSED_WIDTH
+      : SIDEBAR_GLOBAL_WIDTH
     : 0;
+  const sidebarLeft = globalWidth;
+  const mainMarginLeft = !fullscreen ? globalWidth + SIDEBAR_ALMACENES_WIDTH : 0;
 
   return (
     <div
