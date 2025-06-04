@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useCallback } from "react";
 
 type View = "list" | "grid" | "tree";
 type Filter = "todos" | "favoritos";
@@ -23,8 +23,15 @@ const AlmacenesUIContext = createContext<AlmacenesUIState>({
 export function AlmacenesUIProvider({ children, onCreate }: { children: React.ReactNode; onCreate?: (nombre: string, descripcion: string) => void }) {
   const [view, setView] = useState<View>("list");
   const [filter, setFilter] = useState<Filter>("todos");
-  const [createFn, setCreateFn] = useState<((nombre: string, descripcion: string) => void) | undefined>(onCreate);
-  const registerCreate = (fn: (nombre: string, descripcion: string) => void) => setCreateFn(() => fn);
+  const [createFn, setCreateFn] =
+    useState<((nombre: string, descripcion: string) => void) | undefined>(onCreate);
+
+  const registerCreate = useCallback(
+    (fn: (nombre: string, descripcion: string) => void) => {
+      setCreateFn(() => fn);
+    },
+    [],
+  );
   return (
     <AlmacenesUIContext.Provider value={{ view, setView, filter, setFilter, onCreate: createFn, registerCreate }}>
 
