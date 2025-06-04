@@ -117,7 +117,7 @@ honeylabs/
 - [ ] Notificaciones y alertas
 
 ## Parches
-- Se actualizó la barra de navegación de Almacenes con nuevas vistas (lista, cuadrícula y árbol) y botones adicionales para gestión y reportes.
+* Se solucionó un bucle de actualizaciones infinitas en el contexto de Almacenes al memorizar la función `registerCreate` con `useCallback`.
 
 
 ---
