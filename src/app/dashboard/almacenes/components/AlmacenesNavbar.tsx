@@ -100,9 +100,9 @@ export default function AlmacenesNavbar() {
         )}
         {/* Buscador */}
         <div className="relative ml-2">
-          <Search className="w-4 h-4 absolute left-3 top-2 text-[var(--dashboard-muted)]" />
+          <Search className="w-4 h-4 absolute left-3 top-2.5 text-[var(--dashboard-muted)] pointer-events-none" />
           <input
-            className="pl-8 pr-2 py-1 rounded border border-[var(--dashboard-border)] bg-transparent focus:outline-none"
+            className="dashboard-input pl-8 pr-3 py-1.5"
             placeholder="Buscar almacén..."
           />
         </div>
