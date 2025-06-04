@@ -58,10 +58,12 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!usuario) return;
 
-    const plan = usuario.plan?.nombre || "Free";
-    fetch("/api/widgets")
-      .then((res) => res.json())
-      .then((data) => {
+    async function loadWidgets() {
+      try {
+        const plan = usuario.plan?.nombre || "Free";
+        const res = await fetch("/api/widgets");
+        const data = await res.json();
+
         const permitidos = data.widgets.filter(
           (w: WidgetMeta) => !w.plans || w.plans.includes(plan)
         );
@@ -71,14 +73,13 @@ export default function DashboardPage() {
         permitidos.forEach((widget: WidgetMeta) => {
           mapa[widget.key] = dynamic(
             () =>
-              import(`./components/widgets/${widget.file}`)
-                .catch(() => {
-                  // Si falla la importación, marca error
-                  setErrores(prev => ({ ...prev, [widget.key]: true }));
-                  return {
-                    default: () => null
-                  };
-                }),
+              import(`./components/widgets/${widget.file}`).catch(() => {
+                // Si falla la importación, marca error
+                setErrores((prev) => ({ ...prev, [widget.key]: true }));
+                return {
+                  default: () => null,
+                };
+              }),
             { ssr: false }
           );
         });
@@ -96,8 +97,8 @@ export default function DashboardPage() {
 
         let saved: { widgets: string[]; layout: Layout[] } | null = null;
         try {
-          const res = await fetch('/api/dashboard/layout');
-          if (res.ok) saved = await res.json();
+          const resLayout = await fetch('/api/dashboard/layout');
+          if (resLayout.ok) saved = await resLayout.json();
         } catch {}
 
         if (saved && Array.isArray(saved.widgets) && Array.isArray(saved.layout)) {
@@ -111,8 +112,12 @@ export default function DashboardPage() {
           setLayout(defaultLayout);
           setWidgets(permitidos.map((w: WidgetMeta) => w.key));
         }
-      })
-      .catch((err) => console.error("Error al cargar widgets:", err));
+      } catch (err) {
+        console.error("Error al cargar widgets:", err);
+      }
+    }
+
+    loadWidgets();
   }, [usuario]);
 
   // Guardar en DB cada que cambian widgets o layout
