@@ -117,9 +117,8 @@ honeylabs/
 - [ ] Notificaciones y alertas
 
 ## Parches
-
-
-- Se añadió una estructura base para la **Pizarra Infinita** accesible solo desde el panel principal del dashboard.
+- Se añadió la sección de **Almacenes** con barra lateral y navbar propios,
+  permitiendo cambiar entre vista de lista y cuadrícula.
 
 ---
 
