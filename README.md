@@ -117,8 +117,7 @@ honeylabs/
 - [ ] Notificaciones y alertas
 
 ## Parches
-* Los formularios de creación y edición de **Almacenes** ahora usan ancho completo para adaptarse mejor a pantallas pequeñas.
-* Se añadieron estilos responsive al sidebar del dashboard para mejorar la experiencia en móviles.
+* El menú de usuario ahora también se abre al hacer clic en el avatar del dashboard.
 
 
 ---
