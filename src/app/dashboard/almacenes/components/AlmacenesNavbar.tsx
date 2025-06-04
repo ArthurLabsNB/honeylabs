@@ -20,6 +20,7 @@ export default function AlmacenesNavbar() {
   }, []);
 
   const allowManage = usuario?.rol === 'admin' || usuario?.tipoCuenta === 'institucional' || usuario?.tipoCuenta === 'empresarial';
+
   return (
     <header className="flex items-center justify-between p-2 border-b border-[var(--dashboard-border)] bg-[var(--dashboard-navbar)]" style={{ minHeight: '50px' }}>
       <div className="flex items-center gap-2">

@@ -10,6 +10,7 @@ interface AlmacenesUIState {
   setFilter: (f: Filter) => void;
   onCreate?: (nombre: string, descripcion: string) => void;
   registerCreate: (fn: (nombre: string, descripcion: string) => void) => void;
+
 }
 
 const AlmacenesUIContext = createContext<AlmacenesUIState>({
@@ -26,6 +27,7 @@ export function AlmacenesUIProvider({ children, onCreate }: { children: React.Re
   const registerCreate = (fn: (nombre: string, descripcion: string) => void) => setCreateFn(() => fn);
   return (
     <AlmacenesUIContext.Provider value={{ view, setView, filter, setFilter, onCreate: createFn, registerCreate }}>
+
       {children}
     </AlmacenesUIContext.Provider>
   );

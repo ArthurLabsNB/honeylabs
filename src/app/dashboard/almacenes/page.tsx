@@ -24,6 +24,7 @@ export default function AlmacenesPage() {
   const router = useRouter();
   const { view, filter, registerCreate } = useAlmacenesUI();
 
+
   useEffect(() => {
     fetch("/api/login", { credentials: "include" })
       .then((res) => res.json())
