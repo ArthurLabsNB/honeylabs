@@ -126,6 +126,12 @@ export default function AlmacenesPage() {
           <div className="flex items-center gap-1 text-sm">
             <button onClick={() => moveUp(idx)} className="px-1">↑</button>
             <button onClick={() => moveDown(idx)} className="px-1">↓</button>
+            <button
+              onClick={() => router.push(`/dashboard/almacenes/${a.id}/editar`)}
+              className="px-1 text-blue-500"
+            >
+              ✎
+            </button>
             <button onClick={() => eliminar(a.id)} className="px-1 text-red-500">✕</button>
           </div>
         </li>
