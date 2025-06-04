@@ -1,5 +1,25 @@
 "use client";
-import { Plus, Upload, Download, Link2, Search, LayoutList, LayoutGrid, Star } from "lucide-react";
+import {
+  Plus,
+  Upload,
+  Download,
+  Link2,
+  Search,
+  LayoutList,
+  LayoutGrid,
+  ListTree,
+  Star,
+  Clock,
+  FileBarChart2,
+  Share2,
+  Copy,
+  LifeBuoy,
+  Bell,
+  CheckSquare,
+  BarChart2,
+  Settings as Cog,
+  Wrench
+} from "lucide-react";
 import { useAlmacenesUI } from "../ui";
 import { useEffect, useState } from "react";
 
@@ -30,6 +50,9 @@ export default function AlmacenesNavbar() {
         </button>
         <button onClick={() => setView('grid')} className={`p-2 rounded hover:bg-white/10 ${view==='grid'?'text-[var(--dashboard-accent)]':''}`} title="Cuadrícula">
           <LayoutGrid className="w-5 h-5" />
+        </button>
+        <button onClick={() => setView('tree')} className={`p-2 rounded hover:bg-white/10 ${view==='tree'?'text-[var(--dashboard-accent)]':''}`} title="Árbol">
+          <ListTree className="w-5 h-5" />
         </button>
         <button onClick={() => setFilter('todos')} className={`p-2 rounded hover:bg-white/10 ${filter==='todos'?'text-[var(--dashboard-accent)]':''}`} title="Todos">
           <span>Todos</span>
@@ -66,6 +89,39 @@ export default function AlmacenesNavbar() {
           <Search className="w-4 h-4 absolute left-3 top-2 text-[var(--dashboard-muted)]" />
           <input className="pl-8 pr-2 py-1 rounded border border-[var(--dashboard-border)] bg-transparent" placeholder="Buscar" />
         </div>
+        <button onClick={() => alert('Historial de actividad')} className="p-2 hover:bg-white/10 rounded" title="Historial">
+          <Clock className="w-5 h-5" />
+        </button>
+        <button onClick={() => window.location.href='/dashboard/reportes'} className="p-2 hover:bg-white/10 rounded" title="Reportes">
+          <FileBarChart2 className="w-5 h-5" />
+        </button>
+        <button onClick={() => alert('Compartir almacén')} className="p-2 hover:bg-white/10 rounded" title="Compartir">
+          <Share2 className="w-5 h-5" />
+        </button>
+        <button onClick={() => alert('Duplicar almacén')} className="p-2 hover:bg-white/10 rounded" title="Duplicar">
+          <Copy className="w-5 h-5" />
+        </button>
+        <button onClick={() => window.location.href='/ayuda'} className="p-2 hover:bg-white/10 rounded" title="Ayuda">
+          <LifeBuoy className="w-5 h-5" />
+        </button>
+        <button onClick={() => alert('Notificaciones')} className="p-2 hover:bg-white/10 rounded" title="Notificaciones">
+          <Bell className="w-5 h-5" />
+        </button>
+        <button onClick={() => alert('Tareas pendientes')} className="p-2 hover:bg-white/10 rounded" title="Tareas">
+          <CheckSquare className="w-5 h-5" />
+        </button>
+        <button onClick={() => alert('Analíticas')} className="p-2 hover:bg-white/10 rounded" title="Analíticas">
+          <BarChart2 className="w-5 h-5" />
+        </button>
+        <button onClick={() => window.location.href='/configuracion'} className="p-2 hover:bg-white/10 rounded" title="Configuración">
+          <Cog className="w-5 h-5" />
+        </button>
+        <button onClick={() => alert('Plantillas')} className="p-2 hover:bg-white/10 rounded" title="Plantillas">
+          <Copy className="w-5 h-5" />
+        </button>
+        <button onClick={() => alert('Mantenimiento')} className="p-2 hover:bg-white/10 rounded" title="Mantenimiento">
+          <Wrench className="w-5 h-5" />
+        </button>
       </div>
     </header>
   );

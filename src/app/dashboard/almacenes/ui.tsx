@@ -1,7 +1,7 @@
 "use client";
 import { createContext, useContext, useState } from "react";
 
-type View = "list" | "grid";
+type View = "list" | "grid" | "tree";
 type Filter = "todos" | "favoritos";
 interface AlmacenesUIState {
   view: View;
