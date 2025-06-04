@@ -118,6 +118,7 @@ honeylabs/
 
 ## Parches
 
+
 - Se añadió una estructura base para la **Pizarra Infinita** accesible solo desde el panel principal del dashboard.
 
 ---

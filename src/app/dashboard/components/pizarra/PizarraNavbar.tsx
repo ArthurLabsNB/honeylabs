@@ -1,4 +1,5 @@
 "use client";
+
 import { Maximize, Minimize, X } from "lucide-react";
 
 interface Props {
@@ -6,6 +7,7 @@ interface Props {
   onToggleFullscreen: () => void;
   fullscreen: boolean;
 }
+
 
 export default function PizarraNavbar({ onClose, onToggleFullscreen, fullscreen }: Props) {
   return (

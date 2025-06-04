@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import PizarraCanvas from "./components/pizarra/PizarraCanvas";
 import dynamic from "next/dynamic";
 import GridLayout, { Layout } from "react-grid-layout";
@@ -38,6 +39,7 @@ export default function DashboardPage() {
   const [layout, setLayout] = useState<Layout[]>([]);
   const [componentes, setComponentes] = useState<{ [key: string]: any }>({});
   const [errores, setErrores] = useState<{ [key: string]: boolean }>({});
+
   const [showPizarra, setShowPizarra] = useState(false);
 
   // 1. Obtener usuario logueado
@@ -205,21 +207,21 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <GridLayout
-        layout={layout}
-        cols={6}
-        rowHeight={95}
-        width={1100}
-        isResizable
-        isDraggable
-        onLayoutChange={setLayout}
-        draggableHandle=".dashboard-widget-card"
-        margin={[18, 18]}
-        data-oid="6l8-9mp"
-      >
-        {widgets.map((key) => {
-          const Widget = componentes[key];
-          const widgetMeta = catalogo.find(w => w.key === key);
+          <GridLayout
+            layout={layout}
+            cols={6}
+            rowHeight={95}
+            width={1100}
+            isResizable
+            isDraggable
+            onLayoutChange={setLayout}
+            draggableHandle=".dashboard-widget-card"
+            margin={[18, 18]}
+            data-oid="6l8-9mp"
+          >
+            {widgets.map((key) => {
+              const Widget = componentes[key];
+              const widgetMeta = catalogo.find(w => w.key === key);
 
           // No renderiza hasta que esté listo el componente dinámico
           if (!Widget) {
@@ -265,6 +267,7 @@ export default function DashboardPage() {
             </div>
           );
         })}
+
       </GridLayout>
       {showPizarra && (
         <PizarraCanvas onClose={() => setShowPizarra(false)} />
