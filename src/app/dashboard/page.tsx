@@ -36,7 +36,9 @@ export default function DashboardPage() {
   const [widgets, setWidgets] = useState<string[]>([]);
   const [layout, setLayout] = useState<Layout[]>([]);
   const [componentes, setComponentes] = useState<{ [key: string]: any }>({});
+  const [errores, setErrores] = useState<{ [key: string]: boolean }>({});
 
+  // 1. Obtener usuario logueado
   useEffect(() => {
     fetch("/api/login", { credentials: "include" })
       .then((res) => res.json())
@@ -48,16 +50,16 @@ export default function DashboardPage() {
       .finally(() => setLoadingUsuario(false));
   }, []);
 
+  // 2. Cargar catálogo y componentes de widgets
   useEffect(() => {
     if (!usuario) return;
 
     const plan = usuario.plan?.nombre || "Free";
-
     fetch("/api/widgets")
       .then((res) => res.json())
       .then((data) => {
         const permitidos = data.widgets.filter(
-          (w: WidgetMeta) => !w.plans || w.plans.includes(plan),
+          (w: WidgetMeta) => !w.plans || w.plans.includes(plan)
         );
         setCatalogo(permitidos);
 
@@ -65,12 +67,15 @@ export default function DashboardPage() {
         permitidos.forEach((widget: WidgetMeta) => {
           mapa[widget.key] = dynamic(
             () =>
-              import(`./components/widgets/${widget.file}`).catch(() => ({
-                default: () => (
-                  <div className="p-4 text-red-600">Error al cargar widget</div>
-                ),
-              })),
-            { ssr: false },
+              import(`./components/widgets/${widget.file}`)
+                .catch(() => {
+                  // Si falla la importación, marca error
+                  setErrores(prev => ({ ...prev, [widget.key]: true }));
+                  return {
+                    default: () => null
+                  };
+                }),
+            { ssr: false }
           );
         });
         setComponentes(mapa);
@@ -108,17 +113,16 @@ export default function DashboardPage() {
       .catch((err) => console.error("Error al cargar widgets:", err));
   }, [usuario]);
 
-  if (loadingUsuario) return <div data-oid="lwpjukq">Cargando usuario...</div>;
-  if (errorUsuario || !usuario)
-    return (
-      <div data-oid=".l_nz-z">
-        {errorUsuario || "Sesión inválida"}{" "}
-        <a href="/login" data-oid="_z2psz7">
-          Iniciar sesión
-        </a>
-      </div>
-    );
+  // Guardar en localStorage cada que cambian widgets o layout
+  useEffect(() => {
+    if (!usuario) return;
+    const data = JSON.stringify({ widgets, layout });
+    try {
+      localStorage.setItem(`dashboardLayout_${usuario.id}`, data);
+    } catch {}
+  }, [widgets, layout, usuario]);
 
+  // Agregar widget
   const handleAddWidget = (key: string) => {
     if (widgets.includes(key)) return;
     const widget = catalogo.find((w) => w.key === key);
@@ -144,25 +148,31 @@ export default function DashboardPage() {
     ]);
   };
 
+  // Quitar widget
   const handleRemoveWidget = (key: string) => {
     setWidgets(widgets.filter((k) => k !== key));
     setLayout(layout.filter((item) => item.i !== key));
+    setErrores(prev => {
+      const { [key]: _, ...rest } = prev;
+      return rest;
+    });
   };
 
-  useEffect(() => {
-    if (!usuario) return;
-    const data = JSON.stringify({ widgets, layout });
-    try {
-      localStorage.setItem(`dashboardLayout_${usuario.id}`, data);
-    } catch {}
-  }, [widgets, layout, usuario]);
+  // Loading/errores de sesión
+  if (loadingUsuario) return <div data-oid="lwpjukq">Cargando usuario...</div>;
+  if (errorUsuario || !usuario)
+    return (
+      <div data-oid=".l_nz-z">
+        {errorUsuario || "Sesión inválida"}{" "}
+        <a href="/login" data-oid="_z2psz7">
+          Iniciar sesión
+        </a>
+      </div>
+    );
 
   return (
     <div className="min-h-screen p-4 sm:p-8" data-oid="7h725.b">
-      <div
-        className="flex items-center justify-between mb-5"
-        data-oid="bjx2qyk"
-      >
+      <div className="flex items-center justify-between mb-5" data-oid="bjx2qyk">
         <h1 className="text-2xl font-bold" data-oid="4rx1xg2">
           Panel principal
         </h1>
@@ -198,12 +208,46 @@ export default function DashboardPage() {
       >
         {widgets.map((key) => {
           const Widget = componentes[key];
+          const widgetMeta = catalogo.find(w => w.key === key);
+
+          // No renderiza hasta que esté listo el componente dinámico
+          if (!Widget) {
+            return (
+              <div key={key} className="dashboard-widget-card flex items-center justify-center" style={{ minHeight: 90 }}>
+                <span className="text-sm text-gray-500">
+                  Cargando widget <b>{widgetMeta?.title || key}</b>...
+                </span>
+              </div>
+            );
+          }
+
+          // Si hubo error cargando ese widget
+          if (errores[key]) {
+            return (
+              <div key={key} className="dashboard-widget-card flex items-center justify-center bg-red-100 border border-red-300" style={{ minHeight: 90 }}>
+                <span className="text-sm text-red-600">
+                  Widget <b>{widgetMeta?.title || key}</b> no disponible.
+                </span>
+                <button
+                  className="ml-4 text-xs text-red-500 underline"
+                  onClick={() => handleRemoveWidget(key)}
+                  title="Quitar widget problemático"
+                >
+                  Quitar
+                </button>
+              </div>
+            );
+          }
+
+          // Si todo bien, renderiza el widget
           return (
             <div key={key} className="dashboard-widget-card" data-oid="z6wmao4">
               <Widget usuario={usuario} data-oid="4aelqx5" />
               <button
                 onClick={() => handleRemoveWidget(key)}
                 data-oid="ib037i_"
+                title="Eliminar widget"
+                className="absolute top-2 right-2 text-lg text-gray-400 hover:text-red-600"
               >
                 ✕
               </button>
