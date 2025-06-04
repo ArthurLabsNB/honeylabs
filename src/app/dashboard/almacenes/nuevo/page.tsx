@@ -31,17 +31,17 @@ export default function NuevoAlmacenPage() {
   };
 
   return (
-    <div className="p-4 max-w-md" data-oid="nuevo-almacen">
+    <div className="p-4 max-w-md w-full mx-auto" data-oid="nuevo-almacen">
       <h1 className="text-xl font-bold mb-4">Crear almacén</h1>
       <div className="flex flex-col gap-2">
         <input
-          className="border p-2 rounded"
+          className="border p-2 rounded w-full"
           placeholder="Nombre"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
         />
         <textarea
-          className="border p-2 rounded"
+          className="border p-2 rounded w-full"
           placeholder="Descripción"
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
@@ -49,7 +49,7 @@ export default function NuevoAlmacenPage() {
         <button
           onClick={crear}
           disabled={loading}
-          className="p-2 bg-[var(--dashboard-accent)] text-white rounded"
+          className="p-2 bg-[var(--dashboard-accent)] text-white rounded w-full"
         >
           {loading ? "Creando..." : "Crear"}
         </button>

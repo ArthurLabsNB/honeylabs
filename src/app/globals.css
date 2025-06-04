@@ -328,3 +328,28 @@ html, body {
   box-shadow: 0 0 0 2px var(--dashboard-accent);
   border-color: var(--dashboard-accent);
 }
+
+/* --------- RESPONSIVE --------- */
+@media (max-width: 640px) {
+  .dashboard-navbar {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .dashboard-sidebar {
+    width: 16rem;
+    min-width: 16rem;
+    transform: translateX(-100%);
+    position: fixed;
+    z-index: 50;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    transition: transform 0.3s;
+  }
+  .dashboard-sidebar.open {
+    transform: translateX(0);
+  }
+  .dashboard-layout-mobile main {
+    margin-left: 0 !important;
+  }
+}
