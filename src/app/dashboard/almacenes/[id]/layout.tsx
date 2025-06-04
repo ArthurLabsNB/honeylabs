@@ -1,9 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { DashboardUIProvider, useDashboardUI } from "../../ui";
+import { useDashboardUI } from "../../ui";
 import { useRouter } from "next/navigation";
 import AlmacenNavbar from "../components/AlmacenNavbar";
 import AlmacenSidebar from "../components/AlmacenSidebar";
+import {
+  SIDEBAR_GLOBAL_WIDTH,
+  SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
+  SIDEBAR_ALMACENES_WIDTH,
+  NAVBAR_HEIGHT,
+} from "../../constants";
 
 interface Usuario {
   id: number;
@@ -12,7 +18,11 @@ interface Usuario {
 }
 
 function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
-  const { fullscreen } = useDashboardUI();
+  const {
+    fullscreen,
+    sidebarGlobalVisible = true,
+    sidebarGlobalCollapsed,
+  } = useDashboardUI();
   const router = useRouter();
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [loading, setLoading] = useState(true);
@@ -52,10 +62,35 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
 
   if (!usuario) return null;
 
+  const globalWidth = sidebarGlobalVisible
+    ? sidebarGlobalCollapsed
+      ? SIDEBAR_GLOBAL_COLLAPSED_WIDTH
+      : SIDEBAR_GLOBAL_WIDTH
+    : 0;
+  const sidebarLeft = globalWidth;
+  const mainMarginLeft = !fullscreen
+    ? globalWidth + SIDEBAR_ALMACENES_WIDTH
+    : 0;
+
   return (
-    <div className={`min-h-screen bg-[var(--dashboard-bg)] relative ${fullscreen ? 'dashboard-full' : ''}`}>
-      <AlmacenSidebar />
-      <main className="flex flex-col min-h-screen" style={{ paddingLeft: '192px' }}>
+    <div
+      className={`min-h-screen bg-[var(--dashboard-bg)] relative ${
+        fullscreen ? 'dashboard-full' : ''
+      }`}
+    >
+      <AlmacenSidebar
+        style={{
+          left: sidebarLeft,
+          top: NAVBAR_HEIGHT,
+          width: SIDEBAR_ALMACENES_WIDTH,
+          minWidth: SIDEBAR_ALMACENES_WIDTH,
+          height: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
+        }}
+      />
+      <main
+        className="flex flex-col min-h-screen transition-all duration-300"
+        style={{ marginLeft: mainMarginLeft, marginTop: NAVBAR_HEIGHT }}
+      >
         <AlmacenNavbar />
         <section className="flex-1 p-4 overflow-y-auto bg-[var(--dashboard-bg)] text-[var(--dashboard-text)]">
           {children}
@@ -66,9 +101,5 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
 }
 
 export default function AlmacenLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <DashboardUIProvider>
-      <ProtectedAlmacen>{children}</ProtectedAlmacen>
-    </DashboardUIProvider>
-  );
+  return <ProtectedAlmacen>{children}</ProtectedAlmacen>;
 }

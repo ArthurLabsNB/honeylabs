@@ -117,7 +117,8 @@ honeylabs/
 - [ ] Notificaciones y alertas
 
 ## Parches
-* Se agregó un estado global para controlar el colapso del sidebar del dashboard y se sincronizó el desplazamiento del sidebar de Almacenes.
+* Se ajustaron los layouts de **Almacenes** para alinear correctamente su sidebar junto al sidebar global sin cubrir el navbar del dashboard.
+* Se añadieron páginas para crear y editar almacenes y se implementó la ruta API para actualizar información.
 
 
 ---

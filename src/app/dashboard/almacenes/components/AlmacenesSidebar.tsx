@@ -24,6 +24,7 @@ import {
   SIDEBAR_GLOBAL_WIDTH,
   SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
   SIDEBAR_ALMACENES_WIDTH,
+  NAVBAR_HEIGHT,
 } from "../../constants";
 
 export default function AlmacenesSidebar() {
@@ -45,9 +46,11 @@ export default function AlmacenesSidebar() {
         left: sidebarLeft,
         width: SIDEBAR_ALMACENES_WIDTH,
         minWidth: SIDEBAR_ALMACENES_WIDTH,
+        top: NAVBAR_HEIGHT,
+        height: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
       }}
       className={`
-        fixed top-0 h-screen z-40
+        fixed z-40
         border-r border-[var(--dashboard-border)]
         bg-[var(--dashboard-sidebar)]
         flex flex-col gap-2 transition-all duration-300

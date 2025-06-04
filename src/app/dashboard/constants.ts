@@ -1,3 +1,4 @@
 export const SIDEBAR_GLOBAL_WIDTH = 256;
 export const SIDEBAR_GLOBAL_COLLAPSED_WIDTH = 80;
 export const SIDEBAR_ALMACENES_WIDTH = 192;
+export const NAVBAR_HEIGHT = 70;

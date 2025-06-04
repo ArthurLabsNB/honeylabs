@@ -33,3 +33,23 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     return NextResponse.json({ error: 'Error al eliminar' }, { status: 500 });
   }
 }
+
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const usuario = await getUsuarioFromSession();
+    if (!usuario) {
+      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
+    }
+    const id = Number(params.id);
+    const { nombre, descripcion } = await req.json();
+    const almacen = await prisma.almacen.update({
+      where: { id },
+      data: { nombre, descripcion },
+      select: { id: true, nombre: true, descripcion: true },
+    });
+    return NextResponse.json({ almacen });
+  } catch (err) {
+    console.error('PUT /api/almacenes/[id]', err);
+    return NextResponse.json({ error: 'Error al actualizar' }, { status: 500 });
+  }
+}

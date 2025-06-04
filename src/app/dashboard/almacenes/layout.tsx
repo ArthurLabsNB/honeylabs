@@ -1,10 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { DashboardUIProvider, useDashboardUI } from "../ui";
+import { useDashboardUI } from "../ui";
 import {
   SIDEBAR_GLOBAL_WIDTH,
   SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
   SIDEBAR_ALMACENES_WIDTH,
+  NAVBAR_HEIGHT,
 } from "../constants";
 import { useRouter } from "next/navigation";
 import AlmacenesNavbar from "./components/AlmacenesNavbar";
@@ -20,7 +21,6 @@ interface Usuario {
 // Las constantes de ancho se comparten con el layout principal
 
 function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
-  // Ahora puedes controlar ambos desde tu context global (¡ajusta tu DashboardUIProvider!)
   const {
     fullscreen,
     sidebarGlobalVisible = true,
@@ -73,7 +73,9 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
       : SIDEBAR_GLOBAL_WIDTH
     : 0;
   const sidebarLeft = globalWidth;
-  const mainMarginLeft = !fullscreen ? globalWidth + SIDEBAR_ALMACENES_WIDTH : 0;
+  const mainMarginLeft = !fullscreen
+    ? globalWidth + SIDEBAR_ALMACENES_WIDTH
+    : 0;
 
   return (
     <div
@@ -88,8 +90,10 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
             width: SIDEBAR_ALMACENES_WIDTH,
             minWidth: SIDEBAR_ALMACENES_WIDTH,
             left: sidebarLeft,
+            top: NAVBAR_HEIGHT,
+            height: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
           }}
-          className="fixed top-0 h-screen z-40 border-r border-[var(--dashboard-border)] bg-[var(--dashboard-sidebar)] flex flex-col transition-all duration-300"
+          className="fixed z-40 border-r border-[var(--dashboard-border)] bg-[var(--dashboard-sidebar)] flex flex-col transition-all duration-300"
         >
           <AlmacenesSidebar />
         </aside>
@@ -113,10 +117,8 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
 
 export default function AlmacenesLayout({ children }: { children: React.ReactNode }) {
   return (
-    <DashboardUIProvider>
-      <AlmacenesUIProvider>
-        <ProtectedAlmacenes>{children}</ProtectedAlmacenes>
-      </AlmacenesUIProvider>
-    </DashboardUIProvider>
+    <AlmacenesUIProvider>
+      <ProtectedAlmacenes>{children}</ProtectedAlmacenes>
+    </AlmacenesUIProvider>
   );
 }
