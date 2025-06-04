@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAlmacenesUI } from "./ui";
 
 interface Usuario {
   id: number;
@@ -19,6 +21,8 @@ export default function AlmacenesPage() {
   const [almacenes, setAlmacenes] = useState<Almacen[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const router = useRouter();
+  const { view } = useAlmacenesUI();
 
   useEffect(() => {
     fetch("/api/login", { credentials: "include" })
@@ -54,12 +58,41 @@ export default function AlmacenesPage() {
 
   return (
     <div className="p-4" data-oid="almacenes-page">
-      <h1 className="text-2xl font-bold mb-4">Almacenes</h1>
-      <ul className="list-disc pl-4">
-        {almacenes.map((a) => (
-          <li key={a.id}>{a.nombre}</li>
-        ))}
-      </ul>
+      {view === "list" ? (
+        <ul className="divide-y">
+          {almacenes.map((a) => (
+            <li
+              key={a.id}
+              className="p-2 cursor-pointer hover:bg-white/5"
+              onClick={() => router.push(`/dashboard/almacenes/${a.id}`)}
+            >
+              <h3 className="font-semibold">{a.nombre}</h3>
+              {a.descripcion && (
+                <p className="text-sm text-[var(--dashboard-muted)]">
+                  {a.descripcion}
+                </p>
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {almacenes.map((a) => (
+            <div
+              key={a.id}
+              className="p-4 border rounded-lg cursor-pointer hover:bg-white/5"
+              onClick={() => router.push(`/dashboard/almacenes/${a.id}`)}
+            >
+              <h3 className="font-semibold mb-1">{a.nombre}</h3>
+              {a.descripcion && (
+                <p className="text-sm text-[var(--dashboard-muted)]">
+                  {a.descripcion}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
