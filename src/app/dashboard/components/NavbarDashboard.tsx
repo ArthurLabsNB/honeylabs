@@ -15,6 +15,7 @@ import {
   Maximize,
   Minimize,
 } from "lucide-react";
+import UserMenu from "@/components/UserMenu";
 import { useDashboardUI } from "../ui";
 
 const MOCK_RESULTS = [
@@ -27,6 +28,7 @@ const MOCK_RESULTS = [
 interface Usuario {
   id: number;
   nombre: string;
+  correo?: string;
   tipoCuenta?: string;
   rol?: string;
   plan?: { nombre?: string };
@@ -263,6 +265,17 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
             <span data-oid="pi7vfgk">{usuario.nombre}</span>
             <ChevronDown data-oid="dimft:z" />
           </button>
+          <UserMenu
+            usuario={{
+              nombre: usuario.nombre,
+              correo: (usuario as any).correo ?? "",
+              imagen: usuario.avatarUrl ?? undefined,
+              plan: usuario.plan?.nombre,
+            }}
+            open={userMenuOpen}
+            setOpen={setUserMenuOpen}
+            hideTrigger
+          />
         </div>
       </div>
     </header>

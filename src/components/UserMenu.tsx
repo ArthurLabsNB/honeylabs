@@ -25,10 +25,22 @@ interface UsuarioData {
   tiene2FA?: boolean;
 }
 
-export default function UserMenu({ usuario }: { usuario: UsuarioData | null }) {
+export default function UserMenu({
+  usuario,
+  open: controlledOpen,
+  setOpen: controlledSetOpen,
+  hideTrigger = false,
+}: {
+  usuario: UsuarioData | null;
+  open?: boolean;
+  setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  hideTrigger?: boolean;
+}) {
   const router = useRouter();
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
+  const setOpen = controlledSetOpen ?? setInternalOpen;
   const [temaOscuro, setTemaOscuro] = useState(true);
   const refMenu = useRef<HTMLDivElement>(null);
 
@@ -148,16 +160,18 @@ export default function UserMenu({ usuario }: { usuario: UsuarioData | null }) {
 
   return (
     <div className="relative" ref={refMenu} data-oid="v5p4.:j">
-      <button
-        aria-label="Abrir menú de usuario"
-        aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
-        className="h-9 w-9 rounded-full bg-amber-600 text-white font-bold text-sm flex items-center justify-center hover:ring-2 ring-amber-400 transition"
-        tabIndex={0}
-        data-oid="-6gs4k9"
-      >
-        {renderAvatar()}
-      </button>
+      {!hideTrigger && (
+        <button
+          aria-label="Abrir menú de usuario"
+          aria-expanded={open}
+          onClick={() => setOpen((v) => !v)}
+          className="h-9 w-9 rounded-full bg-amber-600 text-white font-bold text-sm flex items-center justify-center hover:ring-2 ring-amber-400 transition"
+          tabIndex={0}
+          data-oid="-6gs4k9"
+        >
+          {renderAvatar()}
+        </button>
+      )}
 
       {open && (
         <nav
