@@ -92,10 +92,8 @@ const sidebarMenu = [
 ];
 
 export default function Sidebar({ usuario }: { usuario: Usuario }) {
-  const {
-    sidebarGlobalCollapsed: collapsed,
-    toggleSidebarCollapsed,
-  } = useDashboardUI();
+  const { sidebarGlobalCollapsed: collapsed, toggleSidebarCollapsed } =
+    useDashboardUI();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -113,7 +111,7 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
   }
 
   const tipo =
-    usuario.rol === "admin" ? "admin" : usuario.tipoCuenta ?? "estandar";
+    usuario.rol === "admin" ? "admin" : (usuario.tipoCuenta ?? "estandar");
 
   const filteredMenu = sidebarMenu.filter((item) =>
     item.allowed.includes(tipo),
@@ -152,9 +150,15 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
           data-oid="_1n:9hf"
         >
           {collapsed ? (
-            <ChevronRight className="w-6 h-6 text-[var(--dashboard-accent)]" data-oid="g0cnjbp" />
+            <ChevronRight
+              className="w-6 h-6 text-[var(--dashboard-accent)]"
+              data-oid="g0cnjbp"
+            />
           ) : (
-            <ChevronLeft className="w-6 h-6 text-[var(--dashboard-accent)]" data-oid=".ezj2xq" />
+            <ChevronLeft
+              className="w-6 h-6 text-[var(--dashboard-accent)]"
+              data-oid=".ezj2xq"
+            />
           )}
         </button>
       </div>
@@ -215,13 +219,22 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
             className="w-12 h-12 rounded-full bg-[var(--dashboard-accent)]/30 flex items-center justify-center mb-2"
             data-oid="o2nhv:6"
           >
-            <User className="w-7 h-7 text-[var(--dashboard-navbar)]" data-oid="0p00fpi" />
+            <User
+              className="w-7 h-7 text-[var(--dashboard-navbar)]"
+              data-oid="0p00fpi"
+            />
           </div>
         )}
-        <span className={`font-bold text-sm ${collapsed ? "hidden" : "block"}`} data-oid="0l2o3_x">
+        <span
+          className={`font-bold text-sm ${collapsed ? "hidden" : "block"}`}
+          data-oid="0l2o3_x"
+        >
           {usuario.nombre}
         </span>
-        <span className={`text-xs text-[var(--dashboard-accent)] opacity-80 ${collapsed ? "hidden" : "block"}`} data-oid="purvdjd">
+        <span
+          className={`text-xs text-[var(--dashboard-accent)] opacity-80 ${collapsed ? "hidden" : "block"}`}
+          data-oid="purvdjd"
+        >
           {typeof tipo === "string"
             ? tipo.charAt(0).toUpperCase() + tipo.slice(1)
             : "Invitado"}

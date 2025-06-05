@@ -232,9 +232,16 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
         <button
           className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
           onClick={toggleFullscreen}
-          title={fullscreen ? "Salir de pantalla completa" : "Pantalla completa"}
+          title={
+            fullscreen ? "Salir de pantalla completa" : "Pantalla completa"
+          }
+          data-oid="9irg.h4"
         >
-          {fullscreen ? <Minimize /> : <Maximize />}
+          {fullscreen ? (
+            <Minimize data-oid="vmjvqyb" />
+          ) : (
+            <Maximize data-oid="x.pc3-4" />
+          )}
         </button>
         <button
           className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
@@ -275,6 +282,7 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
             open={userMenuOpen}
             setOpen={setUserMenuOpen}
             hideTrigger
+            data-oid="d:j59u0"
           />
         </div>
       </div>

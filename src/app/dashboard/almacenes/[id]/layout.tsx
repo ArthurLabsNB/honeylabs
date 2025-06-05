@@ -55,8 +55,16 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--dashboard-bg)]">
-        <span className="text-[var(--dashboard-accent)] text-lg font-bold animate-pulse">Cargando...</span>
+      <div
+        className="flex min-h-screen items-center justify-center bg-[var(--dashboard-bg)]"
+        data-oid="n_c903y"
+      >
+        <span
+          className="text-[var(--dashboard-accent)] text-lg font-bold animate-pulse"
+          data-oid="bgcezuo"
+        >
+          Cargando...
+        </span>
       </div>
     );
   }
@@ -76,8 +84,9 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
   return (
     <div
       className={`min-h-screen bg-[var(--dashboard-bg)] relative ${
-        fullscreen ? 'dashboard-full' : ''
+        fullscreen ? "dashboard-full" : ""
       }`}
+      data-oid="qm-ogij"
     >
       <AlmacenSidebar
         style={{
@@ -87,13 +96,19 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
           minWidth: SIDEBAR_ALMACENES_WIDTH,
           height: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
         }}
+        data-oid="kvfmob7"
       />
+
       <main
         className="flex flex-col min-h-screen transition-all duration-300"
         style={{ marginLeft: mainMarginLeft, marginTop: NAVBAR_HEIGHT }}
+        data-oid="4l8j8.g"
       >
-        <AlmacenNavbar />
-        <section className="flex-1 p-4 overflow-y-auto bg-[var(--dashboard-bg)] text-[var(--dashboard-text)]">
+        <AlmacenNavbar data-oid=":3zta8e" />
+        <section
+          className="flex-1 p-4 overflow-y-auto bg-[var(--dashboard-bg)] text-[var(--dashboard-text)]"
+          data-oid="3oxargz"
+        >
           {children}
         </section>
       </main>
@@ -101,6 +116,10 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function AlmacenLayout({ children }: { children: React.ReactNode }) {
-  return <ProtectedAlmacen>{children}</ProtectedAlmacen>;
+export default function AlmacenLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <ProtectedAlmacen data-oid="csl.ak4">{children}</ProtectedAlmacen>;
 }

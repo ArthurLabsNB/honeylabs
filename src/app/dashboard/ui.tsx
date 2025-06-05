@@ -1,8 +1,6 @@
 "use client";
 import { createContext, useContext, useState, useEffect } from "react";
 
-
-
 interface UIState {
   fullscreen: boolean;
   toggleFullscreen: () => void;
@@ -21,7 +19,11 @@ const DashboardUIContext = createContext<UIState>({
   toggleSidebarCollapsed: () => {},
 });
 
-export function DashboardUIProvider({ children }: { children: React.ReactNode }) {
+export function DashboardUIProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [fullscreen, setFullscreen] = useState(false);
   const [sidebarGlobalCollapsed, setSidebarGlobalCollapsed] = useState(false);
   const [sidebarGlobalVisible, setSidebarGlobalVisible] = useState(true);
@@ -31,8 +33,7 @@ export function DashboardUIProvider({ children }: { children: React.ReactNode })
   }, []);
 
   const toggleFullscreen = () => setFullscreen((f) => !f);
-  const toggleSidebarCollapsed = () =>
-    setSidebarGlobalCollapsed((c) => !c);
+  const toggleSidebarCollapsed = () => setSidebarGlobalCollapsed((c) => !c);
   const toggleSidebarVisible = (v?: boolean) =>
     setSidebarGlobalVisible((c) => (typeof v === "boolean" ? v : !c));
 
@@ -46,6 +47,7 @@ export function DashboardUIProvider({ children }: { children: React.ReactNode })
         toggleSidebarVisible,
         toggleSidebarCollapsed,
       }}
+      data-oid=":j47jz7"
     >
       {children}
     </DashboardUIContext.Provider>

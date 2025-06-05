@@ -26,7 +26,7 @@ export default function AppCenterPage() {
         const tipo =
           data.usuario.rol === "admin"
             ? "admin"
-            : data.usuario.tipoCuenta ?? "estandar";
+            : (data.usuario.tipoCuenta ?? "estandar");
         if (!allowed.includes(tipo)) throw new Error("No autorizado");
         setUsuario(data.usuario);
       })
@@ -43,15 +43,29 @@ export default function AppCenterPage() {
       .finally(() => setLoading(false));
   }, [usuario]);
 
-  if (error) return <div className="p-4 text-red-500">{error}</div>;
-  if (loading) return <div className="p-4">Cargando...</div>;
+  if (error)
+    return (
+      <div className="p-4 text-red-500" data-oid="m89wg8.">
+        {error}
+      </div>
+    );
+  if (loading)
+    return (
+      <div className="p-4" data-oid="733etta">
+        Cargando...
+      </div>
+    );
 
   return (
     <div className="p-4" data-oid="appcenter-page">
-      <h1 className="text-2xl font-bold mb-4">App Center</h1>
-      <ul className="list-disc pl-4">
+      <h1 className="text-2xl font-bold mb-4" data-oid="ty_35va">
+        App Center
+      </h1>
+      <ul className="list-disc pl-4" data-oid="-b5pmcc">
         {apps.map((a) => (
-          <li key={a.id}>{a.nombre}</li>
+          <li key={a.id} data-oid="xj6ocsg">
+            {a.nombre}
+          </li>
         ))}
       </ul>
     </div>

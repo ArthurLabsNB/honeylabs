@@ -59,8 +59,14 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--dashboard-bg)]">
-        <span className="text-[var(--dashboard-accent)] text-lg font-bold animate-pulse">
+      <div
+        className="flex min-h-screen items-center justify-center bg-[var(--dashboard-bg)]"
+        data-oid="eqwh:-y"
+      >
+        <span
+          className="text-[var(--dashboard-accent)] text-lg font-bold animate-pulse"
+          data-oid="mvway4."
+        >
           Cargando...
         </span>
       </div>
@@ -80,7 +86,8 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
     <div
       className={`min-h-screen bg-[var(--dashboard-bg)] transition-colors duration-300 relative ${
         fullscreen ? "dashboard-full" : ""
-      } ${isMobile ? 'dashboard-layout-mobile' : ''}`}
+      } ${isMobile ? "dashboard-layout-mobile" : ""}`}
+      data-oid="3vix2gy"
     >
       {/* --- SIDEBAR FIJO --- */}
       {!fullscreen && (isMobile || sidebarGlobalVisible) && (
@@ -95,9 +102,10 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
                 : "translateX(-100%)"
               : undefined,
           }}
-          className={`fixed top-0 left-0 h-screen z-40 border-r border-[var(--dashboard-border)] bg-[var(--dashboard-sidebar)] transition-all duration-300 dashboard-sidebar ${isMobile && sidebarGlobalVisible ? 'open' : ''}`}
+          className={`fixed top-0 left-0 h-screen z-40 border-r border-[var(--dashboard-border)] bg-[var(--dashboard-sidebar)] transition-all duration-300 dashboard-sidebar ${isMobile && sidebarGlobalVisible ? "open" : ""}`}
+          data-oid="ookx_o-"
         >
-          <Sidebar usuario={usuario} />
+          <Sidebar usuario={usuario} data-oid="t.unwrz" />
         </div>
       )}
 
@@ -105,8 +113,9 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
       <div
         className="flex flex-col min-h-screen transition-all duration-300"
         style={{ marginLeft }}
+        data-oid="ufsaxi9"
       >
-        <NavbarDashboard usuario={usuario} />
+        <NavbarDashboard usuario={usuario} data-oid="1w12i5_" />
         <section
           className="
             flex-1 p-0 sm:p-8
@@ -116,19 +125,24 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
             animate-fade-in
             transition-colors duration-300
           "
+          data-oid="-c2n1cr"
         >
           {children}
         </section>
-        <WidgetToolbar />
+        <WidgetToolbar data-oid="8l_ua.d" />
       </div>
     </div>
   );
 }
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <DashboardUIProvider>
-      <ProtectedDashboard>{children}</ProtectedDashboard>
+    <DashboardUIProvider data-oid="9vdsl11">
+      <ProtectedDashboard data-oid=":1yrc0l">{children}</ProtectedDashboard>
     </DashboardUIProvider>
   );
 }

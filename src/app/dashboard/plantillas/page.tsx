@@ -26,7 +26,7 @@ export default function PlantillasPage() {
         const tipo =
           data.usuario.rol === "admin"
             ? "admin"
-            : data.usuario.tipoCuenta ?? "estandar";
+            : (data.usuario.tipoCuenta ?? "estandar");
         if (!allowed.includes(tipo)) throw new Error("No autorizado");
         setUsuario(data.usuario);
       })
@@ -43,15 +43,29 @@ export default function PlantillasPage() {
       .finally(() => setLoading(false));
   }, [usuario]);
 
-  if (error) return <div className="p-4 text-red-500">{error}</div>;
-  if (loading) return <div className="p-4">Cargando...</div>;
+  if (error)
+    return (
+      <div className="p-4 text-red-500" data-oid=".v0xt_c">
+        {error}
+      </div>
+    );
+  if (loading)
+    return (
+      <div className="p-4" data-oid="08o_u:l">
+        Cargando...
+      </div>
+    );
 
   return (
     <div className="p-4" data-oid="plantillas-page">
-      <h1 className="text-2xl font-bold mb-4">Plantillas</h1>
-      <ul className="list-disc pl-4">
+      <h1 className="text-2xl font-bold mb-4" data-oid="sk6.q96">
+        Plantillas
+      </h1>
+      <ul className="list-disc pl-4" data-oid="vm_gyb_">
         {plantillas.map((p) => (
-          <li key={p.id}>{p.nombre}</li>
+          <li key={p.id} data-oid="hnyi01x">
+            {p.nombre}
+          </li>
         ))}
       </ul>
     </div>

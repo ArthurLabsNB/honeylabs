@@ -21,8 +21,8 @@ export default function AuthLayout({
     >
       {/* Espacio para un posible logo */}
       {/* <div className="mb-8">
-            <Logo width={64} height={64} />
-           </div> */}
+             <Logo width={64} height={64} />
+            </div> */}
       {children}
       {/* Pie de página opcional para branding o links legales */}
       {/* <footer className="mt-12 text-xs text-center text-gray-400">HoneyLabs &copy; {new Date().getFullYear()}</footer> */}

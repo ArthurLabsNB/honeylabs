@@ -48,11 +48,21 @@ export default function PizarraCanvas({ onClose }: Props) {
   return (
     <div
       className={`pizarra-overlay fixed inset-0 z-50 flex bg-[var(--dashboard-bg)] ${fullscreen ? "pizarra-full" : ""}`}
+      data-oid="qvzo_._"
     >
-      <PizarraSidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <PizarraNavbar onClose={handleClose} onToggleFullscreen={toggleFullscreen} fullscreen={fullscreen} />
-        <div ref={canvasRef} className="flex-1 overflow-auto p-4" />
+      <PizarraSidebar data-oid="e:coc72" />
+      <div className="flex-1 flex flex-col overflow-hidden" data-oid="h3z4f2j">
+        <PizarraNavbar
+          onClose={handleClose}
+          onToggleFullscreen={toggleFullscreen}
+          fullscreen={fullscreen}
+          data-oid="g7mm71o"
+        />
+        <div
+          ref={canvasRef}
+          className="flex-1 overflow-auto p-4"
+          data-oid="6i7ev3b"
+        />
       </div>
     </div>
   );

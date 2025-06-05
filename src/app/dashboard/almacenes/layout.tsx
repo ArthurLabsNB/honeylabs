@@ -58,8 +58,14 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--dashboard-bg)]">
-        <span className="text-[var(--dashboard-accent)] text-lg font-bold animate-pulse">
+      <div
+        className="flex min-h-screen items-center justify-center bg-[var(--dashboard-bg)]"
+        data-oid="q5s3lyt"
+      >
+        <span
+          className="text-[var(--dashboard-accent)] text-lg font-bold animate-pulse"
+          data-oid="cjf3xe."
+        >
           Cargando...
         </span>
       </div>
@@ -83,6 +89,7 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
       className={`min-h-screen bg-[var(--dashboard-bg)] relative ${
         fullscreen ? "dashboard-full" : ""
       }`}
+      data-oid="ed2j7bc"
     >
       {/* --- SIDEBAR ALMACENES --- */}
       {!fullscreen && (
@@ -95,8 +102,9 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
             height: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
           }}
           className="fixed z-40 border-r border-[var(--dashboard-border)] bg-[var(--dashboard-sidebar)] flex flex-col transition-all duration-300"
+          data-oid="oz.pdwz"
         >
-          <AlmacenesSidebar />
+          <AlmacenesSidebar data-oid="m.62avw" />
         </aside>
       )}
 
@@ -106,9 +114,13 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
         style={{
           marginLeft: mainMarginLeft,
         }}
+        data-oid="mrz7ssi"
       >
-        {!fullscreen && <AlmacenesNavbar />}
-        <section className="flex-1 p-4 sm:pt-0 overflow-y-auto bg-[var(--dashboard-bg)] text-[var(--dashboard-text)]">
+        {!fullscreen && <AlmacenesNavbar data-oid="u48cql_" />}
+        <section
+          className="flex-1 p-4 sm:pt-0 overflow-y-auto bg-[var(--dashboard-bg)] text-[var(--dashboard-text)]"
+          data-oid="fs3:.b6"
+        >
           {children}
         </section>
       </div>
@@ -116,10 +128,14 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function AlmacenesLayout({ children }: { children: React.ReactNode }) {
+export default function AlmacenesLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <AlmacenesUIProvider>
-      <ProtectedAlmacenes>{children}</ProtectedAlmacenes>
+    <AlmacenesUIProvider data-oid="nlxusux">
+      <ProtectedAlmacenes data-oid="i727_q2">{children}</ProtectedAlmacenes>
     </AlmacenesUIProvider>
   );
 }

@@ -28,7 +28,7 @@ export default function AlertasPage() {
         const tipo =
           data.usuario.rol === "admin"
             ? "admin"
-            : data.usuario.tipoCuenta ?? "estandar";
+            : (data.usuario.tipoCuenta ?? "estandar");
         if (!allowed.includes(tipo)) {
           throw new Error("No autorizado");
         }
@@ -49,15 +49,27 @@ export default function AlertasPage() {
       .finally(() => setLoading(false));
   }, [usuario]);
 
-  if (error) return <div className="p-4 text-red-500">{error}</div>;
-  if (loading) return <div className="p-4">Cargando...</div>;
+  if (error)
+    return (
+      <div className="p-4 text-red-500" data-oid="7zleg.t">
+        {error}
+      </div>
+    );
+  if (loading)
+    return (
+      <div className="p-4" data-oid="o0eaf02">
+        Cargando...
+      </div>
+    );
 
   return (
     <div className="p-4" data-oid="alertas-page">
-      <h1 className="text-2xl font-bold mb-4">Alertas</h1>
-      <ul className="list-disc pl-4">
+      <h1 className="text-2xl font-bold mb-4" data-oid="guy4wre">
+        Alertas
+      </h1>
+      <ul className="list-disc pl-4" data-oid="g6tfe0a">
         {alertas.map((a) => (
-          <li key={a.id}>
+          <li key={a.id} data-oid="_32tr80">
             {a.almacen ? `${a.almacen.nombre}: ` : ""}
             {a.mensaje}
           </li>

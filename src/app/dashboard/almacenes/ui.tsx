@@ -10,7 +10,6 @@ interface AlmacenesUIState {
   setFilter: (f: Filter) => void;
   onCreate?: (nombre: string, descripcion: string) => void;
   registerCreate: (fn: (nombre: string, descripcion: string) => void) => void;
-
 }
 
 const AlmacenesUIContext = createContext<AlmacenesUIState>({
@@ -20,11 +19,18 @@ const AlmacenesUIContext = createContext<AlmacenesUIState>({
   setFilter: () => {},
 });
 
-export function AlmacenesUIProvider({ children, onCreate }: { children: React.ReactNode; onCreate?: (nombre: string, descripcion: string) => void }) {
+export function AlmacenesUIProvider({
+  children,
+  onCreate,
+}: {
+  children: React.ReactNode;
+  onCreate?: (nombre: string, descripcion: string) => void;
+}) {
   const [view, setView] = useState<View>("list");
   const [filter, setFilter] = useState<Filter>("todos");
-  const [createFn, setCreateFn] =
-    useState<((nombre: string, descripcion: string) => void) | undefined>(onCreate);
+  const [createFn, setCreateFn] = useState<
+    ((nombre: string, descripcion: string) => void) | undefined
+  >(onCreate);
 
   const registerCreate = useCallback(
     (fn: (nombre: string, descripcion: string) => void) => {
@@ -33,8 +39,17 @@ export function AlmacenesUIProvider({ children, onCreate }: { children: React.Re
     [],
   );
   return (
-    <AlmacenesUIContext.Provider value={{ view, setView, filter, setFilter, onCreate: createFn, registerCreate }}>
-
+    <AlmacenesUIContext.Provider
+      value={{
+        view,
+        setView,
+        filter,
+        setFilter,
+        onCreate: createFn,
+        registerCreate,
+      }}
+      data-oid="sq9joa9"
+    >
       {children}
     </AlmacenesUIContext.Provider>
   );

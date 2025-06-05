@@ -28,14 +28,35 @@ export default function AlmacenDetallePage() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  if (error) return <div className="p-4 text-red-500">{error}</div>;
-  if (loading) return <div className="p-4">Cargando...</div>;
-  if (!almacen) return <div className="p-4">No encontrado</div>;
+  if (error)
+    return (
+      <div className="p-4 text-red-500" data-oid="4oqf-0:">
+        {error}
+      </div>
+    );
+  if (loading)
+    return (
+      <div className="p-4" data-oid="7f7-k..">
+        Cargando...
+      </div>
+    );
+  if (!almacen)
+    return (
+      <div className="p-4" data-oid=".:mmt_6">
+        No encontrado
+      </div>
+    );
 
   return (
     <div data-oid="almacen-detalle">
-      <h1 className="text-2xl font-bold mb-2">{almacen.nombre}</h1>
-      {almacen.descripcion && <p className="text-sm text-[var(--dashboard-muted)]">{almacen.descripcion}</p>}
+      <h1 className="text-2xl font-bold mb-2" data-oid="uy4x1e1">
+        {almacen.nombre}
+      </h1>
+      {almacen.descripcion && (
+        <p className="text-sm text-[var(--dashboard-muted)]" data-oid="hzl:a8n">
+          {almacen.descripcion}
+        </p>
+      )}
     </div>
   );
 }

@@ -12,7 +12,14 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+);
 
 export default function GraficaWidget({ usuario }: { usuario: any }) {
   const [metrics, setMetrics] = useState<any>(null);
@@ -45,6 +52,7 @@ export default function GraficaWidget({ usuario }: { usuario: any }) {
           metrics.usuarios,
           metrics.almacenes,
         ],
+
         backgroundColor: "#fbbf24",
       },
     ],
@@ -56,5 +64,5 @@ export default function GraficaWidget({ usuario }: { usuario: any }) {
     scales: { y: { beginAtZero: true } },
   } as const;
 
-  return <Bar options={options} data={chartData} />;
+  return <Bar options={options} data={chartData} data-oid=".f56::." />;
 }

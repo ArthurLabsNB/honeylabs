@@ -28,7 +28,7 @@ export default function BillingPage() {
         const tipo =
           data.usuario.rol === "admin"
             ? "admin"
-            : data.usuario.tipoCuenta ?? "estandar";
+            : (data.usuario.tipoCuenta ?? "estandar");
         if (!allowed.includes(tipo)) throw new Error("No autorizado");
         setUsuario(data.usuario);
       })
@@ -45,15 +45,27 @@ export default function BillingPage() {
       .finally(() => setLoading(false));
   }, [usuario]);
 
-  if (error) return <div className="p-4 text-red-500">{error}</div>;
-  if (loading) return <div className="p-4">Cargando...</div>;
+  if (error)
+    return (
+      <div className="p-4 text-red-500" data-oid="34d1zkf">
+        {error}
+      </div>
+    );
+  if (loading)
+    return (
+      <div className="p-4" data-oid="24yk4ni">
+        Cargando...
+      </div>
+    );
 
   return (
     <div className="p-4" data-oid="billing-page">
-      <h1 className="text-2xl font-bold mb-4">Billing</h1>
-      <ul className="list-disc pl-4">
+      <h1 className="text-2xl font-bold mb-4" data-oid="74m2n0m">
+        Billing
+      </h1>
+      <ul className="list-disc pl-4" data-oid="8gbt8qm">
         {invoices.map((i) => (
-          <li key={i.id}>
+          <li key={i.id} data-oid="u.c1ck9">
             {i.concepto} - ${"{i.monto}"} ({i.estado})
           </li>
         ))}

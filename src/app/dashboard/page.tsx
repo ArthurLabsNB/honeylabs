@@ -66,7 +66,7 @@ export default function DashboardPage() {
         const data = await jsonOrNull(res);
 
         const permitidos = data.widgets.filter(
-          (w: WidgetMeta) => !w.plans || w.plans.includes(plan)
+          (w: WidgetMeta) => !w.plans || w.plans.includes(plan),
         );
         setCatalogo(permitidos);
 
@@ -81,7 +81,7 @@ export default function DashboardPage() {
                   default: () => null,
                 };
               }),
-            { ssr: false }
+            { ssr: false },
           );
         });
         setComponentes(mapa);
@@ -98,14 +98,22 @@ export default function DashboardPage() {
 
         let saved: { widgets: string[]; layout: Layout[] } | null = null;
         try {
-          const resLayout = await fetch('/api/dashboard/layout');
+          const resLayout = await fetch("/api/dashboard/layout");
           if (resLayout.ok) saved = await jsonOrNull(resLayout);
         } catch {}
 
-        if (saved && Array.isArray(saved.widgets) && Array.isArray(saved.layout)) {
+        if (
+          saved &&
+          Array.isArray(saved.widgets) &&
+          Array.isArray(saved.layout)
+        ) {
           const validKeys = permitidos.map((w) => w.key);
-          const filteredWidgets = saved.widgets.filter((k) => validKeys.includes(k));
-          const filteredLayout = saved.layout.filter((item) => validKeys.includes(item.i));
+          const filteredWidgets = saved.widgets.filter((k) =>
+            validKeys.includes(k),
+          );
+          const filteredLayout = saved.layout.filter((item) =>
+            validKeys.includes(item.i),
+          );
 
           setLayout(filteredLayout.length ? filteredLayout : defaultLayout);
           setWidgets(filteredWidgets.length ? filteredWidgets : validKeys);
@@ -125,10 +133,10 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!usuario) return;
     const data = { widgets, layout };
-    fetch('/api/dashboard/layout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
+    fetch("/api/dashboard/layout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
     }).catch(() => {});
   }, [widgets, layout, usuario]);
 
@@ -162,7 +170,7 @@ export default function DashboardPage() {
   const handleRemoveWidget = (key: string) => {
     setWidgets(widgets.filter((k) => k !== key));
     setLayout(layout.filter((item) => item.i !== key));
-    setErrores(prev => {
+    setErrores((prev) => {
       const { [key]: _, ...rest } = prev;
       return rest;
     });
@@ -182,11 +190,14 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen p-4 sm:p-8" data-oid="7h725.b">
-      <div className="flex items-center justify-between mb-5" data-oid="bjx2qyk">
+      <div
+        className="flex items-center justify-between mb-5"
+        data-oid="bjx2qyk"
+      >
         <h1 className="text-2xl font-bold" data-oid="4rx1xg2">
           Panel principal
         </h1>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2" data-oid="i:sqqkj">
           <select
             onChange={(e) => handleAddWidget(e.target.value)}
             value=""
@@ -213,28 +224,34 @@ export default function DashboardPage() {
         </div>
       </div>
 
-          <GridLayout
-            layout={layout}
-            cols={6}
-            rowHeight={95}
-            width={1100}
-            isResizable
-            isDraggable
-            onLayoutChange={setLayout}
-            draggableHandle=".dashboard-widget-card"
-            margin={[18, 18]}
-            data-oid="6l8-9mp"
-          >
-            {widgets.map((key) => {
-              const Widget = componentes[key];
-              const widgetMeta = catalogo.find(w => w.key === key);
+      <GridLayout
+        layout={layout}
+        cols={6}
+        rowHeight={95}
+        width={1100}
+        isResizable
+        isDraggable
+        onLayoutChange={setLayout}
+        draggableHandle=".dashboard-widget-card"
+        margin={[18, 18]}
+        data-oid="6l8-9mp"
+      >
+        {widgets.map((key) => {
+          const Widget = componentes[key];
+          const widgetMeta = catalogo.find((w) => w.key === key);
 
           // No renderiza hasta que esté listo el componente dinámico
           if (!Widget) {
             return (
-              <div key={key} className="dashboard-widget-card flex items-center justify-center" style={{ minHeight: 90 }}>
-                <span className="text-sm text-gray-500">
-                  Cargando widget <b>{widgetMeta?.title || key}</b>...
+              <div
+                key={key}
+                className="dashboard-widget-card flex items-center justify-center"
+                style={{ minHeight: 90 }}
+                data-oid="1zbarim"
+              >
+                <span className="text-sm text-gray-500" data-oid="8t-t9y1">
+                  Cargando widget{" "}
+                  <b data-oid="ow1dedz">{widgetMeta?.title || key}</b>...
                 </span>
               </div>
             );
@@ -243,14 +260,21 @@ export default function DashboardPage() {
           // Si hubo error cargando ese widget
           if (errores[key]) {
             return (
-              <div key={key} className="dashboard-widget-card flex items-center justify-center bg-red-100 border border-red-300" style={{ minHeight: 90 }}>
-                <span className="text-sm text-red-600">
-                  Widget <b>{widgetMeta?.title || key}</b> no disponible.
+              <div
+                key={key}
+                className="dashboard-widget-card flex items-center justify-center bg-red-100 border border-red-300"
+                style={{ minHeight: 90 }}
+                data-oid="4ed6:db"
+              >
+                <span className="text-sm text-red-600" data-oid="8za4dl4">
+                  Widget <b data-oid="k.asut6">{widgetMeta?.title || key}</b> no
+                  disponible.
                 </span>
                 <button
                   className="ml-4 text-xs text-red-500 underline"
                   onClick={() => handleRemoveWidget(key)}
                   title="Quitar widget problemático"
+                  data-oid="an2jzff"
                 >
                   Quitar
                 </button>
@@ -273,10 +297,12 @@ export default function DashboardPage() {
             </div>
           );
         })}
-
       </GridLayout>
       {showPizarra && (
-        <PizarraCanvas onClose={() => setShowPizarra(false)} />
+        <PizarraCanvas
+          onClose={() => setShowPizarra(false)}
+          data-oid="76.bud."
+        />
       )}
     </div>
   );
