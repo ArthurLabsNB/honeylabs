@@ -22,7 +22,7 @@ import { useDashboardUI } from "../ui"; // para saber si sidebar global está co
 import {
   SIDEBAR_GLOBAL_WIDTH,
   SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
-} from "../constants";
+} from "../../constants";
 
 // --- Estilos base ---
 const sectionStyle =
