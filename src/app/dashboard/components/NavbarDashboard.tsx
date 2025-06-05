@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import UserMenu from "@/components/UserMenu";
 import { useDashboardUI } from "../ui";
+import type { Usuario } from "@/types/usuario";
 
 const MOCK_RESULTS = [
   { tipo: "almacén", nombre: "Almacén Central", url: "/almacenes/central" },
@@ -25,15 +26,7 @@ const MOCK_RESULTS = [
   { tipo: "almacén", nombre: "Almacén de Química", url: "/almacenes/quimica" },
 ];
 
-interface Usuario {
-  id: number;
-  nombre: string;
-  correo?: string;
-  tipoCuenta?: string;
-  rol?: string;
-  plan?: { nombre?: string };
-  avatarUrl?: string;
-}
+
 
 export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
   // Estado UI

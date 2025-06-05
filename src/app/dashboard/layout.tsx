@@ -10,16 +10,7 @@ import {
   SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
 } from "./constants";
 import { useRouter } from "next/navigation";
-
-interface Usuario {
-  id: number;
-  nombre: string;
-  email?: string;
-  tipoCuenta?: string;
-  rol?: string;
-}
-
-// Puedes controlar el colapso con un estado global/context
+import type { Usuario } from "@/types/usuario";
 
 function ProtectedDashboard({ children }: { children: React.ReactNode }) {
   // Añade en tu context esta propiedad si quieres permitir colapsar

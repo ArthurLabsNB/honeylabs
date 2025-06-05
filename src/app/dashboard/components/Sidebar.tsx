@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useDashboardUI } from "../ui";
+import type { Usuario } from "@/types/usuario";
 import {
   Home,
   Boxes,
@@ -18,12 +19,6 @@ import {
 } from "lucide-react";
 
 // El tipo mínimo del usuario (ajusta según tu modelo)
-type Usuario = {
-  nombre: string;
-  avatarUrl?: string | null;
-  rol?: string;
-  tipoCuenta?: string;
-};
 
 const sidebarMenu = [
   {

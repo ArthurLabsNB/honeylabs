@@ -3,12 +3,7 @@ import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
 import { useRouter } from "next/navigation";
 import { useAlmacenesUI } from "./ui";
-
-interface Usuario {
-  id: number;
-  rol?: string;
-  tipoCuenta?: string;
-}
+import type { Usuario } from "@/types/usuario";
 
 interface Almacen {
   id: number;

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
+import type { Usuario } from "@/types/usuario";
 
 import PizarraCanvas from "./components/pizarra/PizarraCanvas";
 import dynamic from "next/dynamic";
@@ -22,13 +23,7 @@ interface WidgetMeta {
   plans?: string[];
 }
 
-interface Usuario {
-  id: number;
-  nombre: string;
-  correo: string;
-  plan?: { nombre?: string };
-  [key: string]: any;
-}
+
 
 export default function DashboardPage() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
