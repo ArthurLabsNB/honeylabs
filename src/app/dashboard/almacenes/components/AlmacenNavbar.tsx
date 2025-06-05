@@ -46,11 +46,11 @@ export default function AlmacenNavbar({ mode = 'list', nombre }: AlmacenNavbarPr
 
   if (mode === 'detail') {
     return (
-      <header className="flex items-center justify-between h-16 px-6 border-b border-[var(--dashboard-border)] bg-[var(--dashboard-navbar)]">
+      <header className="dashboard-navbar justify-between px-6">
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.push("/dashboard/almacenes")}
-            className="p-2 text-gray-400 hover:bg-white/10 rounded-lg transition-colors"
+            className="p-2 rounded-lg text-gray-400 hover:bg-white/10"
             title="Volver"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -65,7 +65,7 @@ export default function AlmacenNavbar({ mode = 'list', nombre }: AlmacenNavbarPr
 
   // Modo lista (default)
   return (
-    <header className="flex items-center justify-between h-16 px-4 md:px-6 border-b border-[var(--dashboard-border)] bg-[var(--dashboard-navbar)]">
+    <header className="dashboard-navbar justify-between px-4 md:px-6">
       <div className="flex items-center gap-4 md:gap-6">
         <h1 className="text-lg font-semibold text-white">Almacenes</h1>
 
@@ -139,11 +139,11 @@ export default function AlmacenNavbar({ mode = 'list', nombre }: AlmacenNavbarPr
 
       <div className="flex items-center gap-3">
         <div className="relative">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--dashboard-muted)]" />
           <input
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
-            className="pl-7 pr-2 py-1.5 rounded-md bg-white/5 text-sm text-white placeholder-gray-400 focus:outline-none"
+            className="dashboard-input pl-8 pr-2 py-1.5"
             placeholder="Buscar almacén..."
           />
         </div>
@@ -154,7 +154,7 @@ export default function AlmacenNavbar({ mode = 'list', nombre }: AlmacenNavbarPr
               e.preventDefault();
               if (onCreate) onCreate("", "");
             }}
-            className="flex items-center gap-2 px-4 h-9 text-sm font-medium bg-[var(--dashboard-accent)] text-white rounded-lg hover:bg-[var(--dashboard-accent-hover)] transition-colors"
+            className="dashboard-btn flex items-center gap-2 h-9 text-sm"
           >
             <Plus className="w-4 h-4" />
             <span>Crear almacén</span>

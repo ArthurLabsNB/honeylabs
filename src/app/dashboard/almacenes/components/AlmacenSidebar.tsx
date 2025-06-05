@@ -11,36 +11,23 @@ import {
   FileText,
   Folder,
   Settings,
-  BookOpen
+  BookOpen,
+  Tag,
+  Layers,
+  Users,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-// --- Estilos base ---
-const menuItemStyle = "flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg hover:bg-white/5 text-gray-300 transition-colors";
 const sectionStyle = "mb-3 px-3 text-xs font-medium text-gray-400 uppercase tracking-wider";
 
-function MenuLink({ 
-  href, 
-  icon: Icon, 
-  label 
-}: { 
-  href: string, 
-  icon: any, 
-  label: string
-}) {
+function MenuLink({ href, icon: Icon, label }: { href: string; icon: any; label: string }) {
   const pathname = usePathname();
   const isActive = pathname === href;
 
   return (
-    <Link
-      href={href}
-      className={`${menuItemStyle} ${isActive ? "bg-[var(--dashboard-accent)]/10 text-white font-medium" : "hover:text-white"}`}
-      title={label}
-    >
-      <Icon
-        className={`w-5 h-5 ${isActive ? "text-[var(--dashboard-accent)]" : "text-gray-400"}`}
-      />
+    <Link href={href} className={`dashboard-sidebar-item ${isActive ? "active" : ""}`} title={label}>
+      <Icon className="dashboard-sidebar-icon" />
       <span>{label}</span>
     </Link>
   );
@@ -54,7 +41,7 @@ export default function AlmacenSidebar({
   // --- Sidebar modo detalle (vista de un almacén específico) ---
   if (mode === "detail") {
     return (
-      <aside className="w-64 h-full overflow-y-auto bg-[var(--dashboard-sidebar)] border-r border-[var(--dashboard-border)] py-4">
+      <aside className="dashboard-sidebar w-64 h-full overflow-y-auto py-4">
         <div className="space-y-6">
           <div>
             <h3 className={sectionStyle}>Navegación</h3>
@@ -81,7 +68,7 @@ export default function AlmacenSidebar({
 
   // --- Sidebar modo lista (todos los almacenes) ---
   return (
-    <aside className="w-64 h-full overflow-y-auto bg-[var(--dashboard-sidebar)] border-r border-[var(--dashboard-border)] py-6">
+    <aside className="dashboard-sidebar w-64 h-full overflow-y-auto py-6">
       <nav className="space-y-1 px-3">
         <MenuLink href="/dashboard/almacenes" icon={Home} label="Inicio" />
         <MenuLink href="/dashboard/almacenes/favoritos" icon={Star} label="Favoritos" />
