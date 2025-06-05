@@ -35,7 +35,7 @@ Actualmente se están implementando las funcionalidades principales. Se aceptan 
 
 ## Version
 
-0.2.2
+0.2.4
 
 ---
 
@@ -69,7 +69,7 @@ Clona el repositorio y ejecuta los siguientes comandos:
 git clone https://github.com/ArthurLabsNB/honeylabs.git
 cd honeylabs
 npm install
-npm install -D prisma 
+npm install -D prisma
 npm install prisma --save-dev
 npx prisma migrate dev
 npx prisma migrate deploy
@@ -121,8 +121,8 @@ honeylabs/
 - [ ] Notificaciones y alertas
 
 ## Parches
-* El menú de usuario ahora también se abre al hacer clic en el avatar del dashboard.
 
+- El menú de usuario ahora también se abre al hacer clic en el avatar del dashboard.
 
 ---
 
