@@ -9,8 +9,7 @@ if (!JWT_SECRET) {
 }
 
 export async function getUsuarioFromSession() {
-  // ASÍNCRONO en server actions o middleware
-  const cookieStore = await cookies() // <-- await aquí
+  const cookieStore = cookies()
   const token = cookieStore.get(SESSION_COOKIE)?.value
 
   if (!token) return null

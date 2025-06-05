@@ -1,14 +1,9 @@
 export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import { SESSION_COOKIE } from '@lib/constants';
-
-// Instancia Prisma singleton-safe para dev y prod
-const globalForPrisma = global as unknown as { prisma?: PrismaClient };
-const prisma = globalForPrisma.prisma ?? new PrismaClient();
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+import prisma from '@lib/prisma';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
