@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 export default function NuevoAlmacenPage() {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
+  const [funciones, setFunciones] = useState("");
+  const [permisos, setPermisos] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -16,7 +18,7 @@ export default function NuevoAlmacenPage() {
       const res = await fetch("/api/almacenes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre, descripcion }),
+        body: JSON.stringify({ nombre, descripcion, funciones, permisosPredeterminados: permisos }),
       });
       const data = await jsonOrNull(res);
       if (res.ok) {
@@ -53,13 +55,27 @@ export default function NuevoAlmacenPage() {
           data-oid="cbiio_3"
         />
 
+        <textarea
+          className="border p-2 rounded w-full"
+          placeholder="Funciones (opcional)"
+          value={funciones}
+          onChange={(e) => setFunciones(e.target.value)}
+        />
+
+        <input
+          className="border p-2 rounded w-full"
+          placeholder="Permisos predeterminados"
+          value={permisos}
+          onChange={(e) => setPermisos(e.target.value)}
+        />
+
         <button
           onClick={crear}
           disabled={loading}
           className="p-2 bg-[var(--dashboard-accent)] text-white rounded w-full"
           data-oid="25i.t7k"
         >
-          {loading ? "Creando..." : "Crear"}
+          {loading ? "Generando..." : "Generar almacén"}
         </button>
       </div>
     </div>
