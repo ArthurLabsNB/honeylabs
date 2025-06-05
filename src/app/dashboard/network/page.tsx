@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { jsonOrNull } from "@lib/http";
 
 interface Usuario {
   rol?: string;
@@ -19,7 +20,7 @@ export default function NetworkPage() {
 
   useEffect(() => {
     fetch("/api/login", { credentials: "include" })
-      .then((res) => res.json())
+      .then(jsonOrNull)
       .then((data) => {
         if (!data?.success) throw new Error();
         const tipo =
@@ -36,7 +37,7 @@ export default function NetworkPage() {
     if (!usuario) return;
     setLoading(true);
     fetch("/api/network")
-      .then((r) => r.json())
+      .then(jsonOrNull)
       .then((d) => setPeers(d.peers || []))
       .catch(() => setError("Error al cargar datos"))
       .finally(() => setLoading(false));

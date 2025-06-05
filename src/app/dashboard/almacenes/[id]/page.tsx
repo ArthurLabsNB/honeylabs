@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { jsonOrNull } from "@lib/http";
 import { useParams } from "next/navigation";
 
 interface Almacen {
@@ -18,7 +19,7 @@ export default function AlmacenDetallePage() {
   useEffect(() => {
     setLoading(true);
     fetch(`/api/almacenes/${id}`)
-      .then((res) => res.json())
+      .then(jsonOrNull)
       .then((data) => {
         if (data.error) throw new Error(data.error);
         setAlmacen(data.almacen);

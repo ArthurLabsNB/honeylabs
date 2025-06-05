@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { jsonOrNull } from "@lib/http";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -43,7 +44,7 @@ export default function LoginPage() {
   // --- Si ya tienes sesión, te manda a dashboard ---
   useEffect(() => {
     fetch("/api/login", { credentials: "include" })
-      .then((r) => r.json())
+      .then(jsonOrNull)
       .then((data) => {
         if (data?.success && data?.usuario) router.replace("/");
       });
@@ -59,7 +60,7 @@ export default function LoginPage() {
         body: JSON.stringify(datos),
       });
 
-      const data = await res.json();
+      const data = await jsonOrNull(res);
       if (!res.ok || !data?.success)
         throw new Error(data?.error || "Credenciales inválidas");
 

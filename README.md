@@ -30,8 +30,12 @@
 
 ## Estado del Proyecto
 
-🚧 **En desarrollo activo**  
+🚧 **En desarrollo activo**
 Actualmente se están implementando las funcionalidades principales. Se aceptan sugerencias y contribuciones.
+
+## Version
+
+0.1.1
 
 ---
 

@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { jsonOrNull } from "@lib/http";
 
 export default function AlmacenesWidget({ usuario }: { usuario: any }) {
   const [cantidad, setCantidad] = useState<number | null>(null);
@@ -8,7 +9,7 @@ export default function AlmacenesWidget({ usuario }: { usuario: any }) {
   useEffect(() => {
     if (!usuario) return;
     fetch("/api/almacenes")
-      .then((res) => res.json())
+      .then(jsonOrNull)
       .then((d) => setCantidad(Array.isArray(d.almacenes) ? d.almacenes.length : 0))
       .catch((e) => setError(e.message));
   }, [usuario]);

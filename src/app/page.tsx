@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, ReactNode, useRef } from "react";
+import { jsonOrNull } from "@lib/http";
 import clsx from "clsx";
 
 // ========================
@@ -174,8 +175,8 @@ function KpiSection() {
   useEffect(() => {
     setLoading(true);
     fetch("/api/metrics")
-      .then((res) => res.json())
-      .then((d) => setData(d))
+      .then(jsonOrNull)
+      .then((d) => setData(d || null))
       .catch(() =>
         setData({ entradas: 0, salidas: 0, usuarios: 0, almacenes: 0 }),
       )

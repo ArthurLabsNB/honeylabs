@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { jsonOrNull } from "@lib/http";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -19,7 +20,7 @@ export default function RegistroPage() {
   // Revisa sesión REAL (cookie): si ya tiene, redirige a /dashboard
   useEffect(() => {
     fetch("/api/login", { credentials: "include" })
-      .then((r) => r.json())
+      .then(jsonOrNull)
       .then((data) => {
         if (data?.success && data?.usuario) router.replace("/dashboard");
       });
@@ -51,7 +52,7 @@ export default function RegistroPage() {
         body: formData,
       });
 
-      const data = await res.json();
+      const data = await jsonOrNull(res);
 
       if (!res.ok) throw new Error(data.error || "Error desconocido");
 

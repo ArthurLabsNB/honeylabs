@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { jsonOrNull } from "@lib/http";
 
 import PizarraCanvas from "./components/pizarra/PizarraCanvas";
 import dynamic from "next/dynamic";
@@ -45,7 +46,7 @@ export default function DashboardPage() {
   // 1. Obtener usuario logueado
   useEffect(() => {
     fetch("/api/login", { credentials: "include" })
-      .then((res) => res.json())
+      .then(jsonOrNull)
       .then((data) => {
         if (!data?.success) throw new Error("Sesión no válida");
         setUsuario(data.usuario);
@@ -62,7 +63,7 @@ export default function DashboardPage() {
       try {
         const plan = usuario.plan?.nombre || "Free";
         const res = await fetch("/api/widgets");
-        const data = await res.json();
+        const data = await jsonOrNull(res);
 
         const permitidos = data.widgets.filter(
           (w: WidgetMeta) => !w.plans || w.plans.includes(plan)
@@ -98,7 +99,7 @@ export default function DashboardPage() {
         let saved: { widgets: string[]; layout: Layout[] } | null = null;
         try {
           const resLayout = await fetch('/api/dashboard/layout');
-          if (resLayout.ok) saved = await resLayout.json();
+          if (resLayout.ok) saved = await jsonOrNull(resLayout);
         } catch {}
 
         if (saved && Array.isArray(saved.widgets) && Array.isArray(saved.layout)) {

@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { jsonOrNull } from "@lib/http";
 import { useDashboardUI } from "../../ui";
 import { useRouter } from "next/navigation";
 import AlmacenNavbar from "../components/AlmacenNavbar";
@@ -31,7 +32,7 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
     const cargarUsuario = async () => {
       try {
         const res = await fetch("/api/login", { credentials: "include" });
-        const data = await res.json();
+        const data = await jsonOrNull(res);
         if (data?.success && data?.usuario) {
           setUsuario(data.usuario);
         } else {

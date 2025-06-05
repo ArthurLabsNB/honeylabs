@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useAlmacenesUI } from "../ui";
 import { useEffect, useState } from "react";
+import { jsonOrNull } from "@lib/http";
 
 interface Usuario {
   tipoCuenta?: string;
@@ -30,7 +31,7 @@ export default function AlmacenesNavbar() {
 
   useEffect(() => {
     fetch('/api/login', { credentials: 'include' })
-      .then(r => r.json())
+      .then(jsonOrNull)
       .then(d => d.success ? setUsuario(d.usuario) : setUsuario(null))
       .catch(() => setUsuario(null));
   }, []);

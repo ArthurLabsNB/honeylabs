@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { jsonOrNull } from "@lib/http";
 
 export default function NovedadesWidget({ usuario }: { usuario: any }) {
   const [items, setItems] = useState<{ id: number; titulo: string; fecha: string }[]>([]);
@@ -10,7 +11,7 @@ export default function NovedadesWidget({ usuario }: { usuario: any }) {
     if (!usuario) return;
     setLoading(true);
     fetch("/api/novedades")
-      .then((res) => res.json())
+      .then(jsonOrNull)
       .then((d) => setItems(d.novedades || []))
       .catch((e) => setErr(e.message))
       .finally(() => setLoading(false));

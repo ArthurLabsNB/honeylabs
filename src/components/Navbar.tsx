@@ -6,6 +6,7 @@ import { BookOpen, Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import UserMenu from "./UserMenu";
+import { jsonOrNull } from "@lib/http";
 
 const navLinks = [
   { href: "/", label: "Inicio" },
@@ -25,7 +26,7 @@ export default function Navbar() {
     async function fetchUser() {
       try {
         const res = await fetch("/api/perfil", { credentials: "include" });
-        const data = await res.json();
+        const data = await jsonOrNull(res);
         if (data.success && data.usuario) {
           setUsuario({
             nombre: data.usuario.nombre,
