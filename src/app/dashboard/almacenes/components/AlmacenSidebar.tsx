@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useDashboardUI } from "../ui"; // para saber si sidebar global está colapsado
+import { useDashboardUI } from "../../ui"; // para saber si sidebar global está colapsado
 import {
   SIDEBAR_GLOBAL_WIDTH,
   SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
