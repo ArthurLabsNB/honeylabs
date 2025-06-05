@@ -60,7 +60,7 @@ export default function Docs() {
   return (
     <div
       className="mx-auto max-w-4xl p-4 sm:p-8 space-y-8 relative"
-      data-oid="aj6e:_1"
+      data-oid="c0-ep34"
     >
       {/* --- Botón secreto para abrir minijuego --- */}
       <button
@@ -82,12 +82,12 @@ export default function Docs() {
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") setShowMinijuego((v) => !v);
         }}
-        data-oid="ejt73rd"
+        data-oid="bv1eyjv"
       >
         {/* Emoji o icono */}
         <span
           className="text-[13px] text-miel select-none pointer-events-none"
-          data-oid="11rgmw_"
+          data-oid="-lrupw0"
         >
           🐝
         </span>
@@ -98,23 +98,23 @@ export default function Docs() {
         <div
           className="fixed z-40 inset-0 bg-[#1a1422cc] bg-opacity-80 flex items-center justify-center animate-fadeIn transition-all"
           onClick={() => setShowMinijuego(false)}
-          data-oid="u7--mk9"
+          data-oid="512eu:p"
         >
           <div
             className="bg-[#22223b] border border-miel/40 rounded-xl p-6 shadow-2xl max-w-md w-full mx-4 relative animate-pop flex flex-col items-center"
             onClick={(e) => e.stopPropagation()}
-            data-oid="4h5czl6"
+            data-oid="-g371gj"
           >
             <button
               className="absolute top-3 right-3 bg-miel text-[#22223b] rounded-full w-6 h-6 flex items-center justify-center font-bold shadow hover:scale-110 transition"
               title="Cerrar"
               aria-label="Cerrar"
               onClick={() => setShowMinijuego(false)}
-              data-oid="ahrhm_u"
+              data-oid="vl_:mta"
             >
               ×
             </button>
-            <MinijuegoLoader data-oid="-n99g.l" />
+            <MinijuegoLoader data-oid="vuxjd.w" />
           </div>
         </div>
       )}
@@ -122,17 +122,17 @@ export default function Docs() {
       {/* --- SECCIONES DE DOCUMENTACIÓN --- */}
       <section
         className="rounded-lg bg-white/70 dark:bg-[#22223b]/80 p-4 shadow"
-        data-oid="tyzbbbp"
+        data-oid="8r8gu9n"
       >
         <h2
           className="text-lg font-bold text-amber-700 mb-1"
-          data-oid="-:2b8el"
+          data-oid="ob:1oyq"
         >
           Manual de Usuario
         </h2>
         <p
           className="text-zinc-600 dark:text-zinc-300 text-sm"
-          data-oid="-0c0b:z"
+          data-oid="nwabwuo"
         >
           Aquí encontrarás el paso a paso para usar HoneyLabs de manera
           eficiente.
@@ -140,17 +140,17 @@ export default function Docs() {
       </section>
       <section
         className="rounded-lg bg-white/70 dark:bg-[#22223b]/80 p-4 shadow"
-        data-oid="bwayazd"
+        data-oid="nlmkx-j"
       >
         <h2
           className="text-lg font-bold text-amber-700 mb-1"
-          data-oid="sc68hkz"
+          data-oid="lykdkj-"
         >
           Documentación Técnica
         </h2>
         <p
           className="text-zinc-600 dark:text-zinc-300 text-sm"
-          data-oid="cewv.ur"
+          data-oid="4d6vku:"
         >
           Referencias de arquitectura, endpoints y recursos para
           desarrolladores.
@@ -158,17 +158,17 @@ export default function Docs() {
       </section>
       <section
         className="rounded-lg bg-white/70 dark:bg-[#22223b]/80 p-4 shadow"
-        data-oid="mm37e5m"
+        data-oid="ai7xji3"
       >
         <h2
           className="text-lg font-bold text-amber-700 mb-1"
-          data-oid="::cxms2"
+          data-oid="3lujq8l"
         >
           Preguntas Frecuentes
         </h2>
         <p
           className="text-zinc-600 dark:text-zinc-300 text-sm"
-          data-oid="rjimeb6"
+          data-oid="wyquan0"
         >
           Respuestas a dudas comunes sobre el uso y funcionamiento de la
           plataforma.
@@ -176,17 +176,17 @@ export default function Docs() {
       </section>
       <section
         className="rounded-lg bg-white/70 dark:bg-[#22223b]/80 p-4 shadow"
-        data-oid="j1a81:v"
+        data-oid="6t98pb8"
       >
         <h2
           className="text-lg font-bold text-amber-700 mb-1"
-          data-oid="na9gnah"
+          data-oid="j-eb:nm"
         >
           Glosario
         </h2>
         <p
           className="text-zinc-600 dark:text-zinc-300 text-sm"
-          data-oid="ubs-2af"
+          data-oid="q3zc-ey"
         >
           Definiciones de términos técnicos y logísticos utilizados en
           HoneyLabs.
@@ -194,34 +194,34 @@ export default function Docs() {
       </section>
       <section
         className="rounded-lg bg-white/70 dark:bg-[#22223b]/80 p-4 shadow"
-        data-oid="32et3:a"
+        data-oid="379.po:"
       >
         <h2
           className="text-lg font-bold text-amber-700 mb-1"
-          data-oid="camh6:."
+          data-oid="24.he6j"
         >
           Guías Rápidas y Tips
         </h2>
         <p
           className="text-zinc-600 dark:text-zinc-300 text-sm"
-          data-oid="6whb1w9"
+          data-oid="67v_5ex"
         >
           Consejos y atajos para aprovechar al máximo todas las funciones.
         </p>
       </section>
       <section
         className="rounded-lg bg-white/70 dark:bg-[#22223b]/80 p-4 shadow"
-        data-oid="rk5-5xx"
+        data-oid="...ymfe"
       >
         <h2
           className="text-lg font-bold text-amber-700 mb-1"
-          data-oid=":irybhf"
+          data-oid="elq1b2a"
         >
           Contacto y Soporte
         </h2>
         <p
           className="text-zinc-600 dark:text-zinc-300 text-sm"
-          data-oid="azjjwri"
+          data-oid="k43:2op"
         >
           ¿Tienes dudas o problemas? Aquí encontrarás cómo contactar al equipo
           HoneyLabs.

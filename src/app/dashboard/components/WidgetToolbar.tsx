@@ -102,21 +102,21 @@ export default function WidgetToolbar() {
   return (
     <aside
       className="fixed right-4 top-20 z-50 grid grid-cols-2 gap-2 bg-[var(--dashboard-sidebar)] p-3 rounded-xl shadow-lg max-h-[80vh] overflow-y-auto"
-      data-oid="..d4tk4"
+      data-oid="zvotmfu"
     >
       {tools.map((Icon, i) => (
         <button
           key={i}
           className="p-2 hover:bg-white/10 rounded"
-          data-oid="lhii55f"
+          data-oid="0r89ym7"
         >
-          <Icon className="w-5 h-5" data-oid="yl44z-l" />
+          <Icon className="w-5 h-5" data-oid="-z7.99g" />
         </button>
       ))}
       <button
         onClick={toggleFullscreen}
         className="p-2 hover:bg-white/10 rounded col-span-2 mt-2"
-        data-oid="wdb7d.6"
+        data-oid="4wb5dcd"
       >
         Salir
       </button>

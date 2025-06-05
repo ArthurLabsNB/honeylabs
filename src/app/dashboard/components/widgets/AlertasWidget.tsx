@@ -43,15 +43,15 @@ export default function AlertasWidget({ usuario }: { usuario: any }) {
   return (
     <div
       className="dashboard-widget-card relative animate-fade-in"
-      data-oid=":006ouf"
+      data-oid="6pnm80b"
     >
       <div
         className="flex items-center justify-between mb-3"
-        data-oid="5bxx:v0"
+        data-oid="qskskla"
       >
         <h3
           className="font-extrabold text-xl tracking-tight"
-          data-oid="wj__tsc"
+          data-oid="r43wav."
         >
           Alertas
         </h3>
@@ -59,39 +59,39 @@ export default function AlertasWidget({ usuario }: { usuario: any }) {
           onClick={() => setShow(false)}
           className="text-xl text-red-500 hover:bg-red-700/15 p-1 rounded-full transition"
           title="Cerrar"
-          data-oid="dfj3u2i"
+          data-oid="3t4:v9d"
         >
-          <X size={22} data-oid="2cb67jd" />
+          <X size={22} data-oid="s2sdzb3" />
         </button>
       </div>
       {loading ? (
         <div
           className="animate-blink text-[var(--dashboard-accent)] font-semibold py-6 text-center"
-          data-oid="az4-.7g"
+          data-oid="51q_bvu"
         >
           Cargando alertas...
         </div>
       ) : err ? (
-        <div className="text-red-400 py-4" data-oid="418osb_">
+        <div className="text-red-400 py-4" data-oid="u_xpmun">
           Error: {err}
         </div>
       ) : (
         <>
           <div
             className="text-lg font-bold text-yellow-300 mb-2"
-            data-oid="_tg7-z5"
+            data-oid="fpb2-89"
           >
             Tienes {alertas.length} alerta{alertas.length !== 1 && "s"}
           </div>
           {alertas.length === 0 && (
             <div
               className="text-[var(--dashboard-muted)] py-5 text-center"
-              data-oid="l06ktdj"
+              data-oid="gcp98v8"
             >
               ¡Sin alertas pendientes!
             </div>
           )}
-          <div className="flex flex-col gap-3" data-oid="e_-i5jt">
+          <div className="flex flex-col gap-3" data-oid="-3ursq6">
             {alertas.map((a) => (
               <div
                 key={a.id}
@@ -101,26 +101,26 @@ export default function AlertasWidget({ usuario }: { usuario: any }) {
                   transition
                 `}
                 style={{ position: "relative" }}
-                data-oid="sw9.rgs"
+                data-oid="lu2xc:w"
               >
-                <div className="font-bold mb-1" data-oid="hum.e_n">
+                <div className="font-bold mb-1" data-oid="rr:k2m_">
                   {a.titulo}
                 </div>
                 {a.descripcion && (
                   <div
                     className="text-sm text-[var(--dashboard-muted)] mb-1"
-                    data-oid="._344xy"
+                    data-oid="1hhiz9:"
                   >
                     {a.descripcion}
                   </div>
                 )}
-                <div className="text-xs flex gap-3 mt-1" data-oid="w3clgk:">
-                  <span data-oid="hs_p80u">
+                <div className="text-xs flex gap-3 mt-1" data-oid="5yu3bwn">
+                  <span data-oid=":79xs1.">
                     {new Date(a.fecha).toLocaleDateString()}
                   </span>
-                  <span data-oid="1z1tx:_">
+                  <span data-oid="pkxkzxg">
                     Prioridad:{" "}
-                    <span className="font-semibold" data-oid="05e35n5">
+                    <span className="font-semibold" data-oid="u29szmg">
                       {a.prioridad}
                     </span>
                   </span>

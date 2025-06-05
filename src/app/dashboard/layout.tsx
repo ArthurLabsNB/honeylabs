@@ -11,6 +11,14 @@ import {
 } from "./constants";
 import { useRouter } from "next/navigation";
 
+interface Usuario {
+  id: number;
+  nombre: string;
+  email?: string;
+  tipoCuenta?: string;
+  rol?: string;
+}
+
 // Puedes controlar el colapso con un estado global/context
 
 function ProtectedDashboard({ children }: { children: React.ReactNode }) {
@@ -61,11 +69,11 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
     return (
       <div
         className="flex min-h-screen items-center justify-center bg-[var(--dashboard-bg)]"
-        data-oid="eqwh:-y"
+        data-oid="7sw2va-"
       >
         <span
           className="text-[var(--dashboard-accent)] text-lg font-bold animate-pulse"
-          data-oid="mvway4."
+          data-oid="a.4woji"
         >
           Cargando...
         </span>
@@ -82,54 +90,73 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
     : 0;
   const marginLeft = !fullscreen && !isMobile ? sidebarWidth : 0;
 
+  // Altura del navbar
+  const navbarHeight = '64px';
+
   return (
     <div
       className={`min-h-screen bg-[var(--dashboard-bg)] transition-colors duration-300 relative ${
         fullscreen ? "dashboard-full" : ""
       } ${isMobile ? "dashboard-layout-mobile" : ""}`}
-      data-oid="3vix2gy"
+      data-oid="1sqtk2o"
     >
-      {/* --- SIDEBAR FIJO --- */}
+      {/* --- NAVBAR DASHBOARD FIJO --- */}
+      <div 
+        className="fixed top-0 left-0 right-0 z-40 bg-[var(--dashboard-navbar)] border-b border-[var(--dashboard-border)]"
+        style={{ 
+          height: navbarHeight,
+          paddingLeft: !fullscreen && sidebarGlobalVisible ? sidebarWidth : '0',
+          transition: 'padding-left 0.3s ease'
+        }}
+        data-oid="taw.mzt"
+      >
+        {usuario && <NavbarDashboard usuario={usuario} data-oid="m6qmdem" />}
+      </div>
+
+      {/* --- SIDEBAR GLOBAL --- */}
       {!fullscreen && (isMobile || sidebarGlobalVisible) && (
         <div
           style={{
             width: sidebarWidth,
             minWidth: sidebarWidth,
             left: 0,
-            transform: isMobile
-              ? sidebarGlobalVisible
-                ? "translateX(0)"
-                : "translateX(-100%)"
-              : undefined,
+            top: 0,
+            height: '100vh',
+            transform: isMobile && !sidebarGlobalVisible ? `translateX(-${sidebarWidth}px)` : 'none',
+            paddingTop: navbarHeight // Asegura que el contenido del sidebar no se oculte bajo el navbar
           }}
-          className={`fixed top-0 left-0 h-screen z-40 border-r border-[var(--dashboard-border)] bg-[var(--dashboard-sidebar)] transition-all duration-300 dashboard-sidebar ${isMobile && sidebarGlobalVisible ? "open" : ""}`}
-          data-oid="ookx_o-"
+          className={`fixed z-40 border-r border-[var(--dashboard-border)] bg-[var(--dashboard-sidebar)] transition-all duration-300 dashboard-sidebar`}
+          data-oid=".p64bxw"
         >
-          <Sidebar usuario={usuario} data-oid="t.unwrz" />
+          <Sidebar usuario={usuario} data-oid="4t4x82h" />
         </div>
       )}
 
-      {/* --- ZONA CENTRAL --- */}
+      {/* CONTENIDO PRINCIPAL */}
       <div
         className="flex flex-col min-h-screen transition-all duration-300"
-        style={{ marginLeft }}
-        data-oid="ufsaxi9"
+        style={{ 
+          paddingTop: navbarHeight,
+          paddingLeft: !fullscreen ? sidebarWidth : 0,
+          transition: 'padding-left 0.3s ease'
+        }}
+        data-oid="ou.:qgb"
       >
-        <NavbarDashboard usuario={usuario} data-oid="1w12i5_" />
         <section
           className="
-            flex-1 p-0 sm:p-8
+            flex-1 p-4 sm:p-8
             bg-[var(--dashboard-bg)]
             text-[var(--dashboard-text)]
-            overflow-y-auto
+            relative
             animate-fade-in
             transition-colors duration-300
+            min-h-[calc(100vh-64px)]
           "
-          data-oid="-c2n1cr"
+          data-oid="xvd._xa"
         >
           {children}
         </section>
-        <WidgetToolbar data-oid="8l_ua.d" />
+        <WidgetToolbar data-oid="6pjz7o6" />
       </div>
     </div>
   );
@@ -141,8 +168,8 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <DashboardUIProvider data-oid="9vdsl11">
-      <ProtectedDashboard data-oid=":1yrc0l">{children}</ProtectedDashboard>
+    <DashboardUIProvider data-oid="-kp1hi9">
+      <ProtectedDashboard data-oid="khrpzeo">{children}</ProtectedDashboard>
     </DashboardUIProvider>
   );
 }

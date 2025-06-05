@@ -35,7 +35,7 @@ export default function GraficaWidget({ usuario }: { usuario: any }) {
     return (
       <div
         className="h-32 flex items-center justify-center text-[var(--dashboard-muted)] opacity-70"
-        data-oid="z:h4bw:"
+        data-oid="p1v3u-8"
       >
         Cargando...
       </div>
@@ -64,5 +64,5 @@ export default function GraficaWidget({ usuario }: { usuario: any }) {
     scales: { y: { beginAtZero: true } },
   } as const;
 
-  return <Bar options={options} data={chartData} data-oid=".f56::." />;
+  return <Bar options={options} data={chartData} data-oid="3eq7ggb" />;
 }

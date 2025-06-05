@@ -45,25 +45,26 @@ export default function PlantillasPage() {
 
   if (error)
     return (
-      <div className="p-4 text-red-500" data-oid=".v0xt_c">
+      <div className="p-4 text-red-500" data-oid="9_t15sy">
         {error}
       </div>
     );
+
   if (loading)
     return (
-      <div className="p-4" data-oid="08o_u:l">
+      <div className="p-4" data-oid="q5gn5.p">
         Cargando...
       </div>
     );
 
   return (
-    <div className="p-4" data-oid="plantillas-page">
-      <h1 className="text-2xl font-bold mb-4" data-oid="sk6.q96">
+    <div className="p-4" data-oid="incpxl_">
+      <h1 className="text-2xl font-bold mb-4" data-oid="ozc.4yr">
         Plantillas
       </h1>
-      <ul className="list-disc pl-4" data-oid="vm_gyb_">
+      <ul className="list-disc pl-4" data-oid="nwulz9t">
         {plantillas.map((p) => (
-          <li key={p.id} data-oid="hnyi01x">
+          <li key={p.id} data-oid="f0gjqh:">
             {p.nombre}
           </li>
         ))}

@@ -57,11 +57,11 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
     return (
       <div
         className="flex min-h-screen items-center justify-center bg-[var(--dashboard-bg)]"
-        data-oid="n_c903y"
+        data-oid="m8ihkvs"
       >
         <span
           className="text-[var(--dashboard-accent)] text-lg font-bold animate-pulse"
-          data-oid="bgcezuo"
+          data-oid="_r:ikd8"
         >
           Cargando...
         </span>
@@ -86,7 +86,7 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
       className={`min-h-screen bg-[var(--dashboard-bg)] relative ${
         fullscreen ? "dashboard-full" : ""
       }`}
-      data-oid="qm-ogij"
+      data-oid="vu397ln"
     >
       <AlmacenSidebar
         style={{
@@ -96,18 +96,18 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
           minWidth: SIDEBAR_ALMACENES_WIDTH,
           height: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
         }}
-        data-oid="kvfmob7"
+        data-oid="iw4v12t"
       />
 
       <main
         className="flex flex-col min-h-screen transition-all duration-300"
         style={{ marginLeft: mainMarginLeft, marginTop: NAVBAR_HEIGHT }}
-        data-oid="4l8j8.g"
+        data-oid="9d4tqvn"
       >
-        <AlmacenNavbar data-oid=":3zta8e" />
+        <AlmacenNavbar data-oid="0mfue8q" />
         <section
           className="flex-1 p-4 overflow-y-auto bg-[var(--dashboard-bg)] text-[var(--dashboard-text)]"
-          data-oid="3oxargz"
+          data-oid="fuuwox1"
         >
           {children}
         </section>
@@ -121,5 +121,5 @@ export default function AlmacenLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <ProtectedAlmacen data-oid="csl.ak4">{children}</ProtectedAlmacen>;
+  return <ProtectedAlmacen data-oid="vzd1u8v">{children}</ProtectedAlmacen>;
 }

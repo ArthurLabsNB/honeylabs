@@ -17,16 +17,16 @@ export default function AlmacenesWidget({ usuario }: { usuario: any }) {
   }, [usuario]);
 
   return (
-    <div data-oid="gx306mu">
-      <span className="font-semibold" data-oid="j3t5huf">
+    <div data-oid="45nqp7w">
+      <span className="font-semibold" data-oid="hk9--8k">
         Almacenes conectados:
       </span>{" "}
       {error ? (
-        <span className="text-red-400 font-bold" data-oid="2aj7dck">
+        <span className="text-red-400 font-bold" data-oid="c.hvqo.">
           Error
         </span>
       ) : (
-        <span className="text-amber-400 font-bold" data-oid="ln74n1.">
+        <span className="text-amber-400 font-bold" data-oid="nth118d">
           {cantidad ?? "..."}
         </span>
       )}

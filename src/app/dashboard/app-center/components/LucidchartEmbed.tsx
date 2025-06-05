@@ -11,7 +11,7 @@ export default function LucidchartEmbed({ docId }: LucidchartEmbedProps) {
       src={url}
       className="w-full h-[600px] rounded-lg border"
       allowFullScreen
-      data-oid="lucidchart-iframe"
+      data-oid="u3rndlc"
     />
   );
 }

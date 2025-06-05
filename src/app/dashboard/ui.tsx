@@ -47,7 +47,7 @@ export function DashboardUIProvider({
         toggleSidebarVisible,
         toggleSidebarCollapsed,
       }}
-      data-oid=":j47jz7"
+      data-oid="juman50"
     >
       {children}
     </DashboardUIContext.Provider>

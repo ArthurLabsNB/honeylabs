@@ -45,9 +45,9 @@ export default function MinijuegoLoader() {
   return (
     <div
       className="flex flex-col items-center justify-center min-h-64 rounded-xl bg-[#19171f] shadow-lg p-2"
-      data-oid="sz-i:ka"
+      data-oid="8yypx1j"
     >
-      <AnimatePresence data-oid="q2ssqlj">
+      <AnimatePresence data-oid=":1adyy_">
         {!JuegoComp ? (
           <motion.form
             key="panel-form"
@@ -57,7 +57,7 @@ export default function MinijuegoLoader() {
             transition={{ type: "spring", duration: 0.38 }}
             onSubmit={handleSubmit}
             className="w-full max-w-xs flex flex-col items-center gap-4"
-            data-oid="vhov5ea"
+            data-oid="1luo0xb"
           >
             <motion.input
               ref={inputRef}
@@ -68,14 +68,14 @@ export default function MinijuegoLoader() {
               autoComplete="off"
               aria-label="Código secreto"
               whileFocus={{ scale: 1.02, boxShadow: "0 0 0 2px #ffe06688" }}
-              data-oid="yhghqj5"
+              data-oid="i9.j_8z"
             />
 
             <motion.button
               type="submit"
               className="px-4 py-2 rounded bg-miel text-[#181325] font-bold transition hover:scale-105 shadow"
               whileHover={{ scale: 1.08 }}
-              data-oid=":s56.cp"
+              data-oid="b3ev1ap"
             >
               Jugar
             </motion.button>
@@ -85,7 +85,7 @@ export default function MinijuegoLoader() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                data-oid="fjnfb4_"
+                data-oid="s4aj10n"
               >
                 {error}
               </motion.p>
@@ -99,7 +99,7 @@ export default function MinijuegoLoader() {
             exit={{ opacity: 0, scale: 0.96, y: -10 }}
             transition={{ type: "spring", duration: 0.38 }}
             className="w-full flex flex-col items-center"
-            data-oid="kvldy-8"
+            data-oid="l:bwi55"
           >
             <button
               onClick={() => {
@@ -107,11 +107,11 @@ export default function MinijuegoLoader() {
                 setCodigo("");
               }}
               className="mb-2 self-start px-3 py-1 rounded bg-miel text-[#22223b] font-bold text-xs shadow hover:scale-105 transition"
-              data-oid="w9:llac"
+              data-oid="vc6t5w8"
             >
               &larr; Cambiar minijuego
             </button>
-            <JuegoComp data-oid="2n61_h0" />
+            <JuegoComp data-oid="9q5a4jy" />
           </motion.div>
         )}
       </AnimatePresence>

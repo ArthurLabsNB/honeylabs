@@ -20,25 +20,25 @@ export default function RootLayout({
       lang="es"
       className="scroll-smooth motion-safe:transition-all"
       suppressHydrationWarning
-      data-oid=":x948vr"
+      data-oid="ziduj:9"
     >
-      <head data-oid="8_rldaq">
-        <meta charSet="UTF-8" data-oid="4mdbnhy" />
+      <head data-oid="kp2s97_">
+        <meta charSet="UTF-8" data-oid="upk8vf5" />
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1"
-          data-oid="48ws1dy"
+          data-oid="y9u6sdi"
         />
 
-        <link rel="icon" href="/favicon.ico" data-oid="g_4c.h4" />
+        <link rel="icon" href="/favicon.ico" data-oid="oydwumc" />
       </head>
       <body
         className="bg-[var(--color-background)] text-[var(--color-foreground)] font-sans antialiased transition-colors duration-300 overflow-x-hidden"
-        data-oid="y:x5:s_"
+        data-oid="41:bv5f"
       >
-        <ConditionalLayout data-oid="zem_tx.">{children}</ConditionalLayout>
-        <Analytics data-oid="du-849g" />
-        <SpeedInsights data-oid="v-0_t_e" />
+        <ConditionalLayout data-oid="vy-b4dt">{children}</ConditionalLayout>
+        <Analytics data-oid="egcbm3r" />
+        <SpeedInsights data-oid="vrt:7ii" />
       </body>
     </html>
   );

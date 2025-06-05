@@ -33,7 +33,7 @@ export default function ClientLayout({
       {/* <ThemeProvider> */}
 
       {/* NAVBAR + FOOTER en todas las rutas, excepto rutas ocultas */}
-      {!ocultarNavbar && <Navbar data-oid="cz-0guk" />}
+      {!ocultarNavbar && <Navbar />}
 
       <main
         className="
@@ -42,15 +42,14 @@ export default function ClientLayout({
           max-w-7xl mx-auto w-full
         "
         aria-label="Contenido principal"
-        data-oid="3j0m73u"
       >
         {children}
       </main>
 
-      {!ocultarNavbar && <Footer data-oid="-:t1kqe" />}
+      {!ocultarNavbar && <Footer />}
 
       {/* Cookie banner SIEMPRE visible excepto en /auth (opcional) */}
-      {!ocultarNavbar && <CookieBanner data-oid="2gr7x-s" />}
+      {!ocultarNavbar && <CookieBanner />}
       {/* Si quieres el cookie banner SIEMPRE, pon solo: <CookieBanner /> */}
 
       {/* </ThemeProvider> */}

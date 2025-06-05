@@ -125,7 +125,6 @@ export default function UserMenu({
           src={fotoPerfil}
           alt="Avatar"
           className="h-9 w-9 rounded-full object-cover border-2 border-amber-300 shadow"
-          data-oid="b5wc80s"
         />
       );
     }
@@ -142,24 +141,20 @@ export default function UserMenu({
       return (
         <span
           className={`h-9 w-9 rounded-full flex items-center justify-center font-bold text-lg ${bgList[color]} text-white shadow`}
-          data-oid="p06g3io"
         >
           {usuario.nombre[0].toUpperCase()}
         </span>
       );
     }
     return (
-      <span
-        className="h-9 w-9 rounded-full bg-gray-300 flex items-center justify-center font-bold text-lg text-white shadow"
-        data-oid="st60zt5"
-      >
+      <span className="h-9 w-9 rounded-full bg-gray-300 flex items-center justify-center font-bold text-lg text-white shadow">
         U
       </span>
     );
   };
 
   return (
-    <div className="relative" ref={refMenu} data-oid="v5p4.:j">
+    <div className="relative" ref={refMenu}>
       {!hideTrigger && (
         <button
           aria-label="Abrir menú de usuario"
@@ -167,7 +162,6 @@ export default function UserMenu({
           onClick={() => setOpen((v) => !v)}
           className="h-9 w-9 rounded-full bg-amber-600 text-white font-bold text-sm flex items-center justify-center hover:ring-2 ring-amber-400 transition"
           tabIndex={0}
-          data-oid="-6gs4k9"
         >
           {renderAvatar()}
         </button>
@@ -177,15 +171,12 @@ export default function UserMenu({
         <nav
           className="absolute right-0 mt-2 w-60 origin-top-right rounded-xl border border-amber-200 bg-white shadow-xl z-50 animate-fade-scale dark:bg-zinc-900 dark:border-zinc-700"
           aria-label="Menú de usuario"
-          data-oid="0w5pm_r"
         >
           {/* Sesión activa */}
           {usuario ? (
-            <div className="px-4 py-3" data-oid="pjswov-">
-              <div className="flex items-center gap-2" data-oid="it_jknp">
-                <span className="text-sm font-semibold" data-oid="ozcown.">
-                  {usuario?.nombre}
-                </span>
+            <div className="px-4 py-3">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-semibold">{usuario?.nombre}</span>
                 {usuario.plan && (
                   <span
                     className={clsx(
@@ -196,101 +187,65 @@ export default function UserMenu({
                           ? "bg-sky-100 text-sky-700 border-sky-300"
                           : "bg-zinc-100 text-zinc-600 border-zinc-200",
                     )}
-                    data-oid="e_zxlbv"
                   >
-                    <BadgeCheck className="w-3 h-3" data-oid="ttja0c9" />
+                    <BadgeCheck className="w-3 h-3" />
                     {usuario.plan}
                   </span>
                 )}
                 {usuario.tiene2FA && (
-                  <span
-                    title="2FA activo"
-                    className="ml-1 text-emerald-500"
-                    data-oid="76ov1k3"
-                  >
-                    <ShieldCheck
-                      className="h-4 w-4 inline"
-                      data-oid="ngz6sj3"
-                    />
+                  <span title="2FA activo" className="ml-1 text-emerald-500">
+                    <ShieldCheck className="h-4 w-4 inline" />
                   </span>
                 )}
               </div>
-              <p
-                className="text-xs text-zinc-500 dark:text-zinc-400 break-all"
-                data-oid="fjvt7my"
-              >
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 break-all">
                 {usuario?.correo}
               </p>
             </div>
           ) : (
-            <div
-              className="px-4 py-3 text-center text-sm text-zinc-500"
-              data-oid="8rzmd9q"
-            >
+            <div className="px-4 py-3 text-center text-sm text-zinc-500">
               No has iniciado sesión
             </div>
           )}
 
           {/* Accesos rápidos */}
           {usuario && (
-            <div
-              className="border-t dark:border-zinc-700 py-2"
-              data-oid="a0wnbze"
-            >
+            <div className="border-t dark:border-zinc-700 py-2">
               <MenuLink
                 href="/dashboard"
-                icon={
-                  <LayoutDashboard className="h-4 w-4" data-oid="fawohvy" />
-                }
+                icon={<LayoutDashboard className="h-4 w-4" />}
                 label="Dashboard"
                 tabIndex={open ? 0 : -1}
-                data-oid="rsfsr2."
               />
 
               <MenuLink
                 href="/configuracion"
-                icon={<Settings className="h-4 w-4" data-oid="xwpeao9" />}
+                icon={<Settings className="h-4 w-4" />}
                 label="Configuración"
                 tabIndex={open ? 0 : -1}
-                data-oid="4a5c0bc"
               />
 
               <MenuLink
                 href="/"
-                icon={<Home className="h-4 w-4" data-oid="nbcd5ka" />}
+                icon={<Home className="h-4 w-4" />}
                 label="Inicio"
                 tabIndex={open ? 0 : -1}
-                data-oid="1gws43m"
               />
 
               {usuario.tiene2FA && (
                 <MenuLink
                   href="/configuracion#seguridad"
-                  icon={
-                    <ShieldCheck
-                      className="h-4 w-4 text-emerald-500"
-                      data-oid="j6merum"
-                    />
-                  }
+                  icon={<ShieldCheck className="h-4 w-4 text-emerald-500" />}
                   label="Seguridad"
                   tabIndex={open ? 0 : -1}
-                  data-oid="vfol.pg"
                 />
               )}
             </div>
           )}
 
           {/* Tema claro/oscuro */}
-          <div
-            className="border-t dark:border-zinc-700 px-4 py-3 flex items-center justify-between text-sm"
-            data-oid="4ni879u"
-          >
-            <span
-              className="text-zinc-500 dark:text-zinc-400"
-              data-oid="2nm9j79"
-            >
-              Tema
-            </span>
+          <div className="border-t dark:border-zinc-700 px-4 py-3 flex items-center justify-between text-sm">
+            <span className="text-zinc-500 dark:text-zinc-400">Tema</span>
             <button
               onClick={alternarTema}
               className={clsx(
@@ -302,51 +257,47 @@ export default function UserMenu({
               aria-label={
                 temaOscuro ? "Cambiar a tema claro" : "Cambiar a tema oscuro"
               }
-              data-oid="3r_v:dq"
             >
               {temaOscuro ? (
-                <Sun className="h-4 w-4" data-oid="huo5:lx" />
+                <Sun className="h-4 w-4" />
               ) : (
-                <Moon className="h-4 w-4" data-oid="f7dhfcu" />
+                <Moon className="h-4 w-4" />
               )}
             </button>
           </div>
 
           {/* Login / Logout */}
-          <div className="border-t dark:border-zinc-700" data-oid="p1ehb25">
+          <div className="border-t dark:border-zinc-700">
             {usuario ? (
               <button
                 onClick={cerrarSesion}
                 className="w-full px-4 py-2 flex items-center gap-2 text-red-600 hover:bg-red-50 dark:hover:bg-zinc-800 dark:text-red-400 text-sm"
                 tabIndex={open ? 0 : -1}
-                data-oid="8wswv3f"
               >
-                <LogOut className="h-4 w-4" data-oid="nxzvv:7" /> Cerrar sesión
+                <LogOut className="h-4 w-4" /> Cerrar sesión
               </button>
             ) : (
               <Link
                 href="/login"
                 className="w-full px-4 py-2 flex items-center gap-2 text-amber-700 hover:bg-amber-50 dark:hover:bg-zinc-800 text-sm"
                 tabIndex={open ? 0 : -1}
-                data-oid="wkns2eh"
               >
-                <LogIn className="h-4 w-4" data-oid="vwi-1v:" /> Iniciar sesión
+                <LogIn className="h-4 w-4" /> Iniciar sesión
               </Link>
             )}
           </div>
 
           {/* Upgrade */}
-          <div className="border-t dark:border-zinc-700" data-oid="x.khpkj">
+          <div className="border-t dark:border-zinc-700">
             <Link
               href="/servicios"
               className="block w-full px-4 py-3 text-center text-sm font-semibold text-white bg-amber-500 hover:bg-amber-600 transition flex items-center justify-center gap-2"
               tabIndex={open ? 0 : -1}
-              data-oid="b9xeosc"
             >
               {usuario?.plan === "Pro" || usuario?.plan === "Empresarial"
                 ? "Gestionar mi Plan"
                 : "Upgrade to Pro"}
-              <ArrowUpRight className="h-4 w-4" data-oid="otdmpqh" />
+              <ArrowUpRight className="h-4 w-4" />
             </Link>
           </div>
         </nav>
@@ -371,7 +322,6 @@ function MenuLink({
       href={href}
       tabIndex={tabIndex}
       className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-amber-50 dark:hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-amber-400 rounded-md"
-      data-oid="q:3r48e"
     >
       {icon}
       {label}

@@ -11,7 +11,7 @@ export default function MiroBoard({ boardId }: MiroBoardProps) {
       src={url}
       className="w-full h-[600px] rounded-lg border"
       allowFullScreen
-      data-oid="miro-iframe"
+      data-oid="xbd.67x"
     />
   );
 }

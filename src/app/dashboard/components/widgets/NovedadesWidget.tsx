@@ -20,26 +20,26 @@ export default function NovedadesWidget({ usuario }: { usuario: any }) {
   }, [usuario]);
 
   return (
-    <div data-oid="7h44f8l">
-      <span className="font-semibold" data-oid="8i4gclv">
+    <div data-oid="7vvtl6r">
+      <span className="font-semibold" data-oid="0aqgt3n">
         Próximas novedades:
       </span>
       {loading ? (
-        <div className="py-2" data-oid="x7.js7x">
+        <div className="py-2" data-oid="55jxu-6">
           Cargando...
         </div>
       ) : err ? (
-        <div className="text-red-400 py-2" data-oid="5szf3o5">
+        <div className="text-red-400 py-2" data-oid="k2ui6em">
           Error: {err}
         </div>
       ) : items.length === 0 ? (
-        <div className="py-2 text-[var(--dashboard-muted)]" data-oid="qhp0htz">
+        <div className="py-2 text-[var(--dashboard-muted)]" data-oid="3lpll79">
           Sin novedades
         </div>
       ) : (
-        <ul className="list-disc pl-5 mt-1" data-oid="-ql:w3k">
+        <ul className="list-disc pl-5 mt-1" data-oid="8oncvzm">
           {items.map((n) => (
-            <li key={n.id} data-oid="78so7re">
+            <li key={n.id} data-oid="c2i1alb">
               {n.titulo}
             </li>
           ))}

@@ -45,23 +45,23 @@ export default function EditarAlmacenPage() {
 
   if (loading)
     return (
-      <div className="p-4" data-oid="pzddjbe">
+      <div className="p-4" data-oid="ri8i4m1">
         Cargando...
       </div>
     );
 
   return (
-    <div className="p-4 max-w-md w-full mx-auto" data-oid="editar-almacen">
-      <h1 className="text-xl font-bold mb-4" data-oid="amr:0eo">
+    <div className="p-4 max-w-md w-full mx-auto" data-oid="h1_23wn">
+      <h1 className="text-xl font-bold mb-4" data-oid="biq1l0t">
         Editar almacén
       </h1>
-      <div className="flex flex-col gap-2" data-oid="k-o1s7x">
+      <div className="flex flex-col gap-2" data-oid="iev4qc_">
         <input
           className="border p-2 rounded w-full"
           placeholder="Nombre"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
-          data-oid="47zeoo-"
+          data-oid="w5nxozo"
         />
 
         <textarea
@@ -69,13 +69,13 @@ export default function EditarAlmacenPage() {
           placeholder="Descripción"
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
-          data-oid="l5z1sea"
+          data-oid="usl33-1"
         />
 
         <button
           onClick={guardar}
           className="p-2 bg-[var(--dashboard-accent)] text-white rounded w-full"
-          data-oid="tyj9z62"
+          data-oid="ovyyjp4"
         >
           Guardar
         </button>

@@ -45,25 +45,26 @@ export default function NetworkPage() {
 
   if (error)
     return (
-      <div className="p-4 text-red-500" data-oid="q79cbuw">
+      <div className="p-4 text-red-500" data-oid="3xwy1c8">
         {error}
       </div>
     );
+
   if (loading)
     return (
-      <div className="p-4" data-oid="o1d167d">
+      <div className="p-4" data-oid="vzjk3mh">
         Cargando...
       </div>
     );
 
   return (
-    <div className="p-4" data-oid="network-page">
-      <h1 className="text-2xl font-bold mb-4" data-oid="0:feqgr">
+    <div className="p-4" data-oid="gzpj357">
+      <h1 className="text-2xl font-bold mb-4" data-oid="wdv6f.t">
         Network
       </h1>
-      <ul className="list-disc pl-4" data-oid="igr3o9f">
+      <ul className="list-disc pl-4" data-oid="o_bywsp">
         {peers.map((p) => (
-          <li key={p.id} data-oid="jw5.iwq">
+          <li key={p.id} data-oid="ad3e678">
             {p.nombre}
           </li>
         ))}

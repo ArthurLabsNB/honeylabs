@@ -51,25 +51,26 @@ export default function AlertasPage() {
 
   if (error)
     return (
-      <div className="p-4 text-red-500" data-oid="7zleg.t">
+      <div className="p-4 text-red-500" data-oid="p2cyotw">
         {error}
       </div>
     );
+
   if (loading)
     return (
-      <div className="p-4" data-oid="o0eaf02">
+      <div className="p-4" data-oid="7wfx.vn">
         Cargando...
       </div>
     );
 
   return (
-    <div className="p-4" data-oid="alertas-page">
-      <h1 className="text-2xl font-bold mb-4" data-oid="guy4wre">
+    <div className="p-4" data-oid="6lccpiv">
+      <h1 className="text-2xl font-bold mb-4" data-oid="hh6pizz">
         Alertas
       </h1>
-      <ul className="list-disc pl-4" data-oid="g6tfe0a">
+      <ul className="list-disc pl-4" data-oid="x9u-7rb">
         {alertas.map((a) => (
-          <li key={a.id} data-oid="_32tr80">
+          <li key={a.id} data-oid="sspv70h">
             {a.almacen ? `${a.almacen.nombre}: ` : ""}
             {a.mensaje}
           </li>

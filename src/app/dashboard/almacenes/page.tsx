@@ -79,13 +79,14 @@ export default function AlmacenesPage() {
 
   if (error)
     return (
-      <div className="p-4 text-red-500" data-oid="-sahyud">
+      <div className="p-4 text-red-500" data-oid="u6cxvra">
         {error}
       </div>
     );
+
   if (loading)
     return (
-      <div className="p-4" data-oid=".75.gic">
+      <div className="p-4" data-oid="8xwpkrd">
         Cargando...
       </div>
     );
@@ -119,56 +120,56 @@ export default function AlmacenesPage() {
   };
 
   const renderList = () => (
-    <ul className="divide-y" data-oid="8u6yxkq">
+    <ul className="divide-y" data-oid="riuw8_8">
       {almacenes.map((a, idx) => (
         <li
           key={a.id}
           className="p-2 hover:bg-white/5 flex justify-between"
-          data-oid="9s2fhal"
+          data-oid="d8g91a_"
         >
           <div
             className="cursor-pointer"
             onClick={() => router.push(`/dashboard/almacenes/${a.id}`)}
-            data-oid="zdd63d2"
+            data-oid="8t-4-9."
           >
-            <h3 className="font-semibold" data-oid="w-g._8_">
+            <h3 className="font-semibold" data-oid="-qh5kru">
               {a.nombre}
             </h3>
             {a.descripcion && (
               <p
                 className="text-sm text-[var(--dashboard-muted)]"
-                data-oid="vq:52hi"
+                data-oid="jgiurkr"
               >
                 {a.descripcion}
               </p>
             )}
           </div>
-          <div className="flex items-center gap-1 text-sm" data-oid="hk8r01j">
+          <div className="flex items-center gap-1 text-sm" data-oid="lujybah">
             <button
               onClick={() => moveUp(idx)}
               className="px-1"
-              data-oid="93nu2d6"
+              data-oid="2ay3nmw"
             >
               ↑
             </button>
             <button
               onClick={() => moveDown(idx)}
               className="px-1"
-              data-oid="1sz4w5d"
+              data-oid="l4bac8w"
             >
               ↓
             </button>
             <button
               onClick={() => router.push(`/dashboard/almacenes/${a.id}/editar`)}
               className="px-1 text-blue-500"
-              data-oid="g_u167:"
+              data-oid="_g7zdy8"
             >
               ✎
             </button>
             <button
               onClick={() => eliminar(a.id)}
               className="px-1 text-red-500"
-              data-oid="ikhrfwa"
+              data-oid="zwm-2s_"
             >
               ✕
             </button>
@@ -181,22 +182,22 @@ export default function AlmacenesPage() {
   const renderGrid = () => (
     <div
       className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-      data-oid="r3rp6ax"
+      data-oid="p2a3lo_"
     >
       {almacenes.map((a) => (
         <div
           key={a.id}
           className="p-4 border rounded-lg cursor-pointer hover:bg-white/5"
           onClick={() => router.push(`/dashboard/almacenes/${a.id}`)}
-          data-oid="x.ws0fv"
+          data-oid="j30ui.y"
         >
-          <h3 className="font-semibold mb-1" data-oid="swcyj-9">
+          <h3 className="font-semibold mb-1" data-oid="5bq_z65">
             {a.nombre}
           </h3>
           {a.descripcion && (
             <p
               className="text-sm text-[var(--dashboard-muted)]"
-              data-oid="3my_o2p"
+              data-oid="do4l.5a"
             >
               {a.descripcion}
             </p>
@@ -207,13 +208,13 @@ export default function AlmacenesPage() {
   );
 
   const renderTree = () => (
-    <ul className="list-disc pl-4" data-oid="q7.wqic">
+    <ul className="list-disc pl-4" data-oid="pbcygko">
       {almacenes.map((a) => (
         <li
           key={a.id}
           className="cursor-pointer hover:underline"
           onClick={() => router.push(`/dashboard/almacenes/${a.id}`)}
-          data-oid="1lky8t9"
+          data-oid="d2wd5ww"
         >
           {a.nombre}
         </li>
@@ -222,7 +223,7 @@ export default function AlmacenesPage() {
   );
 
   return (
-    <div className="p-4" data-oid="almacenes-page">
+    <div className="p-4" data-oid="j7.ylhr">
       {view === "list"
         ? renderList()
         : view === "grid"

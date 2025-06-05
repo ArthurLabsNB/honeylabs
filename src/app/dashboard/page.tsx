@@ -177,39 +177,39 @@ export default function DashboardPage() {
   };
 
   // Loading/errores de sesión
-  if (loadingUsuario) return <div data-oid="lwpjukq">Cargando usuario...</div>;
+  if (loadingUsuario) return <div data-oid="_0v3rjj">Cargando usuario...</div>;
   if (errorUsuario || !usuario)
     return (
-      <div data-oid=".l_nz-z">
+      <div data-oid="k1:t11_">
         {errorUsuario || "Sesión inválida"}{" "}
-        <a href="/login" data-oid="_z2psz7">
+        <a href="/login" data-oid="si54zbn">
           Iniciar sesión
         </a>
       </div>
     );
 
   return (
-    <div className="min-h-screen p-4 sm:p-8" data-oid="7h725.b">
+    <div className="min-h-screen p-4 sm:p-8" data-oid="japsa91">
       <div
         className="flex items-center justify-between mb-5"
-        data-oid="bjx2qyk"
+        data-oid="zm1.jco"
       >
-        <h1 className="text-2xl font-bold" data-oid="4rx1xg2">
+        <h1 className="text-2xl font-bold" data-oid="ulnh9zq">
           Panel principal
         </h1>
-        <div className="flex items-center gap-2" data-oid="i:sqqkj">
+        <div className="flex items-center gap-2" data-oid="kuayohc">
           <select
             onChange={(e) => handleAddWidget(e.target.value)}
             value=""
-            data-oid=".afd4c5"
+            data-oid="1cmvbl6"
           >
-            <option disabled value="" data-oid="6wcsx7v">
+            <option disabled value="" data-oid="mdilp3j">
               Agregar widget...
             </option>
             {catalogo
               .filter((w) => !widgets.includes(w.key))
               .map((w) => (
-                <option key={w.key} value={w.key} data-oid="z4paaf7">
+                <option key={w.key} value={w.key} data-oid="i6tnk:1">
                   {w.title}
                 </option>
               ))}
@@ -217,7 +217,7 @@ export default function DashboardPage() {
           <button
             onClick={() => setShowPizarra(true)}
             className="dashboard-btn"
-            data-oid="open-pizarra"
+            data-oid="icz5kuh"
           >
             Abrir Pizarra
           </button>
@@ -234,7 +234,7 @@ export default function DashboardPage() {
         onLayoutChange={setLayout}
         draggableHandle=".dashboard-widget-card"
         margin={[18, 18]}
-        data-oid="6l8-9mp"
+        data-oid="hxrbk.e"
       >
         {widgets.map((key) => {
           const Widget = componentes[key];
@@ -247,11 +247,11 @@ export default function DashboardPage() {
                 key={key}
                 className="dashboard-widget-card flex items-center justify-center"
                 style={{ minHeight: 90 }}
-                data-oid="1zbarim"
+                data-oid="yt4xd_q"
               >
-                <span className="text-sm text-gray-500" data-oid="8t-t9y1">
+                <span className="text-sm text-gray-500" data-oid="puzy-ax">
                   Cargando widget{" "}
-                  <b data-oid="ow1dedz">{widgetMeta?.title || key}</b>...
+                  <b data-oid="w85xvu2">{widgetMeta?.title || key}</b>...
                 </span>
               </div>
             );
@@ -264,17 +264,17 @@ export default function DashboardPage() {
                 key={key}
                 className="dashboard-widget-card flex items-center justify-center bg-red-100 border border-red-300"
                 style={{ minHeight: 90 }}
-                data-oid="4ed6:db"
+                data-oid="0-85dzh"
               >
-                <span className="text-sm text-red-600" data-oid="8za4dl4">
-                  Widget <b data-oid="k.asut6">{widgetMeta?.title || key}</b> no
+                <span className="text-sm text-red-600" data-oid="wqbhms5">
+                  Widget <b data-oid="9spv7ji">{widgetMeta?.title || key}</b> no
                   disponible.
                 </span>
                 <button
                   className="ml-4 text-xs text-red-500 underline"
                   onClick={() => handleRemoveWidget(key)}
                   title="Quitar widget problemático"
-                  data-oid="an2jzff"
+                  data-oid="2.9u:_t"
                 >
                   Quitar
                 </button>
@@ -284,13 +284,13 @@ export default function DashboardPage() {
 
           // Si todo bien, renderiza el widget
           return (
-            <div key={key} className="dashboard-widget-card" data-oid="z6wmao4">
-              <Widget usuario={usuario} data-oid="4aelqx5" />
+            <div key={key} className="dashboard-widget-card" data-oid="ldgxhem">
+              <Widget usuario={usuario} data-oid="c3illgc" />
               <button
                 onClick={() => handleRemoveWidget(key)}
-                data-oid="ib037i_"
                 title="Eliminar widget"
                 className="absolute top-2 right-2 text-lg text-gray-400 hover:text-red-600"
+                data-oid="9b3gzg4"
               >
                 ✕
               </button>
@@ -301,7 +301,7 @@ export default function DashboardPage() {
       {showPizarra && (
         <PizarraCanvas
           onClose={() => setShowPizarra(false)}
-          data-oid="76.bud."
+          data-oid="2py4:yp"
         />
       )}
     </div>

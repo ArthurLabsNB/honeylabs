@@ -17,18 +17,18 @@ export default function PizarraNavbar({
     <header
       className="flex items-center justify-between p-2 border-b border-[var(--dashboard-border)] bg-[var(--dashboard-navbar)]"
       style={{ minHeight: "50px" }}
-      data-oid="6ks:_w_"
+      data-oid="e_opvc_"
     >
-      <div className="flex items-center gap-2" data-oid="g1box:2">
+      <div className="flex items-center gap-2" data-oid="n.anie6">
         <button
           onClick={onClose}
           className="p-2 hover:bg-white/15 rounded"
           title="Salir"
-          data-oid="ow6c8yq"
+          data-oid="vrxl_ap"
         >
-          <X className="w-5 h-5" data-oid="f3huny6" />
+          <X className="w-5 h-5" data-oid="qga9c2q" />
         </button>
-        <span className="font-semibold" data-oid="5ib7hcb">
+        <span className="font-semibold" data-oid="d:gi__3">
           Pizarra Infinita
         </span>
       </div>
@@ -36,12 +36,12 @@ export default function PizarraNavbar({
         onClick={onToggleFullscreen}
         className="p-2 hover:bg-white/15 rounded"
         title="Pantalla completa"
-        data-oid="qi-l5e:"
+        data-oid="gqdbgyb"
       >
         {fullscreen ? (
-          <Minimize className="w-5 h-5" data-oid="yzku-5z" />
+          <Minimize className="w-5 h-5" data-oid="qm28.g5" />
         ) : (
-          <Maximize className="w-5 h-5" data-oid="561ajjb" />
+          <Maximize className="w-5 h-5" data-oid="y3a5uvj" />
         )}
       </button>
     </header>

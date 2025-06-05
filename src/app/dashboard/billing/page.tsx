@@ -47,25 +47,26 @@ export default function BillingPage() {
 
   if (error)
     return (
-      <div className="p-4 text-red-500" data-oid="34d1zkf">
+      <div className="p-4 text-red-500" data-oid="ndevmu0">
         {error}
       </div>
     );
+
   if (loading)
     return (
-      <div className="p-4" data-oid="24yk4ni">
+      <div className="p-4" data-oid="nl1s5nf">
         Cargando...
       </div>
     );
 
   return (
-    <div className="p-4" data-oid="billing-page">
-      <h1 className="text-2xl font-bold mb-4" data-oid="74m2n0m">
+    <div className="p-4" data-oid="t5lti-w">
+      <h1 className="text-2xl font-bold mb-4" data-oid="rf_rc_.">
         Billing
       </h1>
-      <ul className="list-disc pl-4" data-oid="8gbt8qm">
+      <ul className="list-disc pl-4" data-oid="n_816z3">
         {invoices.map((i) => (
-          <li key={i.id} data-oid="u.c1ck9">
+          <li key={i.id} data-oid="hxxqwhx">
             {i.concepto} - ${"{i.monto}"} ({i.estado})
           </li>
         ))}

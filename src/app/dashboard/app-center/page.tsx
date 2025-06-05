@@ -45,25 +45,26 @@ export default function AppCenterPage() {
 
   if (error)
     return (
-      <div className="p-4 text-red-500" data-oid="m89wg8.">
+      <div className="p-4 text-red-500" data-oid="jwq_wwn">
         {error}
       </div>
     );
+
   if (loading)
     return (
-      <div className="p-4" data-oid="733etta">
+      <div className="p-4" data-oid="c1ns:-c">
         Cargando...
       </div>
     );
 
   return (
-    <div className="p-4" data-oid="appcenter-page">
-      <h1 className="text-2xl font-bold mb-4" data-oid="ty_35va">
+    <div className="p-4" data-oid="u15atho">
+      <h1 className="text-2xl font-bold mb-4" data-oid="gu0yin4">
         App Center
       </h1>
-      <ul className="list-disc pl-4" data-oid="-b5pmcc">
+      <ul className="list-disc pl-4" data-oid="way:fh4">
         {apps.map((a) => (
-          <li key={a.id} data-oid="xj6ocsg">
+          <li key={a.id} data-oid="mscc:n-">
             {a.nombre}
           </li>
         ))}

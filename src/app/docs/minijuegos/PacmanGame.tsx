@@ -280,9 +280,9 @@ function PacmanSprite({
       }}
       animate={{ rotate }}
       transition={{ type: "tween", duration: 0.5 }}
-      data-oid="jfjqfnm"
+      data-oid="jjwed5t"
     >
-      <svg width={size} height={size} viewBox="0 0 88 88" data-oid="l1a89.w">
+      <svg width={size} height={size} viewBox="0 0 88 88" data-oid="yj.rq:g">
         <motion.path
           d={
             mouthOpen
@@ -294,10 +294,10 @@ function PacmanSprite({
           strokeWidth="1.4"
           animate={{ rotate: [0, 13, 0] }}
           transition={{ repeat: Infinity, duration: 0.19 }}
-          data-oid="t.id-hg"
+          data-oid="70ztakh"
         />
 
-        <circle cx="62" cy="32" r="5" fill="#22223b" data-oid="zko9hrj" />
+        <circle cx="62" cy="32" r="5" fill="#22223b" data-oid=":tcdkxm" />
       </svg>
     </motion.div>
   );
@@ -318,21 +318,21 @@ function GhostSprite({ g, size }: { g: Ghost; size: number }) {
       }}
       animate={{ scale: [1, 1.14, 1], y: [0, 2, 0] }}
       transition={{ repeat: Infinity, duration: 0.8 }}
-      data-oid="z.jitda"
+      data-oid="vbjjvdy"
     >
-      <svg width={size} height={size} viewBox="0 0 24 24" data-oid="pbds3h_">
+      <svg width={size} height={size} viewBox="0 0 24 24" data-oid="8q0ssui">
         <path
           d="M4 20 L4 8 Q12 1, 20 8 L20 20 Q18 18, 16 20 Q14 18, 12 20 Q10 18, 8 20 Q6 18, 4 20 Z"
           fill={g.vulnerable ? "#fff" : g.color}
           stroke={g.vulnerable ? "#70cfff" : "#222"}
           strokeWidth="1.2"
-          data-oid="zq4kybv"
+          data-oid="jasvlor"
         />
 
-        <circle cx="8.5" cy="12" r="2" fill="#fff" data-oid="d4vj7fe" />
-        <circle cx="15.5" cy="12" r="2" fill="#fff" data-oid="wr18731" />
-        <circle cx="9" cy="12" r="1" fill="#222" data-oid="1dhvf8g" />
-        <circle cx="16" cy="12" r="1" fill="#222" data-oid="g5rnzp-" />
+        <circle cx="8.5" cy="12" r="2" fill="#fff" data-oid="4u8gm-n" />
+        <circle cx="15.5" cy="12" r="2" fill="#fff" data-oid="jyv4xed" />
+        <circle cx="9" cy="12" r="1" fill="#222" data-oid="ihhxo6y" />
+        <circle cx="16" cy="12" r="1" fill="#222" data-oid="-a2bwew" />
         {g.vulnerable && (
           <ellipse
             cx="12"
@@ -340,11 +340,11 @@ function GhostSprite({ g, size }: { g: Ghost; size: number }) {
             rx="4"
             ry="1.5"
             fill="#70cfff"
-            data-oid="gq0qvrd"
+            data-oid="q1h2bgw"
           />
         )}
       </svg>
-      <AnimatePresence data-oid="2tsf2r-">
+      <AnimatePresence data-oid="k:ewv:4">
         {g.message && (
           <motion.div
             initial={{ opacity: 0, y: 8, scale: 0.95 }}
@@ -368,7 +368,7 @@ function GhostSprite({ g, size }: { g: Ghost; size: number }) {
               fontWeight: 700,
               border: "1.5px solid #ffe066",
             }}
-            data-oid="gu1pu5a"
+            data-oid="f2j-pps"
           >
             {g.message}
           </motion.div>
@@ -395,7 +395,7 @@ function MazeBoard({ maze, pos, ghosts, mouthOpen, direction, size }: any) {
         filter: "blur(0.5px) contrast(1.05)",
       }}
       className="select-none"
-      data-oid="bmf.uol"
+      data-oid="37.-sll"
     >
       {maze.map((row: number[], y: number) =>
         row.map((cell: number, x: number) => (
@@ -410,7 +410,7 @@ function MazeBoard({ maze, pos, ghosts, mouthOpen, direction, size }: any) {
               zIndex: 1,
               boxSizing: "border-box",
             }}
-            data-oid="1l.cp-j"
+            data-oid="-vw0s1e"
           >
             {cell === 1 && (
               <div
@@ -422,7 +422,7 @@ function MazeBoard({ maze, pos, ghosts, mouthOpen, direction, size }: any) {
                   borderRadius: 8,
                   boxShadow: "inset 0 0 10px #ffe066aa, 0 0 3px #ffe06666",
                 }}
-                data-oid="mle9vl5"
+                data-oid="-.o.87t"
               />
             )}
             {cell === 2 && (
@@ -436,7 +436,7 @@ function MazeBoard({ maze, pos, ghosts, mouthOpen, direction, size }: any) {
                 }}
                 animate={{ scale: [1, 1.26, 1] }}
                 transition={{ duration: 0.67, repeat: Infinity }}
-                data-oid="uximvw3"
+                data-oid="239oes."
               />
             )}
             {cell === 3 && (
@@ -450,7 +450,7 @@ function MazeBoard({ maze, pos, ghosts, mouthOpen, direction, size }: any) {
                 }}
                 animate={{ scale: [1, 1.22, 1] }}
                 transition={{ duration: 0.64, repeat: Infinity }}
-                data-oid="qkkv_m0"
+                data-oid="tfn4su6"
               />
             )}
             {cell === 4 && (
@@ -463,7 +463,7 @@ function MazeBoard({ maze, pos, ghosts, mouthOpen, direction, size }: any) {
                   borderRadius: 2,
                   boxShadow: "0 0 8px #ffd23baa",
                 }}
-                data-oid="n:i9yqg"
+                data-oid="n6xcqmn"
               />
             )}
           </div>
@@ -475,11 +475,11 @@ function MazeBoard({ maze, pos, ghosts, mouthOpen, direction, size }: any) {
         mouthOpen={mouthOpen}
         direction={direction}
         size={size}
-        data-oid="n2_w3w4"
+        data-oid="btgzd3h"
       />
 
       {ghosts.map((g: Ghost, i: number) => (
-        <GhostSprite key={i} g={g} size={size} data-oid="vj0n52n" />
+        <GhostSprite key={i} g={g} size={size} data-oid="gk_9i6f" />
       ))}
     </div>
   );
@@ -707,10 +707,10 @@ export default function PacmanGamePRO() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center w-full" data-oid="42nk3.e">
+    <div className="flex flex-col items-center w-full" data-oid="1l2nlua">
       <h3
         className="text-3xl font-extrabold text-yellow-300 drop-shadow mb-2"
-        data-oid="_-b..zn"
+        data-oid="3y4u14i"
       >
         Pac-Man PRO!
       </h3>
@@ -731,7 +731,7 @@ export default function PacmanGamePRO() {
         }}
         className="mb-2 grid"
         onClick={() => boardRef.current?.focus()}
-        data-oid="2s2zjmz"
+        data-oid="5ouhriq"
       >
         <MazeBoard
           maze={maze}
@@ -740,10 +740,10 @@ export default function PacmanGamePRO() {
           mouthOpen={mouthOpen}
           direction={pos.dir}
           size={size}
-          data-oid="fvlakw4"
+          data-oid="vb335f6"
         />
 
-        <AnimatePresence data-oid="mr0id2x">
+        <AnimatePresence data-oid="u9ve0rp">
           {!running && !gameOver && !victory && (
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
@@ -766,9 +766,9 @@ export default function PacmanGamePRO() {
                 fontSize: 38,
                 textShadow: "0 4px 16px #000",
               }}
-              data-oid=".dle9vi"
+              data-oid="l1dpd1z"
             >
-              <span data-oid="dh-lqq4">¡Perdiste una vida!</span>
+              <span data-oid="yc04v30">¡Perdiste una vida!</span>
             </motion.div>
           )}
           {gameOver && (
@@ -793,9 +793,9 @@ export default function PacmanGamePRO() {
                 fontSize: 38,
                 textShadow: "0 4px 22px #000",
               }}
-              data-oid="oae9mcm"
+              data-oid="06xkjdg"
             >
-              <span data-oid="9frzovg">GAME OVER</span>
+              <span data-oid="kv7a9qk">GAME OVER</span>
             </motion.div>
           )}
           {victory && (
@@ -820,33 +820,33 @@ export default function PacmanGamePRO() {
                 fontSize: 35,
                 textShadow: "0 2px 8px #fff",
               }}
-              data-oid="w2u3f0f"
+              data-oid="z6hphrd"
             >
-              <span data-oid="dz_pdrp">¡Victoria! 🎉</span>
+              <span data-oid="5xump3f">¡Victoria! 🎉</span>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
-      <div className="flex gap-6 items-center mb-2" data-oid="6xv2fe4">
-        <span className="text-yellow-300 font-bold text-xl" data-oid="i:ppe_0">
+      <div className="flex gap-6 items-center mb-2" data-oid="z2u:_vn">
+        <span className="text-yellow-300 font-bold text-xl" data-oid="y2t-j3l">
           Puntos: {score}
         </span>
-        <span className="text-blue-300 font-bold text-lg" data-oid="e2l-5n8">
+        <span className="text-blue-300 font-bold text-lg" data-oid="lohk4ls">
           Vidas: {lives}
         </span>
       </div>
       <button
         onClick={restart}
         className="mt-1 px-6 py-2 bg-yellow-300 text-[#22223b] text-lg font-bold rounded-lg shadow-lg hover:scale-105 transition-all"
-        data-oid="v4zplo_"
+        data-oid="ptuw2lu"
       >
         Reiniciar
       </button>
-      <p className="mt-2 text-zinc-400 text-xs text-center" data-oid="cit915_">
-        Usa <b data-oid="7gyo36z">WASD</b> para moverte.
-        <br data-oid="dq96hum" />
+      <p className="mt-2 text-zinc-400 text-xs text-center" data-oid="506akk8">
+        Usa <b data-oid="x11p7a_">WASD</b> para moverte.
+        <br data-oid="vc-450f" />
         ¡Evita a los fantasmas y come todos los puntos!
-        <br data-oid="xwm4hw4" />
+        <br data-oid="bk:9jgi" />
         Los fantasmas dicen cosas si se aburren... 😈
       </p>
     </div>

@@ -41,6 +41,7 @@
     "react-resizable": "^3.0.5",
     "styled-jsx": "^5.1.7",
     "swr": "^2.3.3",
+    "tailwind-merge": "^3.3.0",
     "use-sound": "^5.0.0",
     "uuid": "^11.1.0",
     "zod": "^3.25.32",

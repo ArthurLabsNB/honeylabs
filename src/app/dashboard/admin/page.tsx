@@ -45,26 +45,28 @@ export default function AdminPage() {
 
   if (error)
     return (
-      <div className="p-4 text-red-500" data-oid="l1qg4:j">
+      <div className="p-4 text-red-500" data-oid="ibo6fdf">
         {error}
       </div>
     );
+
   if (loading)
     return (
-      <div className="p-4" data-oid="sm55v2:">
+      <div className="p-4" data-oid="fuk4kf:">
         Cargando...
       </div>
     );
+
   if (!stats) return null;
 
   return (
-    <div className="p-4" data-oid="admin-page">
-      <h1 className="text-2xl font-bold mb-4" data-oid="q.ndba-">
+    <div className="p-4" data-oid="se45rfa">
+      <h1 className="text-2xl font-bold mb-4" data-oid="hzyq36t">
         Admin
       </h1>
-      <ul className="list-disc pl-4" data-oid="4:bm.:3">
-        <li data-oid="rxa6hc4">Usuarios: {stats.usuarios}</li>
-        <li data-oid="vu_rc90">Almacenes: {stats.almacenes}</li>
+      <ul className="list-disc pl-4" data-oid="dphq3e_">
+        <li data-oid="2fbe27y">Usuarios: {stats.usuarios}</li>
+        <li data-oid="bvfbp-z">Almacenes: {stats.almacenes}</li>
       </ul>
     </div>
   );

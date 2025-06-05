@@ -45,25 +45,26 @@ export default function ReportesPage() {
 
   if (error)
     return (
-      <div className="p-4 text-red-500" data-oid="dxr1dy0">
+      <div className="p-4 text-red-500" data-oid=":csr4hq">
         {error}
       </div>
     );
+
   if (loading)
     return (
-      <div className="p-4" data-oid="wt64p7n">
+      <div className="p-4" data-oid="8l4d8tc">
         Cargando...
       </div>
     );
 
   return (
-    <div className="p-4" data-oid="reportes-page">
-      <h1 className="text-2xl font-bold mb-4" data-oid="uy7-pvc">
+    <div className="p-4" data-oid="vevh11y">
+      <h1 className="text-2xl font-bold mb-4" data-oid="0w60ab2">
         Reportes
       </h1>
-      <ul className="list-disc pl-4" data-oid="0vkug.c">
+      <ul className="list-disc pl-4" data-oid="cjii6yp">
         {reportes.map((r) => (
-          <li key={r.id} data-oid="hqi2v_f">
+          <li key={r.id} data-oid="dxe_-je">
             {r.titulo}
           </li>
         ))}

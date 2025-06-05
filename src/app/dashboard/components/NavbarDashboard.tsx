@@ -104,63 +104,63 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
     <header
       ref={navRef}
       className="dashboard-navbar flex items-center px-8 py-2 justify-between fixed top-0 left-0 right-0 z-20 shadow bg-[var(--dashboard-navbar)]"
-      style={{ minHeight: "70px" }}
-      data-oid="z9m8ytf"
+      style={{ minHeight: "70px", width: "100%" }}
+      data-oid="z5vbw0i"
     >
-      <div className="flex gap-4 items-center relative" data-oid="qv1:u32">
+      <div className="flex gap-4 items-center relative" data-oid="ikd.5r1">
         <Link
           href="/"
           className="p-3 rounded-lg transition hover:bg-white/15 hover:backdrop-blur-sm focus:bg-white/25 active:bg-white/25"
-          data-oid="3_ysms9"
+          data-oid="h_hgq:3"
         >
           <Home
             className="w-6 h-6 text-[var(--dashboard-accent)] transition"
-            data-oid="l.cffkg"
+            data-oid="5.tu7zt"
           />
         </Link>
 
         {puedeCrear && (
-          <div className="relative" data-oid="ass5mi6">
+          <div className="relative" data-oid="10k8cgv">
             <button
               className="dashboard-btn flex items-center gap-2 shadow-sm hover:scale-105 hover:bg-white/15 hover:backdrop-blur-sm focus:bg-white/20 active:bg-white/25 transition"
               onClick={() => setCrearOpen((v) => !v)}
               aria-expanded={crearOpen}
               tabIndex={0}
-              data-oid="zvyub:5"
+              data-oid="w:pukd-"
             >
-              <Plus className="w-5 h-5" data-oid="58rc8p6" />
-              <span className="hidden sm:block" data-oid="3lqj4bl">
+              <Plus className="w-5 h-5" data-oid="8rz4dru" />
+              <span className="hidden sm:block" data-oid="3tsoh.g">
                 Crear
               </span>
             </button>
             {crearOpen && (
               <div
                 className="absolute left-0 mt-2 w-56 rounded-xl bg-white dark:bg-[var(--dashboard-navbar)] shadow-xl border border-[var(--dashboard-border)] z-50 animate-fade-in"
-                data-oid="2cd07b2"
+                data-oid="cn:vj5q"
               >
                 <button
                   className="w-full text-left px-5 py-3 hover:bg-white/15 dark:hover:bg-[var(--dashboard-bg)] transition rounded-t-xl"
-                  data-oid="nm48bsb"
+                  data-oid="ed892no"
                 >
                   + Almacén
                 </button>
                 {puedeInvitarUsuarios && (
                   <button
                     className="w-full text-left px-5 py-3 hover:bg-white/15 dark:hover:bg-[var(--dashboard-bg)] transition"
-                    data-oid="7b_vkoh"
+                    data-oid="2ijm9zs"
                   >
                     + Usuario
                   </button>
                 )}
                 <button
                   className="w-full text-left px-5 py-3 hover:bg-white/15 dark:hover:bg-[var(--dashboard-bg)] transition"
-                  data-oid="ui6i2pe"
+                  data-oid="1dvgow9"
                 >
                   + Reporte
                 </button>
                 <button
                   className="w-full text-left px-5 py-3 hover:bg-white/15 dark:hover:bg-[var(--dashboard-bg)] transition rounded-b-xl"
-                  data-oid="i4vsarb"
+                  data-oid="mfjc2wh"
                 >
                   + Ticket
                 </button>
@@ -171,11 +171,11 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
 
         <div
           className="relative flex items-center ml-3 w-52 sm:w-64"
-          data-oid="h5_rw0n"
+          data-oid="rjyib0:"
         >
           <Search
             className={`w-5 h-5 absolute left-4 top-2.5 text-[var(--dashboard-muted)] pointer-events-none transition ${buscadorFocus ? "text-[var(--dashboard-accent)] scale-110" : ""}`}
-            data-oid="-z4:54b"
+            data-oid="u8pi6:u"
           />
 
           <input
@@ -187,13 +187,13 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
             onFocus={() => setBuscadorFocus(true)}
             onBlur={() => setTimeout(() => setBuscadorFocus(false), 120)}
             autoComplete="off"
-            data-oid="1d.zsgd"
+            data-oid="zv3o9-o"
           />
 
           {buscadorFocus && resultados.length > 0 && (
             <div
               className="absolute left-0 top-12 w-full rounded-2xl bg-white dark:bg-[var(--dashboard-bg)] shadow-xl border border-[var(--dashboard-border)] z-50 animate-fade-in overflow-y-auto max-h-64"
-              data-oid="8ro697b"
+              data-oid="4r7tu39"
             >
               {resultados.map((res, i) => (
                 <Link
@@ -204,15 +204,15 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
                     setBuscador("");
                     setBuscadorFocus(false);
                   }}
-                  data-oid="bg6:fhp"
+                  data-oid="bgo.nzs"
                 >
                   <span
                     className="text-xs px-2 py-1 rounded bg-[var(--dashboard-accent)] text-[var(--dashboard-navbar)] font-bold"
-                    data-oid="9gk6vg2"
+                    data-oid="x0ehnfs"
                   >
                     {res.tipo}
                   </span>
-                  <span className="font-semibold" data-oid="z_aye5u">
+                  <span className="font-semibold" data-oid="gapa4rc">
                     {res.nombre}
                   </span>
                 </Link>
@@ -222,12 +222,12 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
         </div>
       </div>
 
-      <div className="flex items-center gap-3" data-oid="cupk8jm">
+      <div className="flex items-center gap-3" data-oid="x5cdysc">
         <button
           className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
-          data-oid="o:97jba"
+          data-oid="tz:4t05"
         >
-          <AppWindow data-oid="t2g8ffg" />
+          <AppWindow data-oid="ddchwni" />
         </button>
         <button
           className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
@@ -235,42 +235,42 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
           title={
             fullscreen ? "Salir de pantalla completa" : "Pantalla completa"
           }
-          data-oid="9irg.h4"
+          data-oid="ds4ce8:"
         >
           {fullscreen ? (
-            <Minimize data-oid="vmjvqyb" />
+            <Minimize data-oid="7l3ay7_" />
           ) : (
-            <Maximize data-oid="x.pc3-4" />
+            <Maximize data-oid="85ou31z" />
           )}
         </button>
         <button
           className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
-          data-oid="1tmp-oc"
+          data-oid="zvtno:p"
         >
-          <SunMoon data-oid="zf_9_.7" />
+          <SunMoon data-oid="biplgd6" />
         </button>
         <button
           className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
-          data-oid="-fmq-tn"
+          data-oid="6fmtljz"
         >
-          <MessageSquare data-oid="jrh6efo" />
+          <MessageSquare data-oid="1lkz_g4" />
         </button>
         <button
           className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
-          data-oid="8l4opkn"
+          data-oid=".-_1wyk"
         >
-          <Bell data-oid="sg:mnrg" />
+          <Bell data-oid="s9c-u68" />
         </button>
-        <div className="relative ml-2" data-oid="-prs.2w">
+        <div className="relative ml-2" data-oid="lce8ecp">
           <button
             className="flex items-center gap-2 bg-[var(--dashboard-accent)]/20 px-3 py-1.5 rounded-xl hover:bg-white/25 hover:backdrop-blur-md transition"
             onClick={() => setUserMenuOpen((v) => !v)}
             tabIndex={0}
-            data-oid="k8sc0pv"
+            data-oid="rwbfqio"
           >
-            <User data-oid="1eb54wm" />
-            <span data-oid="pi7vfgk">{usuario.nombre}</span>
-            <ChevronDown data-oid="dimft:z" />
+            <User data-oid="g.g_ttr" />
+            <span data-oid="0j-7i6l">{usuario.nombre}</span>
+            <ChevronDown data-oid=".87g6gp" />
           </button>
           <UserMenu
             usuario={{
@@ -282,7 +282,7 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
             open={userMenuOpen}
             setOpen={setUserMenuOpen}
             hideTrigger
-            data-oid="d:j59u0"
+            data-oid="zrgvk04"
           />
         </div>
       </div>
