@@ -35,7 +35,7 @@ Actualmente se están implementando las funcionalidades principales. Se aceptan 
 
 ## Version
 
-0.2.9
+0.2.10
 
 ---
 
