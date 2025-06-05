@@ -18,6 +18,20 @@ interface Almacen {
   notificaciones?: boolean;
 }
 
+function getMainRole(u: any): string | undefined {
+  return u?.rol || u?.roles?.[0]?.nombre;
+}
+
+function hasManagePerms(u: any): boolean {
+  const rol = getMainRole(u)?.toLowerCase();
+  const tipo = (u?.tipoCuenta ?? "").toLowerCase();
+  const plan = (u?.plan?.nombre ?? "").toLowerCase();
+  if (rol === "admin" || rol === "administrador") return true;
+  if (["institucional", "empresarial"].includes(tipo)) return true;
+  if (["empresarial", "institucional", "pro"].includes(plan)) return true;
+  return false;
+}
+
 export default function AlmacenesPage() {
   const allowed = ["admin", "institucional", "empresarial", "estandar"];
   const [usuario, setUsuario] = useState<Usuario | null>(null);
@@ -32,11 +46,13 @@ export default function AlmacenesPage() {
       .then(jsonOrNull)
       .then((data) => {
         if (!data?.success) throw new Error();
-        const tipo =
-          data.usuario.rol === "admin"
-            ? "admin"
-            : (data.usuario.tipoCuenta ?? "estandar");
-        if (!allowed.includes(tipo)) {
+        const rol = getMainRole(data.usuario)?.toLowerCase();
+        const tipo = (data.usuario.tipoCuenta ?? "estandar").toLowerCase();
+        if (
+          rol !== "admin" &&
+          rol !== "administrador" &&
+          !allowed.includes(tipo)
+        ) {
           throw new Error("No autorizado");
         }
         setUsuario(data.usuario);
@@ -245,7 +261,7 @@ export default function AlmacenesPage() {
   return (
     <div className="p-4 relative" data-oid="j7.ylhr">
       {almacenes.length === 0 && usuario && (
-        <FloatingAdd allowCreate={usuario.rol === "admin" || usuario.tipoCuenta === "institucional" || usuario.tipoCuenta === "empresarial"} />
+        <FloatingAdd allowCreate={hasManagePerms(usuario)} />
       )}
       {view === "list"
         ? renderList()
