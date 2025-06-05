@@ -18,6 +18,7 @@ import {
 import UserMenu from "@/components/UserMenu";
 import { useDashboardUI } from "../ui";
 import type { Usuario } from "@/types/usuario";
+import { hasManagePerms } from "@lib/permisos";
 
 const MOCK_RESULTS = [
   { tipo: "almacén", nombre: "Almacén Central", url: "/almacenes/central" },
@@ -82,16 +83,10 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
     if (redirectUrl) window.location.href = redirectUrl;
   };
 
-  const puedeCrear =
-    usuario.rol === "admin" ||
-    usuario.tipoCuenta === "empresarial" ||
-    usuario.tipoCuenta === "institucional" ||
-    usuario.tipoCuenta === "estandar";
-
+  const puedeCrear = hasManagePerms(usuario);
   const puedeInvitarUsuarios =
-    usuario.rol === "admin" ||
-    usuario.tipoCuenta === "empresarial" ||
-    usuario.tipoCuenta === "institucional";
+    hasManagePerms(usuario) &&
+    ((usuario?.tipoCuenta ?? "").toLowerCase() !== "estandar");
 
   return (
     <header

@@ -14,20 +14,8 @@ import { useAlmacenesUI } from "../ui";
 import type { Usuario } from "@/types/usuario";
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
+import { getMainRole, hasManagePerms } from "@lib/permisos";
 
-function getMainRole(u: any): string | undefined {
-  return u?.rol || u?.roles?.[0]?.nombre;
-}
-
-function hasManagePerms(u: any): boolean {
-  const rol = getMainRole(u)?.toLowerCase();
-  const tipo = (u?.tipoCuenta ?? "").toLowerCase();
-  const plan = (u?.plan?.nombre ?? "").toLowerCase();
-  if (rol === "admin" || rol === "administrador") return true;
-  if (["institucional", "empresarial"].includes(tipo)) return true;
-  if (["empresarial", "institucional", "pro"].includes(plan)) return true;
-  return false;
-}
 
 interface AlmacenNavbarProps {
   mode?: 'list' | 'detail';

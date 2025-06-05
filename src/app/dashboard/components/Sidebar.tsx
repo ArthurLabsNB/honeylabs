@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useDashboardUI } from "../ui";
 import type { Usuario } from "@/types/usuario";
+import { getMainRole } from "@lib/permisos";
 import {
   Home,
   Boxes,
@@ -92,7 +93,7 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
   const pathname = usePathname();
   const router = useRouter();
 
-  if (!usuario || (!usuario.rol && !usuario.tipoCuenta) || !usuario.nombre) {
+  if (!usuario || !usuario.nombre) {
     return (
       <aside
         className="dashboard-sidebar flex flex-col w-[72px] h-screen fixed top-0 left-0 z-30 justify-center items-center bg-[var(--dashboard-sidebar)] shadow-xl"
@@ -105,8 +106,8 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
     );
   }
 
-  const tipo =
-    usuario.rol === "admin" ? "admin" : (usuario.tipoCuenta ?? "estandar");
+  const mainRole = getMainRole(usuario)?.toLowerCase();
+  const tipo = mainRole === "admin" ? "admin" : usuario.tipoCuenta ?? "estandar";
 
   const filteredMenu = sidebarMenu.filter((item) =>
     item.allowed.includes(tipo),
