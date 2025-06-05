@@ -6,6 +6,7 @@ import { useAlmacenesUI } from "./ui";
 import type { Usuario } from "@/types/usuario";
 import { getMainRole, hasManagePerms } from "@lib/permisos";
 
+interface Almacen {
   id: number;
   nombre: string;
   descripcion?: string | null;
