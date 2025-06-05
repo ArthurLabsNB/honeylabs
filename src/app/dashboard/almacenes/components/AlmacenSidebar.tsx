@@ -1,21 +1,17 @@
 "use client";
 
-import { 
-  Warehouse,
+import {
+  Home,
   Star,
-  Users,
-  Archive,
-  Inbox,
-  Layers,
-  FolderKanban,
-  FileUp,
-  FileDown,
-  BookOpen,
+  History,
+  ArrowDownCircle,
+  ArrowUpCircle,
+  Move,
   Box,
-  Settings,
-  Tag,
   FileText,
-  History
+  Folder,
+  Settings,
+  BookOpen
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -31,22 +27,19 @@ function MenuLink({
 }: { 
   href: string, 
   icon: any, 
-  label: string 
+  label: string
 }) {
   const pathname = usePathname();
   const isActive = pathname === href;
-  
+
   return (
     <Link
       href={href}
-      className={`${menuItemStyle} ${
-        isActive 
-          ? "bg-[var(--dashboard-accent)]/10 text-white font-medium" 
-          : "hover:text-white"
-      }`}
+      className={`${menuItemStyle} ${isActive ? "bg-[var(--dashboard-accent)]/10 text-white font-medium" : "hover:text-white"}`}
+      title={label}
     >
-      <Icon 
-        className={`w-5 h-5 ${isActive ? "text-[var(--dashboard-accent)]" : "text-gray-400"}`} 
+      <Icon
+        className={`w-5 h-5 ${isActive ? "text-[var(--dashboard-accent)]" : "text-gray-400"}`}
       />
       <span>{label}</span>
     </Link>
@@ -89,73 +82,19 @@ export default function AlmacenSidebar({
   // --- Sidebar modo lista (todos los almacenes) ---
   return (
     <aside className="w-64 h-full overflow-y-auto bg-[var(--dashboard-sidebar)] border-r border-[var(--dashboard-border)] py-6">
-      <div className="space-y-8">
-        {/* Sección: Almacenes */}
-        <section>
-          <h3 className={sectionStyle}>Mis almacenes</h3>
-          <nav className="space-y-1 px-3">
-            <MenuLink 
-              href="/dashboard/almacenes" 
-              icon={Warehouse} 
-              label="Todos mis almacenes" 
-            />
-            <MenuLink 
-              href="/dashboard/almacenes/favoritos" 
-              icon={Star} 
-              label="Favoritos" 
-            />
-            <MenuLink 
-              href="/dashboard/almacenes/compartidos" 
-              icon={Users} 
-              label="Compartidos conmigo" 
-            />
-            <MenuLink 
-              href="/dashboard/almacenes/archivados" 
-              icon={Archive} 
-              label="Archivados" 
-            />
-          </nav>
-        </section>
-
-        {/* Sección: Operaciones */}
-        <section>
-          <h3 className={sectionStyle}>Operaciones</h3>
-          <nav className="space-y-1 px-3">
-            <MenuLink 
-              href="/dashboard/almacenes/pendientes" 
-              icon={Inbox} 
-              label="Tareas y pendientes" 
-            />
-            <MenuLink 
-              href="/dashboard/almacenes/categorias" 
-              icon={Tag} 
-              label="Categorías" 
-            />
-            <MenuLink 
-              href="/dashboard/almacenes/plantillas" 
-              icon={FolderKanban} 
-              label="Plantillas" 
-            />
-          </nav>
-        </section>
-
-        {/* Sección: Herramientas */}
-        <section>
-          <h3 className={sectionStyle}>Herramientas</h3>
-          <nav className="space-y-1 px-3">
-            <MenuLink 
-              href="/dashboard/almacenes/importaciones" 
-              icon={FileUp} 
-              label="Importar" 
-            />
-            <MenuLink 
-              href="/dashboard/almacenes/exportaciones" 
-              icon={FileDown} 
-              label="Exportar" 
-            />
-          </nav>
-        </section>
-      </div>
+      <nav className="space-y-1 px-3">
+        <MenuLink href="/dashboard/almacenes" icon={Home} label="Inicio" />
+        <MenuLink href="/dashboard/almacenes/favoritos" icon={Star} label="Favoritos" />
+        <MenuLink href="/dashboard/almacenes/movimientos" icon={History} label="Movimientos" />
+        <MenuLink href="/dashboard/almacenes/entradas" icon={ArrowDownCircle} label="Entradas" />
+        <MenuLink href="/dashboard/almacenes/salidas" icon={ArrowUpCircle} label="Salidas" />
+        <MenuLink href="/dashboard/almacenes/transferencias" icon={Move} label="Transferencias" />
+        <MenuLink href="/dashboard/almacenes/inventario" icon={Box} label="Inventario global" />
+        <MenuLink href="/dashboard/almacenes/reportes" icon={FileText} label="Reportes" />
+        <MenuLink href="/dashboard/almacenes/archivos" icon={Folder} label="Archivos" />
+        <MenuLink href="/dashboard/almacenes/configuracion" icon={Settings} label="Configuración" />
+        <MenuLink href="/dashboard/almacenes/ayuda" icon={BookOpen} label="Ayuda" />
+      </nav>
     </aside>
   );
 }
