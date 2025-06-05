@@ -44,9 +44,9 @@ export default function AlmacenNavbar({ mode = 'list', nombre }: AlmacenNavbarPr
     usuario?.tipoCuenta === "institucional" ||
     usuario?.tipoCuenta === "empresarial";
 
-  if (mode === 'detail') {
+  if (mode === "detail") {
     return (
-      <header className="dashboard-navbar justify-between px-6">
+      <header className="flex items-center justify-between h-full px-6 w-full">
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.push("/dashboard/almacenes")}
@@ -65,7 +65,7 @@ export default function AlmacenNavbar({ mode = 'list', nombre }: AlmacenNavbarPr
 
   // Modo lista (default)
   return (
-    <header className="dashboard-navbar justify-between px-4 md:px-6">
+    <header className="flex items-center justify-between h-full w-full px-4 md:px-6">
       <div className="flex items-center gap-4 md:gap-6">
         <h1 className="text-lg font-semibold text-white">Almacenes</h1>
 
@@ -138,12 +138,12 @@ export default function AlmacenNavbar({ mode = 'list', nombre }: AlmacenNavbarPr
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="relative">
+        <div className="relative w-52 sm:w-64">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--dashboard-muted)]" />
           <input
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
-            className="dashboard-input pl-8 pr-2 py-1.5"
+            className="dashboard-input pl-8 pr-2"
             placeholder="Buscar almacén..."
           />
         </div>
