@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
 import type { Usuario } from "@/types/usuario";
+import { getMainRole } from "@lib/permisos";
 
 interface Reporte {
   id: number;
@@ -20,11 +21,10 @@ export default function ReportesPage() {
       .then(jsonOrNull)
       .then((data) => {
         if (!data?.success) throw new Error();
-        const tipo =
-          data.usuario.rol === "admin"
-            ? "admin"
-            : (data.usuario.tipoCuenta ?? "estandar");
-        if (!allowed.includes(tipo)) throw new Error("No autorizado");
+        const rol = getMainRole(data.usuario)?.toLowerCase();
+        const tipo = (data.usuario.tipoCuenta ?? "estandar").toLowerCase();
+        if (rol !== "admin" && rol !== "administrador" && !allowed.includes(tipo))
+          throw new Error("No autorizado");
         setUsuario(data.usuario);
       })
       .catch((err) => setError(err.message || "Debes iniciar sesión"));
