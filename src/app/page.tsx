@@ -333,22 +333,6 @@ function LoaderKPI() {
 // ========================
 // FEATURES BANNER SECTION
 // ========================
-function FeaturesBannerSection() {
-  return (
-    <section
-      className="relative bg-center bg-cover bg-no-repeat py-44"
-      style={{ backgroundImage: "url('/background.gif')" }}
-      data-oid="js391oi"
-    >
-      <div className="absolute inset-0 bg-zinc-900/70" />
-      <div className="relative max-w-7xl mx-auto px-4 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-amber-300">
-          Funciones principales
-        </h2>
-      </div>
-    </section>
-  );
-}
 
 // ========================
 // PARTNERS/ALIADOS SECTION (Acordeón Multimedia)
@@ -481,7 +465,6 @@ export default function Page() {
         <HeroSection data-oid="obvdxpr" />
         <AboutSection data-oid="x4h0vfw" />
         <KpiSection data-oid="5izdndn" />
-        <FeaturesBannerSection data-oid="sfry:rj" />
         <PartnersSection data-oid="1-2.6t3" />
       </div>
     </main>

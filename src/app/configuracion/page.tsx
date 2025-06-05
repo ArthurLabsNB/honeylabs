@@ -133,6 +133,7 @@ export default function Configuracion() {
         `/api/perfil/export?secciones=${secciones.join(",")}`,
         {
           method: "GET",
+          credentials: "include",
         },
       );
       if (res.ok) {
@@ -343,7 +344,7 @@ export default function Configuracion() {
                 data-oid="gh-884w"
               />
             </div>
-            <div data-oid=".py3z2y">
+            <div id="preferencias" data-oid=".py3z2y">
               <label
                 className="block text-sm font-semibold text-amber-800"
                 data-oid="8ubf_0r"

@@ -226,6 +226,13 @@ export default function UserMenu({
               />
 
               <MenuLink
+                href="/configuracion#preferencias"
+                icon={<Settings className="h-4 w-4" />}
+                label="Preferencias"
+                tabIndex={open ? 0 : -1}
+              />
+
+              <MenuLink
                 href="/"
                 icon={<Home className="h-4 w-4" />}
                 label="Inicio"
