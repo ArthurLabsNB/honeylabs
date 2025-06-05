@@ -9,6 +9,13 @@ interface Almacen {
   id: number;
   nombre: string;
   descripcion?: string | null;
+  imagenUrl?: string | null;
+  ultimaActualizacion?: string | null;
+  entradas?: number;
+  salidas?: number;
+  inventario?: number;
+  encargado?: string | null;
+  notificaciones?: boolean;
 }
 
 export default function AlmacenesPage() {
@@ -182,21 +189,39 @@ export default function AlmacenesPage() {
       {almacenes.map((a) => (
         <div
           key={a.id}
-          className="p-4 border rounded-lg cursor-pointer hover:bg-white/5"
+          className="flex gap-3 p-3 border rounded-lg cursor-pointer hover:bg-white/5"
           onClick={() => router.push(`/dashboard/almacenes/${a.id}`)}
-          data-oid="j30ui.y"
         >
-          <h3 className="font-semibold mb-1" data-oid="5bq_z65">
-            {a.nombre}
-          </h3>
-          {a.descripcion && (
-            <p
-              className="text-sm text-[var(--dashboard-muted)]"
-              data-oid="do4l.5a"
-            >
-              {a.descripcion}
-            </p>
-          )}
+          <div className="w-20 h-20 flex-shrink-0 bg-white/10 rounded-md overflow-hidden">
+            <img
+              src={a.imagenUrl || "/ilustracion-almacen-3d.svg"}
+              alt={a.nombre}
+              className="object-cover w-full h-full"
+            />
+          </div>
+          <div className="flex flex-col flex-1">
+            <div className="flex justify-between">
+              <h3 className="font-semibold">{a.nombre}</h3>
+              {a.ultimaActualizacion && (
+                <span className="text-xs text-[var(--dashboard-muted)]">
+                  {new Date(a.ultimaActualizacion).toLocaleDateString()}
+                </span>
+              )}
+            </div>
+            <div className="text-xs mt-1 flex gap-2">
+              <span>📥 {a.entradas ?? 0}</span>
+              <span>📤 {a.salidas ?? 0}</span>
+              <span>📦 {a.inventario ?? 0}</span>
+            </div>
+            <div className="mt-auto flex justify-between items-end">
+              <span className="text-xs text-[var(--dashboard-muted)]">
+                {a.encargado || "Sin encargado"}
+              </span>
+              {a.notificaciones && (
+                <span title="Notificaciones activas" className="text-[var(--dashboard-accent)]">🔔</span>
+              )}
+            </div>
+          </div>
         </div>
       ))}
     </div>
@@ -218,12 +243,67 @@ export default function AlmacenesPage() {
   );
 
   return (
-    <div className="p-4" data-oid="j7.ylhr">
+    <div className="p-4 relative" data-oid="j7.ylhr">
+      {almacenes.length === 0 && usuario && (
+        <FloatingAdd allowCreate={usuario.rol === "admin" || usuario.tipoCuenta === "institucional" || usuario.tipoCuenta === "empresarial"} />
+      )}
       {view === "list"
         ? renderList()
         : view === "grid"
           ? renderGrid()
           : renderTree()}
+    </div>
+  );
+}
+
+function FloatingAdd({ allowCreate }: { allowCreate: boolean }) {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+
+  const conectar = () => {
+    alert("Función de conexión pendiente");
+  };
+
+  return (
+    <div className="fixed bottom-6 right-6 z-40">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-12 h-12 rounded-full bg-[var(--dashboard-accent)] text-white text-2xl shadow-lg"
+      >
+        +
+      </button>
+      {open && (
+        <div className="absolute bottom-14 right-0 bg-[var(--dashboard-sidebar)] border border-[var(--dashboard-border)] rounded-md shadow-lg overflow-hidden flex flex-col">
+          {allowCreate ? (
+            <>
+              <button
+                onClick={() => router.push('/dashboard/almacenes/nuevo')}
+                className="px-4 py-2 text-left hover:bg-white/5"
+              >
+                Crear nuevo almacén
+              </button>
+              <button
+                onClick={conectar}
+                className="px-4 py-2 text-left hover:bg-white/5 border-t border-[var(--dashboard-border)]"
+              >
+                Conectar con código
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={conectar}
+                className="px-4 py-2 text-left hover:bg-white/5"
+              >
+                Conectar con código
+              </button>
+              <span className="p-2 text-xs text-[var(--dashboard-muted)] max-w-xs">
+                Tu cuenta no permite crear almacenes. Usa un código de conexión.
+              </span>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
