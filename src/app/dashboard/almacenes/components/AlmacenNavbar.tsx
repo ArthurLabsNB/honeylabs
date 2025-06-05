@@ -11,13 +11,9 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAlmacenesUI } from "../ui";
+import type { Usuario } from "@/types/usuario";
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
-
-interface Usuario {
-  tipoCuenta?: string;
-  rol?: string;
-}
 
 interface AlmacenNavbarProps {
   mode?: 'list' | 'detail';

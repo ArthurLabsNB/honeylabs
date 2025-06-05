@@ -1,12 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
+import type { Usuario } from "@/types/usuario";
 
-interface Usuario {
-  id: number;
-  rol?: string;
-  tipoCuenta?: string;
-}
 interface Alerta {
   id: number;
   mensaje: string;

@@ -12,12 +12,7 @@ import { useRouter, usePathname } from "next/navigation";
 import AlmacenNavbar from "./components/AlmacenNavbar";
 import AlmacenSidebar from "./components/AlmacenSidebar";
 import { AlmacenesUIProvider } from "./ui";
-
-interface Usuario {
-  id: number;
-  nombre: string;
-  email?: string;
-}
+import type { Usuario } from "@/types/usuario";
 
 // Las constantes de ancho se comparten con el layout principal
 

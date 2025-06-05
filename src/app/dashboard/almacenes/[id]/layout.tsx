@@ -9,12 +9,7 @@ import {
   SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
   NAVBAR_HEIGHT,
 } from "../../constants";
-
-interface Usuario {
-  id: number;
-  nombre: string;
-  email?: string;
-}
+import type { Usuario } from "@/types/usuario";
 
 function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
   const {
