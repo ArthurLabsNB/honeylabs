@@ -48,21 +48,31 @@ export default function UserMenu({
   const [fotoPerfil, setFotoPerfil] = useState<string | null>(null);
 
   useEffect(() => {
-    let temaGuardado = localStorage.getItem("tema");
-    if (!temaGuardado) {
-      const preferenciaSistema = window.matchMedia(
-        "(prefers-color-scheme: light)",
-      ).matches
-        ? "light"
-        : "dark";
-      temaGuardado = preferenciaSistema || "dark";
+    async function cargarTema() {
+      let temaGuardado = localStorage.getItem("tema");
+      try {
+        const res = await fetch("/api/preferences");
+        if (res.ok) {
+          const prefs = await res.json();
+          if (prefs.theme) temaGuardado = prefs.theme;
+        }
+      } catch {}
+      if (!temaGuardado) {
+        const preferenciaSistema = window.matchMedia(
+          "(prefers-color-scheme: light)",
+        ).matches
+          ? "light"
+          : "dark";
+        temaGuardado = preferenciaSistema || "dark";
+      }
+      setTemaOscuro(temaGuardado === "dark");
+      document.documentElement.classList.toggle("dark", temaGuardado === "dark");
+      document.documentElement.classList.toggle(
+        "light",
+        temaGuardado === "light",
+      );
     }
-    setTemaOscuro(temaGuardado === "dark");
-    document.documentElement.classList.toggle("dark", temaGuardado === "dark");
-    document.documentElement.classList.toggle(
-      "light",
-      temaGuardado === "light",
-    );
+    cargarTema();
   }, []);
 
   // Cierra menú al click fuera o Escape
@@ -106,7 +116,13 @@ export default function UserMenu({
       const nextIsDark = !prev;
       document.documentElement.classList.toggle("dark", nextIsDark);
       document.documentElement.classList.toggle("light", !nextIsDark);
-      localStorage.setItem("tema", nextIsDark ? "dark" : "light");
+      const tema = nextIsDark ? "dark" : "light";
+      localStorage.setItem("tema", tema);
+      fetch("/api/preferences", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ theme: tema }),
+      }).catch(() => {});
       return nextIsDark;
     });
   };
