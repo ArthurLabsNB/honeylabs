@@ -103,7 +103,7 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
   return (
     <header
       ref={navRef}
-      className="dashboard-navbar flex items-center px-8 py-2 justify-between sticky top-0 z-20 shadow bg-[var(--dashboard-navbar)]"
+      className="dashboard-navbar flex items-center px-8 py-2 justify-between fixed top-0 left-0 right-0 z-20 shadow bg-[var(--dashboard-navbar)]"
       style={{ minHeight: "70px" }}
       data-oid="z9m8ytf"
     >
