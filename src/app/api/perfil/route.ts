@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { SESSION_COOKIE, sessionCookieOptions } from '@lib/constants';
-
-const globalForPrisma = global as unknown as { prisma?: PrismaClient };
-const prisma = globalForPrisma.prisma ?? new PrismaClient();
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+import prisma from '@lib/prisma';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {

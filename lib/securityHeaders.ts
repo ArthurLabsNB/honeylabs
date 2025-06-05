@@ -1,10 +1,22 @@
-export const ContentSecurityPolicy = `
-  default-src 'self';
-  script-src 'self' 'unsafe-inline' vitals.vercel-insights.com;
-  style-src 'self' 'unsafe-inline';
-  img-src 'self' https: data:;
-  object-src 'none';
-`;
+const dev = process.env.NODE_ENV !== 'production';
+
+export const ContentSecurityPolicy = dev
+  ? `
+    default-src 'self' http://localhost:*;
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' vitals.vercel-insights.com http://localhost:*;
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' http: https: data:;
+    connect-src 'self' http://localhost:* ws://localhost:*;
+    object-src 'none';
+  `
+  : `
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' vitals.vercel-insights.com;
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' https: data:;
+    connect-src 'self';
+    object-src 'none';
+  `;
 
 export const securityHeaders = [
   {
@@ -17,7 +29,7 @@ export const securityHeaders = [
   },
   {
     key: 'X-Frame-Options',
-    value: 'DENY',
+    value: dev ? 'SAMEORIGIN' : 'DENY',
   },
   {
     key: 'X-Content-Type-Options',

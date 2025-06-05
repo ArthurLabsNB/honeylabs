@@ -1,12 +1,11 @@
 export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@lib/prisma';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import { enviarCorreoValidacionEmpresa } from '@/lib/email/enviarRegistro';
 
-const prisma = new PrismaClient();
 
 const TAMAÑO_MAXIMO_MB = 2;
 const BYTES_MAXIMOS = TAMAÑO_MAXIMO_MB * 1024 * 1024;
