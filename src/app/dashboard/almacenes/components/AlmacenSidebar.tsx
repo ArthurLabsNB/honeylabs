@@ -73,14 +73,16 @@ export default function AlmacenSidebar({
   mode?: "list" | "detail";
 }) {
   // Lee el estado del sidebar global para alinear el sidebar de almacenes
-  const { sidebarGlobalCollapsed, sidebarGlobalVisible } = useDashboardUI();
+  const { sidebarGlobalCollapsed, sidebarGlobalVisible, fullscreen } = useDashboardUI();
 
   // Calcula el left según si el global está expandido o colapsado
-  const sidebarLeft = sidebarGlobalVisible
-    ? sidebarGlobalCollapsed
-      ? SIDEBAR_GLOBAL_COLLAPSED_WIDTH
-      : SIDEBAR_GLOBAL_WIDTH
-    : 0;
+  const sidebarLeft = fullscreen
+    ? 0
+    : sidebarGlobalVisible
+      ? sidebarGlobalCollapsed
+        ? SIDEBAR_GLOBAL_COLLAPSED_WIDTH
+        : SIDEBAR_GLOBAL_WIDTH
+      : 0;
 
   // Debes usar la misma altura de tus navbars globales (ajusta según tus constantes)
   const navbarsHeight = "calc(var(--navbar-height, 64px) + var(--almacen-navbar-height, 56px))";

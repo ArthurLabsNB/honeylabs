@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
-    const { nombre, descripcion } = await req.json();
+    const { nombre, descripcion, funciones, permisosPredeterminados } = await req.json();
     if (!nombre) {
       return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 });
     }
@@ -95,6 +95,8 @@ export async function POST(req: NextRequest) {
       data: {
         nombre,
         descripcion,
+        funciones,
+        permisosPredeterminados,
         codigoUnico,
         entidadId: usuario.entidadId,
         usuarios: {
