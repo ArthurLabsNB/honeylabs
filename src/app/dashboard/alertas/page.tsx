@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { jsonOrNull } from "@lib/http";
 
 interface Usuario {
   id: number;
@@ -21,7 +22,7 @@ export default function AlertasPage() {
 
   useEffect(() => {
     fetch("/api/login", { credentials: "include" })
-      .then((res) => res.json())
+      .then(jsonOrNull)
       .then((data) => {
         if (!data?.success) throw new Error();
         const tipo =
@@ -42,7 +43,7 @@ export default function AlertasPage() {
     if (!usuario) return;
     setLoading(true);
     fetch(`/api/alertas?usuarioId=${usuario.id}`)
-      .then((res) => res.json())
+      .then(jsonOrNull)
       .then((data) => setAlertas(data.alertas || []))
       .catch(() => setError("Error al cargar datos"))
       .finally(() => setLoading(false));

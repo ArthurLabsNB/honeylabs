@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { jsonOrNull } from "@lib/http";
 import Sidebar from "./components/Sidebar";
 import NavbarDashboard from "./components/NavbarDashboard";
 import WidgetToolbar from "./components/WidgetToolbar";
@@ -35,7 +36,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
     const cargarUsuario = async () => {
       try {
         const res = await fetch("/api/login", { credentials: "include" });
-        const data = await res.json();
+        const data = await jsonOrNull(res);
         if (data?.success && data?.usuario) {
           setUsuario(data.usuario);
         } else {

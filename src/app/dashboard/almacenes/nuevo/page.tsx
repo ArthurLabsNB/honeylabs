@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { jsonOrNull } from "@lib/http";
 import { useRouter } from "next/navigation";
 
 export default function NuevoAlmacenPage() {
@@ -17,7 +18,7 @@ export default function NuevoAlmacenPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nombre, descripcion }),
       });
-      const data = await res.json();
+      const data = await jsonOrNull(res);
       if (res.ok) {
         router.push(`/dashboard/almacenes/${data.almacen.id}`);
       } else {

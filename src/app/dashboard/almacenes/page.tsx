@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { jsonOrNull } from "@lib/http";
 import { useRouter } from "next/navigation";
 import { useAlmacenesUI } from "./ui";
 
@@ -27,7 +28,7 @@ export default function AlmacenesPage() {
 
   useEffect(() => {
     fetch("/api/login", { credentials: "include" })
-      .then((res) => res.json())
+      .then(jsonOrNull)
       .then((data) => {
         if (!data?.success) throw new Error();
         const tipo =
@@ -51,7 +52,7 @@ export default function AlmacenesPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nombre, descripcion })
       });
-      const data = await res.json();
+      const data = await jsonOrNull(res);
       if (res.ok && data.almacen) {
         setAlmacenes((a) => [...a, data.almacen]);
       } else {
@@ -71,7 +72,7 @@ export default function AlmacenesPage() {
     setLoading(true);
     const fav = filter === 'favoritos' ? '&favoritos=1' : '';
     fetch(`/api/almacenes?usuarioId=${usuario.id}${fav}`)
-      .then((res) => res.json())
+      .then(jsonOrNull)
       .then((data) => setAlmacenes(data.almacenes || []))
       .catch(() => setError("Error al cargar datos"))
       .finally(() => setLoading(false));

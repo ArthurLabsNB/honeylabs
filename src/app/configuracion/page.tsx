@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { jsonOrNull } from "@lib/http";
 
 interface Perfil {
   nombre: string;
@@ -35,7 +36,7 @@ export default function Configuracion() {
       try {
         setCargando(true);
         const res = await fetch("/api/perfil", { method: "GET" });
-        const data = await res.json();
+        const data = await jsonOrNull(res);
         if (data.success && data.usuario) {
           setPerfil(data.usuario);
           setForm({
@@ -94,11 +95,11 @@ export default function Configuracion() {
         method: "PUT",
         body: formData,
       });
-      const data = await res.json();
+      const data = await jsonOrNull(res);
       if (data.success) {
         setMensaje({ tipo: "ok", texto: "Perfil actualizado correctamente." });
         const newPerfilRes = await fetch("/api/perfil", { method: "GET" });
-        const newPerfil = await newPerfilRes.json();
+        const newPerfil = await jsonOrNull(newPerfilRes);
         if (newPerfil.success && newPerfil.usuario) {
           setPerfil(newPerfil.usuario);
           setForm((prev) => ({

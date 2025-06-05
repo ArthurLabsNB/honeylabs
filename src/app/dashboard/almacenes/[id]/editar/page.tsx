@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { jsonOrNull } from "@lib/http";
 import { useParams, useRouter } from "next/navigation";
 
 export default function EditarAlmacenPage() {
@@ -11,7 +12,7 @@ export default function EditarAlmacenPage() {
 
   useEffect(() => {
     fetch(`/api/almacenes/${id}`)
-      .then((r) => r.json())
+      .then(jsonOrNull)
       .then((d) => {
         if (d.almacen) {
           setNombre(d.almacen.nombre);
@@ -29,7 +30,7 @@ export default function EditarAlmacenPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nombre, descripcion }),
       });
-      const data = await res.json();
+      const data = await jsonOrNull(res);
       if (res.ok) {
         router.push(`/dashboard/almacenes/${id}`);
       } else {

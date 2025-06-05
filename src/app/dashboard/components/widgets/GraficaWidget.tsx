@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { jsonOrNull } from "@lib/http";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -18,7 +19,7 @@ export default function GraficaWidget({ usuario }: { usuario: any }) {
 
   useEffect(() => {
     fetch("/api/metrics")
-      .then((res) => res.json())
+      .then(jsonOrNull)
       .then(setMetrics)
       .catch(() => setMetrics(null));
   }, []);
