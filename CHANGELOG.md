@@ -1,4 +1,10 @@
 # Changelog
+## 0.2.23
+
+- Ajustes en permisos para permitir crear almacenes a cuentas no vinculadas.
+- El endpoint `/api/almacenes` ahora crea una entidad por defecto si falta.
+- `getUsuarioFromSession` retorna plan y roles para validar permisos.
+
 ## 0.2.15
 
 - Nuevas rutas para generar y validar codigos de acceso.

@@ -21,12 +21,17 @@ export function hasManagePerms(
     esSuperAdmin?: boolean;
   } | null | undefined,
 ): boolean {
-  if (u?.esSuperAdmin) return true;
+  if (!u) return false;
+  if (u.esSuperAdmin) return true;
+
   const rol = getMainRole(u)?.toLowerCase();
-  const tipo = normalizeTipoCuenta(u?.tipoCuenta);
-  const plan = (u?.plan?.nombre ?? '').toLowerCase();
   if (rol === 'admin' || rol === 'administrador') return true;
-  if (['institucional', 'empresarial'].includes(tipo)) return true;
+
+  const tipo = normalizeTipoCuenta(u.tipoCuenta);
+  if (tipo !== 'codigo') return true;
+
+  const plan = (u.plan?.nombre ?? '').toLowerCase();
   if (['empresarial', 'institucional', 'pro'].includes(plan)) return true;
+
   return false;
 }
