@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.25
+
+- Corrección en Sidebar para marcar solo la ruta actual como activa.
 ## 0.2.24
 
 - Sidebar global ahora puede ocultarse desde el navbar.
