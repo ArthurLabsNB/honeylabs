@@ -10,10 +10,9 @@ import {
   SunMoon,
   MessageSquare,
   Bell,
-  User,
-  ChevronDown,
   Maximize,
   Minimize,
+  Menu,
 } from "lucide-react";
 import UserMenu from "@/components/UserMenu";
 import { useDashboardUI } from "../ui";
@@ -32,12 +31,16 @@ const MOCK_RESULTS = [
 export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
   // Estado UI
   const [crearOpen, setCrearOpen] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [buscador, setBuscador] = useState("");
   const [buscadorFocus, setBuscadorFocus] = useState(false);
   const [resultados, setResultados] = useState<typeof MOCK_RESULTS>([]);
   const navRef = useRef<HTMLDivElement>(null);
-  const { fullscreen, toggleFullscreen } = useDashboardUI();
+  const {
+    fullscreen,
+    toggleFullscreen,
+    toggleSidebarVisible,
+    sidebarGlobalVisible,
+  } = useDashboardUI();
 
   useEffect(() => {
     if (buscador.trim().length === 0) {
@@ -58,13 +61,11 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
     const handler = (e: MouseEvent | TouchEvent) => {
       if (navRef.current && !navRef.current.contains(e.target as Node)) {
         setCrearOpen(false);
-        setUserMenuOpen(false);
       }
     };
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setCrearOpen(false);
-        setUserMenuOpen(false);
         setBuscadorFocus(false);
       }
     };
@@ -96,6 +97,21 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
       data-oid="z5vbw0i"
     >
       <div className="flex gap-4 items-center relative" data-oid="ikd.5r1">
+        <button
+          onClick={() => toggleSidebarVisible()}
+          className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
+          aria-label="Toggle sidebar"
+        >
+          <Menu className="w-6 h-6 text-[var(--dashboard-accent)]" />
+        </button>
+        <span className="font-extrabold text-lg tracking-widest select-none">
+          HoneyLabs
+          {usuario.plan?.nombre && (
+            <span className="ml-1 text-sm font-medium text-[var(--dashboard-muted)]">
+              {usuario.plan.nombre}
+            </span>
+          )}
+        </span>
         <Link
           href="/"
           className="p-3 rounded-lg transition hover:bg-white/15 hover:backdrop-blur-sm focus:bg-white/25 active:bg-white/25"
@@ -249,17 +265,7 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
         >
           <Bell data-oid="s9c-u68" />
         </button>
-        <div className="relative ml-2" data-oid="lce8ecp">
-          <button
-            className="flex items-center gap-2 bg-[var(--dashboard-accent)]/20 px-3 py-1.5 rounded-xl hover:bg-white/25 hover:backdrop-blur-md transition"
-            onClick={() => setUserMenuOpen((v) => !v)}
-            tabIndex={0}
-            data-oid="rwbfqio"
-          >
-            <User data-oid="g.g_ttr" />
-            <span data-oid="0j-7i6l">{usuario.nombre}</span>
-            <ChevronDown data-oid=".87g6gp" />
-          </button>
+        <div className="ml-2" data-oid="lce8ecp">
           <UserMenu
             usuario={{
               nombre: usuario.nombre,
@@ -267,10 +273,6 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
               imagen: usuario.avatarUrl ?? undefined,
               plan: usuario.plan?.nombre,
             }}
-            open={userMenuOpen}
-            setOpen={setUserMenuOpen}
-            hideTrigger
-            data-oid="zrgvk04"
           />
         </div>
       </div>
