@@ -1,0 +1,136 @@
+// ===============================================
+// HONEYLABS - Estructura de base de datos Prisma
+// ===============================================
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//
+// 🔸 ENTIDAD
+// Representa una empresa o institución oficial.
+//
+model Entidad {
+  id             Int       @id @default(autoincrement()) // ID único autoincremental
+  nombre         String // Nombre de la entidad
+  tipo           String // 'empresarial' o 'institucional'
+  correoContacto String // Correo principal de contacto
+  telefono       String? // Teléfono de contacto (opcional)
+  direccion      String? // Dirección física (opcional)
+  fechaCreacion  DateTime  @default(now()) // Fecha de registro automático
+  usuarios       Usuario[] // Relación: usuarios que pertenecen a esta entidad
+  almacenes      Almacen[] // Relación: almacenes asociados a esta entidad
+  roles          Rol[] // Relación: roles personalizados de esta entidad
+}
+
+//
+// 🔸 USUARIO
+// Cuenta de acceso al sistema: individual, empresarial o institucional.
+//
+model Usuario {
+  id            Int      @id @default(autoincrement()) // ID único
+  nombre        String // Nombre del usuario
+  apellidos     String // Apellidos completos
+  correo        String   @unique // Correo único (login principal)
+  contrasena    String // Contraseña hasheada (bcrypt)
+  googleId      String? // ID de cuenta Google (opcional)
+  tipoCuenta    String // 'estandar', 'empresarial', 'institucional'
+  estado        String   @default("pendiente") // Estado: pendiente, activo, rechazado
+  fechaRegistro DateTime @default(now()) // Fecha de creación de cuenta
+
+  // Relación con entidad (opcional si es cuenta individual)
+  entidadId Int?
+  entidad   Entidad? @relation(fields: [entidadId], references: [id])
+
+  // Relación con roles globales o internos
+  roles     Rol[] // Roles asignados al usuario
+  almacenes UsuarioAlmacen[] // Relación intermedia con almacenes
+
+  // 🔹 Nuevos campos para control avanzado de registro
+  codigoUsado   String? // Código de invitación utilizado (si aplica)
+  archivoNombre String? // Nombre del archivo de validación (PDF/IMG)
+  archivoBuffer Bytes? // Archivo en sí (guardado en BLOB, opcional)
+}
+
+//
+// 🔸 ROL
+// Define permisos agrupados, asignables a usuarios. Pueden ser globales o propios de entidad.
+//
+model Rol {
+  id          Int     @id @default(autoincrement()) // ID único
+  nombre      String // Nombre identificador (admin, editor...)
+  descripcion String? // Explicación del rol (opcional)
+  permisos    String // Lista de permisos (como texto o JSON)
+
+  // Relación con entidad (opcional si es rol global)
+  entidadId Int?
+  entidad   Entidad? @relation(fields: [entidadId], references: [id])
+
+  usuarios Usuario[] // Usuarios que tienen este rol
+}
+
+//
+// 🔸 ALMACÉN
+// Espacio virtual de trabajo para una entidad, con control por roles.
+//
+model Almacen {
+  id                      Int     @id @default(autoincrement()) // ID único
+  nombre                  String // Nombre del almacén
+  descripcion             String? // Descripción (opcional)
+  imagenUrl               String? // Imagen o icono del almacén (opcional)
+  codigoUnico             String  @unique // Código único de invitación (tipo Classroom)
+  funciones               String? // Lista o JSON de módulos habilitados
+  permisosPredeterminados String? // Reglas para nuevos usuarios por código
+
+  fechaCreacion DateTime @default(now()) // Fecha de creación
+
+  // Relación con entidad propietaria
+  entidadId Int
+  entidad   Entidad @relation(fields: [entidadId], references: [id])
+
+  // Relaciones múltiples
+  usuarios UsuarioAlmacen[] // Usuarios con acceso a este almacén
+  codigos  CodigoAlmacen[] // Códigos históricos o activos del almacén
+}
+
+//
+// 🔸 USUARIO ALMACÉN
+// Relación intermedia para gestionar permisos por almacén.
+//
+model UsuarioAlmacen {
+  id            Int     @id @default(autoincrement()) // ID único
+  usuarioId     Int
+  almacenId     Int
+  rolEnAlmacen  String // Rol específico en ese almacén (admin, consulta...)
+  permisosExtra String? // Permisos individuales en texto o JSON
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+  almacen Almacen @relation(fields: [almacenId], references: [id])
+
+  @@unique([usuarioId, almacenId]) // Evita duplicados por almacén
+}
+
+//
+// 🔸 CÓDIGO ALMACÉN
+// Códigos de acceso al almacén con permisos predefinidos.
+//
+model CodigoAlmacen {
+  id              Int       @id @default(autoincrement()) // ID único
+  almacenId       Int
+  codigo          String    @unique // Código de acceso único
+  rolAsignado     String // Rol automático al usar este código
+  permisos        String? // Permisos extra al registrarse (JSON)
+  usosDisponibles Int? // Número de usos permitidos (null = ilimitado)
+  activo          Boolean   @default(true) // Control de activación/desactivación
+  fechaCreacion   DateTime  @default(now()) // Fecha de creación
+  fechaExpiracion DateTime? // Fecha de expiración (opcional)
+  creadoPorId     Int? // Usuario o entidad que creó el código
+
+  almacen Almacen @relation(fields: [almacenId], references: [id])
+}

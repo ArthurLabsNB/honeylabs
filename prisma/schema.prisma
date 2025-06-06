@@ -1,0 +1,415 @@
+// ================================
+// Prisma Schema para HoneyLabs
+// ================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ================================
+// Planes y Suscripciones
+// ================================
+model Plan {
+  id           Int          @id @default(autoincrement())
+  nombre       String       // Ej: 'Free', 'Pro', 'Empresarial'
+  descripcion  String?
+  precio       Float?
+  periodicidad String?      // 'mensual', 'anual'
+  limites      String?      // JSON string con límites: {almacenes: 2, colaboradores: 5, ...}
+  
+  usuarios     Usuario[]
+  entidades    Entidad[]
+  suscripciones Suscripcion[]
+}
+
+model Suscripcion {
+  id           Int        @id @default(autoincrement())
+  usuarioId    Int?
+  entidadId    Int?
+  planId       Int
+  fechaInicio  DateTime   @default(now())
+  fechaFin     DateTime?
+  activo       Boolean    @default(true)
+
+  usuario      Usuario?   @relation(fields: [usuarioId], references: [id])
+  entidad      Entidad?   @relation(fields: [entidadId], references: [id])
+  plan         Plan       @relation(fields: [planId], references: [id])
+}
+
+// ================================
+// Entidades (Empresas, Instituciones, etc.)
+// ================================
+model Entidad {
+  id             Int          @id @default(autoincrement())
+  nombre         String
+  tipo           String       // ej: 'institucional', 'empresarial'
+  correoContacto String
+  telefono       String?
+  direccion      String?
+  fechaCreacion  DateTime     @default(now())
+  
+  almacenes      Almacen[]
+  roles          Rol[]
+  usuarios       Usuario[]
+  
+  planId         Int?         
+  plan           Plan?        @relation(fields: [planId], references: [id])
+  
+  suscripciones  Suscripcion[]
+}
+
+// ================================
+// Usuarios
+// ================================
+model Usuario {
+  id            Int              @id @default(autoincrement())
+  nombre        String
+  apellidos     String
+  correo        String           @unique
+  contrasena    String
+  googleId      String?          // Login alternativo Google (futuro)
+  tipoCuenta    String           // 'estandar', 'institucional', etc.
+  estado        String           @default("pendiente")  // 'pendiente', 'activo'
+  fechaRegistro DateTime         @default(now())
+
+  entidadId     Int?
+  entidad       Entidad?         @relation(fields: [entidadId], references: [id])
+
+  planId        Int?
+  plan          Plan?            @relation(fields: [planId], references: [id])
+  
+  suscripciones Suscripcion[]
+
+  archivoBuffer Bytes?
+  archivoNombre String?
+  codigoUsado   String?
+
+  fotoPerfil        Bytes?          
+  fotoPerfilNombre  String?
+  preferencias      String?         // JSON o texto de preferencias/ajustes
+  tiene2FA          Boolean?        @default(false)
+  metodo2FA         String?         // 'email', 'app', etc.
+  codigo2FASecret   String?         // secreto para autenticador
+
+  almacenes     UsuarioAlmacen[]
+  roles         Rol[]            @relation("RolToUsuario")
+  movimientos   Movimiento[]
+
+  // Minijuegos
+  puntajesPacman       PuntajePacman[]
+  puntajesMario        PuntajeMario[]
+  puntajesSnake        PuntajeSnake[]
+  puntajesTetris       PuntajeTetris[]
+  puntajesPingPong     PuntajePingPong[]
+  puntajesBreakout     PuntajeBreakout[]
+  puntajesFlappyBee    PuntajeFlappyBee[]
+  puntajesSpaceShooter PuntajeSpaceShooter[]
+
+  eventosCreados       EventoAlmacen[]      @relation("EventosCreados")
+  novedadesCreadas     NovedadAlmacen[]     @relation("NovedadesCreadas")
+  documentosSubidos    DocumentoAlmacen[]   @relation("DocumentosSubidos")
+  incidenciasCreadas   Incidencia[]         @relation("IncidenciasCreadas")
+  incidenciasResueltas Incidencia[]         @relation("IncidenciasResueltas")
+  notificaciones       Notificacion[]
+  bitacoraCambios      BitacoraCambioPerfil[]
+  sesiones            SesionUsuario[]
+}
+
+// ================================
+// Bitácora de cambios de perfil
+// ================================
+model BitacoraCambioPerfil {
+  id         Int      @id @default(autoincrement())
+  usuarioId  Int
+  cambios    String
+  fecha      DateTime @default(now())
+
+  usuario    Usuario  @relation(fields: [usuarioId], references: [id])
+}
+
+// ================================
+// Historial de sesiones de usuario
+// ================================
+model SesionUsuario {
+  id           Int      @id @default(autoincrement())
+  usuarioId    Int
+  userAgent    String?
+  ip           String?
+  fechaInicio  DateTime @default(now())
+  fechaUltima  DateTime @default(now())
+  activa       Boolean  @default(true)
+
+  usuario      Usuario  @relation(fields: [usuarioId], references: [id])
+}
+
+// ================================
+// Roles personalizados
+// ================================
+model Rol {
+  id          Int       @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+  permisos    String                 // JSON string con permisos
+  entidadId   Int?
+  entidad     Entidad?  @relation(fields: [entidadId], references: [id])
+  usuarios    Usuario[] @relation("RolToUsuario")
+}
+
+// ================================
+// Almacenes
+// ================================
+model Almacen {
+  id                      Int              @id @default(autoincrement())
+  nombre                  String
+  descripcion             String?
+  imagenUrl               String?
+  codigoUnico             String           @unique
+  funciones               String?
+  permisosPredeterminados String?
+  fechaCreacion           DateTime         @default(now())
+
+  entidadId   Int
+  entidad     Entidad          @relation(fields: [entidadId], references: [id])
+
+  codigos     CodigoAlmacen[]
+  usuarios    UsuarioAlmacen[]
+  movimientos Movimiento[]
+
+  eventos         EventoAlmacen[]
+  novedades       NovedadAlmacen[]
+  documentos      DocumentoAlmacen[]
+  incidencias     Incidencia[]
+  notificaciones  Notificacion[]
+  alertas                 Alerta[]
+}
+
+// ================================
+// Relación muchos-a-muchos usuarios-almacenes
+// ================================
+model UsuarioAlmacen {
+  id            Int     @id @default(autoincrement())
+  usuarioId     Int
+  almacenId     Int
+  rolEnAlmacen  String  @db.VarChar(50)
+  permisosExtra String?
+
+  usuario       Usuario @relation(fields: [usuarioId], references: [id])
+  almacen       Almacen @relation(fields: [almacenId], references: [id])
+
+  @@unique([usuarioId, almacenId])
+}
+
+// ================================
+// Códigos para registro en almacenes
+// ================================
+model CodigoAlmacen {
+  id              Int       @id @default(autoincrement())
+  almacenId       Int
+  codigo          String    @unique
+  rolAsignado     String    @db.VarChar(50)
+  permisos        String?
+  usosDisponibles Int?
+  activo          Boolean   @default(true)
+  fechaCreacion   DateTime  @default(now())
+  fechaExpiracion DateTime?
+  creadoPorId     Int?
+
+  almacen         Almacen   @relation(fields: [almacenId], references: [id])
+}
+
+// ================================
+// Movimientos de almacén (entradas y salidas)
+// ================================
+model Movimiento {
+  id          Int       @id @default(autoincrement())
+  tipo        String    // 'entrada' o 'salida'
+  cantidad    Int
+  fecha       DateTime  @default(now())
+  descripcion String?
+
+  almacenId   Int
+  almacen     Almacen   @relation(fields: [almacenId], references: [id], onDelete: Cascade)
+
+  usuarioId   Int?
+  usuario     Usuario?  @relation(fields: [usuarioId], references: [id])
+}
+
+// ================================
+// Eventos de calendario por almacén
+// ================================
+model EventoAlmacen {
+  id           Int       @id @default(autoincrement())
+  titulo       String
+  descripcion  String?
+  fechaInicio  DateTime
+  fechaFin     DateTime?
+  tipo         String?        // ej: 'mantenimiento', 'auditoría', etc.
+  archivoUrl   String?
+  almacenId    Int
+  almacenes    Almacen        @relation(fields: [almacenId], references: [id])
+  creadoPorId  Int
+  creadoPor    Usuario        @relation("EventosCreados", fields: [creadoPorId], references: [id])
+}
+
+// ================================
+// Novedades y anuncios por almacén
+// ================================
+model NovedadAlmacen {
+  id          Int      @id @default(autoincrement())
+  titulo      String
+  contenido   String
+  fecha       DateTime @default(now())
+  almacenId   Int
+  almacenes   Almacen  @relation(fields: [almacenId], references: [id])
+  creadoPorId Int
+  creadoPor   Usuario  @relation("NovedadesCreadas", fields: [creadoPorId], references: [id])
+}
+
+// ================================
+// Notificaciones (usuario + almacén opcional)
+// ================================
+model Notificacion {
+  id          Int      @id @default(autoincrement())
+  usuarioId   Int
+  mensaje     String
+  leida       Boolean  @default(false)
+  tipo        String?  // ej: 'evento', 'novedad', etc.
+  fecha       DateTime @default(now())
+  almacenId   Int?
+  usuario     Usuario  @relation(fields: [usuarioId], references: [id])
+  almacenes   Almacen? @relation(fields: [almacenId], references: [id])
+}
+
+// ================================
+// Documentos oficiales por almacén
+// ================================
+model DocumentoAlmacen {
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  url         String
+  descripcion String?
+  fecha       DateTime @default(now())
+  version     String?
+  almacenId   Int
+  almacen     Almacen  @relation(fields: [almacenId], references: [id])
+  subidoPorId Int
+  subidoPor   Usuario  @relation("DocumentosSubidos", fields: [subidoPorId], references: [id])
+}
+
+// ================================
+// Incidencias
+// ================================
+model Incidencia {
+  id            Int      @id @default(autoincrement())
+  titulo        String
+  descripcion   String
+  estado        String   @default("abierta")
+  fecha         DateTime @default(now())
+  almacenId     Int
+  almacen       Almacen  @relation(fields: [almacenId], references: [id])
+  creadaPorId   Int
+  creadaPor     Usuario  @relation("IncidenciasCreadas", fields: [creadaPorId], references: [id])
+  resueltaPorId Int?
+  resueltaPor   Usuario? @relation("IncidenciasResueltas", fields: [resueltaPorId], references: [id])
+  fechaResuelta DateTime?
+}
+
+// ================================
+// Minijuegos (sin cambios)
+// ================================
+model PuntajePacman {
+  id        Int      @id @default(autoincrement())
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  puntaje   Int
+  fecha     DateTime @default(now())
+}
+
+model PuntajeMario {
+  id        Int      @id @default(autoincrement())
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  nivel     Int
+  puntaje   Int
+  fecha     DateTime @default(now())
+}
+
+model PuntajeSnake {
+  id        Int      @id @default(autoincrement())
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  longitud  Int
+  puntaje   Int
+  fecha     DateTime @default(now())
+}
+
+model PuntajeTetris {
+  id        Int      @id @default(autoincrement())
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  lineas    Int
+  puntaje   Int
+  fecha     DateTime @default(now())
+}
+
+model PuntajePingPong {
+  id        Int      @id @default(autoincrement())
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  rondas    Int
+  puntaje   Int
+  fecha     DateTime @default(now())
+}
+
+model PuntajeBreakout {
+  id        Int      @id @default(autoincrement())
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  nivel     Int
+  puntaje   Int
+  fecha     DateTime @default(now())
+}
+
+model PuntajeFlappyBee {
+  id        Int      @id @default(autoincrement())
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  distancia Int
+  puntaje   Int
+  fecha     DateTime @default(now())
+}
+
+model PuntajeSpaceShooter {
+  id        Int      @id @default(autoincrement())
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  enemigos  Int
+  puntaje   Int
+  fecha     DateTime @default(now())
+}
+
+// ================================
+// Alertas por almacén (NUEVO)
+// ================================
+enum PrioridadAlerta {
+  ALTA
+  MEDIA
+  BAJA
+}
+
+model Alerta {
+  id          Int              @id @default(autoincrement())
+  titulo      String
+  mensaje     String?
+  fecha       DateTime         @default(now())
+  prioridad   PrioridadAlerta  @default(MEDIA)
+  activa      Boolean          @default(true)
+  tipo        String?          // Ej: 'producto_critico', 'auditoria', etc.
+  almacenId   Int
+  almacen     Almacen          @relation(fields: [almacenId], references: [id])
+}

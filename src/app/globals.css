@@ -1,0 +1,359 @@
+@import "tailwindcss";
+
+/* ===================== VARIABLES GLOBALES ===================== */
+:root {
+  /* Paleta principal HoneyLabs */
+  --background: #ffffff;
+  --foreground: #171717;
+
+  /* Dashboard */
+  --dashboard-bg: #131219;
+  --dashboard-sidebar: #1A1A1D;
+  --dashboard-navbar: #0D0B11;
+  --dashboard-table-bg: #23232B;
+  --dashboard-table-row: #23232B;
+  --dashboard-table-hover: #1A1A1D;
+  --dashboard-card: #23232B;
+  --dashboard-accent: #ffe066;
+  --dashboard-accent-hover: #fff3a1;
+  --dashboard-border: #2a2a33;
+  --dashboard-text: #ececec;
+  --dashboard-muted: #9ca3af;
+  --dashboard-shadow: 0 2px 16px #0005;
+  --dashboard-glass: rgba(255,255,255,0.11);
+  --dashboard-widget-glow: 0 8px 24px 0 #ffe06630;
+  --dashboard-widget-resize: #ffe066cc;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+
+    --dashboard-bg: #131219;
+    --dashboard-sidebar: #1A1A1D;
+    --dashboard-navbar: #0D0B11;
+    --dashboard-card: #23232B;
+    --dashboard-border: #23232B;
+    --dashboard-table-bg: #23232B;
+    --dashboard-table-row: #23232B;
+    --dashboard-table-hover: #1A1A1D;
+    --dashboard-shadow: 0 2px 18px #0008;
+  }
+}
+
+/* ===================== BASE LAYOUT ===================== */
+html, body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+#__next, #root {
+  min-height: 100vh;
+  width: 100vw;
+  background: inherit;
+}
+
+/* =============== ANIMACIONES Y UTILS =============== */
+@keyframes blink { 50% { opacity: 0 } }
+.animate-blink { animation: blink 1.05s steps(1) infinite; }
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+.animate-fade-in { animation: fadeIn 0.7s ease 0.15s both; }
+@keyframes fade-in {
+  from { opacity: 0; transform: scale(0.98); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.animate-fade-in { animation: fade-in 0.6s cubic-bezier(.4,0,.2,1);}
+@keyframes fadeInLeft { from { opacity: 0; transform: translateX(-48px); } to { opacity: 1; transform: none; } }
+.animate-fade-in-left { animation: fadeInLeft 0.8s cubic-bezier(.36,1.6,.28,1) both; }
+@keyframes pop3D { from { opacity: 0; transform: scale(0.94) rotateY(7deg); } to { opacity: 1; transform: scale(1) rotateY(0deg); } }
+.animate-3dpop { animation: pop3D 1.05s cubic-bezier(.22,.68,0,.17) both; }
+
+/* ============== SCROLLBAR PERSONALIZADO ============== */
+::-webkit-scrollbar {
+  width: 10px;
+  background: var(--dashboard-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--dashboard-border);
+  border-radius: 5px;
+}
+
+/* ===================== SEPARADORES ===================== */
+.dashboard-separator {
+  border-top: 1.5px solid var(--dashboard-border);
+  margin: 1.2rem 0;
+}
+
+/* ========== ESTILOS PÚBLICOS/GENERALES (Landing, registro, etc.) ========== */
+/* ...aquí puedes añadir más estilos públicos si lo necesitas... */
+
+/* ========== ESTILOS DASHBOARD / PANEL ========== */
+
+/* --------- LAYOUT PRINCIPAL --------- */
+.dashboard-bg {
+  @apply min-h-screen;
+  background: var(--dashboard-bg);
+  color: var(--dashboard-text);
+}
+
+/* --------- SIDEBAR --------- */
+.dashboard-sidebar {
+  background: var(--dashboard-sidebar);
+  color: var(--dashboard-accent);
+  @apply shadow-2xl border-r border-[var(--dashboard-border)] transition-all duration-200;
+}
+.dashboard-sidebar-item {
+  @apply flex items-center px-4 py-3 rounded-lg font-medium transition-all cursor-pointer relative select-none;
+  color: var(--dashboard-text);
+  border-left: 4px solid transparent;
+  background: transparent;
+}
+.dashboard-sidebar-item.active,
+.dashboard-sidebar-item:focus,
+.dashboard-sidebar-item:hover {
+  background: linear-gradient(90deg, var(--dashboard-accent) 75%, var(--dashboard-glass) 100%) !important;
+  color: #23272f !important;
+  border-left: 4px solid var(--dashboard-accent);
+  font-weight: bold;
+  box-shadow: 0 2px 16px #ffe06622;
+  filter: blur(0.15px);
+  transition: background 0.25s, color 0.2s, box-shadow 0.2s;
+}
+.dashboard-sidebar-item:active {
+  background: linear-gradient(90deg, var(--dashboard-accent-hover) 85%, #fff5 100%) !important;
+  color: #181325 !important;
+}
+.dashboard-sidebar-item span {
+  @apply ml-1;
+}
+.dashboard-sidebar-icon {
+  @apply w-5 h-5 mr-2;
+  color: var(--dashboard-accent);
+  opacity: 0.93;
+}
+.dashboard-sidebar-footer {
+  @apply border-t border-[var(--dashboard-border)] mt-auto p-5 flex flex-col items-center;
+  color: var(--dashboard-accent);
+  background: var(--dashboard-sidebar);
+}
+
+/* --------- NAVBAR --------- */
+.dashboard-navbar {
+  @apply flex items-center px-6 h-16 sticky top-0 z-20;
+  background: var(--dashboard-navbar);
+  color: var(--dashboard-accent);
+  border-bottom: 2px solid var(--dashboard-border);
+  box-shadow: 0 2px 18px #0006;
+}
+.dashboard-navbar .p-2,
+.dashboard-navbar .dashboard-btn {
+  margin-top: 2px;
+}
+.dashboard-navbar button,
+.dashboard-navbar a.p-2 {
+  transition: background 0.18s, color 0.18s, box-shadow 0.22s;
+}
+.dashboard-navbar button:hover,
+.dashboard-navbar a.p-2:hover {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(3.5px);
+  box-shadow: 0 2px 6px #fff1, 0 0 0 2px var(--dashboard-accent);
+  color: #fff !important;
+}
+.dashboard-navbar button:active,
+.dashboard-navbar a.p-2:active {
+  background: rgba(255,255,255,0.17);
+}
+
+/* --------- GRUPOS ACCIONES --------- */
+.dashboard-group {
+  @apply flex items-center gap-3;
+  border-right: 1.5px solid var(--dashboard-border);
+  padding-right: 1.5rem;
+  margin-right: 1.5rem;
+}
+.dashboard-group:last-child {
+  border-right: none;
+  margin-right: 0;
+  padding-right: 0;
+}
+
+/* --------- WIDGETS & CARDS (react-grid-layout) --------- */
+.react-grid-layout {
+  min-height: 300px;
+}
+.react-grid-item {
+  transition: box-shadow 0.25s, background 0.22s;
+  z-index: 10;
+}
+.react-grid-item > .dashboard-widget-card {
+  cursor: grab;
+  user-select: none;
+  will-change: transform;
+  transition: box-shadow 0.18s, background 0.2s;
+}
+.react-grid-item.react-draggable-dragging > .dashboard-widget-card {
+  background: linear-gradient(105deg, var(--dashboard-card) 75%, var(--dashboard-glass) 100%);
+  box-shadow: 0 8px 32px #0009, var(--dashboard-widget-glow);
+  filter: brightness(1.12) blur(0.5px);
+  cursor: grabbing;
+  opacity: 0.95;
+}
+.react-resizable-handle {
+  position: absolute; width: 20px; height: 20px;
+  right: 4px; bottom: 4px; z-index: 20;
+  cursor: se-resize;
+  background: none;
+}
+.react-resizable-handle::after {
+  content: "";
+  display: block;
+  width: 16px; height: 16px;
+  border-right: 2.5px solid var(--dashboard-widget-resize);
+  border-bottom: 2.5px solid var(--dashboard-widget-resize);
+  opacity: 0.7;
+  border-radius: 4px;
+  margin: 0 0 2px 2px;
+  transition: opacity 0.17s;
+}
+.react-resizable-handle:hover::after { opacity: 1; }
+
+.dashboard-widget-card {
+  @apply rounded-xl shadow-lg p-5 border;
+  background: var(--dashboard-card);
+  color: var(--dashboard-text);
+  border: 1.5px solid var(--dashboard-border);
+  box-shadow: var(--dashboard-shadow);
+  transition: box-shadow 0.25s, background 0.19s, border 0.22s;
+  position: relative;
+  min-height: 90px;
+  min-width: 110px;
+  backdrop-filter: blur(2.5px);
+  background-blend-mode: lighten;
+  animation: fade-in 0.7s cubic-bezier(.4,0,.2,1);
+}
+.dashboard-widget-card:hover {
+  border-color: var(--dashboard-accent);
+  box-shadow: 0 6px 24px #ffe06628, 0 2px 18px #0007;
+  background: linear-gradient(104deg, var(--dashboard-card) 85%, var(--dashboard-glass) 100%);
+}
+
+/* --------- FULLSCREEN MODE --------- */
+.dashboard-full .dashboard-navbar,
+.dashboard-full .dashboard-sidebar {
+  display: none;
+}
+.dashboard-widget-card button[title="Eliminar widget"] {
+  position: absolute;
+  top: 13px; right: 14px;
+  background: transparent;
+  border: none;
+  color: #e74c3c;
+  font-size: 1.08rem;
+  font-weight: bold;
+  opacity: 0.72;
+  cursor: pointer;
+  z-index: 3;
+  padding: 3px 8px;
+  transition: background 0.18s, color 0.17s, opacity 0.19s;
+}
+.dashboard-widget-card button[title="Eliminar widget"]:hover {
+  color: #fff;
+  background: #e74c3c22;
+  opacity: 1;
+}
+
+/* --------- TABLAS --------- */
+.dashboard-table {
+  width: 100%;
+  background: var(--dashboard-table-bg);
+  border-radius: 12px;
+  border: 1.5px solid var(--dashboard-border);
+  overflow: hidden;
+}
+.dashboard-table thead {
+  background: var(--dashboard-sidebar);
+  color: var(--dashboard-accent);
+  font-weight: bold;
+  border-bottom: 1.5px solid var(--dashboard-border);
+}
+.dashboard-table-row {
+  background: var(--dashboard-table-row);
+  border-bottom: 1px solid var(--dashboard-border);
+  @apply transition-colors;
+}
+.dashboard-table-row:hover {
+  background: var(--dashboard-table-hover);
+}
+.dashboard-table-cell {
+  @apply px-4 py-3;
+  border-right: 1px solid var(--dashboard-border);
+}
+.dashboard-table-cell:last-child {
+  border-right: none;
+}
+
+/* --------- BOTONES --------- */
+.dashboard-btn {
+  @apply rounded-md font-semibold px-4 py-2 transition shadow-sm;
+  background: var(--dashboard-accent);
+  color: #23272f;
+  border: 1.5px solid var(--dashboard-border);
+  box-shadow: 0 2px 8px #0002;
+}
+.dashboard-btn:hover {
+  background: var(--dashboard-accent-hover);
+  border-color: var(--dashboard-accent);
+  color: #181325;
+}
+
+/* --------- BUSCADOR Y INPUTS --------- */
+.dashboard-input {
+  @apply rounded-md px-4 py-2;
+  background: #1e1e26;
+  color: var(--dashboard-text);
+  border: 1.5px solid var(--dashboard-border);
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.dashboard-input::placeholder {
+  color: var(--dashboard-muted);
+  opacity: 0.9;
+}
+.dashboard-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--dashboard-accent);
+  border-color: var(--dashboard-accent);
+}
+
+/* --------- RESPONSIVE --------- */
+@media (max-width: 640px) {
+  .dashboard-navbar {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .dashboard-sidebar {
+    width: 14rem;
+    min-width: 14rem;
+    transform: translateX(-100%);
+    position: fixed;
+    z-index: 50;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    transition: transform 0.3s;
+  }
+  .dashboard-sidebar.open {
+    transform: translateX(0);
+  }
+  .dashboard-layout-mobile main {
+    margin-left: 0 !important;
+  }
+}

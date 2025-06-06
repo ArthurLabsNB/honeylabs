@@ -1,0 +1,166 @@
+"use client";
+import React, { useEffect, useState } from "react";
+import { jsonOrNull } from "@lib/http";
+import Sidebar from "./components/Sidebar";
+import NavbarDashboard from "./components/NavbarDashboard";
+import WidgetToolbar from "./components/WidgetToolbar";
+import { DashboardUIProvider, useDashboardUI } from "./ui";
+import {
+  SIDEBAR_GLOBAL_WIDTH,
+  SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
+} from "./constants";
+import { useRouter } from "next/navigation";
+import type { Usuario } from "@/types/usuario";
+
+function ProtectedDashboard({ children }: { children: React.ReactNode }) {
+  // Añade en tu context esta propiedad si quieres permitir colapsar
+  const {
+    fullscreen,
+    sidebarGlobalVisible = true,
+    sidebarGlobalCollapsed,
+  } = useDashboardUI();
+  const router = useRouter();
+  const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 640);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const cargarUsuario = async () => {
+      try {
+        const res = await fetch("/api/login", { credentials: "include" });
+        const data = await jsonOrNull(res);
+        if (data?.success && data?.usuario) {
+          setUsuario(data.usuario);
+        } else {
+          setUsuario(null);
+        }
+      } catch {
+        setUsuario(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    cargarUsuario();
+  }, []);
+
+  useEffect(() => {
+    if (!loading && !usuario) {
+      router.replace("/login");
+    }
+  }, [usuario, loading, router]);
+
+  if (loading) {
+    return (
+      <div
+        className="flex min-h-screen items-center justify-center bg-[var(--dashboard-bg)]"
+        data-oid="7sw2va-"
+      >
+        <span
+          className="text-[var(--dashboard-accent)] text-lg font-bold animate-pulse"
+          data-oid="a.4woji"
+        >
+          Cargando...
+        </span>
+      </div>
+    );
+  }
+
+  if (!usuario) return null;
+
+  const sidebarWidth = sidebarGlobalVisible
+    ? sidebarGlobalCollapsed
+      ? SIDEBAR_GLOBAL_COLLAPSED_WIDTH
+      : SIDEBAR_GLOBAL_WIDTH
+    : 0;
+  const marginLeft = !fullscreen && !isMobile ? sidebarWidth : 0;
+
+  // Altura del navbar
+  const navbarHeight = '64px';
+
+  return (
+    <div
+      className={`min-h-screen bg-[var(--dashboard-bg)] transition-colors duration-300 relative ${
+        fullscreen ? "dashboard-full" : ""
+      } ${isMobile ? "dashboard-layout-mobile" : ""}`}
+      data-oid="1sqtk2o"
+    >
+      {/* --- NAVBAR DASHBOARD FIJO --- */}
+      <div 
+        className="fixed top-0 left-0 right-0 z-40 bg-[var(--dashboard-navbar)] border-b border-[var(--dashboard-border)]"
+        style={{ 
+          height: navbarHeight,
+          paddingLeft: !fullscreen && sidebarGlobalVisible ? sidebarWidth : '0',
+          transition: 'padding-left 0.3s ease'
+        }}
+        data-oid="taw.mzt"
+      >
+        {usuario && <NavbarDashboard usuario={usuario} data-oid="m6qmdem" />}
+      </div>
+
+      {/* --- SIDEBAR GLOBAL --- */}
+      {!fullscreen && (isMobile || sidebarGlobalVisible) && (
+        <div
+          style={{
+            width: sidebarWidth,
+            minWidth: sidebarWidth,
+            left: 0,
+            top: 0,
+            height: '100vh',
+            transform: isMobile && !sidebarGlobalVisible ? `translateX(-${sidebarWidth}px)` : 'none',
+            paddingTop: navbarHeight // Asegura que el contenido del sidebar no se oculte bajo el navbar
+          }}
+          className={`fixed z-40 border-r border-[var(--dashboard-border)] bg-[var(--dashboard-sidebar)] transition-all duration-300 dashboard-sidebar`}
+          data-oid=".p64bxw"
+        >
+          <Sidebar usuario={usuario} data-oid="4t4x82h" />
+        </div>
+      )}
+
+      {/* CONTENIDO PRINCIPAL */}
+      <div
+        className="flex flex-col min-h-screen transition-all duration-300"
+        style={{ 
+          paddingTop: navbarHeight,
+          paddingLeft: !fullscreen ? sidebarWidth : 0,
+          transition: 'padding-left 0.3s ease'
+        }}
+        data-oid="ou.:qgb"
+      >
+        <section
+          className="
+            flex-1 p-4 sm:p-8
+            bg-[var(--dashboard-bg)]
+            text-[var(--dashboard-text)]
+            relative
+            animate-fade-in
+            transition-colors duration-300
+            min-h-[calc(100vh-64px)]
+          "
+          data-oid="xvd._xa"
+        >
+          {children}
+        </section>
+        <WidgetToolbar data-oid="6pjz7o6" />
+      </div>
+    </div>
+  );
+}
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <DashboardUIProvider data-oid="-kp1hi9">
+      <ProtectedDashboard data-oid="khrpzeo">{children}</ProtectedDashboard>
+    </DashboardUIProvider>
+  );
+}
