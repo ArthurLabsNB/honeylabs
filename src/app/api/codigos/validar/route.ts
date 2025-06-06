@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       almacenId: existente.almacenId,
       rolAsignado: existente.rolAsignado,
-      permisos: existente.permisos ? JSON.parse(existente.permisos) : null,
+      permisos: existente.permisos ?? null,
     });
   } catch (err: any) {
     console.error("[CODIGO_VALIDAR]", err);

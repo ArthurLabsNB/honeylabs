@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
       id: r.id,
       nombre: r.nombre,
       descripcion: r.descripcion,
-      permisos: r.permisos ? JSON.parse(r.permisos) : {},
+      permisos: (r.permisos as any) || {},
     }));
 
     const suscripcionActiva = usuario.suscripciones[0]
