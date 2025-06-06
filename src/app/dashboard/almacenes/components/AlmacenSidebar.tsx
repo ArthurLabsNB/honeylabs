@@ -19,14 +19,13 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDashboardUI } from "../../ui"; // para saber si sidebar global está colapsado
 import {
   SIDEBAR_GLOBAL_WIDTH,
   SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
 } from "../../constants";
-import type { Usuario } from "@/types/usuario";
-import { jsonOrNull } from "@lib/http";
+import useSession from "@/hooks/useSession";
 import { getMainRole, hasManagePerms } from "@lib/permisos";
 
 // --- Estilos base ---
@@ -79,14 +78,7 @@ export default function AlmacenSidebar({
 }) {
   // Lee el estado del sidebar global para alinear el sidebar de almacenes
   const { sidebarGlobalCollapsed, sidebarGlobalVisible, fullscreen } = useDashboardUI();
-  const [usuario, setUsuario] = useState<Usuario | null>(null);
-
-  useEffect(() => {
-    fetch("/api/login", { credentials: "include" })
-      .then(jsonOrNull)
-      .then((d) => (d?.success ? setUsuario(d.usuario) : setUsuario(null)))
-      .catch(() => setUsuario(null));
-  }, []);
+  const { usuario } = useSession();
 
   const allowCreate = usuario ? hasManagePerms(usuario) : false;
 

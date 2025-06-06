@@ -1,4 +1,9 @@
 # Changelog
+## 0.2.25
+
+- Componentes de almacenes ahora usan `useSession` para obtener al usuario.
+- Se eliminó la lógica duplicada de carga en dichos componentes.
+
 ## 0.2.24
 
 - Sidebar global ahora puede ocultarse desde el navbar.
