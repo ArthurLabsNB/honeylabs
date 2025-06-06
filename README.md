@@ -37,6 +37,8 @@ Actualmente se están implementando las funcionalidades principales. Se aceptan 
 
 0.2.17
 
+0.2.16
+
 ---
 
 ## Características
