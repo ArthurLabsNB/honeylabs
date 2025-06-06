@@ -1,4 +1,10 @@
 # Changelog
+## 0.2.24
+
+- Sidebar global ahora puede ocultarse desde el navbar.
+- Navbar muestra "HoneyLabs" y el plan activo.
+- UserMenu usa avatar redondo como en la página de inicio.
+
 ## 0.2.23
 
 - Ajustes en permisos para permitir crear almacenes a cuentas no vinculadas.
