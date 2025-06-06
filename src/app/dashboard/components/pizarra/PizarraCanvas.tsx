@@ -3,6 +3,15 @@ import { useEffect, useRef, useState } from "react";
 import PizarraNavbar from "./PizarraNavbar";
 import PizarraSidebar from "./PizarraSidebar";
 
+const STORAGE_KEY = "pizarra_content";
+
+const sanitizeHTML = (html: string) => {
+  const template = document.createElement("template");
+  template.innerHTML = html;
+  template.content.querySelectorAll("script").forEach((el) => el.remove());
+  return template.innerHTML;
+};
+
 interface Props {
   onClose: () => void;
 }
@@ -13,16 +22,26 @@ export default function PizarraCanvas({ onClose }: Props) {
 
   // Load saved state
   useEffect(() => {
-    const saved = localStorage.getItem("pizarra_content");
+    const saved = localStorage.getItem(STORAGE_KEY);
     if (saved && canvasRef.current) {
-      canvasRef.current.innerHTML = saved;
+      let html = saved;
+      try {
+        const parsed = JSON.parse(saved) as { html?: string };
+        if (parsed && typeof parsed.html === "string") {
+          html = parsed.html;
+        }
+      } catch {
+        // previous versions stored raw HTML
+      }
+      canvasRef.current.innerHTML = sanitizeHTML(html);
     }
   }, []);
 
   // Save state on unmount or mode change
   const saveState = () => {
     if (canvasRef.current) {
-      localStorage.setItem("pizarra_content", canvasRef.current.innerHTML);
+      const payload = JSON.stringify({ html: canvasRef.current.innerHTML });
+      localStorage.setItem(STORAGE_KEY, payload);
     }
   };
 
