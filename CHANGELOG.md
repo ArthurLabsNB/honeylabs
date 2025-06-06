@@ -1,6 +1,7 @@
 # Changelog
 ## 0.2.25
 
+- Removed local honeylabs dependency from package.json.
 - Contenido de la pizarra guardado como JSON para evitar inyección.
 - Carga de datos compatible con entradas antiguas en HTML.
 - Corrección en Sidebar para marcar solo la ruta actual como activa.
