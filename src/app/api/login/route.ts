@@ -26,7 +26,13 @@ export async function POST(req: NextRequest) {
 
     let usuario = await prisma.usuario.findUnique({
       where: { correo: correo.toLowerCase().trim() },
-      include: {
+      select: {
+        id: true,
+        nombre: true,
+        correo: true,
+        contrasena: true,
+        tipoCuenta: true,
+        estado: true,
         entidad: { select: { id: true, nombre: true, tipo: true, planId: true } },
         roles: { select: { id: true, nombre: true, descripcion: true, permisos: true } },
         suscripciones: {
@@ -94,7 +100,7 @@ export async function POST(req: NextRequest) {
       id: usuario.id,
       nombre: usuario.nombre,
       correo: usuario.correo,
-      esSuperAdmin: usuario.esSuperAdmin ?? false,
+      esSuperAdmin: false,
       tipoCuenta: usuario.tipoCuenta,
       entidad: usuario.entidad,
       roles,

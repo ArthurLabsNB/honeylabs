@@ -153,7 +153,10 @@ export async function PUT(req: NextRequest) {
     }
 
     // Verificar si el correo está en uso
-    const correoExistente = await prisma.usuario.findUnique({ where: { correo } });
+    const correoExistente = await prisma.usuario.findUnique({
+      where: { correo },
+      select: { id: true },
+    });
     if (correoExistente && correoExistente.id !== usuarioId) {
       return NextResponse.json({ error: 'Ese correo ya está registrado en otra cuenta.' }, { status: 409 });
     }
@@ -171,7 +174,10 @@ export async function PUT(req: NextRequest) {
       if (reg.intentos >= MAX_INTENTOS && now - reg.timestamp < TIEMPO_BLOQUEO_MS) {
         return NextResponse.json({ error: 'Demasiados intentos fallidos. Intenta de nuevo en unos minutos.' }, { status: 429 });
       }
-      const usuarioActual = await prisma.usuario.findUnique({ where: { id: usuarioId } });
+      const usuarioActual = await prisma.usuario.findUnique({
+        where: { id: usuarioId },
+        select: { contrasena: true },
+      });
       if (!usuarioActual || !(await bcrypt.compare(contrasenaActual, usuarioActual.contrasena))) {
         bloqueos.set(key, { intentos: reg.intentos + 1, timestamp: now });
         return NextResponse.json({ error: 'Contraseña actual incorrecta.' }, { status: 401 });

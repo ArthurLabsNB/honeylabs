@@ -56,7 +56,10 @@ export async function POST(req: NextRequest) {
     }
 
     // Validación de usuario existente
-    const existente = await prisma.usuario.findUnique({ where: { correo } });
+    const existente = await prisma.usuario.findUnique({
+      where: { correo },
+      select: { id: true },
+    });
     if (existente) {
       return NextResponse.json({ error: 'Ya existe una cuenta con ese correo.' }, { status: 409 });
     }
