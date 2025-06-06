@@ -24,6 +24,9 @@ export async function getUsuarioFromSession() {
         correo: true,
         tipoCuenta: true,
         entidadId: true,
+        esSuperAdmin: true,
+        roles: { select: { nombre: true } },
+        plan: { select: { nombre: true } },
         preferencias: true,
       },
     })

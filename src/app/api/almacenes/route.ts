@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@lib/prisma";
 import crypto from "node:crypto";
 import { getUsuarioFromSession } from "@lib/auth";
+import { hasManagePerms, normalizeTipoCuenta } from "@lib/permisos";
 
 export async function GET(req: NextRequest) {
   try {
@@ -80,13 +81,28 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
+    if (!hasManagePerms(usuario)) {
+      return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
+    }
+
     const { nombre, descripcion, funciones, permisosPredeterminados } = await req.json();
     if (!nombre) {
       return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 });
     }
 
     if (!usuario.entidadId) {
-      return NextResponse.json({ error: 'Usuario sin entidad' }, { status: 400 });
+      const nuevaEntidad = await prisma.entidad.create({
+        data: {
+          nombre: `Entidad de ${usuario.nombre}`,
+          tipo: normalizeTipoCuenta(usuario.tipoCuenta),
+          correoContacto: usuario.correo ?? '',
+        },
+      });
+      await prisma.usuario.update({
+        where: { id: usuario.id },
+        data: { entidadId: nuevaEntidad.id },
+      });
+      usuario.entidadId = nuevaEntidad.id;
     }
 
     const codigoUnico = crypto.randomUUID().split('-')[0];
