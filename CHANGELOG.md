@@ -2,6 +2,9 @@
 ## 0.2.25
 
 - Corrección en Sidebar para marcar solo la ruta actual como activa.
+- El middleware ahora detecta la cookie de sesión usando `SESSION_COOKIE`.
+- `JWT_SECRET` es obligatorio en la ruta `/api/novedades`.
+
 ## 0.2.24
 
 - Sidebar global ahora puede ocultarse desde el navbar.
