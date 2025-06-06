@@ -24,7 +24,7 @@ export default function BillingPage() {
       .then((data) => {
         if (!data?.success) throw new Error();
         const rol = getMainRole(data.usuario)?.toLowerCase();
-        const tipo = (data.usuario.tipoCuenta ?? "estandar").toLowerCase();
+        const tipo = (data.usuario.tipoCuenta ?? "individual").toLowerCase();
         if (rol !== "admin" && rol !== "administrador" && !allowed.includes(tipo))
           throw new Error("No autorizado");
         setUsuario(data.usuario);

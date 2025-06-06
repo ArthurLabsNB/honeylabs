@@ -20,7 +20,7 @@ interface Almacen {
 }
 
 export default function AlmacenesPage() {
-  const allowed = ["admin", "institucional", "empresarial", "estandar"];
+  const allowed = ["admin", "institucional", "empresarial", "individual"];
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [almacenes, setAlmacenes] = useState<Almacen[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,7 +34,7 @@ export default function AlmacenesPage() {
       .then((data) => {
         if (!data?.success) throw new Error();
         const rol = getMainRole(data.usuario)?.toLowerCase();
-        const tipo = (data.usuario.tipoCuenta ?? "estandar").toLowerCase();
+        const tipo = (data.usuario.tipoCuenta ?? "individual").toLowerCase();
         if (
           rol !== "admin" &&
           rol !== "administrador" &&

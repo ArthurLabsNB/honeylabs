@@ -5,7 +5,16 @@ export function getMainRole(u: { rol?: string; roles?: { nombre?: string }[] } |
   return undefined;
 }
 
-export function hasManagePerms(u: { rol?: string; roles?: { nombre?: string }[]; tipoCuenta?: string; plan?: { nombre?: string } } | null | undefined): boolean {
+export function hasManagePerms(
+  u: {
+    rol?: string;
+    roles?: { nombre?: string }[];
+    tipoCuenta?: string;
+    plan?: { nombre?: string };
+    esSuperAdmin?: boolean;
+  } | null | undefined,
+): boolean {
+  if (u?.esSuperAdmin) return true;
   const rol = getMainRole(u)?.toLowerCase();
   const tipo = (u?.tipoCuenta ?? '').toLowerCase();
   const plan = (u?.plan?.nombre ?? '').toLowerCase();

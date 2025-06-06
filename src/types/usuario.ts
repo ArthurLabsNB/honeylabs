@@ -10,4 +10,5 @@ export interface Usuario {
   avatarUrl?: string | null;
   imagen?: string | null;
   tiene2FA?: boolean;
+  esSuperAdmin?: boolean;
 }

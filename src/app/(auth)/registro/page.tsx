@@ -137,7 +137,7 @@ export default function RegistroPage() {
           <option value="" data-oid=".eu29cw">
             Tipo de cuenta
           </option>
-          <option value="estandar" data-oid="47wixu9">
+          <option value="individual" data-oid="47wixu9">
             Usuario individual
           </option>
           <option value="empresarial" data-oid="j47sjsj">

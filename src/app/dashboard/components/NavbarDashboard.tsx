@@ -86,7 +86,7 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
   const puedeCrear = hasManagePerms(usuario);
   const puedeInvitarUsuarios =
     hasManagePerms(usuario) &&
-    ((usuario?.tipoCuenta ?? "").toLowerCase() !== "estandar");
+    ((usuario?.tipoCuenta ?? "").toLowerCase() !== "individual");
 
   return (
     <header

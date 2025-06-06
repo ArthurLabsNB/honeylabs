@@ -73,7 +73,8 @@ model Usuario {
   correo        String           @unique
   contrasena    String
   googleId      String?          // Login alternativo Google (futuro)
-  tipoCuenta    String           // 'estandar', 'institucional', etc.
+  tipoCuenta    String           // 'individual', 'empresarial', 'institucional', 'codigo', 'administrador'
+  esSuperAdmin  Boolean?         @default(false)
   estado        String           @default("pendiente")  // 'pendiente', 'activo'
   fechaRegistro DateTime         @default(now())
 

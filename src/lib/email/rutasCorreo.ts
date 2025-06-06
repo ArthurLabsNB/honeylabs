@@ -7,7 +7,7 @@
  * - EMAIL_DESTINO_VALIDACION
  * - EMAIL_ADMIN (respaldo)
  *
- * @param tipoCuenta - 'estandar', 'empresarial', 'institucional'
+ * @param tipoCuenta - 'individual', 'empresarial', 'institucional', 'codigo', 'administrador'
  * @returns Dirección de correo destino como string
  */
 export function getCorreoDestino(tipoCuenta: string): string {
@@ -34,7 +34,7 @@ export function getCorreoDestino(tipoCuenta: string): string {
     case 'empresarial':
     case 'institucional':
       return EMAIL_VALIDACION;
-    case 'estandar':
+    case 'individual':
       return EMAIL_ESTANDAR;
     default:
       console.warn(`⚠️ Tipo de cuenta desconocido: "${tipoCuenta}". Usando EMAIL_ADMIN como respaldo.`);
