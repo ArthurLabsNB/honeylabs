@@ -18,7 +18,7 @@ import {
 import UserMenu from "@/components/UserMenu";
 import { useDashboardUI } from "../ui";
 import type { Usuario } from "@/types/usuario";
-import { hasManagePerms } from "@lib/permisos";
+import { hasManagePerms, normalizeTipoCuenta } from "@lib/permisos";
 
 const MOCK_RESULTS = [
   { tipo: "almacén", nombre: "Almacén Central", url: "/almacenes/central" },
@@ -86,7 +86,7 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
   const puedeCrear = hasManagePerms(usuario);
   const puedeInvitarUsuarios =
     hasManagePerms(usuario) &&
-    ((usuario?.tipoCuenta ?? "").toLowerCase() !== "individual");
+    normalizeTipoCuenta(usuario?.tipoCuenta) !== "individual";
 
   return (
     <header

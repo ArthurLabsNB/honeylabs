@@ -5,6 +5,13 @@ export function getMainRole(u: { rol?: string; roles?: { nombre?: string }[] } |
   return undefined;
 }
 
+export function normalizeTipoCuenta(tipo?: string): string {
+  const t = (tipo ?? '').toLowerCase();
+  if (t === 'administrador') return 'admin';
+  if (t === 'estandar' || t === 'standard') return 'individual';
+  return t || 'individual';
+}
+
 export function hasManagePerms(
   u: {
     rol?: string;
@@ -16,7 +23,7 @@ export function hasManagePerms(
 ): boolean {
   if (u?.esSuperAdmin) return true;
   const rol = getMainRole(u)?.toLowerCase();
-  const tipo = (u?.tipoCuenta ?? '').toLowerCase();
+  const tipo = normalizeTipoCuenta(u?.tipoCuenta);
   const plan = (u?.plan?.nombre ?? '').toLowerCase();
   if (rol === 'admin' || rol === 'administrador') return true;
   if (['institucional', 'empresarial'].includes(tipo)) return true;

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
 import type { Usuario } from "@/types/usuario";
-import { getMainRole } from "@lib/permisos";
+import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
 
 interface Invoice {
   id: number;
@@ -12,7 +12,7 @@ interface Invoice {
 }
 
 export default function BillingPage() {
-  const allowed = ["admin", "institucional"];
+  const allowed = ["admin", "administrador", "institucional"];
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,7 +24,7 @@ export default function BillingPage() {
       .then((data) => {
         if (!data?.success) throw new Error();
         const rol = getMainRole(data.usuario)?.toLowerCase();
-        const tipo = (data.usuario.tipoCuenta ?? "individual").toLowerCase();
+        const tipo = normalizeTipoCuenta(data.usuario.tipoCuenta);
         if (rol !== "admin" && rol !== "administrador" && !allowed.includes(tipo))
           throw new Error("No autorizado");
         setUsuario(data.usuario);
