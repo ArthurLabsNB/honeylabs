@@ -35,7 +35,7 @@ Actualmente se están implementando las funcionalidades principales. Se aceptan 
 
 ## Version
 
-0.2.21
+0.2.22
 
 ---
 
@@ -76,7 +76,7 @@ npx prisma migrate deploy
 vercel --prod
 ```
 
-Configura las variables de entorno copiando `.env.example` a `.env` y ajustando los valores necesarios.
+Configura las variables de entorno copiando `.env.example` a `.env` y ajustando los valores necesarios, en especial `DATABASE_URL` con la cadena de conexión a PostgreSQL.
 
 ---
 
