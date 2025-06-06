@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.25
+
+- Removed local honeylabs dependency from package.json.
+
 ## 0.2.24
 
 - Sidebar global ahora puede ocultarse desde el navbar.
