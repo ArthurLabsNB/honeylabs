@@ -1,6 +1,8 @@
 # Changelog
 ## 0.2.25
 
+- Componentes de almacenes ahora usan `useSession` para obtener al usuario.
+- Se eliminó la lógica duplicada de carga en dichos componentes.
 - Removed local honeylabs dependency from package.json.
 - Contenido de la pizarra guardado como JSON para evitar inyección.
 - Carga de datos compatible con entradas antiguas en HTML.

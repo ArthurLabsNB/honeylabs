@@ -11,9 +11,8 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAlmacenesUI } from "../ui";
-import type { Usuario } from "@/types/usuario";
-import { useEffect, useState } from "react";
-import { jsonOrNull } from "@lib/http";
+import useSession from "@/hooks/useSession";
+import { useState } from "react";
 import { getMainRole, hasManagePerms } from "@lib/permisos";
 
 
@@ -25,16 +24,9 @@ interface AlmacenNavbarProps {
 export default function AlmacenNavbar({ mode = 'list', nombre }: AlmacenNavbarProps) {
   const router = useRouter();
   const { view, setView, filter, setFilter, onCreate } = useAlmacenesUI();
-  const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const { usuario } = useSession();
   const [busqueda, setBusqueda] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    fetch("/api/login", { credentials: "include" })
-      .then(jsonOrNull)
-      .then((d) => (d?.success ? setUsuario(d.usuario) : setUsuario(null)))
-      .catch(() => setUsuario(null));
-  }, []);
 
   // Permisos de gestión
   const allowManage = usuario ? hasManagePerms(usuario) : false;
