@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
+import useSession, { clearSessionCache } from "@/hooks/useSession";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -41,19 +42,18 @@ export default function LoginPage() {
     setFocus("correo");
   }, [setFocus]);
 
+  const { usuario } = useSession();
+
   // --- Si ya tienes sesión, te manda a dashboard ---
   useEffect(() => {
-    fetch("/api/login", { credentials: "include" })
-      .then(jsonOrNull)
-      .then((data) => {
-        if (data?.success && data?.usuario) router.replace("/");
-      });
-  }, [router]);
+    if (usuario) router.replace("/");
+  }, [usuario, router]);
 
   const onSubmit = async (datos: LoginData) => {
     setMensaje("");
     setCargando(true);
     try {
+      clearSessionCache();
       const res = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
