@@ -155,7 +155,7 @@ model Rol {
   id          Int       @id @default(autoincrement())
   nombre      String
   descripcion String?
-  permisos    String                 // JSON string con permisos
+  permisos    Json                   // Permisos estructurados
   entidadId   Int?
   entidad     Entidad?  @relation(fields: [entidadId], references: [id])
   usuarios    Usuario[] @relation("RolToUsuario")
@@ -171,7 +171,7 @@ model Almacen {
   imagenUrl               String?
   codigoUnico             String           @unique
   funciones               String?
-  permisosPredeterminados String?
+  permisosPredeterminados Json?
   fechaCreacion           DateTime         @default(now())
 
   entidadId   Int
@@ -197,7 +197,7 @@ model UsuarioAlmacen {
   usuarioId     Int
   almacenId     Int
   rolEnAlmacen  String  @db.VarChar(50)
-  permisosExtra String?
+  permisosExtra Json?
 
   usuario       Usuario @relation(fields: [usuarioId], references: [id])
   almacen       Almacen @relation(fields: [almacenId], references: [id])
@@ -213,7 +213,7 @@ model CodigoAlmacen {
   almacenId       Int
   codigo          String    @unique
   rolAsignado     String    @db.VarChar(50)
-  permisos        String?
+  permisos        Json?
   usosDisponibles Int?
   activo          Boolean   @default(true)
   fechaCreacion   DateTime  @default(now())

@@ -226,3 +226,7 @@ Toda la lógica será escalable, documentada y protegida
 Si algo queda ambiguo, pedir aclaración antes de implementar.
 Siempre preguntar al desarrollador antes de borrar o modificar lógica crítica.
 
+
+### Progreso
+- Migración de campos de permisos a JSON completada
+- Limpieza automática de datos legacy en el login
