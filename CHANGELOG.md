@@ -10,6 +10,10 @@
 - Campos de permisos ahora usan tipo JSON en la base de datos.
 - Migración `20250606010000_json_permisos_update` aplicada.
 
+## 0.2.17
+
+- Limpieza automática de datos legacy en el login.
+
 ## 0.2.14
 
 - Se añadió el campo `esSuperAdmin` en el modelo `Usuario`.
