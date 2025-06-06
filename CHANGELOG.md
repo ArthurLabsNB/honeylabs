@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.25
+
+- El middleware ahora detecta la cookie de sesión usando `SESSION_COOKIE`.
+
 ## 0.2.24
 
 - Sidebar global ahora puede ocultarse desde el navbar.
