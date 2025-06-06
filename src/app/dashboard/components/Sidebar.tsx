@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useDashboardUI } from "../ui";
 import type { Usuario } from "@/types/usuario";
-import { getMainRole } from "@lib/permisos";
+import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
 import {
   Home,
   Boxes,
@@ -27,63 +27,63 @@ const sidebarMenu = [
     label: "Dashboard",
     icon: <Home className="dashboard-sidebar-icon" data-oid="i99r0xl" />,
     path: "/dashboard",
-    allowed: ["admin", "institucional", "empresarial", "individual"],
+    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
   },
   {
     key: "almacenes",
     label: "Almacenes",
     icon: <Boxes className="dashboard-sidebar-icon" data-oid="fhr-clw" />,
     path: "/dashboard/almacenes",
-    allowed: ["admin", "institucional", "empresarial", "individual"],
+    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
   },
   {
     key: "alertas",
     label: "Alertas",
     icon: <Bell className="dashboard-sidebar-icon" data-oid=".ea6mni" />,
     path: "/dashboard/alertas",
-    allowed: ["admin", "institucional", "empresarial", "individual"],
+    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
   },
   {
     key: "appcenter",
     label: "App Center",
     icon: <AppWindow className="dashboard-sidebar-icon" data-oid="am_k.6c" />,
     path: "/dashboard/app-center",
-    allowed: ["admin", "institucional", "empresarial"],
+    allowed: ["admin", "administrador", "institucional", "empresarial"],
   },
   {
     key: "network",
     label: "Network",
     icon: <Network className="dashboard-sidebar-icon" data-oid="z-33x83" />,
     path: "/dashboard/network",
-    allowed: ["admin", "institucional"],
+    allowed: ["admin", "administrador", "institucional"],
   },
   {
     key: "plantillas",
     label: "Plantillas",
     icon: <FileStack className="dashboard-sidebar-icon" data-oid="0vwt0b-" />,
     path: "/dashboard/plantillas",
-    allowed: ["admin", "institucional", "empresarial", "individual"],
+    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
   },
   {
     key: "reportes",
     label: "Reportes",
     icon: <FileText className="dashboard-sidebar-icon" data-oid="wzewnea" />,
     path: "/dashboard/reportes",
-    allowed: ["admin", "institucional", "empresarial"],
+    allowed: ["admin", "administrador", "institucional", "empresarial"],
   },
   {
     key: "billing",
     label: "Billing",
     icon: <Receipt className="dashboard-sidebar-icon" data-oid="ny9b2pu" />,
     path: "/dashboard/billing",
-    allowed: ["admin", "institucional"],
+    allowed: ["admin", "administrador", "institucional"],
   },
   {
     key: "admin",
     label: "Admin",
     icon: <Settings className="dashboard-sidebar-icon" data-oid="93xzl3d" />,
     path: "/dashboard/admin",
-    allowed: ["admin"],
+    allowed: ["admin", "administrador"],
   },
 ];
 
@@ -107,7 +107,9 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
   }
 
   const mainRole = getMainRole(usuario)?.toLowerCase();
-  const tipo = mainRole === "admin" ? "admin" : usuario.tipoCuenta ?? "individual";
+  const tipo = normalizeTipoCuenta(
+    mainRole === "admin" ? "admin" : usuario.tipoCuenta,
+  );
 
   const filteredMenu = sidebarMenu.filter((item) =>
     item.allowed.includes(tipo),

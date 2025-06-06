@@ -18,7 +18,7 @@ import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { usePathname, useRouter } from "next/navigation";
 import { jsonOrNull } from "@lib/http";
-import { getMainRole } from "@lib/permisos";
+import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
 import { clearSessionCache } from "@/hooks/useSession";
 
 interface UsuarioData {
@@ -90,7 +90,7 @@ export default function UserMenu({
         const data = await jsonOrNull(res);
         if (data?.success && data.usuario) {
           const rol = getMainRole(data.usuario)?.toLowerCase();
-          const tipo = (data.usuario.tipoCuenta ?? "").toLowerCase();
+          const tipo = normalizeTipoCuenta(data.usuario.tipoCuenta);
           if (
             rol === "admin" ||
             rol === "administrador" ||

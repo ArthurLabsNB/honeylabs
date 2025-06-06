@@ -59,6 +59,10 @@ export async function POST(req: NextRequest) {
       updates.tipoCuenta = 'individual';
       usuario.tipoCuenta = 'individual';
     }
+    if (usuario.tipoCuenta === 'administrador') {
+      updates.tipoCuenta = 'admin';
+      usuario.tipoCuenta = 'admin';
+    }
     const roles: { id: number; nombre: string; descripcion: string | null; permisos: any }[] = [];
     for (const r of usuario.roles) {
       let perms = r.permisos as any;

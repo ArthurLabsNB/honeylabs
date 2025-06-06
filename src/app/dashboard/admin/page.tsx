@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
 import type { Usuario } from "@/types/usuario";
-import { getMainRole } from "@lib/permisos";
+import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
 
 interface Stats {
   usuarios: number;
@@ -10,7 +10,7 @@ interface Stats {
 }
 
 export default function AdminPage() {
-  const allowed = ["admin"];
+  const allowed = ["admin", "administrador"];
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -22,7 +22,7 @@ export default function AdminPage() {
       .then((data) => {
         if (!data?.success) throw new Error();
         const rol = getMainRole(data.usuario)?.toLowerCase();
-        const tipo = (data.usuario.tipoCuenta ?? "individual").toLowerCase();
+        const tipo = normalizeTipoCuenta(data.usuario.tipoCuenta);
         if (rol !== "admin" && rol !== "administrador" && !allowed.includes(tipo))
           throw new Error("No autorizado");
         setUsuario(data.usuario);

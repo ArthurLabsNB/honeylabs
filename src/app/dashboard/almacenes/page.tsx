@@ -4,7 +4,7 @@ import { jsonOrNull } from "@lib/http";
 import { useRouter } from "next/navigation";
 import { useAlmacenesUI } from "./ui";
 import type { Usuario } from "@/types/usuario";
-import { getMainRole, hasManagePerms } from "@lib/permisos";
+import { getMainRole, hasManagePerms, normalizeTipoCuenta } from "@lib/permisos";
 
 interface Almacen {
   id: number;
@@ -20,7 +20,7 @@ interface Almacen {
 }
 
 export default function AlmacenesPage() {
-  const allowed = ["admin", "institucional", "empresarial", "individual"];
+  const allowed = ["admin", "administrador", "institucional", "empresarial", "individual"];
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [almacenes, setAlmacenes] = useState<Almacen[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,7 +34,7 @@ export default function AlmacenesPage() {
       .then((data) => {
         if (!data?.success) throw new Error();
         const rol = getMainRole(data.usuario)?.toLowerCase();
-        const tipo = (data.usuario.tipoCuenta ?? "individual").toLowerCase();
+        const tipo = normalizeTipoCuenta(data.usuario.tipoCuenta);
         if (
           rol !== "admin" &&
           rol !== "administrador" &&
