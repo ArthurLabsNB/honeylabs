@@ -10,12 +10,15 @@ import {
   Sun,
   Settings,
   ShieldCheck,
+  Shield,
   BadgeCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { usePathname, useRouter } from "next/navigation";
+import { jsonOrNull } from "@lib/http";
+import { getMainRole } from "@lib/permisos";
 
 interface UsuarioData {
   nombre: string;
@@ -23,6 +26,9 @@ interface UsuarioData {
   imagen?: string | null;
   plan?: string;
   tiene2FA?: boolean;
+  tipoCuenta?: string;
+  roles?: { nombre?: string }[];
+  esSuperAdmin?: boolean;
 }
 
 export default function UserMenu({
@@ -43,6 +49,7 @@ export default function UserMenu({
   const setOpen = controlledSetOpen ?? setInternalOpen;
   const [temaOscuro, setTemaOscuro] = useState(true);
   const refMenu = useRef<HTMLDivElement>(null);
+  const [esAdmin, setEsAdmin] = useState(false);
 
   // Avatar image url (si existe)
   const [fotoPerfil, setFotoPerfil] = useState<string | null>(null);
@@ -73,6 +80,28 @@ export default function UserMenu({
       );
     }
     cargarTema();
+  }, []);
+
+  useEffect(() => {
+    async function checkAdmin() {
+      try {
+        const res = await fetch("/api/login", { credentials: "include" });
+        const data = await jsonOrNull(res);
+        if (data?.success && data.usuario) {
+          const rol = getMainRole(data.usuario)?.toLowerCase();
+          const tipo = (data.usuario.tipoCuenta ?? "").toLowerCase();
+          if (
+            rol === "admin" ||
+            rol === "administrador" ||
+            tipo === "admin" ||
+            tipo === "administrador"
+          ) {
+            setEsAdmin(true);
+          }
+        }
+      } catch {}
+    }
+    checkAdmin();
   }, []);
 
   // Cierra menú al click fuera o Escape
@@ -247,6 +276,15 @@ export default function UserMenu({
                 label="Preferencias"
                 tabIndex={open ? 0 : -1}
               />
+
+              {esAdmin && (
+                <MenuLink
+                  href="/admin/dashboard"
+                  icon={<Shield className="h-4 w-4" />}
+                  label="Administración"
+                  tabIndex={open ? 0 : -1}
+                />
+              )}
 
               <MenuLink
                 href="/"
