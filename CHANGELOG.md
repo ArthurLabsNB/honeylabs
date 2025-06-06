@@ -1,6 +1,7 @@
 # Changelog
 ## 0.2.25
 
+- El middleware ahora detecta la cookie de sesión usando `SESSION_COOKIE`.
 - `JWT_SECRET` es obligatorio en la ruta `/api/novedades`.
 
 ## 0.2.24

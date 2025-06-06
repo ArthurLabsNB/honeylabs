@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { SESSION_COOKIE } from '@lib/constants';
 
 // --- Memory Rate Limiter ---
 // Solo para desarrollo, VPS o entornos con estado.
@@ -23,14 +24,12 @@ if (typeof global !== "undefined") {
 
 /**
  * Obtiene una clave única para el limitador:
- * - Si hay cookie de sesión/token, la usa.
+ * - Si hay cookie de sesión, la usa.
  * - Si no, toma la IP del request.
  * - En local, usa un ID random para evitar bloqueo global.
  */
 function getRateLimitKey(req: NextRequest): string {
-  const sessionCookie =
-    req.cookies.get('token')?.value ||
-    req.cookies.get('sessionid')?.value;
+  const sessionCookie = req.cookies.get(SESSION_COOKIE)?.value;
 
   if (sessionCookie) return `SESSION_${sessionCookie}`;
 
