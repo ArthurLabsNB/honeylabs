@@ -24,14 +24,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const usuario = await prisma.usuario.findUnique({
+    let usuario = await prisma.usuario.findUnique({
       where: { correo: correo.toLowerCase().trim() },
       include: {
         entidad: { select: { id: true, nombre: true, tipo: true, planId: true } },
         roles: { select: { id: true, nombre: true, descripcion: true, permisos: true } },
         suscripciones: {
           where: { activo: true },
-          select: { id: true, plan: { select: { nombre: true, limites: true } }, fechaFin: true },
+          select: {
+            id: true,
+            plan: { select: { nombre: true, limites: true } },
+            fechaFin: true,
+          },
         },
       },
     });
@@ -43,6 +47,29 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Actualizar datos legacy si existen
+    const updates: any = {};
+    if (usuario.tipoCuenta === 'estandar') {
+      updates.tipoCuenta = 'individual';
+      usuario.tipoCuenta = 'individual';
+    }
+    const roles: { id: number; nombre: string; descripcion: string | null; permisos: any }[] = [];
+    for (const r of usuario.roles) {
+      let perms = r.permisos as any;
+      if (typeof perms === 'string') {
+        try {
+          perms = JSON.parse(perms);
+          await prisma.rol.update({ where: { id: r.id }, data: { permisos: perms } });
+        } catch {
+          perms = {};
+        }
+      }
+      roles.push({ id: r.id, nombre: r.nombre, descripcion: r.descripcion, permisos: perms || {} });
+    }
+    if (Object.keys(updates).length > 0) {
+      await prisma.usuario.update({ where: { id: usuario.id }, data: updates });
+    }
+
     if ((usuario.estado ?? 'activo') !== 'activo') {
       return NextResponse.json(
         { success: false, error: 'Cuenta suspendida o pendiente.' },
@@ -50,12 +77,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const roles = usuario.roles.map((r) => ({
-      id: r.id,
-      nombre: r.nombre,
-      descripcion: r.descripcion,
-      permisos: r.permisos ? JSON.parse(r.permisos) : {},
-    }));
+
 
     const suscripcionActiva = usuario.suscripciones[0]
       ? {

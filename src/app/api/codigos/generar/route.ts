@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
         almacenId: Number(almacenId),
         codigo,
         rolAsignado,
-        permisos: permisos ? JSON.stringify(permisos) : null,
+        permisos: permisos ?? null,
         usosDisponibles: usosDisponibles ? Number(usosDisponibles) : null,
         fechaExpiracion: fechaExpiracion ? new Date(fechaExpiracion) : null,
       },
