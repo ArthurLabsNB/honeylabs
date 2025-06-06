@@ -2,6 +2,11 @@
 ## 0.2.25
 
 - Removed local honeylabs dependency from package.json.
+- Contenido de la pizarra guardado como JSON para evitar inyección.
+- Carga de datos compatible con entradas antiguas en HTML.
+- Corrección en Sidebar para marcar solo la ruta actual como activa.
+- El middleware ahora detecta la cookie de sesión usando `SESSION_COOKIE`.
+- `JWT_SECRET` es obligatorio en la ruta `/api/novedades`.
 
 ## 0.2.24
 
