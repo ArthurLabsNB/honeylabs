@@ -5,6 +5,11 @@
 - Hook `usePermisos` para combinar permisos en frontend.
 - Endpoint `/api/admin/usuarios` para listar usuarios.
 
+## 0.2.16
+
+- Campos de permisos ahora usan tipo JSON en la base de datos.
+- Migración `20250606010000_json_permisos_update` aplicada.
+
 ## 0.2.14
 
 - Se añadió el campo `esSuperAdmin` en el modelo `Usuario`.
