@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { jsonOrNull } from "@lib/http";
+import useSession from "@/hooks/useSession";
 import Sidebar from "./components/Sidebar";
 import NavbarDashboard from "./components/NavbarDashboard";
 import WidgetToolbar from "./components/WidgetToolbar";
@@ -10,7 +10,6 @@ import {
   SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
 } from "./constants";
 import { useRouter } from "next/navigation";
-import type { Usuario } from "@/types/usuario";
 
 function ProtectedDashboard({ children }: { children: React.ReactNode }) {
   // Añade en tu context esta propiedad si quieres permitir colapsar
@@ -20,8 +19,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
     sidebarGlobalCollapsed,
   } = useDashboardUI();
   const router = useRouter();
-  const [usuario, setUsuario] = useState<Usuario | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { usuario, loading } = useSession();
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -31,24 +29,6 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    const cargarUsuario = async () => {
-      try {
-        const res = await fetch("/api/login", { credentials: "include" });
-        const data = await jsonOrNull(res);
-        if (data?.success && data?.usuario) {
-          setUsuario(data.usuario);
-        } else {
-          setUsuario(null);
-        }
-      } catch {
-        setUsuario(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-    cargarUsuario();
-  }, []);
 
   useEffect(() => {
     if (!loading && !usuario) {

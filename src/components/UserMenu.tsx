@@ -19,6 +19,7 @@ import clsx from "clsx";
 import { usePathname, useRouter } from "next/navigation";
 import { jsonOrNull } from "@lib/http";
 import { getMainRole } from "@lib/permisos";
+import { clearSessionCache } from "@/hooks/useSession";
 
 interface UsuarioData {
   nombre: string;
@@ -160,6 +161,7 @@ export default function UserMenu({
   const cerrarSesion = async () => {
     setOpen(false);
     await fetch("/api/login", { method: "DELETE" });
+    clearSessionCache();
     router.replace("/login");
   };
 
