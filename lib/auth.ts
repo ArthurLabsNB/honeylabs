@@ -18,6 +18,14 @@ export async function getUsuarioFromSession() {
     const decoded = jwt.verify(token, JWT_SECRET) as { id: number }
     const usuario = await prisma.usuario.findUnique({
       where: { id: decoded.id },
+      select: {
+        id: true,
+        nombre: true,
+        correo: true,
+        tipoCuenta: true,
+        entidadId: true,
+        preferencias: true,
+      },
     })
     return usuario
   } catch {
