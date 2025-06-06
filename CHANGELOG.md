@@ -1,4 +1,9 @@
 # Changelog
+## 0.2.25
+
+- Contenido de la pizarra guardado como JSON para evitar inyección.
+- Carga de datos compatible con entradas antiguas en HTML.
+
 ## 0.2.24
 
 - Sidebar global ahora puede ocultarse desde el navbar.
