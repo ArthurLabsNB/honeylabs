@@ -1,4 +1,9 @@
 # Changelog
+## 0.2.15
+
+- Nuevas rutas para generar y validar codigos de acceso.
+- Hook `usePermisos` para combinar permisos en frontend.
+- Endpoint `/api/admin/usuarios` para listar usuarios.
 
 ## 0.2.14
 
