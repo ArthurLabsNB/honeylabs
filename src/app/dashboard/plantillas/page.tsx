@@ -10,7 +10,7 @@ interface Plantilla {
 }
 
 export default function PlantillasPage() {
-  const allowed = ["admin", "institucional", "empresarial", "estandar"];
+  const allowed = ["admin", "institucional", "empresarial", "individual"];
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [plantillas, setPlantillas] = useState<Plantilla[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,7 +22,7 @@ export default function PlantillasPage() {
       .then((data) => {
         if (!data?.success) throw new Error();
         const rol = getMainRole(data.usuario)?.toLowerCase();
-        const tipo = (data.usuario.tipoCuenta ?? "estandar").toLowerCase();
+        const tipo = (data.usuario.tipoCuenta ?? "individual").toLowerCase();
         if (rol !== "admin" && rol !== "administrador" && !allowed.includes(tipo))
           throw new Error("No autorizado");
         setUsuario(data.usuario);

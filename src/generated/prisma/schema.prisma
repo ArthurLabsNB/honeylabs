@@ -40,7 +40,8 @@ model Usuario {
   correo        String   @unique // Correo único (login principal)
   contrasena    String // Contraseña hasheada (bcrypt)
   googleId      String? // ID de cuenta Google (opcional)
-  tipoCuenta    String // 'estandar', 'empresarial', 'institucional'
+  tipoCuenta    String // 'individual', 'empresarial', 'institucional', 'codigo', 'administrador'
+  esSuperAdmin  Boolean? @default(false)
   estado        String   @default("pendiente") // Estado: pendiente, activo, rechazado
   fechaRegistro DateTime @default(now()) // Fecha de creación de cuenta
 

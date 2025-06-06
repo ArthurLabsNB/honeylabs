@@ -72,6 +72,7 @@ export async function POST(req: NextRequest) {
       id: usuario.id,
       nombre: usuario.nombre,
       correo: usuario.correo,
+      esSuperAdmin: usuario.esSuperAdmin ?? false,
       tipoCuenta: usuario.tipoCuenta,
       entidad: usuario.entidad,
       roles,

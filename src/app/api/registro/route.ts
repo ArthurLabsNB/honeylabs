@@ -25,7 +25,7 @@ function obtenerExtension(nombre: string): string {
 async function obtenerIdPlanInicial(tipoCuenta: string): Promise<number | null> {
   let nombrePlan: string = '';
   if (tipoCuenta === 'empresarial' || tipoCuenta === 'institucional') nombrePlan = 'Empresarial';
-  else nombrePlan = 'Free'; // estandar, personal, etc.
+  else nombrePlan = 'Free'; // individual, personal, etc.
   const plan = await prisma.plan.findFirst({ where: { nombre: { equals: nombrePlan, mode: 'insensitive' } } });
   return plan?.id ?? null;
 }

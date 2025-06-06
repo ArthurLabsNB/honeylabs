@@ -27,21 +27,21 @@ const sidebarMenu = [
     label: "Dashboard",
     icon: <Home className="dashboard-sidebar-icon" data-oid="i99r0xl" />,
     path: "/dashboard",
-    allowed: ["admin", "institucional", "empresarial", "estandar"],
+    allowed: ["admin", "institucional", "empresarial", "individual"],
   },
   {
     key: "almacenes",
     label: "Almacenes",
     icon: <Boxes className="dashboard-sidebar-icon" data-oid="fhr-clw" />,
     path: "/dashboard/almacenes",
-    allowed: ["admin", "institucional", "empresarial", "estandar"],
+    allowed: ["admin", "institucional", "empresarial", "individual"],
   },
   {
     key: "alertas",
     label: "Alertas",
     icon: <Bell className="dashboard-sidebar-icon" data-oid=".ea6mni" />,
     path: "/dashboard/alertas",
-    allowed: ["admin", "institucional", "empresarial", "estandar"],
+    allowed: ["admin", "institucional", "empresarial", "individual"],
   },
   {
     key: "appcenter",
@@ -62,7 +62,7 @@ const sidebarMenu = [
     label: "Plantillas",
     icon: <FileStack className="dashboard-sidebar-icon" data-oid="0vwt0b-" />,
     path: "/dashboard/plantillas",
-    allowed: ["admin", "institucional", "empresarial", "estandar"],
+    allowed: ["admin", "institucional", "empresarial", "individual"],
   },
   {
     key: "reportes",
@@ -107,7 +107,7 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
   }
 
   const mainRole = getMainRole(usuario)?.toLowerCase();
-  const tipo = mainRole === "admin" ? "admin" : usuario.tipoCuenta ?? "estandar";
+  const tipo = mainRole === "admin" ? "admin" : usuario.tipoCuenta ?? "individual";
 
   const filteredMenu = sidebarMenu.filter((item) =>
     item.allowed.includes(tipo),
