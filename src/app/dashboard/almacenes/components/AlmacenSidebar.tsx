@@ -67,11 +67,7 @@ function MenuLink({
   );
 }
 
-export default function AlmacenSidebar({
-  mode = "list",
-}: {
-  mode?: "list" | "detail";
-}) {
+export default function AlmacenSidebar() {
   // Lee el estado del sidebar global para alinear el sidebar de almacenes
   const { sidebarGlobalCollapsed, sidebarGlobalVisible, fullscreen } = useDashboardUI();
   const { usuario } = useSession();
@@ -90,42 +86,7 @@ export default function AlmacenSidebar({
   // Debes usar la misma altura de tus navbars globales (ajusta según tus constantes)
   const navbarsHeight = `calc(var(--navbar-height, ${NAVBAR_HEIGHT}px) + var(--almacen-navbar-height, 56px))`;
 
-  // --- Sidebar modo detalle (un almacén específico) ---
-  if (mode === "detail") {
-    return (
-      <aside
-        className="
-          fixed z-30
-          w-64 h-[calc(100vh-120px)]
-          bg-[var(--dashboard-sidebar)]
-          border-r border-[var(--dashboard-border)]
-          shadow-sm
-          transition-all
-        "
-        style={{
-          left: sidebarLeft,
-          top: `calc(${navbarsHeight})`,
-          height: `calc(100vh - ${navbarsHeight})`,
-        }}
-      >
-        <nav className="flex flex-col gap-1">
-          <h3 className={sectionStyle}>Navegación</h3>
-          <MenuLink href="#" icon={Box} label="Inventario" />
-          <MenuLink href="#categorias" icon={Tag} label="Categorías" />
-          <MenuLink href="#ubicaciones" icon={Layers} label="Ubicaciones" />
-          <MenuLink href="#movimientos" icon={History} label="Movimientos" />
-          <MenuLink href="#reportes" icon={FileText} label="Reportes" />
-          <div className="my-2 border-t border-white/10"></div>
-          <h3 className={sectionStyle}>Configuración</h3>
-          <MenuLink href="#usuarios" icon={Users} label="Usuarios" />
-          <MenuLink href="#configuracion" icon={Settings} label="Ajustes" />
-          <MenuLink href="#ayuda" icon={BookOpen} label="Ayuda" />
-        </nav>
-      </aside>
-    );
-  }
-
-  // --- Sidebar modo lista (todos los almacenes) ---
+  // --- Sidebar de almacenes ---
   return (
     <aside
       className="
