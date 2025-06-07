@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.49
+
+- Nuevo archivo `README_ARCHIVOS.md` con análisis detallado del proyecto.
+
 ## 0.2.48
 
 - Corrección para que el menú de **Herramientas** se cierre sin reabrirse al volver a pulsar el botón.
