@@ -5,7 +5,7 @@ export const ContentSecurityPolicy = dev
     default-src 'self' http://localhost:*;
     script-src 'self' 'unsafe-inline' 'unsafe-eval' vitals.vercel-insights.com http://localhost:*;
     style-src 'self' 'unsafe-inline';
-    img-src 'self' http: https: data:;
+    img-src 'self' http: https: data: blob:;
     connect-src 'self' http://localhost:* ws://localhost:*;
     object-src 'none';
   `
@@ -13,7 +13,7 @@ export const ContentSecurityPolicy = dev
     default-src 'self';
     script-src 'self' 'unsafe-inline' vitals.vercel-insights.com;
     style-src 'self' 'unsafe-inline';
-    img-src 'self' https: data:;
+    img-src 'self' https: data: blob:;
     connect-src 'self';
     object-src 'none';
   `;

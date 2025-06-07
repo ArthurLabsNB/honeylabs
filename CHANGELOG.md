@@ -1,4 +1,9 @@
 # Changelog
+## 0.2.36
+
+- Navbar de almacenes permanece fijo debajo del navbar principal.
+- CSP actualizada para permitir imágenes `blob:`.
+
 ## 0.2.35
 
 - Navbar de almacenes se oculta al ver un almacén.
