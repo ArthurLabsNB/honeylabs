@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
 import type { Usuario } from "@/types/usuario";
+import useSession from "@/hooks/useSession";
 
 import PizarraCanvas from "./components/pizarra/PizarraCanvas";
 import dynamic from "next/dynamic";
@@ -24,11 +25,8 @@ interface WidgetMeta {
 }
 
 
-
 export default function DashboardPage() {
-  const [usuario, setUsuario] = useState<Usuario | null>(null);
-  const [loadingUsuario, setLoadingUsuario] = useState(true);
-  const [errorUsuario, setErrorUsuario] = useState("");
+  const { usuario, loading } = useSession();
 
   const [catalogo, setCatalogo] = useState<WidgetMeta[]>([]);
   const [widgets, setWidgets] = useState<string[]>([]);
@@ -37,18 +35,6 @@ export default function DashboardPage() {
   const [errores, setErrores] = useState<{ [key: string]: boolean }>({});
 
   const [showPizarra, setShowPizarra] = useState(false);
-
-  // 1. Obtener usuario logueado
-  useEffect(() => {
-    fetch("/api/login", { credentials: "include" })
-      .then(jsonOrNull)
-      .then((data) => {
-        if (!data?.success) throw new Error("Sesión no válida");
-        setUsuario(data.usuario);
-      })
-      .catch(() => setErrorUsuario("Debes iniciar sesión"))
-      .finally(() => setLoadingUsuario(false));
-  }, []);
 
   // 2. Cargar catálogo y componentes de widgets
   useEffect(() => {
@@ -172,11 +158,11 @@ export default function DashboardPage() {
   };
 
   // Loading/errores de sesión
-  if (loadingUsuario) return <div data-oid="_0v3rjj">Cargando usuario...</div>;
-  if (errorUsuario || !usuario)
+  if (loading) return <div data-oid="_0v3rjj">Cargando usuario...</div>;
+  if (!usuario)
     return (
       <div data-oid="k1:t11_">
-        {errorUsuario || "Sesión inválida"}{" "}
+        Sesión inválida{' '}
         <a href="/login" data-oid="si54zbn">
           Iniciar sesión
         </a>

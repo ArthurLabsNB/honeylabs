@@ -1,4 +1,9 @@
 # Changelog
+## 0.2.26
+
+- Páginas del dashboard ahora consultan la sesión con `useSession`.
+- Se eliminaron estados innecesarios de carga y error.
+
 ## 0.2.25
 
 - Componentes de almacenes ahora usan `useSession` para obtener al usuario.

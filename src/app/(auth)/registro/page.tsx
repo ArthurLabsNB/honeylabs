@@ -4,9 +4,11 @@ import { useState, useEffect, useRef } from "react";
 import { jsonOrNull } from "@lib/http";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import useSession from "@/hooks/useSession";
 
 export default function RegistroPage() {
   const router = useRouter();
+  const { usuario } = useSession();
   const [mensaje, setMensaje] = useState("");
   const [cargando, setCargando] = useState(false);
 
@@ -17,14 +19,10 @@ export default function RegistroPage() {
     nombreRef.current?.focus();
   }, []);
 
-  // Revisa sesión REAL (cookie): si ya tiene, redirige a /dashboard
+  // Revisa sesión: si ya tienes usuario, redirige a dashboard
   useEffect(() => {
-    fetch("/api/login", { credentials: "include" })
-      .then(jsonOrNull)
-      .then((data) => {
-        if (data?.success && data?.usuario) router.replace("/dashboard");
-      });
-  }, [router]);
+    if (usuario) router.replace("/dashboard");
+  }, [usuario, router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
