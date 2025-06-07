@@ -23,7 +23,6 @@ El código fuente se encuentra en `src/app` y se organiza por páginas y rutas:
 - `ayuda`, `acerca`, `contacto` – Información general y soporte al usuario.
 - `configuracion` – Preferencias y perfil del usuario.
 - `estado` – Consulta del estado del sistema.
-- `docs` – Ejemplos y minijuegos usados como pruebas.
 - `wiki` – Base de conocimiento en construcción.
 
 Dentro de `dashboard` existen subsecciones como `almacenes`, `admin`, `network` y `app-center` que amplían la funcionalidad. Cada una cuenta con su propio `layout.tsx` y componentes dedicados.
@@ -34,7 +33,6 @@ Dentro de `dashboard` existen subsecciones como `almacenes`, `admin`, `network` 
 - Sidebar dinámico con menús de herramientas.
 - Widgets configurables en el dashboard.
 - Módulo de plantillas y alertas.
-- Soporte para minijuegos en la sección de documentación.
 
 ## Funciones Planeadas
 - Control detallado de inventarios y operaciones en almacenes.
