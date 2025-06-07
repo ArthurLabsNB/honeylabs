@@ -8,6 +8,7 @@ import { DashboardUIProvider, useDashboardUI } from "./ui";
 import {
   SIDEBAR_GLOBAL_WIDTH,
   SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
+  NAVBAR_HEIGHT,
 } from "./constants";
 import { useRouter } from "next/navigation";
 
@@ -62,7 +63,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
   const marginLeft = !fullscreen && !isMobile ? sidebarWidth : 0;
 
   // Altura del navbar
-  const navbarHeight = '64px';
+  const navbarHeight = `${NAVBAR_HEIGHT}px`;
 
   return (
     <div
@@ -121,8 +122,8 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
             relative
             animate-fade-in
             transition-colors duration-300
-            min-h-[calc(100vh-64px)]
           "
+          style={{ minHeight: `calc(100vh - ${NAVBAR_HEIGHT}px)` }}
           data-oid="xvd._xa"
         >
           {children}

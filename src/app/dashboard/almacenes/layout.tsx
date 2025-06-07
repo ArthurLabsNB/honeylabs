@@ -81,7 +81,7 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
     : 0;
 
   // Alturas para los elementos fijos
-  const navbarHeight = '64px'; // Misma altura que el navbar del dashboard
+  const navbarHeight = `${NAVBAR_HEIGHT}px`; // Misma altura que el navbar del dashboard
   const almacenNavbarHeight = '50px'; // Altura del navbar de almacenes
   const totalNavbarHeight = `calc(${navbarHeight} + ${almacenNavbarHeight})`;
 
