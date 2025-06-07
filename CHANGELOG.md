@@ -1,11 +1,15 @@
 # Changelog
-## 0.2.29
+## 0.2.31
 
-- Se añadieron placeholders para inventario, operaciones, reportes, archivos, configuracion y ayuda.
+- Rediseño del sidebar de almacenes y corrección de la navegación para mantener visibles los navbars y sidebars.
 
 ## 0.2.30
 
 - Sidebar de almacenes simplificado con las nuevas categorías principales.
+
+## 0.2.29
+
+- Se añadieron placeholders para inventario, operaciones, reportes, archivos, configuracion y ayuda.
 
 ## 0.2.28
 

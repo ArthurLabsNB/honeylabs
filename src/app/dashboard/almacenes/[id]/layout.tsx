@@ -18,7 +18,6 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
     fullscreen,
     sidebarGlobalVisible = true,
     sidebarGlobalCollapsed,
-    toggleFullscreen,
   } = useDashboardUI();
   const router = useRouter();
   const [usuario, setUsuario] = useState<Usuario | null>(null);
@@ -43,12 +42,6 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
     cargarUsuario();
   }, []);
 
-  useEffect(() => {
-    toggleFullscreen();
-    return () => {
-      toggleFullscreen();
-    };
-  }, []);
 
   useEffect(() => {
     if (!loading && !usuario) {
