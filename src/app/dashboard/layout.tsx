@@ -9,6 +9,7 @@ import {
   SIDEBAR_GLOBAL_WIDTH,
   SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
   SIDEBAR_TOOLS_WIDTH,
+  SIDEBAR_GAP,
   NAVBAR_HEIGHT,
 } from "./constants";
 import { useRouter, usePathname } from "next/navigation";
@@ -64,6 +65,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
       : SIDEBAR_GLOBAL_WIDTH
     : 0;
   const toolsWidth = toolsSidebarVisible ? SIDEBAR_TOOLS_WIDTH : 0;
+  const gapWidth = toolsSidebarVisible ? SIDEBAR_GAP : 0;
 
   // Altura del navbar
   const navbarHeight = `${NAVBAR_HEIGHT}px`;
@@ -84,7 +86,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
             height: navbarHeight,
             paddingLeft:
               !fullscreen && sidebarGlobalVisible
-                ? sidebarWidth + toolsWidth
+                ? sidebarWidth + toolsWidth + gapWidth
                 : '0',
             transition: 'padding-left 0.3s ease'
           }}
@@ -119,12 +121,12 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
           style={{
             width: toolsWidth,
             minWidth: toolsWidth,
-            left: sidebarWidth,
+            left: sidebarWidth + gapWidth,
             top: 0,
             height: '100vh',
             paddingTop: isAlmacenDetail ? 0 : navbarHeight,
           }}
-          className="fixed z-40 border-r border-[var(--dashboard-border)] bg-[var(--dashboard-sidebar)] transition-all duration-300 dashboard-sidebar"
+          className="fixed z-40 dashboard-sidebar shadow-xl rounded-xl border border-[var(--dashboard-border)] bg-[var(--dashboard-sidebar)] transition-all duration-300"
           data-oid="tools-sidebar"
         >
           <ToolsSidebar usuario={usuario} />
@@ -136,7 +138,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
         className="flex flex-col min-h-screen transition-all duration-300 w-full"
         style={{
           paddingTop: isAlmacenDetail ? 0 : navbarHeight,
-          paddingLeft: !fullscreen ? sidebarWidth + toolsWidth : 0,
+          paddingLeft: !fullscreen ? sidebarWidth + toolsWidth + gapWidth : 0,
           transition: 'padding-left 0.3s ease',
         }}
         data-oid="ou.:qgb"
