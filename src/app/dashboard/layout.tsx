@@ -60,7 +60,6 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
       ? SIDEBAR_GLOBAL_COLLAPSED_WIDTH
       : SIDEBAR_GLOBAL_WIDTH
     : 0;
-  const marginLeft = !fullscreen && !isMobile ? sidebarWidth : 0;
 
   // Altura del navbar
   const navbarHeight = `${NAVBAR_HEIGHT}px`;
@@ -109,17 +108,17 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
 
       {/* CONTENIDO PRINCIPAL */}
       <div
-        className="flex flex-col min-h-screen transition-all duration-300"
+        className="flex flex-col min-h-screen transition-all duration-300 w-full"
         style={{
           paddingTop: isAlmacenDetail ? 0 : navbarHeight,
           paddingLeft: !fullscreen ? sidebarWidth : 0,
-          transition: 'padding-left 0.3s ease'
+          transition: 'padding-left 0.3s ease',
         }}
         data-oid="ou.:qgb"
       >
         <section
           className="
-            flex-1 p-4 sm:p-8
+            flex-1 p-4 sm:p-8 w-full
             bg-[var(--dashboard-bg)]
             text-[var(--dashboard-text)]
             relative

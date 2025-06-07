@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.41
+
+- Ajustes de layout para que el contenido ocupe el ancho disponible entre los sidebars.
+
 ## 0.2.40
 
 - Eliminado el navbar de almacenes.

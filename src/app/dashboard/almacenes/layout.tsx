@@ -84,6 +84,10 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
   const navbarHeight = isDetail ? '0px' : `${NAVBAR_HEIGHT}px`;
   const totalNavbarHeight = navbarHeight;
 
+  const contentPaddingLeft = !fullscreen
+    ? sidebarLeft + (!isDetail ? SIDEBAR_ALMACENES_WIDTH : 0)
+    : 0;
+
   return (
     <div
       className={`min-h-screen bg-[var(--dashboard-bg)] relative ${
@@ -95,12 +99,12 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
 
 
       <div
-        className="flex"
+        className="flex w-full"
         style={{
           paddingTop: totalNavbarHeight,
           minHeight: `calc(100vh - ${navbarHeight})`,
-          paddingLeft: !fullscreen ? sidebarLeft : 0,
-          transition: 'padding-left 0.3s ease'
+          paddingLeft: contentPaddingLeft,
+          transition: 'padding-left 0.3s ease',
         }}
         data-oid="3g2x0lf"
       >
@@ -134,9 +138,8 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
 
         {/* CONTENIDO PRINCIPAL */}
         <main
-          className="flex-1"
+          className="flex-1 w-full"
           style={{
-            marginLeft: !fullscreen && !isDetail ? `${SIDEBAR_ALMACENES_WIDTH}px` : 0,
             padding: "1.5rem",
             transition: "all 0.3s ease",
             minHeight: `calc(100vh - ${totalNavbarHeight})`,
