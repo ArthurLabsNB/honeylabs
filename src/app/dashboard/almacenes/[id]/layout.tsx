@@ -4,7 +4,6 @@ import { jsonOrNull } from "@lib/http";
 import { useDashboardUI } from "../../ui";
 import { useRouter } from "next/navigation";
 import AlmacenDetailNavbar from "../components/AlmacenDetailNavbar";
-import { NAVBAR_HEIGHT } from "../../constants";
 import type { Usuario } from "@/types/usuario";
 
 function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
@@ -72,7 +71,7 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
     >
       <main
         className="flex flex-col min-h-screen transition-all duration-300"
-        style={{ paddingTop: NAVBAR_HEIGHT + 56 }}
+        style={{ paddingTop: 56 }}
         data-oid="9d4tqvn"
       >
         <AlmacenDetailNavbar />
