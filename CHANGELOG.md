@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.37
+
+- Corrección de la posición del navbar de almacenes para que quede debajo del dashboard y alineado con los sidebars.
+
 ## 0.2.36
 
 - Navbar de almacenes permanece fijo debajo del navbar principal.
