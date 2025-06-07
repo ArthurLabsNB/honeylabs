@@ -91,13 +91,15 @@ export default function AlmacenSidebar() {
     <aside
       className="
         fixed z-30
-        w-64 h-screen
+        h-screen
         bg-[var(--dashboard-sidebar)]
         border-r border-[var(--dashboard-border)]
         shadow-sm
         transition-all
       "
       style={{
+        width: SIDEBAR_ALMACENES_WIDTH,
+        minWidth: SIDEBAR_ALMACENES_WIDTH,
         left: sidebarLeft,
         top: 0,
         height: '100vh',
