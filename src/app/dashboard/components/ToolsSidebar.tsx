@@ -154,7 +154,7 @@ export default function ToolsSidebar({ usuario }: { usuario: Usuario }) {
       className="tools-sidebar flex flex-col h-full"
       data-oid="tools"
     >
-      <div className="p-4 border-b border-[var(--dashboard-border)] flex items-center gap-2">
+      <div className="px-4 pt-0 pb-4 border-b border-[var(--dashboard-border)] flex items-center gap-2">
         <SearchIcon className="w-4 h-4 text-[var(--dashboard-accent)]" />
         <input
           autoFocus

@@ -1,4 +1,10 @@
 # Changelog
+## 0.2.48
+
+- Corrección para que el menú de **Herramientas** se cierre sin reabrirse al volver a pulsar el botón.
+- Ancho del sidebar de herramientas reducido ligeramente.
+- Eliminado el espacio superior del buscador y fondo con transparencia y blur.
+
 ## 0.2.47
 
 - El botón de **Herramientas** ahora cierra el menú al pulsarlo nuevamente.
