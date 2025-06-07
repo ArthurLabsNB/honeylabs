@@ -1,153 +1,59 @@
 "use client";
-import {
-  Plus,
-  Search,
-  LayoutList,
-  LayoutGrid,
-  ListTree,
-  Star,
-  ArrowLeft,
-  Menu
-} from "lucide-react";
+import { Plus } from "lucide-react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAlmacenesUI } from "../ui";
 import useSession from "@/hooks/useSession";
-import { useState } from "react";
-import { getMainRole, hasManagePerms } from "@lib/permisos";
+import { hasManagePerms } from "@lib/permisos";
 
-
-interface AlmacenNavbarProps {
-  mode?: 'list' | 'detail';
-  nombre?: string;
-}
-
-export default function AlmacenNavbar({ mode = 'list', nombre }: AlmacenNavbarProps) {
-  const router = useRouter();
-  const { view, setView, filter, setFilter, onCreate } = useAlmacenesUI();
+export default function AlmacenNavbar() {
   const { usuario } = useSession();
-  const [busqueda, setBusqueda] = useState("");
-  const [menuOpen, setMenuOpen] = useState(false);
+  const router = useRouter();
+  const { onCreate } = useAlmacenesUI();
+  const [open, setOpen] = useState(false);
 
-  // Permisos de gestión
-  const allowManage = usuario ? hasManagePerms(usuario) : false;
+  const allowCreate = usuario ? hasManagePerms(usuario) : false;
 
-  if (mode === "detail") {
-    return (
-      <header className="flex items-center justify-between h-full px-6 w-full">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => router.push("/dashboard/almacenes")}
-            className="p-2 rounded-lg text-gray-400 hover:bg-white/10"
-            title="Volver"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <h1 className="text-lg font-semibold text-white">
-            {nombre || "Almacén"}
-          </h1>
-        </div>
-      </header>
-    );
-  }
+  const conectar = () => {
+    const codigo = prompt("Código de almacén:");
+    if (codigo) {
+      // Placeholder de conexión
+      alert(`Conectar a almacén ${codigo}`);
+    }
+  };
 
-  // Modo lista (default)
+  const crear = () => {
+    if (onCreate) return onCreate("", "");
+    router.push("/dashboard/almacenes/nuevo");
+  };
+
   return (
-    <header className="flex items-center justify-between h-full w-full px-4 md:px-6">
-      <div className="flex items-center gap-4 md:gap-6">
-        <h1 className="text-lg font-semibold text-white">Almacenes</h1>
-
-        <div className="hidden md:flex items-center gap-1 bg-white/5 rounded-lg p-1">
-          <button
-            onClick={() => setView("grid")}
-            className={`p-2 rounded-md transition-colors ${view === "grid" ? "bg-white/10 text-white" : "text-gray-400 hover:bg-white/5"}`}
-            title="Vista de cuadrícula"
-          >
-            <LayoutGrid className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => setView("list")}
-            className={`p-2 rounded-md transition-colors ${view === "list" ? "bg-white/10 text-white" : "text-gray-400 hover:bg-white/5"}`}
-            title="Vista de lista"
-          >
-            <LayoutList className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => setView("tree")}
-            className={`p-2 rounded-md transition-colors ${view === "tree" ? "bg-white/10 text-white" : "text-gray-400 hover:bg-white/5"}`}
-            title="Vista de árbol"
-          >
-            <ListTree className="w-4 h-4" />
-          </button>
-        </div>
-
-        <div className="hidden md:flex items-center gap-2 ml-3">
-          <button
-            onClick={() => setFilter("todos")}
-            className={`px-3 py-1.5 text-sm rounded-md transition-colors ${filter === "todos" ? "bg-white/10 text-white" : "text-gray-400 hover:bg-white/5"}`}
-          >
-            Todos
-          </button>
-          <button
-            onClick={() => setFilter("favoritos")}
-            className={`p-2 rounded-md transition-colors ${filter === "favoritos" ? "text-yellow-400 bg-white/5" : "text-gray-400 hover:bg-white/5"}`}
-            title="Mostrar solo favoritos"
-          >
-            <Star className="w-4 h-4" fill={filter === "favoritos" ? "currentColor" : "none"} />
-          </button>
-        </div>
-
-        <div className="md:hidden relative">
-          <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 text-gray-400 hover:bg-white/10 rounded-lg">
-            <Menu className="w-5 h-5" />
-          </button>
-          {menuOpen && (
-            <div className="absolute left-0 mt-2 bg-[var(--dashboard-sidebar)] border border-[var(--dashboard-border)] rounded-md p-2 shadow-lg z-50 flex flex-col gap-2">
-              <div className="flex gap-1">
-                <button onClick={() => setView("grid") && setMenuOpen(false)} className={`p-2 rounded-md transition-colors ${view === "grid" ? "bg-white/10 text-white" : "text-gray-400 hover:bg-white/5"}`}>
-                  <LayoutGrid className="w-4 h-4" />
-                </button>
-                <button onClick={() => setView("list") && setMenuOpen(false)} className={`p-2 rounded-md transition-colors ${view === "list" ? "bg-white/10 text-white" : "text-gray-400 hover:bg-white/5"}`}>
-                  <LayoutList className="w-4 h-4" />
-                </button>
-                <button onClick={() => setView("tree") && setMenuOpen(false)} className={`p-2 rounded-md transition-colors ${view === "tree" ? "bg-white/10 text-white" : "text-gray-400 hover:bg-white/5"}`}>
-                  <ListTree className="w-4 h-4" />
-                </button>
-              </div>
-              <div className="flex gap-1">
-                <button onClick={() => {setFilter("todos"); setMenuOpen(false);}} className={`px-3 py-1.5 text-sm rounded-md transition-colors ${filter === "todos" ? "bg-white/10 text-white" : "text-gray-400 hover:bg-white/5"}`}>Todos</button>
-                <button onClick={() => {setFilter("favoritos"); setMenuOpen(false);}} className={`p-2 rounded-md transition-colors ${filter === "favoritos" ? "text-yellow-400 bg-white/5" : "text-gray-400 hover:bg-white/5"}`}>
-                  <Star className="w-4 h-4" fill={filter === "favoritos" ? "currentColor" : "none"} />
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="flex items-center gap-3">
-        <div className="relative w-52 sm:w-64">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--dashboard-muted)]" />
-          <input
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
-            className="dashboard-input pl-8 pr-2"
-            placeholder="Buscar almacén..."
-          />
-        </div>
-
-        {allowManage && (
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              if (onCreate) onCreate("", "");
-            }}
-            className="dashboard-btn flex items-center gap-2 h-10 text-base px-4"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Crear almacén</span>
-          </button>
+    <header className="flex items-center justify-between h-full w-full px-4">
+      <div className="relative">
+        <button
+          onClick={() => setOpen(!open)}
+          className="dashboard-btn flex items-center gap-2 h-9 px-3"
+        >
+          <Plus className="w-4 h-4" />
+          <span>Almacén</span>
+        </button>
+        {open && (
+          <div className="absolute left-0 mt-2 bg-[var(--dashboard-sidebar)] border border-[var(--dashboard-border)] rounded-md shadow-lg flex flex-col z-50">
+            {allowCreate && (
+              <button onClick={crear} className="px-4 py-2 text-left hover:bg-white/5">
+                Crear nuevo
+              </button>
+            )}
+            <button
+              onClick={conectar}
+              className="px-4 py-2 text-left hover:bg-white/5 border-t border-[var(--dashboard-border)]"
+            >
+              Conectar con código
+            </button>
+          </div>
         )}
       </div>
+      <h1 className="text-lg font-semibold">Almacenes</h1>
     </header>
   );
 }
