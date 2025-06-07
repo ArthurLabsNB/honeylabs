@@ -22,7 +22,7 @@ import {
 // El tipo mínimo del usuario (ajusta según tu modelo)
 
 const menuItemStyle =
-  "flex items-center gap-3 px-4 py-2 text-[15px] rounded-lg transition-all duration-150 text-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--dashboard-accent)]";
+  "flex items-center gap-2 px-3 py-2 text-[14px] rounded-lg transition-all duration-150 text-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--dashboard-accent)]";
 
 const sidebarMenu = [
   {

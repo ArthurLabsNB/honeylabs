@@ -110,7 +110,7 @@ html, body {
   @apply shadow-2xl border-r border-[var(--dashboard-border)] transition-all duration-200;
 }
 .dashboard-sidebar-item {
-  @apply flex items-center px-4 py-3 rounded-lg font-medium transition-all cursor-pointer relative select-none;
+  @apply flex items-center px-3 py-2 rounded-lg font-medium transition-all cursor-pointer relative select-none;
   color: var(--dashboard-text);
   border-left: 4px solid transparent;
   background: transparent;
@@ -134,7 +134,7 @@ html, body {
   @apply ml-1;
 }
 .dashboard-sidebar-icon {
-  @apply w-6 h-6 mr-2;
+  @apply w-5 h-5 mr-2;
   color: var(--dashboard-accent);
   opacity: 0.93;
 }
@@ -146,17 +146,17 @@ html, body {
 
 /* --------- TOOLS SIDEBAR --------- */
 .tools-sidebar {
-  @apply bg-white text-gray-700 shadow-xl border border-gray-200 rounded-xl p-4;
+  @apply bg-[var(--dashboard-sidebar)] text-[var(--dashboard-text)] shadow-xl border border-[var(--dashboard-border)] rounded-xl p-4;
 }
 .tool-item {
   @apply flex flex-col items-center justify-center gap-1 py-2 w-14 h-14 rounded-full transition-colors;
-  @apply hover:bg-gray-200 text-gray-700;
+  @apply hover:bg-white/10 text-[var(--dashboard-text)];
 }
 .tool-item.active {
-  @apply bg-blue-200 text-blue-900;
+  @apply bg-[var(--dashboard-accent)]/20 text-white;
 }
 .tool-icon {
-  @apply w-6 h-6;
+  @apply w-5 h-5 text-[var(--dashboard-accent)];
 }
 
 /* --------- NAVBAR --------- */

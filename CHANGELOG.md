@@ -1,4 +1,10 @@
 # Changelog
+## 0.2.46
+
+- Colores y estilo del sidebar de herramientas ahora coinciden con el dashboard.
+- Se agregó separación entre ambos sidebars para un efecto flotante.
+- Botones del sidebar principal reducidos y alineados al texto.
+
 ## 0.2.45
 
 - Ajustados los tamaños de iconos y botones en ambos sidebars.
