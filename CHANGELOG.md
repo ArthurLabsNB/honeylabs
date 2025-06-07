@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.42
+
+- Corrección de importación para `SIDEBAR_ALMACENES_WIDTH` en `AlmacenSidebar`.
+
 ## 0.2.41
 
 - Ajustes de layout para que el contenido ocupe el ancho disponible entre los sidebars.
