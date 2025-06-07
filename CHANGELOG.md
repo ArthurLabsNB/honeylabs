@@ -1,4 +1,12 @@
 # Changelog
+## 0.2.44
+
+- Botones de Almacenes integrados en el menú de herramientas.
+- Eliminado el sidebar de almacenes.
+- Sidebar principal usa el estilo de almacenes.
+- Botón de herramientas renombrado.
+- Sidebar de herramientas flota y se cierra al hacer clic fuera.
+
 ## 0.2.43
 
 - Nuevo botón **Herramientas e Integraciones** con buscador y submenú para alertas, plantillas, network, app center y billing.
