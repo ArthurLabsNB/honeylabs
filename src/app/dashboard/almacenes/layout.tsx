@@ -111,7 +111,7 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
           }}
           data-oid="pyvpx.g"
         >
-          {usuario && <AlmacenNavbar mode="list" />}
+          {usuario && <AlmacenNavbar />}
         </div>
       )}
 

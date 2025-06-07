@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.38
+
+- Navbar de almacenes simplificado con botón de creación y conexión.
+
 ## 0.2.37
 
 - Corrección de la posición del navbar de almacenes para que quede debajo del dashboard y alineado con los sidebars.
