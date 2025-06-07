@@ -5,7 +5,6 @@ import { jsonOrNull } from "@lib/http";
 import type { Usuario } from "@/types/usuario";
 import useSession from "@/hooks/useSession";
 
-import PizarraCanvas from "./components/pizarra/PizarraCanvas";
 import dynamic from "next/dynamic";
 import GridLayout, { Layout } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
@@ -34,7 +33,6 @@ export default function DashboardPage() {
   const [componentes, setComponentes] = useState<{ [key: string]: any }>({});
   const [errores, setErrores] = useState<{ [key: string]: boolean }>({});
 
-  const [showPizarra, setShowPizarra] = useState(false);
 
   // 2. Cargar catálogo y componentes de widgets
   useEffect(() => {
@@ -195,13 +193,6 @@ export default function DashboardPage() {
                 </option>
               ))}
           </select>
-          <button
-            onClick={() => setShowPizarra(true)}
-            className="dashboard-btn"
-            data-oid="icz5kuh"
-          >
-            Abrir Pizarra
-          </button>
         </div>
       </div>
 
@@ -279,12 +270,6 @@ export default function DashboardPage() {
           );
         })}
       </GridLayout>
-      {showPizarra && (
-        <PizarraCanvas
-          onClose={() => setShowPizarra(false)}
-          data-oid="2py4:yp"
-        />
-      )}
     </div>
   );
 }
