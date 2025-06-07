@@ -20,6 +20,7 @@ import {
   SIDEBAR_GLOBAL_WIDTH,
   SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
   NAVBAR_HEIGHT,
+  ALMACEN_NAVBAR_HEIGHT,
 } from "../../constants";
 import useSession from "@/hooks/useSession";
 import { hasManagePerms } from "@lib/permisos";
@@ -84,7 +85,7 @@ export default function AlmacenSidebar() {
       : 0;
 
   // Debes usar la misma altura de tus navbars globales (ajusta según tus constantes)
-  const navbarsHeight = `calc(var(--navbar-height, ${NAVBAR_HEIGHT}px) + var(--almacen-navbar-height, 56px))`;
+  const navbarsHeight = `calc(var(--navbar-height, ${NAVBAR_HEIGHT}px) + var(--almacen-navbar-height, ${ALMACEN_NAVBAR_HEIGHT}px))`;
 
   // --- Sidebar de almacenes ---
   return (
