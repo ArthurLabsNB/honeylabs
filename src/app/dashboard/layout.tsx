@@ -84,7 +84,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
             height: navbarHeight,
             paddingLeft:
               !fullscreen && sidebarGlobalVisible
-                ? sidebarWidth
+                ? sidebarWidth + toolsWidth
                 : '0',
             transition: 'padding-left 0.3s ease'
           }}
@@ -136,7 +136,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
         className="flex flex-col min-h-screen transition-all duration-300 w-full"
         style={{
           paddingTop: isAlmacenDetail ? 0 : navbarHeight,
-          paddingLeft: !fullscreen ? sidebarWidth : 0,
+          paddingLeft: !fullscreen ? sidebarWidth + toolsWidth : 0,
           transition: 'padding-left 0.3s ease',
         }}
         data-oid="ou.:qgb"

@@ -134,7 +134,7 @@ html, body {
   @apply ml-1;
 }
 .dashboard-sidebar-icon {
-  @apply w-5 h-5 mr-2;
+  @apply w-6 h-6 mr-2;
   color: var(--dashboard-accent);
   opacity: 0.93;
 }
@@ -142,6 +142,21 @@ html, body {
   @apply border-t border-[var(--dashboard-border)] mt-auto p-5 flex flex-col items-center;
   color: var(--dashboard-accent);
   background: var(--dashboard-sidebar);
+}
+
+/* --------- TOOLS SIDEBAR --------- */
+.tools-sidebar {
+  @apply bg-white text-gray-700 shadow-xl border border-gray-200 rounded-xl p-4;
+}
+.tool-item {
+  @apply flex flex-col items-center justify-center gap-1 py-2 w-14 h-14 rounded-full transition-colors;
+  @apply hover:bg-gray-200 text-gray-700;
+}
+.tool-item.active {
+  @apply bg-blue-200 text-blue-900;
+}
+.tool-icon {
+  @apply w-6 h-6;
 }
 
 /* --------- NAVBAR --------- */

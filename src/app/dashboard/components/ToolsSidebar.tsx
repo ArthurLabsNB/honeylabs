@@ -151,10 +151,10 @@ export default function ToolsSidebar({ usuario }: { usuario: Usuario }) {
   return (
     <aside
       ref={ref}
-      className="dashboard-sidebar flex flex-col h-full"
+      className="tools-sidebar flex flex-col h-full"
       data-oid="tools"
     >
-      <div className="p-4 border-b border-[var(--dashboard-border)] flex items-center gap-2">
+      <div className="p-4 border-b border-gray-200 flex items-center gap-2">
         <SearchIcon className="w-4 h-4 text-[var(--dashboard-accent)]" />
         <input
           autoFocus
@@ -170,7 +170,7 @@ export default function ToolsSidebar({ usuario }: { usuario: Usuario }) {
           Cerrar
         </button>
       </div>
-      <nav className="flex-1 overflow-y-auto p-2 flex flex-col gap-1">
+      <nav className="flex-1 overflow-y-auto py-6 flex flex-col items-center gap-4">
         {filtered.map((item) => {
           const active =
             pathname === item.path || pathname.startsWith(`${item.path}/`);
@@ -181,12 +181,12 @@ export default function ToolsSidebar({ usuario }: { usuario: Usuario }) {
                 router.push(item.path);
                 toggleToolsSidebar(false);
               }}
-              className={`dashboard-sidebar-item relative ${active ? "active" : ""}`}
+              className={`tool-item ${active ? "active" : ""}`}
             >
-              <div className="flex items-center justify-center w-10 h-10">
+              <div className="tool-icon flex items-center justify-center">
                 {item.icon}
               </div>
-              <span>{item.label}</span>
+              <span className="text-xs">{item.label}</span>
             </button>
           );
         })}
