@@ -3,6 +3,10 @@
 
 - Se añadieron placeholders para inventario, operaciones, reportes, archivos, configuracion y ayuda.
 
+## 0.2.30
+
+- Sidebar de almacenes simplificado con las nuevas categorías principales.
+
 ## 0.2.28
 
 - Eliminada la pizarra y sus controles.

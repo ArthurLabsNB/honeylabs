@@ -2,11 +2,7 @@
 
 import {
   Home,
-  Star,
   History,
-  ArrowDownCircle,
-  ArrowUpCircle,
-  Move,
   Box,
   FileText,
   Folder,
@@ -19,7 +15,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 import { useDashboardUI } from "../../ui"; // para saber si sidebar global está colapsado
 import {
   SIDEBAR_GLOBAL_WIDTH,
@@ -27,7 +22,7 @@ import {
   NAVBAR_HEIGHT,
 } from "../../constants";
 import useSession from "@/hooks/useSession";
-import { getMainRole, hasManagePerms } from "@lib/permisos";
+import { hasManagePerms } from "@lib/permisos";
 
 // --- Estilos base ---
 const sectionStyle =
@@ -149,12 +144,8 @@ export default function AlmacenSidebar({
     >
       <nav className="flex flex-col gap-1">
         <MenuLink href="/dashboard/almacenes" icon={Home} label="Inicio" />
-        <MenuLink href="/dashboard/almacenes/favoritos" icon={Star} label="Favoritos" />
-        <MenuLink href="/dashboard/almacenes/movimientos" icon={History} label="Movimientos" />
-        <MenuLink href="/dashboard/almacenes/entradas" icon={ArrowDownCircle} label="Entradas" />
-        <MenuLink href="/dashboard/almacenes/salidas" icon={ArrowUpCircle} label="Salidas" />
-        <MenuLink href="/dashboard/almacenes/transferencias" icon={Move} label="Transferencias" />
-        <MenuLink href="/dashboard/almacenes/inventario" icon={Box} label="Inventario global" />
+        <MenuLink href="/dashboard/almacenes/inventario" icon={Box} label="Inventario" />
+        <MenuLink href="/dashboard/almacenes/operaciones" icon={History} label="Operaciones" />
         <MenuLink href="/dashboard/almacenes/reportes" icon={FileText} label="Reportes" />
         <MenuLink href="/dashboard/almacenes/archivos" icon={Folder} label="Archivos" />
         {allowCreate && (
