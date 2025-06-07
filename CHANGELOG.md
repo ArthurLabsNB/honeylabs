@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.27
+
+- NAVBAR_HEIGHT se exporta y aplica en todos los layouts del dashboard para mantener una altura consistente.
+
 ## 0.2.26
 
 - Páginas del dashboard ahora consultan la sesión con `useSession`.
