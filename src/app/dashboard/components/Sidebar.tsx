@@ -150,7 +150,7 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
             : false;
           const handleClick = () => {
             if (item.action) {
-              toggleToolsSidebar(!toolsSidebarVisible);
+              toggleToolsSidebar(toolsSidebarVisible ? false : true);
             } else if (item.path) {
               router.push(item.path);
             }

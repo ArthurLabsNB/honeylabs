@@ -146,7 +146,7 @@ html, body {
 
 /* --------- TOOLS SIDEBAR --------- */
 .tools-sidebar {
-  @apply bg-[var(--dashboard-sidebar)] text-[var(--dashboard-text)] shadow-xl border border-[var(--dashboard-border)] rounded-xl p-4;
+  @apply text-[var(--dashboard-text)] shadow-xl border border-[var(--dashboard-border)] rounded-xl px-4 pb-4 pt-2 backdrop-blur-lg bg-[var(--dashboard-sidebar)/80];
 }
 .tool-item {
   @apply flex flex-col items-center justify-center gap-1 py-2 w-14 h-14 rounded-full transition-colors;
