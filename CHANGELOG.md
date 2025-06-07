@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.43
+
+- Nuevo botón **Herramientas e Integraciones** con buscador y submenú para alertas, plantillas, network, app center y billing.
+
 ## 0.2.42
 
 - Corrección de importación para `SIDEBAR_ALMACENES_WIDTH` en `AlmacenSidebar`.

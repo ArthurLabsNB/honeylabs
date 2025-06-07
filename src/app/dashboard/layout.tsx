@@ -2,11 +2,13 @@
 import React, { useEffect, useState } from "react";
 import useSession from "@/hooks/useSession";
 import Sidebar from "./components/Sidebar";
+import ToolsSidebar from "./components/ToolsSidebar";
 import NavbarDashboard from "./components/NavbarDashboard";
 import { DashboardUIProvider, useDashboardUI } from "./ui";
 import {
   SIDEBAR_GLOBAL_WIDTH,
   SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
+  SIDEBAR_TOOLS_WIDTH,
   NAVBAR_HEIGHT,
 } from "./constants";
 import { useRouter, usePathname } from "next/navigation";
@@ -17,6 +19,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
     fullscreen,
     sidebarGlobalVisible = true,
     sidebarGlobalCollapsed,
+    toolsSidebarVisible,
   } = useDashboardUI();
   const router = useRouter();
   const pathname = usePathname();
@@ -60,6 +63,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
       ? SIDEBAR_GLOBAL_COLLAPSED_WIDTH
       : SIDEBAR_GLOBAL_WIDTH
     : 0;
+  const toolsWidth = toolsSidebarVisible ? SIDEBAR_TOOLS_WIDTH : 0;
 
   // Altura del navbar
   const navbarHeight = `${NAVBAR_HEIGHT}px`;
@@ -78,7 +82,10 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
           className="fixed top-0 left-0 right-0 z-40 bg-[var(--dashboard-navbar)] border-b border-[var(--dashboard-border)]"
           style={{
             height: navbarHeight,
-            paddingLeft: !fullscreen && sidebarGlobalVisible ? sidebarWidth : '0',
+            paddingLeft:
+              !fullscreen && sidebarGlobalVisible
+                ? sidebarWidth + toolsWidth
+                : '0',
             transition: 'padding-left 0.3s ease'
           }}
           data-oid="taw.mzt"
@@ -106,12 +113,30 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
         </div>
       )}
 
+      {/* --- SIDEBAR TOOLS --- */}
+      {!fullscreen && toolsSidebarVisible && (
+        <div
+          style={{
+            width: toolsWidth,
+            minWidth: toolsWidth,
+            left: sidebarWidth,
+            top: 0,
+            height: '100vh',
+            paddingTop: isAlmacenDetail ? 0 : navbarHeight,
+          }}
+          className="fixed z-40 border-r border-[var(--dashboard-border)] bg-[var(--dashboard-sidebar)] transition-all duration-300 dashboard-sidebar"
+          data-oid="tools-sidebar"
+        >
+          <ToolsSidebar usuario={usuario} />
+        </div>
+      )}
+
       {/* CONTENIDO PRINCIPAL */}
       <div
         className="flex flex-col min-h-screen transition-all duration-300 w-full"
         style={{
           paddingTop: isAlmacenDetail ? 0 : navbarHeight,
-          paddingLeft: !fullscreen ? sidebarWidth : 0,
+          paddingLeft: !fullscreen ? sidebarWidth + toolsWidth : 0,
           transition: 'padding-left 0.3s ease',
         }}
         data-oid="ou.:qgb"
