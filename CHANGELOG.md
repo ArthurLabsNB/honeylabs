@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.29
+
+- Se añadieron placeholders para inventario, operaciones, reportes, archivos, configuracion y ayuda.
+
 ## 0.2.28
 
 - Eliminada la pizarra y sus controles.
