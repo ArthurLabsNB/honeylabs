@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.39
+
+- Posicionamiento del navbar de almacenes alineado con el sidebar y altura expuesta como variable CSS.
+
 ## 0.2.38
 
 - Navbar de almacenes simplificado con botón de creación y conexión.

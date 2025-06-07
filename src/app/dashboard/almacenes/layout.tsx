@@ -7,6 +7,7 @@ import {
   SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
   SIDEBAR_ALMACENES_WIDTH,
   NAVBAR_HEIGHT,
+  ALMACEN_NAVBAR_HEIGHT,
 } from "../constants";
 import { useRouter, usePathname } from "next/navigation";
 import AlmacenNavbar from "./components/AlmacenNavbar";
@@ -83,7 +84,7 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
 
   // Alturas para los elementos fijos
   const navbarHeight = isDetail ? '0px' : `${NAVBAR_HEIGHT}px`; // Altura del navbar del dashboard cuando aplica
-  const almacenNavbarHeight = '50px'; // Altura del navbar de almacenes
+  const almacenNavbarHeight = `${ALMACEN_NAVBAR_HEIGHT}px`; // Altura del navbar de almacenes
   const totalNavbarHeight = isDetail
     ? '0px'
     : `calc(${navbarHeight} + ${almacenNavbarHeight})`;
@@ -93,6 +94,10 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
       className={`min-h-screen bg-[var(--dashboard-bg)] relative ${
         fullscreen ? "dashboard-full" : ""
       }`}
+      style={{
+        // Exponer altura del navbar de almacenes como variable CSS
+        ["--almacen-navbar-height" as any]: `${ALMACEN_NAVBAR_HEIGHT}px`,
+      } as React.CSSProperties}
       data-oid="6fwyq0q"
     >
       {/* --- NAVBAR ALMACENES --- */}
