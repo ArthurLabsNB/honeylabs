@@ -70,12 +70,14 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
 
   if (!usuario) return null;
 
-  const globalWidth = sidebarGlobalVisible
-    ? sidebarGlobalCollapsed
-      ? SIDEBAR_GLOBAL_COLLAPSED_WIDTH
-      : SIDEBAR_GLOBAL_WIDTH
-    : 0;
-  const sidebarLeft = globalWidth;
+  const globalWidth = fullscreen
+    ? 0
+    : sidebarGlobalVisible
+      ? sidebarGlobalCollapsed
+        ? SIDEBAR_GLOBAL_COLLAPSED_WIDTH
+        : SIDEBAR_GLOBAL_WIDTH
+      : 0;
+  const sidebarLeft = fullscreen ? 0 : globalWidth;
   const mainMarginLeft = !fullscreen
     ? globalWidth + SIDEBAR_ALMACENES_WIDTH
     : 0;

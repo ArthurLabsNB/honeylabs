@@ -1,4 +1,10 @@
 # Changelog
+## 0.2.28
+
+- Eliminada la pizarra y sus controles.
+- Removido el modo de pantalla completa y la barra lateral asociada.
+- Ajustes de estilo en las vistas de almacén para evitar desalineaciones.
+
 ## 0.2.27
 
 - NAVBAR_HEIGHT se exporta y aplica en todos los layouts del dashboard para mantener una altura consistente.

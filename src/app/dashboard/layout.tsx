@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import useSession from "@/hooks/useSession";
 import Sidebar from "./components/Sidebar";
 import NavbarDashboard from "./components/NavbarDashboard";
-import WidgetToolbar from "./components/WidgetToolbar";
 import { DashboardUIProvider, useDashboardUI } from "./ui";
 import {
   SIDEBAR_GLOBAL_WIDTH,
@@ -128,7 +127,6 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
         >
           {children}
         </section>
-        <WidgetToolbar data-oid="6pjz7o6" />
       </div>
     </div>
   );

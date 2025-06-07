@@ -35,12 +35,7 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
   const [buscadorFocus, setBuscadorFocus] = useState(false);
   const [resultados, setResultados] = useState<typeof MOCK_RESULTS>([]);
   const navRef = useRef<HTMLDivElement>(null);
-  const {
-    fullscreen,
-    toggleFullscreen,
-    toggleSidebarVisible,
-    sidebarGlobalVisible,
-  } = useDashboardUI();
+  const { toggleSidebarVisible, sidebarGlobalVisible } = useDashboardUI();
 
   useEffect(() => {
     if (buscador.trim().length === 0) {
@@ -232,20 +227,6 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
           data-oid="tz:4t05"
         >
           <AppWindow data-oid="ddchwni" />
-        </button>
-        <button
-          className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
-          onClick={toggleFullscreen}
-          title={
-            fullscreen ? "Salir de pantalla completa" : "Pantalla completa"
-          }
-          data-oid="ds4ce8:"
-        >
-          {fullscreen ? (
-            <Minimize data-oid="7l3ay7_" />
-          ) : (
-            <Maximize data-oid="85ou31z" />
-          )}
         </button>
         <button
           className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"

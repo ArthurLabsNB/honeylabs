@@ -74,11 +74,13 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
 
   if (!usuario) return null;
 
-  const globalWidth = sidebarGlobalVisible
-    ? sidebarGlobalCollapsed
-      ? SIDEBAR_GLOBAL_COLLAPSED_WIDTH
-      : SIDEBAR_GLOBAL_WIDTH
-    : 0;
+  const globalWidth = fullscreen
+    ? 0
+    : sidebarGlobalVisible
+      ? sidebarGlobalCollapsed
+        ? SIDEBAR_GLOBAL_COLLAPSED_WIDTH
+        : SIDEBAR_GLOBAL_WIDTH
+      : 0;
   const mainMarginLeft = fullscreen ? SIDEBAR_ALMACENES_WIDTH : globalWidth + SIDEBAR_ALMACENES_WIDTH;
 
   return (
@@ -99,7 +101,7 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
           style={{
             width: SIDEBAR_ALMACENES_WIDTH,
             minWidth: SIDEBAR_ALMACENES_WIDTH,
-            left: globalWidth,
+            left: fullscreen ? 0 : globalWidth,
             top: NAVBAR_HEIGHT + 56,
             height: `calc(100vh - ${NAVBAR_HEIGHT + 56}px)`,
           }}
