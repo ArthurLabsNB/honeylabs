@@ -143,7 +143,7 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
             data-oid="ea00760"
           >
             <div className="space-y-1">
-              <AlmacenSidebar mode={pathname !== "/dashboard/almacenes" ? 'detail' : 'list'} />
+              <AlmacenSidebar />
             </div>
           </aside>
         )}

@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.33
+
+- Unificado el sidebar de almacenes eliminando el modo "detalle".
+
 ## 0.2.32
 
 - Eliminado el sidebar duplicado en las páginas de detalle de almacenes.
