@@ -1,4 +1,9 @@
 # Changelog
+## 0.2.35
+
+- Navbar de almacenes se oculta al ver un almacén.
+- Solo se muestra la barra del almacén con botón de retorno.
+
 ## 0.2.34
 
 - Los navbars y sidebars del dashboard y de almacenes se ocultan al entrar a un almacén.
