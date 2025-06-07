@@ -1,4 +1,11 @@
 # Changelog
+## 0.2.45
+
+- Ajustados los tamaños de iconos y botones en ambos sidebars.
+- Nuevo diseño flotante claro para el sidebar de herramientas.
+- El botón de Dashboard solo se resalta en su ruta.
+- El contenido ahora se desplaza cuando el sidebar de herramientas está abierto.
+
 ## 0.2.44
 
 - Botones de Almacenes integrados en el menú de herramientas.

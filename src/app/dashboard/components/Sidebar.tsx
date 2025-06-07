@@ -142,8 +142,11 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
       {/* Menú navegación */}
       <nav className="flex-1 py-6 px-2 flex flex-col gap-1" data-oid="_fmifu.">
         {filteredMenu.map((item) => {
-          const active =
-            item.path && (pathname === item.path || pathname.startsWith(`${item.path}/`));
+          const active = item.path
+            ? item.path === "/dashboard"
+              ? pathname === "/dashboard"
+              : pathname === item.path || pathname.startsWith(`${item.path}/`)
+            : false;
           const handleClick = () => {
             if (item.action) {
               toggleToolsSidebar();
