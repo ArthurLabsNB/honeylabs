@@ -8,7 +8,7 @@ import { NAVBAR_HEIGHT } from "../../constants";
 import type { Usuario } from "@/types/usuario";
 
 function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
-  const { fullscreen } = useDashboardUI();
+  const { fullscreen, setFullscreen } = useDashboardUI();
   const router = useRouter();
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [loading, setLoading] = useState(true);
@@ -38,6 +38,11 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
       router.replace("/login");
     }
   }, [usuario, loading, router]);
+
+  useEffect(() => {
+    setFullscreen(true);
+    return () => setFullscreen(false);
+  }, [setFullscreen]);
 
   if (loading) {
     return (
