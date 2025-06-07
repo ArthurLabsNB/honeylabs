@@ -4,21 +4,11 @@ import { jsonOrNull } from "@lib/http";
 import { useDashboardUI } from "../../ui";
 import { useRouter } from "next/navigation";
 import AlmacenDetailNavbar from "../components/AlmacenDetailNavbar";
-import AlmacenSidebar from "../components/AlmacenSidebar";
-import {
-  SIDEBAR_GLOBAL_WIDTH,
-  SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
-  SIDEBAR_ALMACENES_WIDTH,
-  NAVBAR_HEIGHT,
-} from "../../constants";
+import { NAVBAR_HEIGHT } from "../../constants";
 import type { Usuario } from "@/types/usuario";
 
 function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
-  const {
-    fullscreen,
-    sidebarGlobalVisible = true,
-    sidebarGlobalCollapsed,
-  } = useDashboardUI();
+  const { fullscreen } = useDashboardUI();
   const router = useRouter();
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [loading, setLoading] = useState(true);
@@ -67,45 +57,17 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
 
   if (!usuario) return null;
 
-  const globalWidth = fullscreen
-    ? 0
-    : sidebarGlobalVisible
-      ? sidebarGlobalCollapsed
-        ? SIDEBAR_GLOBAL_COLLAPSED_WIDTH
-        : SIDEBAR_GLOBAL_WIDTH
-      : 0;
-  const mainMarginLeft = fullscreen ? SIDEBAR_ALMACENES_WIDTH : globalWidth + SIDEBAR_ALMACENES_WIDTH;
 
   return (
     <div
       className={`min-h-screen bg-[var(--dashboard-bg)] relative ${
         fullscreen ? "dashboard-full" : ""
       }`}
-      style={{
-        // Ajustamos variables para el sidebar de almacén
-        // y eliminamos la altura del navbar global
-        ["--navbar-height" as any]: "0px",
-        ["--almacen-navbar-height" as any]: "56px",
-      }}
       data-oid="vu397ln"
     >
-      {!fullscreen && (
-        <aside
-          style={{
-            width: SIDEBAR_ALMACENES_WIDTH,
-            minWidth: SIDEBAR_ALMACENES_WIDTH,
-            left: fullscreen ? 0 : globalWidth,
-            top: NAVBAR_HEIGHT + 56,
-            height: `calc(100vh - ${NAVBAR_HEIGHT + 56}px)`,
-          }}
-          className="fixed z-30 bg-[var(--dashboard-sidebar)] border-r border-[var(--dashboard-border)] shadow-sm"
-        >
-          <AlmacenSidebar mode="detail" />
-        </aside>
-      )}
       <main
         className="flex flex-col min-h-screen transition-all duration-300"
-        style={{ marginLeft: mainMarginLeft, paddingTop: NAVBAR_HEIGHT + 56 }}
+        style={{ paddingTop: NAVBAR_HEIGHT + 56 }}
         data-oid="9d4tqvn"
       >
         <AlmacenDetailNavbar />

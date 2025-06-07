@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.32
+
+- Eliminado el sidebar duplicado en las páginas de detalle de almacenes.
+
 ## 0.2.31
 
 - Rediseño del sidebar de almacenes y corrección de la navegación para mantener visibles los navbars y sidebars.
