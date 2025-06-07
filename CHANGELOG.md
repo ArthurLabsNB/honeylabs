@@ -1,4 +1,10 @@
 # Changelog
+## 0.2.40
+
+- Eliminado el navbar de almacenes.
+- Sidebar de almacenes alineado a la misma altura que el del dashboard.
+- Se muestra el plan de la cuenta al inicio del sidebar.
+
 ## 0.2.39
 
 - Posicionamiento del navbar de almacenes alineado con el sidebar y altura expuesta como variable CSS.

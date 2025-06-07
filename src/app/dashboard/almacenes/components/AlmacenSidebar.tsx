@@ -20,7 +20,6 @@ import {
   SIDEBAR_GLOBAL_WIDTH,
   SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
   NAVBAR_HEIGHT,
-  ALMACEN_NAVBAR_HEIGHT,
 } from "../../constants";
 import useSession from "@/hooks/useSession";
 import { hasManagePerms } from "@lib/permisos";
@@ -85,14 +84,14 @@ export default function AlmacenSidebar() {
       : 0;
 
   // Debes usar la misma altura de tus navbars globales (ajusta según tus constantes)
-  const navbarsHeight = `calc(var(--navbar-height, ${NAVBAR_HEIGHT}px) + var(--almacen-navbar-height, ${ALMACEN_NAVBAR_HEIGHT}px))`;
+  const navbarsHeight = `var(--navbar-height, ${NAVBAR_HEIGHT}px)`;
 
   // --- Sidebar de almacenes ---
   return (
     <aside
       className="
         fixed z-30
-        w-64 h-[calc(100vh-120px)]
+        w-64 h-screen
         bg-[var(--dashboard-sidebar)]
         border-r border-[var(--dashboard-border)]
         shadow-sm
@@ -100,11 +99,15 @@ export default function AlmacenSidebar() {
       "
       style={{
         left: sidebarLeft,
-        top: `calc(${navbarsHeight})`,
-        height: `calc(100vh - ${navbarsHeight})`,
+        top: 0,
+        height: '100vh',
+        paddingTop: navbarsHeight,
       }}
     >
       <nav className="flex flex-col gap-1">
+        <span className="px-4 pb-2 text-xs font-semibold uppercase text-gray-400">
+          Plan: {usuario?.plan?.nombre ?? 'Free'}
+        </span>
         <MenuLink href="/dashboard/almacenes" icon={Home} label="Inicio" />
         <MenuLink href="/dashboard/almacenes/inventario" icon={Box} label="Inventario" />
         <MenuLink href="/dashboard/almacenes/operaciones" icon={History} label="Operaciones" />
