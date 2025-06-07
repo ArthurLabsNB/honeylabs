@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useDashboardUI } from "../ui";
 import type { Usuario } from "@/types/usuario";
@@ -10,9 +10,17 @@ import {
   Network,
   FileStack,
   Receipt,
+  Home,
+  Box,
+  History,
+  FileText,
+  Folder,
+  Plus,
+  Settings,
+  BookOpen,
   Search as SearchIcon,
 } from "lucide-react";
-import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
+import { getMainRole, normalizeTipoCuenta, hasManagePerms } from "@lib/permisos";
 
 const toolsMenu = [
   {
@@ -50,6 +58,64 @@ const toolsMenu = [
     path: "/dashboard/billing",
     allowed: ["admin", "administrador", "institucional"],
   },
+  // --- opciones de Almacenes ---
+  {
+    key: "almacen-inicio",
+    label: "Inicio",
+    icon: <Home className="dashboard-sidebar-icon" />,
+    path: "/dashboard/almacenes",
+    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
+  },
+  {
+    key: "inventario",
+    label: "Inventario",
+    icon: <Box className="dashboard-sidebar-icon" />,
+    path: "/dashboard/almacenes/inventario",
+    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
+  },
+  {
+    key: "operaciones",
+    label: "Operaciones",
+    icon: <History className="dashboard-sidebar-icon" />,
+    path: "/dashboard/almacenes/operaciones",
+    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
+  },
+  {
+    key: "almacen-reportes",
+    label: "Reportes",
+    icon: <FileText className="dashboard-sidebar-icon" />,
+    path: "/dashboard/almacenes/reportes",
+    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
+  },
+  {
+    key: "almacen-archivos",
+    label: "Archivos",
+    icon: <Folder className="dashboard-sidebar-icon" />,
+    path: "/dashboard/almacenes/archivos",
+    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
+  },
+  {
+    key: "nuevo-almacen",
+    label: "Nuevo",
+    icon: <Plus className="dashboard-sidebar-icon" />,
+    path: "/dashboard/almacenes/nuevo",
+    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
+    requiresManage: true,
+  },
+  {
+    key: "configuracion-almacen",
+    label: "Configuración",
+    icon: <Settings className="dashboard-sidebar-icon" />,
+    path: "/dashboard/almacenes/configuracion",
+    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
+  },
+  {
+    key: "ayuda-almacen",
+    label: "Ayuda",
+    icon: <BookOpen className="dashboard-sidebar-icon" />,
+    path: "/dashboard/almacenes/ayuda",
+    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
+  },
 ];
 
 export default function ToolsSidebar({ usuario }: { usuario: Usuario }) {
@@ -57,20 +123,37 @@ export default function ToolsSidebar({ usuario }: { usuario: Usuario }) {
   const pathname = usePathname();
   const router = useRouter();
   const [query, setQuery] = useState("");
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        toggleToolsSidebar(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [toggleToolsSidebar]);
 
   const mainRole = getMainRole(usuario)?.toLowerCase();
   const tipo = normalizeTipoCuenta(
     mainRole === "admin" ? "admin" : usuario.tipoCuenta,
   );
+  const allowCreate = hasManagePerms(usuario);
 
   const filtered = toolsMenu.filter(
     (i) =>
       i.allowed.includes(tipo) &&
+      (!i.requiresManage || allowCreate) &&
       i.label.toLowerCase().includes(query.toLowerCase()),
   );
 
   return (
-    <aside className="dashboard-sidebar flex flex-col h-full" data-oid="tools">
+    <aside
+      ref={ref}
+      className="dashboard-sidebar flex flex-col h-full"
+      data-oid="tools"
+    >
       <div className="p-4 border-b border-[var(--dashboard-border)] flex items-center gap-2">
         <SearchIcon className="w-4 h-4 text-[var(--dashboard-accent)]" />
         <input

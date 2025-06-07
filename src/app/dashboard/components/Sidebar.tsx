@@ -21,6 +21,9 @@ import {
 
 // El tipo mínimo del usuario (ajusta según tu modelo)
 
+const menuItemStyle =
+  "flex items-center gap-3 px-4 py-2 text-[15px] rounded-lg transition-all duration-150 text-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--dashboard-accent)]";
+
 const sidebarMenu = [
   {
     key: "dashboard",
@@ -38,7 +41,7 @@ const sidebarMenu = [
   },
   {
     key: "tools",
-    label: "Herramientas e Integraciones",
+    label: "Herramientas",
     icon: <AppWindow className="dashboard-sidebar-icon" />,
     allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
     action: true,
@@ -152,14 +155,11 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
             <button
               key={item.key}
               onClick={handleClick}
-              className={`
-                dashboard-sidebar-item group relative
-                ${active ? "active" : ""}
-                ${collapsed ? "justify-center px-0" : ""}
-                hover:bg-white/10 hover:backdrop-blur-sm
-                focus:bg-white/15
-                active:bg-white/20
-              `}
+              className={`${menuItemStyle} ${
+                active
+                  ? "bg-[var(--dashboard-accent)]/20 text-white font-semibold"
+                  : "hover:bg-white/10 hover:text-white"
+              } ${collapsed ? "justify-center px-2" : ""}`}
               title={collapsed ? item.label : ""}
               tabIndex={0}
               data-oid="ggwglbz"
@@ -169,9 +169,7 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
               </div>
               <span
                 className={`whitespace-nowrap transition-all ${
-                  collapsed
-                    ? "opacity-0 w-0 overflow-hidden"
-                    : "opacity-100 w-auto ml-2"
+                  collapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100 w-auto ml-2"
                 }`}
                 data-oid="2j.rcq2"
               >
