@@ -102,12 +102,11 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
           style={{
             top: navbarHeight, // Coloca este navbar debajo del navbar del dashboard
             height: almacenNavbarHeight,
-            left: fullscreen ? 0 : sidebarLeft,
-            right: 0,
+            paddingLeft: !fullscreen && sidebarGlobalVisible ? sidebarLeft : 0,
             display: 'flex',
             alignItems: 'center',
-            padding: '0 1rem',
-            transition: 'left 0.3s ease'
+            paddingRight: '1rem',
+            transition: 'padding-left 0.3s ease'
           }}
           data-oid="pyvpx.g"
         >
