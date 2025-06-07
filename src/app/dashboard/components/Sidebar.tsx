@@ -37,32 +37,11 @@ const sidebarMenu = [
     allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
   },
   {
-    key: "alertas",
-    label: "Alertas",
-    icon: <Bell className="dashboard-sidebar-icon" data-oid=".ea6mni" />,
-    path: "/dashboard/alertas",
+    key: "tools",
+    label: "Herramientas e Integraciones",
+    icon: <AppWindow className="dashboard-sidebar-icon" />,
     allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
-  },
-  {
-    key: "appcenter",
-    label: "App Center",
-    icon: <AppWindow className="dashboard-sidebar-icon" data-oid="am_k.6c" />,
-    path: "/dashboard/app-center",
-    allowed: ["admin", "administrador", "institucional", "empresarial"],
-  },
-  {
-    key: "network",
-    label: "Network",
-    icon: <Network className="dashboard-sidebar-icon" data-oid="z-33x83" />,
-    path: "/dashboard/network",
-    allowed: ["admin", "administrador", "institucional"],
-  },
-  {
-    key: "plantillas",
-    label: "Plantillas",
-    icon: <FileStack className="dashboard-sidebar-icon" data-oid="0vwt0b-" />,
-    path: "/dashboard/plantillas",
-    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
+    action: true,
   },
   {
     key: "reportes",
@@ -70,13 +49,6 @@ const sidebarMenu = [
     icon: <FileText className="dashboard-sidebar-icon" data-oid="wzewnea" />,
     path: "/dashboard/reportes",
     allowed: ["admin", "administrador", "institucional", "empresarial"],
-  },
-  {
-    key: "billing",
-    label: "Billing",
-    icon: <Receipt className="dashboard-sidebar-icon" data-oid="ny9b2pu" />,
-    path: "/dashboard/billing",
-    allowed: ["admin", "administrador", "institucional"],
   },
   {
     key: "admin",
@@ -88,8 +60,11 @@ const sidebarMenu = [
 ];
 
 export default function Sidebar({ usuario }: { usuario: Usuario }) {
-  const { sidebarGlobalCollapsed: collapsed, toggleSidebarCollapsed } =
-    useDashboardUI();
+  const {
+    sidebarGlobalCollapsed: collapsed,
+    toggleSidebarCollapsed,
+    toggleToolsSidebar,
+  } = useDashboardUI();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -165,11 +140,18 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
       <nav className="flex-1 py-6 px-2 flex flex-col gap-1" data-oid="_fmifu.">
         {filteredMenu.map((item) => {
           const active =
-            pathname === item.path || pathname.startsWith(`${item.path}/`);
+            item.path && (pathname === item.path || pathname.startsWith(`${item.path}/`));
+          const handleClick = () => {
+            if (item.action) {
+              toggleToolsSidebar();
+            } else if (item.path) {
+              router.push(item.path);
+            }
+          };
           return (
             <button
               key={item.key}
-              onClick={() => router.push(item.path)}
+              onClick={handleClick}
               className={`
                 dashboard-sidebar-item group relative
                 ${active ? "active" : ""}
