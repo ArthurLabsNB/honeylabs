@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
 import type { Usuario } from "@/types/usuario";
+import useSession from "@/hooks/useSession";
 import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
 
 interface Invoice {
@@ -13,34 +14,35 @@ interface Invoice {
 
 export default function BillingPage() {
   const allowed = ["admin", "administrador", "institucional"];
-  const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const { usuario, loading: loadingUsuario } = useSession();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/login", { credentials: "include" })
-      .then(jsonOrNull)
-      .then((data) => {
-        if (!data?.success) throw new Error();
-        const rol = getMainRole(data.usuario)?.toLowerCase();
-        const tipo = normalizeTipoCuenta(data.usuario.tipoCuenta);
-        if (rol !== "admin" && rol !== "administrador" && !allowed.includes(tipo))
-          throw new Error("No autorizado");
-        setUsuario(data.usuario);
-      })
-      .catch((err) => setError(err.message || "Debes iniciar sesión"));
-  }, []);
+    if (loadingUsuario) return;
+    if (!usuario) {
+      setError("Debes iniciar sesión");
+      return;
+    }
+    const rol = getMainRole(usuario)?.toLowerCase();
+    const tipo = normalizeTipoCuenta(usuario.tipoCuenta);
+    if (rol !== "admin" && rol !== "administrador" && !allowed.includes(tipo)) {
+      setError("No autorizado");
+      return;
+    }
+    setError("");
+  }, [usuario, loadingUsuario]);
 
   useEffect(() => {
-    if (!usuario) return;
+    if (loadingUsuario || !usuario || error) return;
     setLoading(true);
     fetch("/api/billing")
       .then(jsonOrNull)
       .then((d) => setInvoices(d.invoices || []))
       .catch(() => setError("Error al cargar datos"))
       .finally(() => setLoading(false));
-  }, [usuario]);
+  }, [usuario, loadingUsuario, error]);
 
   if (error)
     return (
@@ -49,7 +51,7 @@ export default function BillingPage() {
       </div>
     );
 
-  if (loading)
+  if (loading || loadingUsuario)
     return (
       <div className="p-4" data-oid="nl1s5nf">
         Cargando...

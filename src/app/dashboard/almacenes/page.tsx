@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAlmacenesUI } from "./ui";
 import type { Usuario } from "@/types/usuario";
 import { getMainRole, hasManagePerms, normalizeTipoCuenta } from "@lib/permisos";
+import useSession from "@/hooks/useSession";
 
 interface Almacen {
   id: number;
@@ -21,7 +22,7 @@ interface Almacen {
 
 export default function AlmacenesPage() {
   const allowed = ["admin", "administrador", "institucional", "empresarial", "individual"];
-  const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const { usuario, loading: loadingUsuario } = useSession();
   const [almacenes, setAlmacenes] = useState<Almacen[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -29,25 +30,19 @@ export default function AlmacenesPage() {
   const { view, filter, registerCreate } = useAlmacenesUI();
 
   useEffect(() => {
-    fetch("/api/login", { credentials: "include" })
-      .then(jsonOrNull)
-      .then((data) => {
-        if (!data?.success) throw new Error();
-        const rol = getMainRole(data.usuario)?.toLowerCase();
-        const tipo = normalizeTipoCuenta(data.usuario.tipoCuenta);
-        if (
-          rol !== "admin" &&
-          rol !== "administrador" &&
-          !allowed.includes(tipo)
-        ) {
-          throw new Error("No autorizado");
-        }
-        setUsuario(data.usuario);
-      })
-      .catch((err) => {
-        setError(err.message || "Debes iniciar sesión");
-      });
-  }, []);
+    if (loadingUsuario) return;
+    if (!usuario) {
+      setError("Debes iniciar sesión");
+      return;
+    }
+    const rol = getMainRole(usuario)?.toLowerCase();
+    const tipo = normalizeTipoCuenta(usuario.tipoCuenta);
+    if (rol !== "admin" && rol !== "administrador" && !allowed.includes(tipo)) {
+      setError("No autorizado");
+      return;
+    }
+    setError("");
+  }, [usuario, loadingUsuario]);
 
   const crearAlmacen = async (nombre: string, descripcion: string) => {
     try {
@@ -72,7 +67,7 @@ export default function AlmacenesPage() {
   }, [registerCreate]);
 
   useEffect(() => {
-    if (!usuario) return;
+    if (loadingUsuario || !usuario || error) return;
     setLoading(true);
     const fav = filter === "favoritos" ? "&favoritos=1" : "";
     fetch(`/api/almacenes?usuarioId=${usuario.id}${fav}`)
@@ -80,7 +75,7 @@ export default function AlmacenesPage() {
       .then((data) => setAlmacenes(data.almacenes || []))
       .catch(() => setError("Error al cargar datos"))
       .finally(() => setLoading(false));
-  }, [usuario, filter]);
+  }, [usuario, loadingUsuario, filter, error]);
 
   if (error)
     return (
@@ -89,7 +84,7 @@ export default function AlmacenesPage() {
       </div>
     );
 
-  if (loading)
+  if (loading || loadingUsuario)
     return (
       <div className="p-4" data-oid="8xwpkrd">
         Cargando...
