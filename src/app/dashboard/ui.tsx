@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 interface UIState {
   fullscreen: boolean;
   toggleFullscreen: () => void;
+  setFullscreen: (v: boolean) => void;
   sidebarGlobalVisible: boolean;
   sidebarGlobalCollapsed: boolean;
   toggleSidebarVisible: (v?: boolean) => void;
@@ -13,6 +14,7 @@ interface UIState {
 const DashboardUIContext = createContext<UIState>({
   fullscreen: false,
   toggleFullscreen: () => {},
+  setFullscreen: () => {},
   sidebarGlobalVisible: true,
   sidebarGlobalCollapsed: false,
   toggleSidebarVisible: () => {},
@@ -33,6 +35,7 @@ export function DashboardUIProvider({
   }, []);
 
   const toggleFullscreen = () => setFullscreen((f) => !f);
+  const setFullscreenState = (v: boolean) => setFullscreen(v);
   const toggleSidebarCollapsed = () => setSidebarGlobalCollapsed((c) => !c);
   const toggleSidebarVisible = (v?: boolean) =>
     setSidebarGlobalVisible((c) => (typeof v === "boolean" ? v : !c));
@@ -42,6 +45,7 @@ export function DashboardUIProvider({
       value={{
         fullscreen,
         toggleFullscreen,
+        setFullscreen: setFullscreenState,
         sidebarGlobalVisible,
         sidebarGlobalCollapsed,
         toggleSidebarVisible,

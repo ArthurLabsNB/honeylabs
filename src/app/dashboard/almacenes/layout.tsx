@@ -96,7 +96,7 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
     >
       {/* --- NAVBAR ALMACENES --- */}
       <div
-        className="fixed left-0 right-0 z-40 bg-[var(--dashboard-navbar)] border-b border-[var(--dashboard-border)]"
+        className="dashboard-navbar fixed left-0 right-0 z-40 bg-[var(--dashboard-navbar)] border-b border-[var(--dashboard-border)]"
         style={{
           top: navbarHeight, // Coloca este navbar debajo del navbar del dashboard
           height: almacenNavbarHeight,
@@ -125,6 +125,7 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
         {/* --- SIDEBAR ALMACENES --- */}
         {!fullscreen && (
           <aside
+            className="dashboard-sidebar"
             style={{
               width: SIDEBAR_ALMACENES_WIDTH,
               minWidth: SIDEBAR_ALMACENES_WIDTH,

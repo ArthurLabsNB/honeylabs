@@ -1,4 +1,9 @@
 # Changelog
+## 0.2.34
+
+- Los navbars y sidebars del dashboard y de almacenes se ocultan al entrar a un almacén.
+- Se muestra una barra superior del almacén con opción para volver.
+
 ## 0.2.33
 
 - Unificado el sidebar de almacenes eliminando el modo "detalle".
