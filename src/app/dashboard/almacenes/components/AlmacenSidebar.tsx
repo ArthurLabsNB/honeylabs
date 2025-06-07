@@ -19,6 +19,7 @@ import { useDashboardUI } from "../../ui"; // para saber si sidebar global está
 import {
   SIDEBAR_GLOBAL_WIDTH,
   SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
+  SIDEBAR_ALMACENES_WIDTH,
   NAVBAR_HEIGHT,
 } from "../../constants";
 import useSession from "@/hooks/useSession";
