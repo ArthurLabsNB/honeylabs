@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.47
+
+- El botón de **Herramientas** ahora cierra el menú al pulsarlo nuevamente.
+
 ## 0.2.46
 
 - Colores y estilo del sidebar de herramientas ahora coinciden con el dashboard.

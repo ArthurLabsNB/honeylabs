@@ -67,6 +67,7 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
     sidebarGlobalCollapsed: collapsed,
     toggleSidebarCollapsed,
     toggleToolsSidebar,
+    toolsSidebarVisible,
   } = useDashboardUI();
   const pathname = usePathname();
   const router = useRouter();
@@ -149,7 +150,7 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
             : false;
           const handleClick = () => {
             if (item.action) {
-              toggleToolsSidebar();
+              toggleToolsSidebar(!toolsSidebarVisible);
             } else if (item.path) {
               router.push(item.path);
             }
