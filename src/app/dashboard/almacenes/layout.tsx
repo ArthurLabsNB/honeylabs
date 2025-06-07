@@ -7,10 +7,8 @@ import {
   SIDEBAR_GLOBAL_COLLAPSED_WIDTH,
   SIDEBAR_ALMACENES_WIDTH,
   NAVBAR_HEIGHT,
-  ALMACEN_NAVBAR_HEIGHT,
 } from "../constants";
 import { useRouter, usePathname } from "next/navigation";
-import AlmacenNavbar from "./components/AlmacenNavbar";
 import AlmacenSidebar from "./components/AlmacenSidebar";
 import { AlmacenesUIProvider } from "./ui";
 import type { Usuario } from "@/types/usuario";
@@ -83,47 +81,23 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
   const isDetail = /^\/dashboard\/almacenes\/\d+(\/|$)/.test(pathname);
 
   // Alturas para los elementos fijos
-  const navbarHeight = isDetail ? '0px' : `${NAVBAR_HEIGHT}px`; // Altura del navbar del dashboard cuando aplica
-  const almacenNavbarHeight = `${ALMACEN_NAVBAR_HEIGHT}px`; // Altura del navbar de almacenes
-  const totalNavbarHeight = isDetail
-    ? '0px'
-    : `calc(${navbarHeight} + ${almacenNavbarHeight})`;
+  const navbarHeight = isDetail ? '0px' : `${NAVBAR_HEIGHT}px`;
+  const totalNavbarHeight = navbarHeight;
 
   return (
     <div
       className={`min-h-screen bg-[var(--dashboard-bg)] relative ${
         fullscreen ? "dashboard-full" : ""
       }`}
-      style={{
-        // Exponer altura del navbar de almacenes como variable CSS
-        ["--almacen-navbar-height" as any]: `${ALMACEN_NAVBAR_HEIGHT}px`,
-      } as React.CSSProperties}
+      style={{}}
       data-oid="6fwyq0q"
     >
-      {/* --- NAVBAR ALMACENES --- */}
-      {!isDetail && (
-        <div
-          className="dashboard-navbar fixed left-0 right-0 z-40 bg-[var(--dashboard-navbar)] border-b border-[var(--dashboard-border)]"
-          style={{
-            top: navbarHeight, // Coloca este navbar debajo del navbar del dashboard
-            height: almacenNavbarHeight,
-            left: fullscreen ? 0 : sidebarLeft,
-            right: 0,
-            display: 'flex',
-            alignItems: 'center',
-            padding: '0 1rem',
-            transition: 'left 0.3s ease'
-          }}
-          data-oid="pyvpx.g"
-        >
-          {usuario && <AlmacenNavbar />}
-        </div>
-      )}
+
 
       <div
         className="flex"
         style={{
-          paddingTop: totalNavbarHeight, // Asegura que el contenido no se oculte bajo los navbars
+          paddingTop: totalNavbarHeight,
           minHeight: `calc(100vh - ${navbarHeight})`,
           paddingLeft: !fullscreen ? sidebarLeft : 0,
           transition: 'padding-left 0.3s ease'
@@ -140,10 +114,11 @@ function ProtectedAlmacenes({ children }: { children: React.ReactNode }) {
               backgroundColor: "var(--dashboard-sidebar-bg)",
               borderRight: "1px solid var(--dashboard-border)",
               overflowY: "auto",
-              height: `calc(100vh - ${totalNavbarHeight})`,
+              height: '100vh',
               position: "fixed",
               left: sidebarLeft,
-              top: totalNavbarHeight,
+              top: 0,
+              paddingTop: totalNavbarHeight,
               zIndex: 30,
               transition: 'left 0.3s ease',
               padding: '1rem 0.5rem',
