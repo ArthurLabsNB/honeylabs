@@ -52,7 +52,7 @@ export default function RegistroPage() {
 
       const data = await jsonOrNull(res);
 
-      if (!res.ok) throw new Error(data.error || "Error desconocido");
+      if (!res.ok) throw new Error(data?.detalle || data?.error || "Error desconocido");
 
       setMensaje(data.mensaje || "✔️ Registro exitoso");
 
