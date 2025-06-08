@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.61
+- Incluimos un nuevo componente de carga y lo usamos en diversas vistas.
 ## 0.2.60
 - Reemplazamos alertas por notificaciones emergentes reutilizables.
 - Las eliminaciones ahora solicitan confirmación en pantalla.

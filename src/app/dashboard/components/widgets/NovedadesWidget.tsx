@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
+import Spinner from "@/components/Spinner";
 
 export default function NovedadesWidget({ usuario }: { usuario: any }) {
   const [items, setItems] = useState<
@@ -26,7 +27,7 @@ export default function NovedadesWidget({ usuario }: { usuario: any }) {
       </span>
       {loading ? (
         <div className="py-2" data-oid="55jxu-6">
-          Cargando...
+          <Spinner />
         </div>
       ) : err ? (
         <div className="text-red-400 py-2" data-oid="k2ui6em">

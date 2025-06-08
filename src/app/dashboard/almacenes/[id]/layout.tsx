@@ -5,6 +5,7 @@ import { useDashboardUI } from "../../ui";
 import { useRouter } from "next/navigation";
 import AlmacenDetailNavbar from "../components/AlmacenDetailNavbar";
 import type { Usuario } from "@/types/usuario";
+import Spinner from "@/components/Spinner";
 
 function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
   const { fullscreen, setFullscreen } = useDashboardUI();
@@ -49,12 +50,7 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
         className="flex min-h-screen items-center justify-center bg-[var(--dashboard-bg)]"
         data-oid="m8ihkvs"
       >
-        <span
-          className="text-[var(--dashboard-accent)] text-lg font-bold animate-pulse"
-          data-oid="_r:ikd8"
-        >
-          Cargando...
-        </span>
+        <Spinner className="text-[var(--dashboard-accent)]" />
       </div>
     );
   }

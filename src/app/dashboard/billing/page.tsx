@@ -4,6 +4,7 @@ import { jsonOrNull } from "@lib/http";
 import type { Usuario } from "@/types/usuario";
 import useSession from "@/hooks/useSession";
 import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
+import Spinner from "@/components/Spinner";
 
 interface Invoice {
   id: number;
@@ -54,7 +55,7 @@ export default function BillingPage() {
   if (loading || loadingUsuario)
     return (
       <div className="p-4" data-oid="nl1s5nf">
-        Cargando...
+        <Spinner />
       </div>
     );
 

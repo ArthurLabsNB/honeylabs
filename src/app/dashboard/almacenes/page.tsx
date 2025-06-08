@@ -10,6 +10,7 @@ import type { Usuario } from "@/types/usuario";
 import { getMainRole, hasManagePerms, normalizeTipoCuenta } from "@lib/permisos";
 import useSession from "@/hooks/useSession";
 import { useToast } from "@/components/Toast";
+import Spinner from "@/components/Spinner";
 
 interface Almacen {
   id: number;
@@ -144,7 +145,7 @@ export default function AlmacenesPage() {
   if (loading || loadingUsuario)
     return (
       <div className="p-4" data-oid="8xwpkrd">
-        Cargando...
+        <Spinner />
       </div>
     );
 

@@ -4,6 +4,7 @@ import { jsonOrNull } from "@lib/http";
 import type { Usuario } from "@/types/usuario";
 import useSession from "@/hooks/useSession";
 import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
+import Spinner from "@/components/Spinner";
 
 interface Plantilla {
   id: number;
@@ -52,7 +53,7 @@ export default function PlantillasPage() {
   if (loading || loadingUsuario)
     return (
       <div className="p-4" data-oid="q5gn5.p">
-        Cargando...
+        <Spinner />
       </div>
     );
 
