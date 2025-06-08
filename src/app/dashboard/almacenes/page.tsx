@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import Image from "next/image";
 import { jsonOrNull } from "@lib/http";
 import { useRouter } from "next/navigation";
 import { useAlmacenesUI } from "./ui";
@@ -100,7 +101,7 @@ export default function AlmacenesPage() {
     );
 
 
-  const eliminar = async (id: number) => {
+  const eliminar = useCallback(async (id: number) => {
     if (!confirm("¿Eliminar almacén?")) return;
     const res = await fetch(`/api/almacenes/${id}`, { method: "DELETE" });
     if (res.ok) {
@@ -108,23 +109,26 @@ export default function AlmacenesPage() {
     } else {
       alert("Error al eliminar");
     }
-  };
+  }, []);
 
-  const handleDragStart = (id: number) => {
+  const handleDragStart = useCallback((id: number) => {
     setDragId(id);
-  };
+  }, []);
 
-  const handleDragEnter = (id: number) => {
-    if (dragId === null || dragId === id) return;
-    const oldIndex = almacenes.findIndex((a) => a.id === dragId);
-    const newIndex = almacenes.findIndex((a) => a.id === id);
-    setAlmacenes((items) => arrayMove(items, oldIndex, newIndex));
-    setDragId(id);
-  };
+  const handleDragEnter = useCallback(
+    (id: number) => {
+      if (dragId === null || dragId === id) return;
+      const oldIndex = almacenes.findIndex((a) => a.id === dragId);
+      const newIndex = almacenes.findIndex((a) => a.id === id);
+      setAlmacenes((items) => arrayMove(items, oldIndex, newIndex));
+      setDragId(id);
+    },
+    [dragId, almacenes],
+  );
 
-  const handleDragEnd = () => {
+  const handleDragEnd = useCallback(() => {
     setDragId(null);
-  };
+  }, []);
 
   const renderList = () => (
     <ul className="space-y-2">
@@ -155,9 +159,11 @@ export default function AlmacenesPage() {
           onClick={() => router.push(`/dashboard/almacenes/${a.id}`)}
         >
           <div className="w-20 h-20 flex-shrink-0 bg-white/10 rounded-md overflow-hidden">
-            <img
+            <Image
               src={a.imagenUrl || "/ilustracion-almacen-3d.svg"}
               alt={a.nombre}
+              width={80}
+              height={80}
               className="object-cover w-full h-full"
             />
           </div>
@@ -300,9 +306,11 @@ function SortableAlmacen({
       className="bg-white/5 hover:bg-white/10 p-3 rounded-md flex gap-3 cursor-grab active:cursor-grabbing"
     >
       <div className="w-16 h-16 flex-shrink-0 rounded-md overflow-hidden bg-white/10" onClick={onOpen}>
-        <img
+        <Image
           src={almacen.imagenUrl || '/ilustracion-almacen-3d.svg'}
           alt={almacen.nombre}
+          width={64}
+          height={64}
           className="object-cover w-full h-full"
         />
       </div>

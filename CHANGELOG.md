@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.52
+
+- Imágenes actualizadas a `<Image>` de Next.js para un mejor rendimiento.
+- Manejadores de arrastre y eventos memoizados con `useCallback`.
 ## 0.2.51
 
 - Reimplementación de arrastre sin dependencias externas para evitar errores de compilación.
