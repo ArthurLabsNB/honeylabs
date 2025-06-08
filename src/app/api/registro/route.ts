@@ -7,6 +7,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { enviarCorreoValidacionEmpresa } from '@/lib/email/enviarRegistro';
 import * as logger from '@lib/logger'
 
+function respuestaError(error: string, detalle: string, status = 400) {
+  return NextResponse.json({ error, detalle }, { status })
+}
+
 
 const TAMAÑO_MAXIMO_MB = 2;
 const BYTES_MAXIMOS = TAMAÑO_MAXIMO_MB * 1024 * 1024;
@@ -39,21 +43,23 @@ export async function POST(req: NextRequest) {
     // Extracción y sanitización de campos
     const nombre = String(formData.get('nombre') ?? '').trim();
     const apellidos = String(formData.get('apellidos') ?? '').trim();
-    const correo = String(formData.get('correo') ?? '').trim().toLowerCase();
-    const contrasena = String(formData.get('contrasena') ?? '');
-    const tipoCuenta = String(formData.get('tipoCuenta') ?? '');
-    const codigo = String(formData.get('codigo') ?? '').trim();
-    const archivo = formData.get('archivo') as File | null;
+  const correo = String(formData.get('correo') ?? '').trim().toLowerCase();
+  const contrasena = String(formData.get('contrasena') ?? '');
+  const tipoCuenta = String(formData.get('tipoCuenta') ?? '');
+  const codigo = String(formData.get('codigo') ?? '').trim();
+  const archivo = formData.get('archivo') as File | null;
+
+    logger.debug('Datos recibidos', { correo, tipoCuenta, tieneArchivo: !!archivo });
 
     // Validación básica
     if (!nombre || !apellidos || !correo || !contrasena || !tipoCuenta) {
-      return NextResponse.json({ error: 'Faltan campos requeridos.' }, { status: 400 });
+      return respuestaError('Datos incompletos', 'Faltan campos requeridos', 400)
     }
     if (!esCorreoValido(correo)) {
-      return NextResponse.json({ error: 'Correo inválido.' }, { status: 400 });
+      return respuestaError('Correo inválido', 'Formato de correo incorrecto', 400)
     }
     if (contrasena.length < 6) {
-      return NextResponse.json({ error: 'La contraseña debe tener al menos 6 caracteres.' }, { status: 400 });
+      return respuestaError('Contraseña insegura', 'Debe tener al menos 6 caracteres', 400)
     }
 
     // Validación de usuario existente
@@ -62,7 +68,7 @@ export async function POST(req: NextRequest) {
       select: { id: true },
     });
     if (existente) {
-      return NextResponse.json({ error: 'Ya existe una cuenta con ese correo.' }, { status: 409 });
+      return respuestaError('Correo ya registrado', 'Prueba con otro correo', 409)
     }
 
     // Validación de archivo si se requiere
@@ -72,25 +78,26 @@ export async function POST(req: NextRequest) {
 
     if (requiereArchivo) {
       if (!archivo) {
-        return NextResponse.json({ error: 'Se requiere un archivo de validación.' }, { status: 400 });
+        return respuestaError('Archivo faltante', 'Se requiere un archivo de validación.', 400)
       }
       if (!TIPOS_PERMITIDOS.includes(archivo.type)) {
-        return NextResponse.json({ error: 'Tipo de archivo no permitido.' }, { status: 415 });
+        return respuestaError('Tipo de archivo no permitido', archivo.type, 415)
       }
       const extension = obtenerExtension(archivo.name);
       if (!EXTENSIONES_PERMITIDAS.includes(extension)) {
-        return NextResponse.json({ error: 'Extensión de archivo no válida.' }, { status: 415 });
+        return respuestaError('Extensión de archivo no válida', extension, 415)
       }
+      logger.debug('Archivo validado', { extension })
       try {
         const buffer = await archivo.arrayBuffer();
         if (buffer.byteLength > BYTES_MAXIMOS) {
-          return NextResponse.json({ error: `Archivo demasiado grande. Máx: ${TAMAÑO_MAXIMO_MB}MB.` }, { status: 413 });
+          return respuestaError('Archivo demasiado grande', `Máx: ${TAMAÑO_MAXIMO_MB}MB`, 413)
         }
         archivoNombre = `${uuidv4()}_${archivo.name}`;
         archivoBuffer = Buffer.from(buffer);
       } catch (err: any) {
         logger.error('❌ Error al procesar archivo:', err);
-        return NextResponse.json({ error: 'No se pudo procesar el archivo.', detalle: err.message }, { status: 500 });
+        return respuestaError('No se pudo procesar el archivo', err.message, 500)
       }
     }
 
@@ -103,20 +110,20 @@ export async function POST(req: NextRequest) {
       try {
         const codigoEncontrado = await prisma.codigoAlmacen.findUnique({ where: { codigo } });
         if (!codigoEncontrado || !codigoEncontrado.activo) {
-          return NextResponse.json({ error: 'Código inválido o caducado.' }, { status: 400 });
+          return respuestaError('Código inválido', 'El código no existe o está caducado', 400)
         }
         const almacen = await prisma.almacen.findUnique({
           where: { id: codigoEncontrado.almacenId },
           include: { entidad: true },
         });
         if (!almacen) {
-          return NextResponse.json({ error: 'Error al asociar el almacén del código.' }, { status: 500 });
+          return respuestaError('Almacén no encontrado', 'Error al asociar el almacén del código', 500)
         }
         entidadId = almacen.entidadId;
         codigoUsado = codigo;
       } catch (err: any) {
         logger.error('❌ Error en validación de código:', err);
-        return NextResponse.json({ error: 'Fallo al validar el código proporcionado.', detalle: err.message }, { status: 500 });
+        return respuestaError('Fallo al validar el código', err.message, 500)
       }
     }
 
@@ -149,7 +156,7 @@ export async function POST(req: NextRequest) {
       logger.info('✅ Usuario creado:', nuevoUsuario.id, correo);
     } catch (err: any) {
       logger.error('❌ Error al crear usuario:', err);
-      return NextResponse.json({ error: 'Error al guardar el usuario.' }, { status: 500 });
+      return respuestaError('Error al guardar el usuario', err.message, 500)
     }
 
     // Enviar correo de validación/confirmación
@@ -173,11 +180,6 @@ export async function POST(req: NextRequest) {
 
   } catch (error: any) {
     logger.error('❌ [ERROR_REGISTRO_GENERAL]', error);
-    return NextResponse.json({
-      error: 'Error general del servidor al procesar el registro.',
-      nombre: error.name,
-      mensaje: error.message,
-      stack: error.stack,
-    }, { status: 500 });
+    return respuestaError('Error general del servidor al procesar el registro', error.message, 500)
   }
 }

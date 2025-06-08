@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.78
+- Registramos el proceso de alta con el nuevo logger y unificamos los mensajes de error.
 ## 0.2.77
 - Añadimos un sistema de logging configurable con `LOG_LEVEL`.
 ## 0.2.76
