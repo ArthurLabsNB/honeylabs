@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
 import type { Usuario } from "@/types/usuario";
 import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
+import Spinner from "@/components/Spinner";
 
 interface Peer {
   id: number;
@@ -50,7 +51,7 @@ export default function NetworkPage() {
   if (loading)
     return (
       <div className="p-4" data-oid="vzjk3mh">
-        Cargando...
+        <Spinner />
       </div>
     );
 

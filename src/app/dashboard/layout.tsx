@@ -4,6 +4,7 @@ import useSession from "@/hooks/useSession";
 import Sidebar from "./components/Sidebar";
 import ToolsSidebar from "./components/ToolsSidebar";
 import NavbarDashboard from "./components/NavbarDashboard";
+import Spinner from "@/components/Spinner";
 import { DashboardUIProvider, useDashboardUI } from "./ui";
 import {
   SIDEBAR_GLOBAL_WIDTH,
@@ -48,12 +49,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
         className="flex min-h-screen items-center justify-center bg-[var(--dashboard-bg)]"
         data-oid="7sw2va-"
       >
-        <span
-          className="text-[var(--dashboard-accent)] text-lg font-bold animate-pulse"
-          data-oid="a.4woji"
-        >
-          Cargando...
-        </span>
+        <Spinner className="text-[var(--dashboard-accent)]" />
       </div>
     );
   }

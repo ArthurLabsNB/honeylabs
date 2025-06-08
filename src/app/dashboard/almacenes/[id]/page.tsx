@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
 import { useParams } from "next/navigation";
+import Spinner from "@/components/Spinner";
 
 interface Almacen {
   id: number;
@@ -55,7 +56,7 @@ export default function AlmacenDetallePage() {
   if (loading)
     return (
       <div className="p-4" data-oid="60abg5i">
-        Cargando...
+        <Spinner />
       </div>
     );
 

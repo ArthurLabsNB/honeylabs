@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
 import type { Usuario } from "@/types/usuario";
 import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
+import Spinner from "@/components/Spinner";
 
 interface Alerta {
   id: number;
@@ -54,7 +55,7 @@ export default function AlertasPage() {
   if (loading)
     return (
       <div className="p-4" data-oid="7wfx.vn">
-        Cargando...
+        <Spinner />
       </div>
     );
 

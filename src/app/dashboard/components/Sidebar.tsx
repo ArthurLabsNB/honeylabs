@@ -5,6 +5,7 @@ import { useDashboardUI } from "../ui";
 import type { Usuario } from "@/types/usuario";
 import Image from "next/image";
 import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
+import Spinner from "@/components/Spinner";
 import {
   Home,
   Boxes,
@@ -79,9 +80,7 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
         className="dashboard-sidebar flex flex-col w-[72px] h-screen fixed top-0 left-0 z-30 justify-center items-center bg-[var(--dashboard-sidebar)] shadow-xl"
         data-oid="skizcvj"
       >
-        <span className="text-[var(--dashboard-accent)]" data-oid="gguzj:m">
-          Cargando...
-        </span>
+        <Spinner className="text-[var(--dashboard-accent)]" />
       </aside>
     );
   }

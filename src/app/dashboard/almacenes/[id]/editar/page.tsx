@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
 import { useParams, useRouter } from "next/navigation";
 import { useToast } from "@/components/Toast";
+import Spinner from "@/components/Spinner";
 
 export default function EditarAlmacenPage() {
   const { id } = useParams();
@@ -65,7 +66,7 @@ export default function EditarAlmacenPage() {
   if (loading)
     return (
       <div className="p-4" data-oid="ri8i4m1">
-        Cargando...
+        <Spinner />
       </div>
     );
 

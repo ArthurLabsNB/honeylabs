@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
+import Spinner from "@/components/Spinner";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -37,7 +38,7 @@ export default function GraficaWidget({ usuario }: { usuario: any }) {
         className="h-32 flex items-center justify-center text-[var(--dashboard-muted)] opacity-70"
         data-oid="p1v3u-8"
       >
-        Cargando...
+        <Spinner />
       </div>
     );
 
