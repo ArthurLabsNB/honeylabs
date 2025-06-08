@@ -23,12 +23,11 @@ export default function AlmacenesGrid({
           className="flex gap-3 p-3 border rounded-lg cursor-pointer hover:bg-white/5"
           onClick={() => onOpen(a.id)}
         >
-          <div className="w-24 h-24 flex-shrink-0 bg-white/10 rounded-md overflow-hidden">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-white/10 rounded-md overflow-hidden relative">
             <Image
               src={a.imagenUrl || '/ilustracion-almacen-3d.svg'}
               alt={a.nombre}
-              width={96}
-              height={96}
+              fill
               className="object-cover w-full h-full"
             />
           </div>
