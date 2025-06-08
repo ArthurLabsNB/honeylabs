@@ -1,8 +1,11 @@
 # Changelog
 ## 0.2.86
+
+- Actualizamos la vista de almacenes para que las imágenes usen `w-24` y `h-24` con `object-cover`, adaptándose mejor a pantallas pequeñas.
 - Añadí `sizes` en todas las imágenes para optimizar la carg
 - Reemplazamos medidas fijas por variables CSS en el dashboard.
 - Definimos valores con `clamp()` para adaptar el la
+
 ## 0.2.85
 - Implementé redirección automática al login cuando no hay sesión.
 - Ajusté el layout para validar la autenticación en todas las vistas.
