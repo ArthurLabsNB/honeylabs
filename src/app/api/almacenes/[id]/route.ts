@@ -18,7 +18,18 @@ const IMAGE_TYPES = [
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const usuario = await getUsuarioFromSession();
+    if (!usuario) {
+      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
+    }
     const id = Number(params.id);
+    const pertenece = await prisma.usuarioAlmacen.findFirst({
+      where: { usuarioId: usuario.id, almacenId: id },
+      select: { id: true },
+    });
+    if (!pertenece && !hasManagePerms(usuario)) {
+      return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
+    }
     const almacen = await prisma.almacen.findUnique({
       where: { id },
       select: {
