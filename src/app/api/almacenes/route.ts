@@ -65,6 +65,20 @@ export async function GET(req: NextRequest) {
       if (m.tipo === "salida") counts[m.almacenId].salidas = m._sum.cantidad ?? 0;
     }
 
+    let orden: number[] = []
+    if (usuarioId) {
+      const prefsUser = await prisma.usuario.findUnique({
+        where: { id: Number(usuarioId) },
+        select: { preferencias: true },
+      })
+      if (prefsUser?.preferencias) {
+        try {
+          const p = JSON.parse(prefsUser.preferencias)
+          if (Array.isArray(p.ordenAlmacenes)) orden = p.ordenAlmacenes
+        } catch {}
+      }
+    }
+
     const almacenes = data.map((a) => ({
       id: a.id,
       nombre: a.nombre,
@@ -77,9 +91,19 @@ export async function GET(req: NextRequest) {
       entradas: counts[a.id].entradas,
       salidas: counts[a.id].salidas,
       inventario: counts[a.id].entradas - counts[a.id].salidas,
-    }));
+    }))
 
-    return NextResponse.json({ almacenes });
+    if (orden.length > 0) {
+      const pos = new Map<number, number>()
+      orden.forEach((id, i) => pos.set(id, i))
+      almacenes.sort((a, b) => {
+        const ai = pos.get(a.id) ?? Infinity
+        const bi = pos.get(b.id) ?? Infinity
+        return ai - bi
+      })
+    }
+
+    return NextResponse.json({ almacenes })
   } catch (err) {
     console.error("Error en /api/almacenes:", err);
     return NextResponse.json(

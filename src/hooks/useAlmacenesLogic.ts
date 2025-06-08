@@ -108,9 +108,18 @@ export default function useAlmacenesLogic() {
     [dragId, almacenes],
   )
 
-  const handleDragEnd = useCallback(() => {
+  const handleDragEnd = useCallback(async () => {
     setDragId(null)
-  }, [])
+    try {
+      await fetch('/api/almacenes/orden', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: almacenes.map((a) => a.id) }),
+      })
+    } catch {
+      // no-op
+    }
+  }, [almacenes])
 
   const moveItem = useCallback(
     (id: number, dir: -1 | 1) => {
