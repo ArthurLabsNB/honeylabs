@@ -9,6 +9,7 @@ import { useAlmacenesUI } from "./ui";
 import type { Usuario } from "@/types/usuario";
 import { getMainRole, hasManagePerms, normalizeTipoCuenta } from "@lib/permisos";
 import useSession from "@/hooks/useSession";
+import { useToast } from "@/components/Toast";
 
 interface Almacen {
   id: number;
@@ -38,6 +39,7 @@ export default function AlmacenesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const router = useRouter();
+  const toast = useToast();
   const { view, filter, registerCreate } = useAlmacenesUI();
   const [dragId, setDragId] = useState<number | null>(null);
 
@@ -66,11 +68,12 @@ export default function AlmacenesPage() {
       const data = await jsonOrNull(res);
       if (res.ok && data.almacen) {
         setAlmacenes((a) => [...a, data.almacen]);
+        toast.show("Almacén creado", "success");
       } else {
-        alert(data.error || "Error al crear");
+        toast.show(data.error || "Error al crear", "error");
       }
     } catch {
-      alert("Error de red");
+      toast.show("Error de red", "error");
     }
   };
 
@@ -101,14 +104,16 @@ export default function AlmacenesPage() {
   }, [usuario, loadingUsuario, filter, error]);
 
   const eliminar = useCallback(async (id: number) => {
-    if (!confirm("¿Eliminar almacén?")) return;
+    const ok = await toast.confirm("¿Eliminar almacén?");
+    if (!ok) return;
     const res = await fetch(`/api/almacenes/${id}`, { method: "DELETE" });
     if (res.ok) {
       setAlmacenes((a) => a.filter((x) => x.id !== id));
+      toast.show("Almacén eliminado", "success");
     } else {
-      alert("Error al eliminar");
+      toast.show("Error al eliminar", "error");
     }
-  }, []);
+  }, [toast]);
 
   const handleDragStart = useCallback((id: number) => {
     setDragId(id);
@@ -241,9 +246,10 @@ export default function AlmacenesPage() {
 function FloatingAdd({ allowCreate }: { allowCreate: boolean }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const toast = useToast();
 
   const conectar = () => {
-    alert("Función de conexión pendiente");
+    toast.show("Función de conexión pendiente", "info");
   };
 
   return (

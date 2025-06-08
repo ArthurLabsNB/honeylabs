@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useToast } from "@/components/Toast";
 import { jsonOrNull } from "@lib/http";
 import { useRouter } from "next/navigation";
 
@@ -11,9 +12,10 @@ export default function NuevoAlmacenPage() {
   const [imagen, setImagen] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const toast = useToast();
 
   const crear = async () => {
-    if (!nombre.trim()) return alert("Nombre requerido");
+    if (!nombre.trim()) return toast.show("Nombre requerido", "error");
     setLoading(true);
     try {
       const form = new FormData();
@@ -25,12 +27,13 @@ export default function NuevoAlmacenPage() {
       const res = await fetch('/api/almacenes', { method: 'POST', body: form });
       const data = await jsonOrNull(res);
       if (res.ok) {
+        toast.show("Almacén creado", "success");
         router.push(`/dashboard/almacenes/${data.almacen.id}`);
       } else {
-        alert(data.error || "Error al crear");
+        toast.show(data.error || "Error al crear", "error");
       }
     } catch {
-      alert("Error de red");
+      toast.show("Error de red", "error");
     } finally {
       setLoading(false);
     }

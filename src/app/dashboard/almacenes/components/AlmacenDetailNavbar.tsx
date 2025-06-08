@@ -5,11 +5,13 @@ import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
 import { useDashboardUI } from "../../ui";
 import { NAVBAR_HEIGHT } from "../../constants";
+import { useToast } from "@/components/Toast";
 
 export default function AlmacenDetailNavbar() {
   const router = useRouter();
   const { id } = useParams();
   const { fullscreen } = useDashboardUI();
+  const toast = useToast();
   const [nombre, setNombre] = useState("");
   const [original, setOriginal] = useState("");
   const [guardando, setGuardando] = useState(false);
@@ -38,15 +40,17 @@ export default function AlmacenDetailNavbar() {
     });
     if (res.ok) {
       setOriginal(nombre);
+      toast.show("Almacén actualizado", "success");
     } else {
-      alert("Error al guardar");
+      toast.show("Error al guardar", "error");
     }
     setGuardando(false);
   };
 
   const volver = async () => {
     if (cambios) {
-      if (confirm("¿Guardar cambios antes de salir?")) {
+      const ok = await toast.confirm("¿Guardar cambios antes de salir?");
+      if (ok) {
         await guardar();
       }
     }
