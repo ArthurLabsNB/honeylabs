@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.59
+- Sincronizamos el avatar del usuario en tiempo real.
+- Almacenes guardan sus imágenes en la base de datos.
+- Servimos imágenes con cabeceras ETag para mejor caché.
 ## 0.2.58
 - Guardamos imágenes en base64 cuando no es posible escribir archivos.
 ## 0.2.57

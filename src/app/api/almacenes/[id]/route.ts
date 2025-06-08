@@ -2,8 +2,6 @@ export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@lib/prisma";
-import { promises as fs } from 'fs';
-import path from 'path';
 import { getUsuarioFromSession } from "@lib/auth";
 import crypto from 'node:crypto';
 
@@ -27,6 +25,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
         nombre: true,
         descripcion: true,
         imagenUrl: true,
+        imagenNombre: true,
         usuarios: {
           take: 1,
           select: {
@@ -48,7 +47,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
         id: almacen.id,
         nombre: almacen.nombre,
         descripcion: almacen.descripcion,
-        imagenUrl: almacen.imagenUrl,
+        imagenUrl: almacen.imagenNombre ? `/api/almacenes/foto?nombre=${encodeURIComponent(almacen.imagenNombre)}` : almacen.imagenUrl,
         encargado: almacen.usuarios[0]?.usuario.nombre ?? null,
         correo: almacen.usuarios[0]?.usuario.correo ?? null,
         ultimaActualizacion: almacen.movimientos[0]?.fecha ?? null,
@@ -96,14 +95,14 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
   let nombre = '';
   let descripcion = '';
+  let imagenNombre: string | null = null;
+  let imagenBuffer: Buffer | null = null;
   let imagenUrl: string | undefined = undefined;
-  let prevImagenUrl = '';
 
     if (req.headers.get('content-type')?.includes('multipart/form-data')) {
       const formData = await req.formData();
       nombre = String(formData.get('nombre') ?? '').trim();
       descripcion = String(formData.get('descripcion') ?? '').trim();
-      prevImagenUrl = String(formData.get('prevImagenUrl') ?? '');
       const archivo = formData.get('imagen') as File | null;
       if (archivo) {
         if (!IMAGE_TYPES.includes(archivo.type)) {
@@ -114,34 +113,29 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
           return NextResponse.json({ error: `Imagen demasiado grande. Máx: ${MAX_IMAGE_MB}MB` }, { status: 413 });
         }
         const nombreArchivo = `${crypto.randomUUID()}_${archivo.name}`;
-        const dir = path.join(process.cwd(), 'public/almacenes');
-        try {
-          await fs.mkdir(dir, { recursive: true });
-          await fs.writeFile(path.join(dir, nombreArchivo), buffer);
-          imagenUrl = `/almacenes/${nombreArchivo}`;
-        } catch {
-          imagenUrl = `data:${archivo.type};base64,${buffer.toString('base64')}`;
-        }
+        imagenNombre = nombreArchivo;
+        imagenBuffer = buffer;
+        imagenUrl = `/api/almacenes/foto?nombre=${encodeURIComponent(nombreArchivo)}`;
       }
     } else {
       const body = await req.json();
       nombre = body.nombre;
       descripcion = body.descripcion;
       imagenUrl = body.imagenUrl;
-      prevImagenUrl = body.prevImagenUrl ?? '';
+      imagenNombre = body.imagenNombre ?? null;
     }
 
     const almacen = await prisma.almacen.update({
       where: { id },
-      data: { nombre, descripcion, imagenUrl },
-      select: { id: true, nombre: true, descripcion: true, imagenUrl: true },
+      data: { nombre, descripcion, imagenUrl, imagenNombre, imagen: imagenBuffer as any },
+      select: { id: true, nombre: true, descripcion: true, imagenNombre: true },
     });
 
-    if (prevImagenUrl && imagenUrl && prevImagenUrl !== imagenUrl) {
-      const oldPath = path.join(process.cwd(), 'public', prevImagenUrl);
-      fs.unlink(oldPath).catch(() => {});
-    }
-    return NextResponse.json({ almacen });
+    const resp = {
+      ...almacen,
+      imagenUrl: almacen.imagenNombre ? `/api/almacenes/foto?nombre=${encodeURIComponent(almacen.imagenNombre)}` : null,
+    };
+    return NextResponse.json({ almacen: resp });
   } catch (err) {
     console.error('PUT /api/almacenes/[id]', err);
     return NextResponse.json({ error: 'Error al actualizar' }, { status: 500 });
