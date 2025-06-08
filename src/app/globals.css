@@ -372,3 +372,37 @@ html, body {
     margin-left: 0 !important;
   }
 }
+
+@media (min-width: 768px) {
+  .dashboard-navbar {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  .dashboard-sidebar {
+    padding-top: 1rem;
+  }
+  .dashboard-sidebar-footer {
+    padding: 1.5rem;
+  }
+  .tools-sidebar {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-navbar {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+  .dashboard-sidebar {
+    padding-top: 1.5rem;
+  }
+  .dashboard-sidebar-footer {
+    padding: 2rem;
+  }
+  .tools-sidebar {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
