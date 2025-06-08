@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.69
+- Reemplazamos el emoji de notificaciones por una etiqueta con conteo.
+- El listado de almacenes indica cuántas alertas no se han leído.
 ## 0.2.68
 - Añadimos animaciones al arrastrar almacenes para mejor feedback visual.
 ## 0.2.67

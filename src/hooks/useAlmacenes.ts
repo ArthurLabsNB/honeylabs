@@ -12,7 +12,7 @@ export interface Almacen {
   inventario?: number
   encargado?: string | null
   correo?: string | null
-  notificaciones?: boolean
+  notificaciones?: number
 }
 
 const fetcher = (url: string) => fetch(url).then(jsonOrNull)

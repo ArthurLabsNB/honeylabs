@@ -39,8 +39,13 @@ export default function AlmacenesGrid({ almacenes, onOpen }: { almacenes: Almace
                 {a.encargado || 'Sin encargado'}
                 {a.correo ? ` - ${a.correo}` : ''}
               </span>
-              {a.notificaciones && (
-                <span title="Notificaciones activas" className="text-[var(--dashboard-accent)]">🔔</span>
+              {a.notificaciones && a.notificaciones > 0 && (
+                <span
+                  title={`${a.notificaciones} notificaciones sin leer`}
+                  className="text-xs px-2 py-0.5 rounded-full bg-[var(--dashboard-accent)] text-[#101014] font-semibold"
+                >
+                  {a.notificaciones}
+                </span>
               )}
             </div>
           </div>
