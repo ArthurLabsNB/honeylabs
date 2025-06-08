@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.66
+- Movemos almacenes con las flechas del teclado y enter abre el seleccionado.
 ## 0.2.63
 - Unificamos la carga de almacenes con un hook que refresca cada diez segundos.
 ## 0.2.64

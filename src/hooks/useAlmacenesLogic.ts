@@ -112,6 +112,16 @@ export default function useAlmacenesLogic() {
     setDragId(null)
   }, [])
 
+  const moveItem = useCallback(
+    (id: number, dir: -1 | 1) => {
+      const index = almacenes.findIndex((a) => a.id === id)
+      const newIndex = index + dir
+      if (index === -1 || newIndex < 0 || newIndex >= almacenes.length) return
+      setAlmacenes((items) => arrayMove(items, index, newIndex))
+    },
+    [almacenes],
+  )
+
   const loading = loadingAlmacenes || loadingUsuario
 
   return {
@@ -122,6 +132,7 @@ export default function useAlmacenesLogic() {
     handleDragStart,
     handleDragEnter,
     handleDragEnd,
+    moveItem,
     eliminar,
   }
 }
