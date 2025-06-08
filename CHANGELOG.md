@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.75
+- Añadimos `vitest.config.ts` para resolver alias en las pruebas.
 ## 0.2.73
 - Permitimos scripts de analytics de Vercel en la CSP.
 ## 0.2.72
