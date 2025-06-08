@@ -3,6 +3,7 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@lib/prisma";
 import { getUsuarioFromSession } from "@lib/auth";
+import { hasManagePerms } from "@lib/permisos";
 import crypto from 'node:crypto';
 
 const MAX_IMAGE_MB = 5;
@@ -66,6 +67,13 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
     const id = Number(params.id);
+    const pertenece = await prisma.usuarioAlmacen.findFirst({
+      where: { usuarioId: usuario.id, almacenId: id },
+      select: { id: true },
+    });
+    if (!pertenece && !hasManagePerms(usuario)) {
+      return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
+    }
     await prisma.$transaction([
       prisma.usuarioAlmacen.deleteMany({ where: { almacenId: id } }),
       prisma.codigoAlmacen.deleteMany({ where: { almacenId: id } }),
@@ -92,6 +100,13 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
     const id = Number(params.id);
+    const pertenece = await prisma.usuarioAlmacen.findFirst({
+      where: { usuarioId: usuario.id, almacenId: id },
+      select: { id: true },
+    });
+    if (!pertenece && !hasManagePerms(usuario)) {
+      return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
+    }
 
   let nombre = '';
   let descripcion = '';
