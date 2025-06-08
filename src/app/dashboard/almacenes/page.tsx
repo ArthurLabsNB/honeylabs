@@ -86,21 +86,6 @@ export default function AlmacenesPage() {
       .finally(() => setLoading(false));
   }, [usuario, loadingUsuario, filter, error]);
 
-  if (error)
-    return (
-      <div className="p-4 text-red-500" data-oid="u6cxvra">
-        {error}
-      </div>
-    );
-
-  if (loading || loadingUsuario)
-    return (
-      <div className="p-4" data-oid="8xwpkrd">
-        Cargando...
-      </div>
-    );
-
-
   const eliminar = useCallback(async (id: number) => {
     if (!confirm("¿Eliminar almacén?")) return;
     const res = await fetch(`/api/almacenes/${id}`, { method: "DELETE" });
@@ -129,6 +114,20 @@ export default function AlmacenesPage() {
   const handleDragEnd = useCallback(() => {
     setDragId(null);
   }, []);
+
+  if (error)
+    return (
+      <div className="p-4 text-red-500" data-oid="u6cxvra">
+        {error}
+      </div>
+    );
+
+  if (loading || loadingUsuario)
+    return (
+      <div className="p-4" data-oid="8xwpkrd">
+        Cargando...
+      </div>
+    );
 
   const renderList = () => (
     <ul className="space-y-2">

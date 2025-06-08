@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.55
+
+- Corregimos la página de almacenes moviendo los hooks antes de los retornos
+  condicionales.
 ## 0.2.54
 
 - Evitamos errores de Next Image usando `<img>` para los avatares dinámicos.
