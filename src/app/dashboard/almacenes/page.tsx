@@ -22,6 +22,7 @@ export default function AlmacenesPage() {
     handleDragStart,
     handleDragEnter,
     handleDragEnd,
+    moveItem,
     eliminar,
   } = useAlmacenesLogic();
 
@@ -63,6 +64,7 @@ export default function AlmacenesPage() {
           onDragStart={handleDragStart}
           onDragEnter={handleDragEnter}
           onDragEnd={handleDragEnd}
+          onMove={(id, dir) => moveItem(id, dir)}
         />
       ) : view === "grid" ? (
         <AlmacenesGrid

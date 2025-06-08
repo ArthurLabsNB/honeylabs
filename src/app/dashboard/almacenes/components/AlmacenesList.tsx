@@ -13,6 +13,7 @@ interface Props {
   onDragStart: (id: number) => void;
   onDragEnter: (id: number) => void;
   onDragEnd: () => void;
+  onMove: (id: number, dir: number) => void;
 }
 
 export default function AlmacenesList({
@@ -23,6 +24,7 @@ export default function AlmacenesList({
   onDragStart,
   onDragEnter,
   onDragEnd,
+  onMove,
 }: Props) {
   return (
     <ul className="space-y-2">
@@ -36,12 +38,14 @@ export default function AlmacenesList({
           onDragStart={() => onDragStart(a.id)}
           onDragEnter={() => onDragEnter(a.id)}
           onDragEnd={onDragEnd}
+          onMove={(dir) => onMove(a.id, dir)}
         />
       ))}
     </ul>
   );
 }
 
+// Flechas arriba y abajo permiten reordenar el elemento cuando tiene el foco.
 const SortableAlmacen = memo(function SortableAlmacen({
   almacen,
   onEdit,
@@ -50,6 +54,7 @@ const SortableAlmacen = memo(function SortableAlmacen({
   onDragStart,
   onDragEnter,
   onDragEnd,
+  onMove,
 }: {
   almacen: Almacen;
   onEdit: () => void;
@@ -58,6 +63,7 @@ const SortableAlmacen = memo(function SortableAlmacen({
   onDragStart: () => void;
   onDragEnter: () => void;
   onDragEnd: () => void;
+  onMove: (dir: number) => void;
 }) {
   const style = {};
 
@@ -69,6 +75,18 @@ const SortableAlmacen = memo(function SortableAlmacen({
       onDragEnter={onDragEnter}
       onDragEnd={onDragEnd}
       onDragOver={(e) => e.preventDefault()}
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'ArrowUp') {
+          e.preventDefault()
+          onMove(-1)
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault()
+          onMove(1)
+        } else if (e.key === 'Enter') {
+          onOpen()
+        }
+      }}
       className="bg-white/5 hover:bg-white/10 p-3 rounded-md flex gap-3 cursor-grab active:cursor-grabbing"
     >
       <div className="w-20 h-20 flex-shrink-0 rounded-md overflow-hidden bg-white/10" onClick={onOpen}>
