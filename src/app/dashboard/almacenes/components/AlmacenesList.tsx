@@ -105,14 +105,18 @@ const SortableAlmacen = memo(function SortableAlmacen({
           onClick={onEdit}
           className="p-1 text-blue-500 hover:text-blue-400"
           title="Editar"
+          aria-label="Editar"
         >
+          <span className="sr-only">Editar</span>
           <Pencil className="w-4 h-4" />
         </button>
         <button
           onClick={onDelete}
           className="p-1 text-red-500 hover:text-red-400"
           title="Eliminar"
+          aria-label="Eliminar"
         >
+          <span className="sr-only">Eliminar</span>
           <Trash className="w-4 h-4" />
         </button>
       </div>
