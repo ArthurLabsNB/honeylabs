@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { Pencil, Trash } from "lucide-react";
+import { Pencil, Trash, ChevronUp, ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
 import { memo, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -132,6 +132,24 @@ const SortableAlmacen = memo(function SortableAlmacen({
         </div>
       </div>
       <div className="flex flex-col items-end ml-2">
+        <button
+          onClick={() => onMove(-1)}
+          className="p-1 text-white/70 hover:text-white"
+          title="Subir"
+          aria-label="Subir"
+        >
+          <span className="sr-only">Subir</span>
+          <ChevronUp className="w-4 h-4" />
+        </button>
+        <button
+          onClick={() => onMove(1)}
+          className="p-1 text-white/70 hover:text-white"
+          title="Bajar"
+          aria-label="Bajar"
+        >
+          <span className="sr-only">Bajar</span>
+          <ChevronDown className="w-4 h-4" />
+        </button>
         <button
           onClick={onEdit}
           className="p-1 text-blue-500 hover:text-blue-400"

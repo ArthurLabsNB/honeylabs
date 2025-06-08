@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.83
+- Añadí controles de subir y bajar en las tarjetas para ordenar almacenes.
 ## 0.2.82
 - Ajusté las rutas de perfil para resolver el alias de `http`.
 ## 0.2.81
