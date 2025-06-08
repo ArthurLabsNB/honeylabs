@@ -2,7 +2,8 @@
 import Image from "next/image";
 import { Pencil, Trash } from "lucide-react";
 import { motion } from "framer-motion";
-import { memo } from "react";
+import { memo, useState } from "react";
+import { cn } from "@/lib/utils";
 import type { Almacen } from "@/hooks/useAlmacenes";
 
 interface Props {
@@ -66,14 +67,23 @@ const SortableAlmacen = memo(function SortableAlmacen({
   onMove: (dir: number) => void;
 }) {
   const style = {};
+  const [dragging, setDragging] = useState(false);
 
   return (
     <motion.li
       style={style}
       draggable
-      onDragStart={onDragStart}
+      whileDrag={{ scale: 1.05 }}
+      transition={{ type: "spring", stiffness: 350, damping: 25 }}
+      onDragStart={(e) => {
+        setDragging(true);
+        onDragStart();
+      }}
       onDragEnter={onDragEnter}
-      onDragEnd={onDragEnd}
+      onDragEnd={(e) => {
+        setDragging(false);
+        onDragEnd();
+      }}
       onDragOver={(e) => e.preventDefault()}
       tabIndex={0}
       onKeyDown={(e) => {
@@ -87,7 +97,10 @@ const SortableAlmacen = memo(function SortableAlmacen({
           onOpen()
         }
       }}
-      className="bg-white/5 hover:bg-white/10 p-3 rounded-md flex gap-3 cursor-grab active:cursor-grabbing"
+      className={cn(
+        "bg-white/5 hover:bg-white/10 p-3 rounded-md flex gap-3 cursor-grab active:cursor-grabbing",
+        dragging && "shadow-lg ring-2 ring-[var(--dashboard-accent)]"
+      )}
     >
       <div className="w-20 h-20 flex-shrink-0 rounded-md overflow-hidden bg-white/10" onClick={onOpen}>
         <Image
