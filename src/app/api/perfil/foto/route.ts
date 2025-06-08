@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@lib/prisma'
 import { createHash } from 'crypto'
 import * as logger from '@lib/logger'
-import { respuestaError } from '@/lib/http'
+import { respuestaError } from '@lib/http'
 
 // Mime types permitidos para evitar servir archivos no deseados
 const MIME_BY_EXT: Record<string, string> = {

@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.82
+- Ajusté las rutas de perfil para resolver el alias de `http`.
 ## 0.2.81
 - Mejoré los logs del backend y unifiqué las respuestas de error.
 - Ajusté `/api/perfil` y la ruta de foto para mayor estabilidad.

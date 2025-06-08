@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import { SESSION_COOKIE, sessionCookieOptions } from '@lib/constants';
 import prisma from '@lib/prisma';
 import * as logger from '@lib/logger'
-import { respuestaError } from '@/lib/http'
+import { respuestaError } from '@lib/http'
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
