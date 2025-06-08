@@ -1,5 +1,19 @@
 "use client";
 import { useEffect, useState } from "react";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { jsonOrNull } from "@lib/http";
 import { useRouter } from "next/navigation";
 import { useAlmacenesUI } from "./ui";
@@ -28,6 +42,7 @@ export default function AlmacenesPage() {
   const [error, setError] = useState("");
   const router = useRouter();
   const { view, filter, registerCreate } = useAlmacenesUI();
+  const sensors = useSensors(useSensor(PointerSensor));
 
   useEffect(() => {
     if (loadingUsuario) return;
@@ -91,23 +106,6 @@ export default function AlmacenesPage() {
       </div>
     );
 
-  const moveUp = (idx: number) => {
-    if (idx === 0) return;
-    setAlmacenes((a) => {
-      const arr = [...a];
-      [arr[idx - 1], arr[idx]] = [arr[idx], arr[idx - 1]];
-      return arr;
-    });
-  };
-
-  const moveDown = (idx: number) => {
-    if (idx === almacenes.length - 1) return;
-    setAlmacenes((a) => {
-      const arr = [...a];
-      [arr[idx], arr[idx + 1]] = [arr[idx + 1], arr[idx]];
-      return arr;
-    });
-  };
 
   const eliminar = async (id: number) => {
     if (!confirm("¿Eliminar almacén?")) return;
@@ -119,64 +117,34 @@ export default function AlmacenesPage() {
     }
   };
 
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = almacenes.findIndex((a) => a.id === active.id);
+    const newIndex = almacenes.findIndex((a) => a.id === over.id);
+    setAlmacenes((items) => arrayMove(items, oldIndex, newIndex));
+  };
+
   const renderList = () => (
-    <ul className="divide-y" data-oid="riuw8_8">
-      {almacenes.map((a, idx) => (
-        <li
-          key={a.id}
-          className="p-2 hover:bg-white/5 flex justify-between"
-          data-oid="d8g91a_"
-        >
-          <div
-            className="cursor-pointer"
-            onClick={() => router.push(`/dashboard/almacenes/${a.id}`)}
-            data-oid="8t-4-9."
-          >
-            <h3 className="font-semibold" data-oid="-qh5kru">
-              {a.nombre}
-            </h3>
-            {a.descripcion && (
-              <p
-                className="text-sm text-[var(--dashboard-muted)]"
-                data-oid="jgiurkr"
-              >
-                {a.descripcion}
-              </p>
-            )}
-          </div>
-          <div className="flex items-center gap-1 text-sm" data-oid="lujybah">
-            <button
-              onClick={() => moveUp(idx)}
-              className="px-1"
-              data-oid="2ay3nmw"
-            >
-              ↑
-            </button>
-            <button
-              onClick={() => moveDown(idx)}
-              className="px-1"
-              data-oid="l4bac8w"
-            >
-              ↓
-            </button>
-            <button
-              onClick={() => router.push(`/dashboard/almacenes/${a.id}/editar`)}
-              className="px-1 text-blue-500"
-              data-oid="_g7zdy8"
-            >
-              ✎
-            </button>
-            <button
-              onClick={() => eliminar(a.id)}
-              className="px-1 text-red-500"
-              data-oid="zwm-2s_"
-            >
-              ✕
-            </button>
-          </div>
-        </li>
-      ))}
-    </ul>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+    >
+      <SortableContext items={almacenes.map((a) => a.id)} strategy={verticalListSortingStrategy}>
+        <ul className="space-y-2">
+          {almacenes.map((a) => (
+            <SortableAlmacen
+              key={a.id}
+              almacen={a}
+              onEdit={() => router.push(`/dashboard/almacenes/${a.id}/editar`)}
+              onDelete={() => eliminar(a.id)}
+              onOpen={() => router.push(`/dashboard/almacenes/${a.id}`)}
+            />
+          ))}
+        </ul>
+      </SortableContext>
+    </DndContext>
   );
 
   const renderGrid = () => (
@@ -303,5 +271,68 @@ function FloatingAdd({ allowCreate }: { allowCreate: boolean }) {
         </div>
       )}
     </div>
+  );
+}
+
+function SortableAlmacen({
+  almacen,
+  onEdit,
+  onDelete,
+  onOpen,
+}: {
+  almacen: Almacen;
+  onEdit: () => void;
+  onDelete: () => void;
+  onOpen: () => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: almacen.id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <li
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className="bg-white/5 hover:bg-white/10 p-3 rounded-md flex gap-3 cursor-grab active:cursor-grabbing"
+    >
+      <div className="w-16 h-16 flex-shrink-0 rounded-md overflow-hidden bg-white/10" onClick={onOpen}>
+        <img
+          src={almacen.imagenUrl || '/ilustracion-almacen-3d.svg'}
+          alt={almacen.nombre}
+          className="object-cover w-full h-full"
+        />
+      </div>
+      <div className="flex flex-col flex-1" onClick={onOpen}>
+        <div className="flex justify-between items-center">
+          <h3 className="font-semibold">{almacen.nombre}</h3>
+          <span className="text-sm">{almacen.inventario ?? 0} u.</span>
+        </div>
+        {almacen.descripcion && (
+          <p className="text-xs text-[var(--dashboard-muted)] mt-1">
+            {almacen.descripcion}
+          </p>
+        )}
+        <div className="flex justify-between text-xs mt-auto">
+          <span>{almacen.encargado || 'Sin encargado'}</span>
+          {almacen.ultimaActualizacion && (
+            <span>{new Date(almacen.ultimaActualizacion).toLocaleDateString()}</span>
+          )}
+        </div>
+      </div>
+      <div className="flex flex-col items-end ml-2">
+        <button onClick={onEdit} className="text-blue-500 text-sm px-1">✎</button>
+        <button onClick={onDelete} className="text-red-500 text-sm px-1">✕</button>
+      </div>
+    </li>
   );
 }

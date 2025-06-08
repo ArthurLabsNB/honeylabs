@@ -8,6 +8,7 @@ export default function NuevoAlmacenPage() {
   const [descripcion, setDescripcion] = useState("");
   const [funciones, setFunciones] = useState("");
   const [permisos, setPermisos] = useState("");
+  const [imagenUrl, setImagenUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -18,7 +19,7 @@ export default function NuevoAlmacenPage() {
       const res = await fetch("/api/almacenes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre, descripcion, funciones, permisosPredeterminados: permisos }),
+        body: JSON.stringify({ nombre, descripcion, funciones, permisosPredeterminados: permisos, imagenUrl }),
       });
       const data = await jsonOrNull(res);
       if (res.ok) {
@@ -67,6 +68,13 @@ export default function NuevoAlmacenPage() {
           placeholder="Permisos predeterminados"
           value={permisos}
           onChange={(e) => setPermisos(e.target.value)}
+        />
+
+        <input
+          className="border p-2 rounded w-full"
+          placeholder="Imagen (URL)"
+          value={imagenUrl}
+          onChange={(e) => setImagenUrl(e.target.value)}
         />
 
         <button

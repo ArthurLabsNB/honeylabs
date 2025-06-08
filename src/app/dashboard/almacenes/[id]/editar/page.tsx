@@ -8,6 +8,7 @@ export default function EditarAlmacenPage() {
   const router = useRouter();
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
+  const [imagenUrl, setImagenUrl] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,6 +18,7 @@ export default function EditarAlmacenPage() {
         if (d.almacen) {
           setNombre(d.almacen.nombre);
           setDescripcion(d.almacen.descripcion || "");
+          setImagenUrl(d.almacen.imagenUrl || "");
         }
       })
       .finally(() => setLoading(false));
@@ -28,7 +30,7 @@ export default function EditarAlmacenPage() {
       const res = await fetch(`/api/almacenes/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre, descripcion }),
+        body: JSON.stringify({ nombre, descripcion, imagenUrl }),
       });
       const data = await jsonOrNull(res);
       if (res.ok) {
@@ -70,6 +72,13 @@ export default function EditarAlmacenPage() {
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
           data-oid="usl33-1"
+        />
+
+        <input
+          className="border p-2 rounded w-full"
+          placeholder="Imagen (URL)"
+          value={imagenUrl}
+          onChange={(e) => setImagenUrl(e.target.value)}
         />
 
         <button
