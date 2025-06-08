@@ -22,12 +22,38 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const id = Number(params.id);
     const almacen = await prisma.almacen.findUnique({
       where: { id },
-      select: { id: true, nombre: true, descripcion: true, imagenUrl: true },
+      select: {
+        id: true,
+        nombre: true,
+        descripcion: true,
+        imagenUrl: true,
+        usuarios: {
+          take: 1,
+          select: {
+            usuario: { select: { nombre: true, correo: true } },
+          },
+        },
+        movimientos: {
+          orderBy: { fecha: 'desc' },
+          take: 1,
+          select: { fecha: true },
+        },
+      },
     });
     if (!almacen) {
       return NextResponse.json({ error: "No encontrado" }, { status: 404 });
     }
-    return NextResponse.json({ almacen });
+    return NextResponse.json({
+      almacen: {
+        id: almacen.id,
+        nombre: almacen.nombre,
+        descripcion: almacen.descripcion,
+        imagenUrl: almacen.imagenUrl,
+        encargado: almacen.usuarios[0]?.usuario.nombre ?? null,
+        correo: almacen.usuarios[0]?.usuario.correo ?? null,
+        ultimaActualizacion: almacen.movimientos[0]?.fecha ?? null,
+      },
+    });
   } catch (err) {
     console.error("Error en /api/almacenes/[id]", err);
     return NextResponse.json({ error: "Error al obtener almacén" }, { status: 500 });

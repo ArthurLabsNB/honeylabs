@@ -28,12 +28,23 @@ export default function EditarAlmacenPage() {
   const guardar = async () => {
     setLoading(true);
     try {
-      const form = new FormData();
-      form.append('nombre', nombre);
-      form.append('descripcion', descripcion);
-      if (imagen) form.append('imagen', imagen);
-      else form.append('imagenUrl', imagenUrl);
-      const res = await fetch(`/api/almacenes/${id}`, { method: 'PUT', body: form });
+      let body: FormData | string;
+      let headers: Record<string, string> | undefined;
+      if (imagen) {
+        const form = new FormData();
+        form.append('nombre', nombre);
+        form.append('descripcion', descripcion);
+        form.append('imagen', imagen);
+        body = form;
+      } else {
+        body = JSON.stringify({ nombre, descripcion, imagenUrl });
+        headers = { 'Content-Type': 'application/json' };
+      }
+      const res = await fetch(`/api/almacenes/${id}`, {
+        method: 'PUT',
+        body,
+        headers,
+      });
       const data = await jsonOrNull(res);
       if (res.ok) {
         router.push(`/dashboard/almacenes/${id}`);
