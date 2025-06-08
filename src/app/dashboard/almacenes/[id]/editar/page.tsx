@@ -35,6 +35,7 @@ export default function EditarAlmacenPage() {
         form.append('nombre', nombre);
         form.append('descripcion', descripcion);
         form.append('imagen', imagen);
+        form.append('prevImagenUrl', imagenUrl);
         body = form;
       } else {
         body = JSON.stringify({ nombre, descripcion, imagenUrl });

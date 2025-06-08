@@ -67,7 +67,18 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
     const id = Number(params.id);
-    await prisma.almacen.delete({ where: { id } });
+    await prisma.$transaction([
+      prisma.usuarioAlmacen.deleteMany({ where: { almacenId: id } }),
+      prisma.codigoAlmacen.deleteMany({ where: { almacenId: id } }),
+      prisma.movimiento.deleteMany({ where: { almacenId: id } }),
+      prisma.eventoAlmacen.deleteMany({ where: { almacenId: id } }),
+      prisma.novedadAlmacen.deleteMany({ where: { almacenId: id } }),
+      prisma.documentoAlmacen.deleteMany({ where: { almacenId: id } }),
+      prisma.incidencia.deleteMany({ where: { almacenId: id } }),
+      prisma.notificacion.deleteMany({ where: { almacenId: id } }),
+      prisma.alerta.deleteMany({ where: { almacenId: id } }),
+      prisma.almacen.delete({ where: { id } }),
+    ]);
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error('DELETE /api/almacenes/[id]', err);
@@ -83,14 +94,16 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     }
     const id = Number(params.id);
 
-    let nombre = '';
-    let descripcion = '';
-    let imagenUrl: string | undefined = undefined;
+  let nombre = '';
+  let descripcion = '';
+  let imagenUrl: string | undefined = undefined;
+  let prevImagenUrl = '';
 
     if (req.headers.get('content-type')?.includes('multipart/form-data')) {
       const formData = await req.formData();
       nombre = String(formData.get('nombre') ?? '').trim();
       descripcion = String(formData.get('descripcion') ?? '').trim();
+      prevImagenUrl = String(formData.get('prevImagenUrl') ?? '');
       const archivo = formData.get('imagen') as File | null;
       if (archivo) {
         if (!IMAGE_TYPES.includes(archivo.type)) {
@@ -111,6 +124,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       nombre = body.nombre;
       descripcion = body.descripcion;
       imagenUrl = body.imagenUrl;
+      prevImagenUrl = body.prevImagenUrl ?? '';
     }
 
     const almacen = await prisma.almacen.update({
@@ -118,6 +132,11 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       data: { nombre, descripcion, imagenUrl },
       select: { id: true, nombre: true, descripcion: true, imagenUrl: true },
     });
+
+    if (prevImagenUrl && imagenUrl && prevImagenUrl !== imagenUrl) {
+      const oldPath = path.join(process.cwd(), 'public', prevImagenUrl);
+      fs.unlink(oldPath).catch(() => {});
+    }
     return NextResponse.json({ almacen });
   } catch (err) {
     console.error('PUT /api/almacenes/[id]', err);
