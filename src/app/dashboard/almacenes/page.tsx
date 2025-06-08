@@ -11,6 +11,7 @@ import { getMainRole, hasManagePerms, normalizeTipoCuenta } from "@lib/permisos"
 import useSession from "@/hooks/useSession";
 import { useToast } from "@/components/Toast";
 import Spinner from "@/components/Spinner";
+import EmptyState from "@/components/EmptyState";
 
 interface Almacen {
   id: number;
@@ -230,69 +231,22 @@ export default function AlmacenesPage() {
     </ul>
   );
 
+  if (almacenes.length === 0)
+    return (
+      <div className="p-4" data-oid="j7.ylhr">
+        {usuario && (
+          <EmptyState allowCreate={hasManagePerms(usuario)} />
+        )}
+      </div>
+    );
+
   return (
-    <div className="p-4 relative" data-oid="j7.ylhr">
-      {almacenes.length === 0 && usuario && (
-        <FloatingAdd allowCreate={hasManagePerms(usuario)} />
-      )}
+    <div className="p-4" data-oid="j7.ylhr">
       {view === "list"
         ? renderList()
         : view === "grid"
           ? renderGrid()
           : renderTree()}
-    </div>
-  );
-}
-
-function FloatingAdd({ allowCreate }: { allowCreate: boolean }) {
-  const router = useRouter();
-  const [open, setOpen] = useState(false);
-  const toast = useToast();
-
-  const conectar = () => {
-    toast.show("Función de conexión pendiente", "info");
-  };
-
-  return (
-    <div className="fixed bottom-6 right-6 z-40">
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-12 h-12 rounded-full bg-[var(--dashboard-accent)] text-white text-2xl shadow-lg"
-      >
-        +
-      </button>
-      {open && (
-        <div className="absolute bottom-14 right-0 bg-[var(--dashboard-sidebar)] border border-[var(--dashboard-border)] rounded-md shadow-lg overflow-hidden flex flex-col">
-          {allowCreate ? (
-            <>
-              <button
-                onClick={() => router.push('/dashboard/almacenes/nuevo')}
-                className="px-4 py-2 text-left hover:bg-white/5"
-              >
-                Crear nuevo almacén
-              </button>
-              <button
-                onClick={conectar}
-                className="px-4 py-2 text-left hover:bg-white/5 border-t border-[var(--dashboard-border)]"
-              >
-                Conectar con código
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                onClick={conectar}
-                className="px-4 py-2 text-left hover:bg-white/5"
-              >
-                Conectar con código
-              </button>
-              <span className="p-2 text-xs text-[var(--dashboard-muted)] max-w-xs">
-                Tu cuenta no permite crear almacenes. Usa un código de conexión.
-              </span>
-            </>
-          )}
-        </div>
-      )}
     </div>
   );
 }

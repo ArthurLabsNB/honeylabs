@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.62
+- Mostramos un estado vacío con opciones para crear o conectar almacenes.
 ## 0.2.61
 - Incluimos un nuevo componente de carga y lo usamos en diversas vistas.
 ## 0.2.60
