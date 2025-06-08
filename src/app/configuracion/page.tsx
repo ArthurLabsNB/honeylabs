@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { jsonOrNull } from "@lib/http";
 
 interface Perfil {
@@ -224,9 +225,11 @@ export default function Configuracion() {
           {/* FOTO DE PERFIL */}
           <div className="flex flex-col items-center gap-2" data-oid="o-0lxm:">
             <div className="relative group" data-oid="5bm8.2p">
-              <img
+              <Image
                 src={fotoPreview || "/avatar-default.png"}
                 alt="Foto de perfil"
+                width={112}
+                height={112}
                 className="w-28 h-28 rounded-full border-4 border-yellow-300 object-cover bg-yellow-100 shadow-lg transition group-hover:ring-4 group-hover:ring-amber-200"
                 data-oid=".aa5.n4"
               />

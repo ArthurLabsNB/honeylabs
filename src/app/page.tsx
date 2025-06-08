@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, ReactNode, useRef } from "react";
+import Image from "next/image";
 import { jsonOrNull } from "@lib/http";
 import clsx from "clsx";
 
@@ -125,9 +126,11 @@ function AboutSection() {
           style={{ perspective: "1000px", outline: "none" }}
           data-oid=":w3kew."
         >
-          <img
+          <Image
             src="/ilustracion-almacen-3d.svg"
             alt="Ilustración Almacén"
+            width={320}
+            height={320}
             className="w-80 h-80 md:w-[26rem] md:h-[26rem] object-cover rounded-2xl shadow-2xl border-2 border-amber-100 group-hover:scale-105 group-hover:rotate-2 group-hover:shadow-3xl transition-transform duration-500"
             draggable={false}
             loading="lazy"
@@ -394,9 +397,11 @@ function PartnersSection() {
               aria-expanded={open === i}
               data-oid="t4atnu5"
             >
-              <img
+              <Image
                 src={a.img}
                 alt={a.nombre}
+                width={a.principal ? 96 : 80}
+                height={a.principal ? 96 : 80}
                 className={clsx(
                   "rounded-2xl shadow border-2 object-cover transition",
                   a.principal

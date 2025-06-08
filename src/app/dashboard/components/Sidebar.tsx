@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useDashboardUI } from "../ui";
 import type { Usuario } from "@/types/usuario";
+import Image from "next/image";
 import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
 import {
   Home,
@@ -193,9 +194,11 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
       {/* Footer: usuario */}
       <div className="dashboard-sidebar-footer mb-4" data-oid="3f:v6ch">
         {usuario.avatarUrl ? (
-          <img
+          <Image
             src={usuario.avatarUrl}
             alt="Avatar"
+            width={48}
+            height={48}
             className="w-12 h-12 rounded-full mb-2 border-2 border-[var(--dashboard-accent)]"
             data-oid="zye-v51"
           />

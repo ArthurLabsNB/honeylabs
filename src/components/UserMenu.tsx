@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import clsx from "clsx";
 import { usePathname, useRouter } from "next/navigation";
 import { jsonOrNull } from "@lib/http";
@@ -168,9 +169,11 @@ export default function UserMenu({
   const renderAvatar = () => {
     if (fotoPerfil) {
       return (
-        <img
+        <Image
           src={fotoPerfil}
           alt="Avatar"
+          width={36}
+          height={36}
           className="h-9 w-9 rounded-full object-cover border-2 border-amber-300 shadow"
         />
       );
