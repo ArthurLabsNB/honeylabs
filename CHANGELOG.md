@@ -1,7 +1,8 @@
 # Changelog
 ## 0.2.86
+- Añadí `sizes` en todas las imágenes para optimizar la carg
 - Reemplazamos medidas fijas por variables CSS en el dashboard.
-- Definimos valores con `clamp()` para adaptar el layout.
+- Definimos valores con `clamp()` para adaptar el la
 ## 0.2.85
 - Implementé redirección automática al login cuando no hay sesión.
 - Ajusté el layout para validar la autenticación en todas las vistas.

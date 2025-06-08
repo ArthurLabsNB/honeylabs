@@ -29,6 +29,7 @@ export default function AlmacenesGrid({
               alt={a.nombre}
               width={96}
               height={96}
+              sizes="96px"
               className="object-cover w-full h-full"
             />
           </div>
