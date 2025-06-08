@@ -125,9 +125,13 @@ export async function POST(req: NextRequest) {
         }
         const nombreArchivo = `${crypto.randomUUID()}_${archivo.name}`;
         const dir = path.join(process.cwd(), 'public/almacenes');
-        await fs.mkdir(dir, { recursive: true });
-        await fs.writeFile(path.join(dir, nombreArchivo), buffer);
-        imagenUrl = `/almacenes/${nombreArchivo}`;
+        try {
+          await fs.mkdir(dir, { recursive: true });
+          await fs.writeFile(path.join(dir, nombreArchivo), buffer);
+          imagenUrl = `/almacenes/${nombreArchivo}`;
+        } catch {
+          imagenUrl = `data:${archivo.type};base64,${buffer.toString('base64')}`;
+        }
       }
     } else {
       const body = await req.json();
