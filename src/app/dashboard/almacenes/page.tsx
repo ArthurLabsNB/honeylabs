@@ -1,19 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import {
-  DndContext,
-  closestCenter,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  useSortable,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { jsonOrNull } from "@lib/http";
 import { useRouter } from "next/navigation";
 import { useAlmacenesUI } from "./ui";
@@ -34,6 +20,13 @@ interface Almacen {
   notificaciones?: boolean;
 }
 
+function arrayMove<T>(arr: T[], from: number, to: number): T[] {
+  const newArr = arr.slice();
+  const [item] = newArr.splice(from, 1);
+  newArr.splice(to, 0, item);
+  return newArr;
+}
+
 export default function AlmacenesPage() {
   const allowed = ["admin", "administrador", "institucional", "empresarial", "individual"];
   const { usuario, loading: loadingUsuario } = useSession();
@@ -42,7 +35,7 @@ export default function AlmacenesPage() {
   const [error, setError] = useState("");
   const router = useRouter();
   const { view, filter, registerCreate } = useAlmacenesUI();
-  const sensors = useSensors(useSensor(PointerSensor));
+  const [dragId, setDragId] = useState<number | null>(null);
 
   useEffect(() => {
     if (loadingUsuario) return;
@@ -117,34 +110,37 @@ export default function AlmacenesPage() {
     }
   };
 
-  const handleDragEnd = (event: any) => {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-    const oldIndex = almacenes.findIndex((a) => a.id === active.id);
-    const newIndex = almacenes.findIndex((a) => a.id === over.id);
+  const handleDragStart = (id: number) => {
+    setDragId(id);
+  };
+
+  const handleDragEnter = (id: number) => {
+    if (dragId === null || dragId === id) return;
+    const oldIndex = almacenes.findIndex((a) => a.id === dragId);
+    const newIndex = almacenes.findIndex((a) => a.id === id);
     setAlmacenes((items) => arrayMove(items, oldIndex, newIndex));
+    setDragId(id);
+  };
+
+  const handleDragEnd = () => {
+    setDragId(null);
   };
 
   const renderList = () => (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
-    >
-      <SortableContext items={almacenes.map((a) => a.id)} strategy={verticalListSortingStrategy}>
-        <ul className="space-y-2">
-          {almacenes.map((a) => (
-            <SortableAlmacen
-              key={a.id}
-              almacen={a}
-              onEdit={() => router.push(`/dashboard/almacenes/${a.id}/editar`)}
-              onDelete={() => eliminar(a.id)}
-              onOpen={() => router.push(`/dashboard/almacenes/${a.id}`)}
-            />
-          ))}
-        </ul>
-      </SortableContext>
-    </DndContext>
+    <ul className="space-y-2">
+      {almacenes.map((a) => (
+        <SortableAlmacen
+          key={a.id}
+          almacen={a}
+          onEdit={() => router.push(`/dashboard/almacenes/${a.id}/editar`)}
+          onDelete={() => eliminar(a.id)}
+          onOpen={() => router.push(`/dashboard/almacenes/${a.id}`)}
+          onDragStart={() => handleDragStart(a.id)}
+          onDragEnter={() => handleDragEnter(a.id)}
+          onDragEnd={handleDragEnd}
+        />
+      ))}
+    </ul>
   );
 
   const renderGrid = () => (
@@ -279,30 +275,28 @@ function SortableAlmacen({
   onEdit,
   onDelete,
   onOpen,
+  onDragStart,
+  onDragEnter,
+  onDragEnd,
 }: {
   almacen: Almacen;
   onEdit: () => void;
   onDelete: () => void;
   onOpen: () => void;
+  onDragStart: () => void;
+  onDragEnter: () => void;
+  onDragEnd: () => void;
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: almacen.id });
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
+  const style = {};
 
   return (
     <li
-      ref={setNodeRef}
       style={style}
-      {...attributes}
-      {...listeners}
+      draggable
+      onDragStart={onDragStart}
+      onDragEnter={onDragEnter}
+      onDragEnd={onDragEnd}
+      onDragOver={(e) => e.preventDefault()}
       className="bg-white/5 hover:bg-white/10 p-3 rounded-md flex gap-3 cursor-grab active:cursor-grabbing"
     >
       <div className="w-16 h-16 flex-shrink-0 rounded-md overflow-hidden bg-white/10" onClick={onOpen}>

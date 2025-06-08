@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.51
+
+- Reimplementación de arrastre sin dependencias externas para evitar errores de compilación.
 ## 0.2.50
 
 - Vista de almacenes rediseñada en forma de tarjetas con imagen destacada.
