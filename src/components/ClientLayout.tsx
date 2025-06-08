@@ -1,9 +1,12 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import CookieBanner from "./CookieBanner";
+import Spinner from "./Spinner";
+import useSession from "@/hooks/useSession";
+import { useEffect } from "react";
 
 // Expande aquí según tus rutas a ocultar (puedes agregar más regex)
 const RUTAS_OCULTAR_NAV = [
@@ -24,7 +27,26 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { usuario, loading } = useSession();
   const ocultarNavbar = debeOcultarNavbarFooter(pathname);
+  const esRutaAuth = /^\/auth(\/|$)|^\/login$|^\/registro$/.test(pathname);
+
+  useEffect(() => {
+    if (!loading && !usuario && !esRutaAuth) {
+      router.replace("/login");
+    }
+  }, [usuario, loading, esRutaAuth, router]);
+
+  if (!esRutaAuth && loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (!esRutaAuth && !loading && !usuario) return null;
 
   return (
     <>
