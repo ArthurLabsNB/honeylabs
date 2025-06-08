@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.81
+- Mejoré los logs del backend y unifiqué las respuestas de error.
+- Ajusté `/api/perfil` y la ruta de foto para mayor estabilidad.
+- Corregí la carga de la imagen de perfil en el menú de usuario.
 ## 0.2.80
 - Añadimos pruebas de login y registro con mocks de Prisma.
 - Documentamos cómo ejecutar las pruebas.

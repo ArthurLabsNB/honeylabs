@@ -134,11 +134,12 @@ export default function UserMenu({
     if (usuario?.imagen) {
       setFotoPerfil(usuario.imagen);
     } else if (usuario?.correo) {
-      fetch(`/api/perfil/foto?correo=${encodeURIComponent(usuario.correo)}`, { cache: 'no-store' })
+      fetch(`/api/perfil/foto?correo=${encodeURIComponent(usuario.correo)}`, { cache: 'no-store', credentials: 'include' })
         .then((r) => (r.ok ? r.blob() : null))
         .then((blob) => {
           if (blob) setFotoPerfil(URL.createObjectURL(blob));
-        });
+        })
+        .catch(() => {});
     } else {
       setFotoPerfil(null);
     }

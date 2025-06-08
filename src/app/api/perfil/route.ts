@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import { SESSION_COOKIE, sessionCookieOptions } from '@lib/constants';
 import prisma from '@lib/prisma';
 import * as logger from '@lib/logger'
+import { respuestaError } from '@/lib/http'
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
@@ -61,15 +62,16 @@ async function crearNotificacion(usuarioId: number, mensaje: string) {
 export async function GET(req: NextRequest) {
   try {
     const token = req.cookies.get(SESSION_COOKIE)?.value;
-    if (!token) return NextResponse.json({ error: 'No autenticado.' }, { status: 401 });
+    if (!token) return respuestaError('No autenticado.', 'Token faltante', 401)
 
     let payload: any;
     try {
       payload = jwt.verify(token, JWT_SECRET);
     } catch {
-      return NextResponse.json({ error: 'Sesión inválida o expirada.' }, { status: 401 });
+      return respuestaError('Sesión inválida o expirada.', 'Token inválido', 401)
     }
 
+    logger.debug(req, 'Buscando perfil del usuario')
     const usuario = await prisma.usuario.findUnique({
       where: { id: payload.id },
       select: {
@@ -88,11 +90,13 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    if (!usuario) return NextResponse.json({ error: 'Usuario no encontrado.' }, { status: 404 });
+    if (!usuario) return respuestaError('Usuario no encontrado.', 'ID inexistente', 404)
 
-    return NextResponse.json({ success: true, usuario }, { status: 200 });
+    logger.info(req, 'Perfil recuperado correctamente')
+    return NextResponse.json({ success: true, usuario }, { status: 200 })
   } catch (error: any) {
-    return NextResponse.json({ error: 'No se pudo cargar tu perfil.' }, { status: 500 });
+    logger.error(req, '[ERROR_GET_PERFIL]', error)
+    return respuestaError('No se pudo cargar tu perfil.', error.message, 500)
   }
 }
 
@@ -103,13 +107,13 @@ export async function PUT(req: NextRequest) {
   try {
     // Autenticación
     const token = req.cookies.get(SESSION_COOKIE)?.value;
-    if (!token) return NextResponse.json({ error: 'No autenticado.' }, { status: 401 });
+    if (!token) return respuestaError('No autenticado.', 'Token faltante', 401)
 
     let payload: any;
     try {
       payload = jwt.verify(token, JWT_SECRET);
     } catch {
-      return NextResponse.json({ error: 'Sesión inválida o expirada.' }, { status: 401 });
+      return respuestaError('Sesión inválida o expirada.', 'Token inválido', 401)
     }
     const usuarioId = payload.id;
 
@@ -132,11 +136,11 @@ export async function PUT(req: NextRequest) {
       const foto = formData.get('foto') as File | null;
       if (foto) {
         if (!TIPOS_FOTO_PERMITIDOS.includes(foto.type)) {
-          return NextResponse.json({ error: 'Formato de imagen no permitido.' }, { status: 415 });
+          return respuestaError('Formato de imagen no permitido.', foto.type, 415)
         }
         const buffer = await foto.arrayBuffer();
         if (buffer.byteLength > BYTES_MAXIMO_FOTO) {
-          return NextResponse.json({ error: `Imagen demasiado grande. Máx: ${TAMAÑO_MAXIMO_FOTO_MB}MB.` }, { status: 413 });
+          return respuestaError(`Imagen demasiado grande. Máx: ${TAMAÑO_MAXIMO_FOTO_MB}MB.`, String(buffer.byteLength), 413)
         }
         fotoBuffer = Buffer.from(buffer);
         fotoNombre = foto.name;
@@ -148,10 +152,10 @@ export async function PUT(req: NextRequest) {
     const { nombre, apellidos, correo, nuevaContrasena, contrasenaActual, preferencias } = body;
 
     if (!nombre || !apellidos || !correo) {
-      return NextResponse.json({ error: 'Faltan campos obligatorios.' }, { status: 400 });
+      return respuestaError('Faltan campos obligatorios.', 'nombre, apellidos o correo', 400)
     }
     if (!esCorreoValido(correo)) {
-      return NextResponse.json({ error: 'Correo inválido.' }, { status: 400 });
+      return respuestaError('Correo inválido.', correo, 400)
     }
 
     // Verificar si el correo está en uso
@@ -160,21 +164,21 @@ export async function PUT(req: NextRequest) {
       select: { id: true },
     });
     if (correoExistente && correoExistente.id !== usuarioId) {
-      return NextResponse.json({ error: 'Ese correo ya está registrado en otra cuenta.' }, { status: 409 });
+      return respuestaError('Ese correo ya está registrado en otra cuenta.', correo, 409)
     }
 
     // Cambio de contraseña
     let nuevoHash: string | undefined = undefined;
     if (nuevaContrasena) {
       if (nuevaContrasena.length < 6) {
-        return NextResponse.json({ error: 'La nueva contraseña debe tener al menos 6 caracteres.' }, { status: 400 });
+        return respuestaError('La nueva contraseña debe tener al menos 6 caracteres.', '', 400)
       }
       const ip = req.headers.get('x-forwarded-for') || 'ip_desconocida';
       const key = `${usuarioId}:${ip}`;
       const now = Date.now();
       const reg = bloqueos.get(key) ?? { intentos: 0, timestamp: 0 };
       if (reg.intentos >= MAX_INTENTOS && now - reg.timestamp < TIEMPO_BLOQUEO_MS) {
-        return NextResponse.json({ error: 'Demasiados intentos fallidos. Intenta de nuevo en unos minutos.' }, { status: 429 });
+        return respuestaError('Demasiados intentos fallidos. Intenta de nuevo en unos minutos.', '', 429)
       }
       const usuarioActual = await prisma.usuario.findUnique({
         where: { id: usuarioId },
@@ -182,7 +186,7 @@ export async function PUT(req: NextRequest) {
       });
       if (!usuarioActual || !(await bcrypt.compare(contrasenaActual, usuarioActual.contrasena))) {
         bloqueos.set(key, { intentos: reg.intentos + 1, timestamp: now });
-        return NextResponse.json({ error: 'Contraseña actual incorrecta.' }, { status: 401 });
+        return respuestaError('Contraseña actual incorrecta.', '', 401)
       }
       bloqueos.set(key, { intentos: 0, timestamp: now });
       nuevoHash = await bcrypt.hash(nuevaContrasena, 10);
@@ -196,6 +200,7 @@ export async function PUT(req: NextRequest) {
     }
     if (preferencias !== undefined) data.preferencias = preferencias;
 
+    logger.debug(req, 'Actualizando datos del usuario')
     await prisma.usuario.update({
       where: { id: usuarioId },
       data,
@@ -213,7 +218,7 @@ export async function PUT(req: NextRequest) {
     const res = NextResponse.json(
       { success: true, mensaje: 'Perfil actualizado correctamente.' },
       { status: 200 }
-    );
+    )
 
     if (tokenRefrescado) {
       res.cookies.set(SESSION_COOKIE, tokenRefrescado, {
@@ -222,10 +227,11 @@ export async function PUT(req: NextRequest) {
       });
     }
 
-    return res;
+    logger.info(req, 'Perfil actualizado')
+    return res
   } catch (error: any) {
-    logger.error('[ERROR_UPDATE_PERFIL]', error);
-    return NextResponse.json({ error: 'Error al actualizar perfil.', detalle: error.message }, { status: 500 });
+    logger.error(req, '[ERROR_UPDATE_PERFIL]', error)
+    return respuestaError('Error al actualizar perfil.', error.message, 500)
   }
 }
 
@@ -235,19 +241,19 @@ export async function PUT(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const token = req.cookies.get(SESSION_COOKIE)?.value;
-    if (!token) return NextResponse.json({ error: 'No autenticado.' }, { status: 401 });
+    if (!token) return respuestaError('No autenticado.', 'Token faltante', 401)
 
     let payload: any;
     try {
       payload = jwt.verify(token, JWT_SECRET);
     } catch {
-      return NextResponse.json({ error: 'Sesión inválida o expirada.' }, { status: 401 });
+      return respuestaError('Sesión inválida o expirada.', 'Token inválido', 401)
     }
     const usuarioId = payload.id;
 
     const { activar2FA, metodo2FA } = await req.json();
     if (typeof activar2FA !== 'boolean' || (activar2FA && !['email', 'app'].includes(metodo2FA))) {
-      return NextResponse.json({ error: 'Parámetros de 2FA inválidos.' }, { status: 400 });
+      return respuestaError('Parámetros de 2FA inválidos.', '', 400)
     }
 
     await prisma.usuario.update({
@@ -258,12 +264,14 @@ export async function POST(req: NextRequest) {
       }
     });
 
+    logger.info(req, activar2FA ? '2FA activado' : '2FA desactivado')
     return NextResponse.json({
       success: true,
       mensaje: activar2FA ? '2FA activado' : '2FA desactivado'
-    }, { status: 200 });
+    }, { status: 200 })
 
   } catch (error: any) {
-    return NextResponse.json({ error: 'Error al gestionar 2FA.', detalle: error.message }, { status: 500 });
+    logger.error(req, '[ERROR_2FA]', error)
+    return respuestaError('Error al gestionar 2FA.', error.message, 500)
   }
 }
