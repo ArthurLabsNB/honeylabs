@@ -9,23 +9,11 @@ import { useAlmacenesUI } from "./ui";
 import type { Usuario } from "@/types/usuario";
 import { getMainRole, hasManagePerms, normalizeTipoCuenta } from "@lib/permisos";
 import useSession from "@/hooks/useSession";
+import useAlmacenes, { Almacen } from "@/hooks/useAlmacenes";
 import { useToast } from "@/components/Toast";
 import Spinner from "@/components/Spinner";
 import EmptyState from "@/components/EmptyState";
 
-interface Almacen {
-  id: number;
-  nombre: string;
-  descripcion?: string | null;
-  imagenUrl?: string | null;
-  ultimaActualizacion?: string | null;
-  entradas?: number;
-  salidas?: number;
-  inventario?: number;
-  encargado?: string | null;
-  correo?: string | null;
-  notificaciones?: boolean;
-}
 
 function arrayMove<T>(arr: T[], from: number, to: number): T[] {
   const newArr = arr.slice();
@@ -38,12 +26,19 @@ export default function AlmacenesPage() {
   const allowed = ["admin", "administrador", "institucional", "empresarial", "individual"];
   const { usuario, loading: loadingUsuario } = useSession();
   const [almacenes, setAlmacenes] = useState<Almacen[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const router = useRouter();
   const toast = useToast();
   const { view, filter, registerCreate } = useAlmacenesUI();
   const [dragId, setDragId] = useState<number | null>(null);
+  const {
+    almacenes: fetchedAlmacenes,
+    loading: loadingAlmacenes,
+    error: fetchError,
+    mutate,
+  } = useAlmacenes(
+    usuario ? { usuarioId: usuario.id, favoritos: filter === "favoritos" } : undefined,
+  );
 
   useEffect(() => {
     if (loadingUsuario) return;
@@ -69,7 +64,7 @@ export default function AlmacenesPage() {
       });
       const data = await jsonOrNull(res);
       if (res.ok && data.almacen) {
-        setAlmacenes((a) => [...a, data.almacen]);
+        mutate();
         toast.show("Almacén creado", "success");
       } else {
         toast.show(data.error || "Error al crear", "error");
@@ -84,33 +79,19 @@ export default function AlmacenesPage() {
   }, [registerCreate]);
 
   useEffect(() => {
-    if (!usuario) return;
-    const interval = setInterval(() => {
-      const fav = filter === "favoritos" ? "&favoritos=1" : "";
-      fetch(`/api/almacenes?usuarioId=${usuario.id}${fav}`)
-        .then(jsonOrNull)
-        .then((data) => setAlmacenes(data.almacenes || []));
-    }, 10000);
-    return () => clearInterval(interval);
-  }, [usuario, filter]);
+    setAlmacenes(fetchedAlmacenes);
+  }, [fetchedAlmacenes]);
 
   useEffect(() => {
-    if (loadingUsuario || !usuario || error) return;
-    setLoading(true);
-    const fav = filter === "favoritos" ? "&favoritos=1" : "";
-    fetch(`/api/almacenes?usuarioId=${usuario.id}${fav}`)
-      .then(jsonOrNull)
-      .then((data) => setAlmacenes(data.almacenes || []))
-      .catch(() => setError("Error al cargar datos"))
-      .finally(() => setLoading(false));
-  }, [usuario, loadingUsuario, filter, error]);
+    if (fetchError) setError("Error al cargar datos");
+  }, [fetchError]);
 
   const eliminar = useCallback(async (id: number) => {
     const ok = await toast.confirm("¿Eliminar almacén?");
     if (!ok) return;
     const res = await fetch(`/api/almacenes/${id}`, { method: "DELETE" });
     if (res.ok) {
-      setAlmacenes((a) => a.filter((x) => x.id !== id));
+      mutate();
       toast.show("Almacén eliminado", "success");
     } else {
       toast.show("Error al eliminar", "error");
@@ -143,7 +124,7 @@ export default function AlmacenesPage() {
       </div>
     );
 
-  if (loading || loadingUsuario)
+  if (loadingAlmacenes || loadingUsuario)
     return (
       <div className="p-4" data-oid="8xwpkrd">
         <Spinner />
