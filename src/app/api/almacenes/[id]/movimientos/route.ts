@@ -3,6 +3,7 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@lib/prisma';
 import { getUsuarioFromSession } from '@lib/auth';
+import { hasManagePerms } from '@lib/permisos';
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -11,6 +12,13 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
     const id = Number(params.id);
+    const pertenece = await prisma.usuarioAlmacen.findFirst({
+      where: { usuarioId: usuario.id, almacenId: id },
+      select: { id: true },
+    });
+    if (!pertenece && !hasManagePerms(usuario)) {
+      return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
+    }
     const { tipo, cantidad, descripcion } = await req.json();
     if (tipo !== 'entrada' && tipo !== 'salida') {
       return NextResponse.json({ error: 'Tipo inválido' }, { status: 400 });
