@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
+import { Pencil, Trash } from "lucide-react";
+import { motion } from "framer-motion";
 import { jsonOrNull } from "@lib/http";
 import { useRouter } from "next/navigation";
 import { useAlmacenesUI } from "./ui";
@@ -18,6 +20,7 @@ interface Almacen {
   salidas?: number;
   inventario?: number;
   encargado?: string | null;
+  correo?: string | null;
   notificaciones?: boolean;
 }
 
@@ -183,6 +186,7 @@ export default function AlmacenesPage() {
             <div className="mt-auto flex justify-between items-end">
               <span className="text-xs text-[var(--dashboard-muted)]">
                 {a.encargado || "Sin encargado"}
+                {a.correo ? ` - ${a.correo}` : ""}
               </span>
               {a.notificaciones && (
                 <span title="Notificaciones activas" className="text-[var(--dashboard-accent)]">🔔</span>
@@ -295,7 +299,7 @@ function SortableAlmacen({
   const style = {};
 
   return (
-    <li
+    <motion.li
       style={style}
       draggable
       onDragStart={onDragStart}
@@ -324,16 +328,31 @@ function SortableAlmacen({
           </p>
         )}
         <div className="flex justify-between text-xs mt-auto">
-          <span>{almacen.encargado || 'Sin encargado'}</span>
+          <span>
+            {almacen.encargado || 'Sin encargado'}
+            {almacen.correo ? ` - ${almacen.correo}` : ''}
+          </span>
           {almacen.ultimaActualizacion && (
             <span>{new Date(almacen.ultimaActualizacion).toLocaleDateString()}</span>
           )}
         </div>
       </div>
       <div className="flex flex-col items-end ml-2">
-        <button onClick={onEdit} className="text-blue-500 text-sm px-1">✎</button>
-        <button onClick={onDelete} className="text-red-500 text-sm px-1">✕</button>
+        <button
+          onClick={onEdit}
+          className="p-1 text-blue-500 hover:text-blue-400"
+          title="Editar"
+        >
+          <Pencil className="w-4 h-4" />
+        </button>
+        <button
+          onClick={onDelete}
+          className="p-1 text-red-500 hover:text-red-400"
+          title="Eliminar"
+        >
+          <Trash className="w-4 h-4" />
+        </button>
       </div>
-    </li>
+    </motion.li>
   );
 }

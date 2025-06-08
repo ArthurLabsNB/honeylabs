@@ -36,7 +36,9 @@ export async function GET(req: NextRequest) {
         imagenUrl: true,
         usuarios: {
           take: 1,
-          select: { usuario: { select: { nombre: true } } },
+          select: {
+            usuario: { select: { nombre: true, correo: true } },
+          },
         },
         movimientos: {
           orderBy: { fecha: "desc" },
@@ -71,6 +73,7 @@ export async function GET(req: NextRequest) {
       descripcion: a.descripcion,
       imagenUrl: a.imagenUrl,
       encargado: a.usuarios[0]?.usuario.nombre ?? null,
+      correo: a.usuarios[0]?.usuario.correo ?? null,
       ultimaActualizacion: a.movimientos[0]?.fecha ?? null,
       notificaciones: a.notificaciones.length > 0,
       entradas: counts[a.id].entradas,

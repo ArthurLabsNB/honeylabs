@@ -1,4 +1,10 @@
 # Changelog
+## 0.2.56
+- Muestra el correo del creador en las tarjetas de almacenes.
+- Añadimos la fecha de última actualización en la vista de un almacén.
+- Subir una nueva imagen al editar almacenes ya no arroja error.
+- Reordenar almacenes ahora tiene animación suave.
+- Botones de editar y borrar renovados con íconos.
 ## 0.2.55
 
 - Corregimos la página de almacenes moviendo los hooks antes de los retornos

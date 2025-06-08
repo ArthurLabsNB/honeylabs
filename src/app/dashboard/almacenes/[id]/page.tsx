@@ -7,6 +7,10 @@ interface Almacen {
   id: number;
   nombre: string;
   descripcion?: string | null;
+  imagenUrl?: string | null;
+  encargado?: string | null;
+  correo?: string | null;
+  ultimaActualizacion?: string | null;
 }
 
 interface Fila {
@@ -83,6 +87,18 @@ export default function AlmacenDetallePage() {
       {almacen.descripcion && (
         <p className="text-sm text-[var(--dashboard-muted)]" data-oid="1ainm7s">
           {almacen.descripcion}
+        </p>
+      )}
+      {almacen.encargado && (
+        <p className="text-xs text-[var(--dashboard-muted)]">
+          Responsable: {almacen.encargado}
+          {almacen.correo ? ` (${almacen.correo})` : ''}
+        </p>
+      )}
+      {almacen.ultimaActualizacion && (
+        <p className="text-xs text-[var(--dashboard-muted)]">
+          Última actualización:{' '}
+          {new Date(almacen.ultimaActualizacion).toLocaleString()}
         </p>
       )}
 
