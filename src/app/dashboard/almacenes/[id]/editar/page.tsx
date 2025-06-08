@@ -2,10 +2,12 @@
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
 import { useParams, useRouter } from "next/navigation";
+import { useToast } from "@/components/Toast";
 
 export default function EditarAlmacenPage() {
   const { id } = useParams();
   const router = useRouter();
+  const toast = useToast();
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [imagenUrl, setImagenUrl] = useState("");
@@ -48,12 +50,13 @@ export default function EditarAlmacenPage() {
       });
       const data = await jsonOrNull(res);
       if (res.ok) {
+        toast.show("Almacén actualizado", "success");
         router.push(`/dashboard/almacenes/${id}`);
       } else {
-        alert(data.error || "Error al actualizar");
+        toast.show(data.error || "Error al actualizar", "error");
       }
     } catch {
-      alert("Error de red");
+      toast.show("Error de red", "error");
     } finally {
       setLoading(false);
     }

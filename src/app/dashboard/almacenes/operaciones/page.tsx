@@ -2,11 +2,13 @@
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
 import useSession from "@/hooks/useSession";
+import { useToast } from "@/components/Toast";
 
 interface Almacen { id: number; nombre: string }
 
 export default function OperacionesPage() {
   const { usuario } = useSession();
+  const toast = useToast();
   const [almacenes, setAlmacenes] = useState<Almacen[]>([]);
   const [almacenId, setAlmacenId] = useState("");
   const [tipo, setTipo] = useState<"entrada" | "salida">("entrada");
@@ -21,8 +23,9 @@ export default function OperacionesPage() {
   }, [usuario]);
 
   const registrar = async () => {
-    if (!almacenId) return alert("Selecciona un almacén");
-    if (!cantidad || cantidad <= 0) return alert("Ingresa una cantidad válida");
+    if (!almacenId) return toast.show("Selecciona un almacén", "error");
+    if (!cantidad || cantidad <= 0)
+      return toast.show("Ingresa una cantidad válida", "error");
     setLoading(true);
     const res = await fetch(`/api/almacenes/${almacenId}/movimientos`, {
       method: "POST",
@@ -33,9 +36,9 @@ export default function OperacionesPage() {
     setLoading(false);
     if (res.ok) {
       setCantidad(0);
-      alert("Movimiento registrado");
+      toast.show("Movimiento registrado", "success");
     } else {
-      alert(data.error || "Error al registrar");
+      toast.show(data.error || "Error al registrar", "error");
     }
   };
 

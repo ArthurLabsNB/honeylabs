@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.60
+- Reemplazamos alertas por notificaciones emergentes reutilizables.
+- Las eliminaciones ahora solicitan confirmación en pantalla.
+- Añadimos avisos de éxito y error en las operaciones.
 ## 0.2.59
 - Sincronizamos el avatar del usuario en tiempo real.
 - Almacenes guardan sus imágenes en la base de datos.
