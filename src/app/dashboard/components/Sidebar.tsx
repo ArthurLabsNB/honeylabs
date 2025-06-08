@@ -1,9 +1,9 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 import { useDashboardUI } from "../ui";
 import type { Usuario } from "@/types/usuario";
-import Image from "next/image";
 import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
 import Spinner from "@/components/Spinner";
 import {
@@ -72,7 +72,6 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
     toolsSidebarVisible,
   } = useDashboardUI();
   const pathname = usePathname();
-  const router = useRouter();
 
   if (!usuario || !usuario.nombre) {
     return (
@@ -151,23 +150,15 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
           const handleClick = () => {
             if (item.action) {
               toggleToolsSidebar(toolsSidebarVisible ? false : true);
-            } else if (item.path) {
-              router.push(item.path);
             }
           };
-          return (
-            <button
-              key={item.key}
-              onClick={handleClick}
-              className={`${menuItemStyle} ${
-                active
-                  ? "bg-[var(--dashboard-accent)]/20 text-white font-semibold"
-                  : "hover:bg-white/10 hover:text-white"
-              } ${collapsed ? "justify-center px-2" : ""}`}
-              title={collapsed ? item.label : ""}
-              tabIndex={0}
-              data-oid="ggwglbz"
-            >
+          const classes = `${menuItemStyle} ${
+            active
+              ? "bg-[var(--dashboard-accent)]/20 text-white font-semibold"
+              : "hover:bg-white/10 hover:text-white"
+          } ${collapsed ? "justify-center px-2" : ""}`;
+          const content = (
+            <>
               <div className="flex items-center justify-center w-10 h-10">
                 {item.icon}
               </div>
@@ -185,6 +176,29 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
                   data-oid="av0rn45"
                 ></span>
               )}
+            </>
+          );
+          return item.path && !item.action ? (
+            <Link
+              href={item.path}
+              key={item.key}
+              className={classes}
+              title={collapsed ? item.label : ""}
+              tabIndex={0}
+              data-oid="ggwglbz"
+            >
+              {content}
+            </Link>
+          ) : (
+            <button
+              key={item.key}
+              onClick={handleClick}
+              className={classes}
+              title={collapsed ? item.label : ""}
+              tabIndex={0}
+              data-oid="ggwglbz"
+            >
+              {content}
             </button>
           );
         })}
