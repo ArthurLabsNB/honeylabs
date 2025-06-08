@@ -60,12 +60,12 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
     ? sidebarGlobalCollapsed
       ? SIDEBAR_GLOBAL_COLLAPSED_WIDTH
       : SIDEBAR_GLOBAL_WIDTH
-    : 0;
-  const toolsWidth = toolsSidebarVisible ? SIDEBAR_TOOLS_WIDTH : 0;
-  const gapWidth = toolsSidebarVisible ? SIDEBAR_GAP : 0;
+    : '0px';
+  const toolsWidth = toolsSidebarVisible ? SIDEBAR_TOOLS_WIDTH : '0px';
+  const gapWidth = toolsSidebarVisible ? SIDEBAR_GAP : '0px';
 
   // Altura del navbar
-  const navbarHeight = `${NAVBAR_HEIGHT}px`;
+  const navbarHeight = NAVBAR_HEIGHT;
   const isAlmacenDetail = /^\/dashboard\/almacenes\/\d+(\/|$)/.test(pathname);
 
   return (
@@ -83,7 +83,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
             height: navbarHeight,
             paddingLeft:
               !fullscreen && sidebarGlobalVisible
-                ? sidebarWidth + toolsWidth + gapWidth
+                ? `calc(${sidebarWidth} + ${toolsWidth} + ${gapWidth})`
                 : '0',
             transition: 'padding-left 0.3s ease'
           }}
@@ -102,7 +102,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
             left: 0,
             top: 0,
             height: '100vh',
-            transform: isMobile && !sidebarGlobalVisible ? `translateX(-${sidebarWidth}px)` : 'none',
+            transform: isMobile && !sidebarGlobalVisible ? `translateX(calc(-1 * ${sidebarWidth}))` : 'none',
             paddingTop: isAlmacenDetail ? 0 : navbarHeight // Asegura que el contenido del sidebar no se oculte bajo el navbar
           }}
           className={`fixed z-40 border-r border-[var(--dashboard-border)] bg-[var(--dashboard-sidebar)] transition-all duration-300 dashboard-sidebar`}
@@ -118,7 +118,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
           style={{
             width: toolsWidth,
             minWidth: toolsWidth,
-            left: sidebarWidth + gapWidth,
+            left: `calc(${sidebarWidth} + ${gapWidth})`,
             top: 0,
             height: '100vh',
             paddingTop: isAlmacenDetail ? 0 : navbarHeight,
@@ -135,7 +135,9 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
         className="flex flex-col min-h-screen transition-all duration-300 w-full"
         style={{
           paddingTop: isAlmacenDetail ? 0 : navbarHeight,
-          paddingLeft: !fullscreen ? sidebarWidth + toolsWidth + gapWidth : 0,
+          paddingLeft: !fullscreen
+            ? `calc(${sidebarWidth} + ${toolsWidth} + ${gapWidth})`
+            : 0,
           transition: 'padding-left 0.3s ease',
         }}
         data-oid="ou.:qgb"
@@ -149,7 +151,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
             animate-fade-in
             transition-colors duration-300
           "
-          style={{ minHeight: `calc(100vh - ${isAlmacenDetail ? 0 : NAVBAR_HEIGHT}px)` }}
+          style={{ minHeight: `calc(100vh - ${isAlmacenDetail ? '0px' : navbarHeight})` }}
           data-oid="xvd._xa"
         >
           {children}
