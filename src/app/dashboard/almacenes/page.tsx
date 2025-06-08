@@ -158,12 +158,12 @@ export default function AlmacenesPage() {
           className="flex gap-3 p-3 border rounded-lg cursor-pointer hover:bg-white/5"
           onClick={() => router.push(`/dashboard/almacenes/${a.id}`)}
         >
-          <div className="w-20 h-20 flex-shrink-0 bg-white/10 rounded-md overflow-hidden">
+          <div className="w-24 h-24 flex-shrink-0 bg-white/10 rounded-md overflow-hidden">
             <Image
               src={a.imagenUrl || "/ilustracion-almacen-3d.svg"}
               alt={a.nombre}
-              width={80}
-              height={80}
+              width={96}
+              height={96}
               className="object-cover w-full h-full"
             />
           </div>
@@ -305,12 +305,12 @@ function SortableAlmacen({
       onDragOver={(e) => e.preventDefault()}
       className="bg-white/5 hover:bg-white/10 p-3 rounded-md flex gap-3 cursor-grab active:cursor-grabbing"
     >
-      <div className="w-16 h-16 flex-shrink-0 rounded-md overflow-hidden bg-white/10" onClick={onOpen}>
+      <div className="w-20 h-20 flex-shrink-0 rounded-md overflow-hidden bg-white/10" onClick={onOpen}>
         <Image
           src={almacen.imagenUrl || '/ilustracion-almacen-3d.svg'}
           alt={almacen.nombre}
-          width={64}
-          height={64}
+          width={80}
+          height={80}
           className="object-cover w-full h-full"
         />
       </div>

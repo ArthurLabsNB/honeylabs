@@ -8,7 +8,7 @@ export default function NuevoAlmacenPage() {
   const [descripcion, setDescripcion] = useState("");
   const [funciones, setFunciones] = useState("");
   const [permisos, setPermisos] = useState("");
-  const [imagenUrl, setImagenUrl] = useState("");
+  const [imagen, setImagen] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -16,11 +16,13 @@ export default function NuevoAlmacenPage() {
     if (!nombre.trim()) return alert("Nombre requerido");
     setLoading(true);
     try {
-      const res = await fetch("/api/almacenes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre, descripcion, funciones, permisosPredeterminados: permisos, imagenUrl }),
-      });
+      const form = new FormData();
+      form.append('nombre', nombre);
+      form.append('descripcion', descripcion);
+      form.append('funciones', funciones);
+      form.append('permisosPredeterminados', permisos);
+      if (imagen) form.append('imagen', imagen);
+      const res = await fetch('/api/almacenes', { method: 'POST', body: form });
       const data = await jsonOrNull(res);
       if (res.ok) {
         router.push(`/dashboard/almacenes/${data.almacen.id}`);
@@ -71,10 +73,10 @@ export default function NuevoAlmacenPage() {
         />
 
         <input
+          type="file"
+          accept="image/*"
           className="border p-2 rounded w-full"
-          placeholder="Imagen (URL)"
-          value={imagenUrl}
-          onChange={(e) => setImagenUrl(e.target.value)}
+          onChange={(e) => setImagen(e.target.files?.[0] || null)}
         />
 
         <button

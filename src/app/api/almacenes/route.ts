@@ -1,9 +1,23 @@
 
+export const runtime = 'nodejs';
+
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@lib/prisma";
 import crypto from "node:crypto";
+import { promises as fs } from 'fs';
+import path from 'path';
 import { getUsuarioFromSession } from "@lib/auth";
 import { hasManagePerms, normalizeTipoCuenta } from "@lib/permisos";
+
+const MAX_IMAGE_MB = 5;
+const MAX_IMAGE_BYTES = MAX_IMAGE_MB * 1024 * 1024;
+const IMAGE_TYPES = [
+  'image/png',
+  'image/jpeg',
+  'image/jpg',
+  'image/webp',
+  'image/gif',
+];
 
 export async function GET(req: NextRequest) {
   try {
@@ -85,7 +99,42 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
     }
 
-    const { nombre, descripcion, funciones, permisosPredeterminados, imagenUrl } = await req.json();
+    let nombre = '';
+    let descripcion = '';
+    let funciones = '';
+    let permisosPredeterminados = '';
+    let imagenUrl: string | null = null;
+
+    if (req.headers.get('content-type')?.includes('multipart/form-data')) {
+      const formData = await req.formData();
+      nombre = String(formData.get('nombre') ?? '').trim();
+      descripcion = String(formData.get('descripcion') ?? '').trim();
+      funciones = String(formData.get('funciones') ?? '').trim();
+      permisosPredeterminados = String(formData.get('permisosPredeterminados') ?? '');
+      const archivo = formData.get('imagen') as File | null;
+      if (archivo) {
+        if (!IMAGE_TYPES.includes(archivo.type)) {
+          return NextResponse.json({ error: 'Formato de imagen no permitido' }, { status: 415 });
+        }
+        const buffer = Buffer.from(await archivo.arrayBuffer());
+        if (buffer.byteLength > MAX_IMAGE_BYTES) {
+          return NextResponse.json({ error: `Imagen demasiado grande. Máx: ${MAX_IMAGE_MB}MB` }, { status: 413 });
+        }
+        const nombreArchivo = `${crypto.randomUUID()}_${archivo.name}`;
+        const dir = path.join(process.cwd(), 'public/almacenes');
+        await fs.mkdir(dir, { recursive: true });
+        await fs.writeFile(path.join(dir, nombreArchivo), buffer);
+        imagenUrl = `/almacenes/${nombreArchivo}`;
+      }
+    } else {
+      const body = await req.json();
+      nombre = body.nombre;
+      descripcion = body.descripcion;
+      funciones = body.funciones;
+      permisosPredeterminados = body.permisosPredeterminados;
+      imagenUrl = body.imagenUrl;
+    }
+
     if (!nombre) {
       return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 });
     }

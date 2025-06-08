@@ -9,6 +9,7 @@ export default function EditarAlmacenPage() {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [imagenUrl, setImagenUrl] = useState("");
+  const [imagen, setImagen] = useState<File | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -27,11 +28,12 @@ export default function EditarAlmacenPage() {
   const guardar = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/almacenes/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre, descripcion, imagenUrl }),
-      });
+      const form = new FormData();
+      form.append('nombre', nombre);
+      form.append('descripcion', descripcion);
+      if (imagen) form.append('imagen', imagen);
+      else form.append('imagenUrl', imagenUrl);
+      const res = await fetch(`/api/almacenes/${id}`, { method: 'PUT', body: form });
       const data = await jsonOrNull(res);
       if (res.ok) {
         router.push(`/dashboard/almacenes/${id}`);
@@ -75,10 +77,10 @@ export default function EditarAlmacenPage() {
         />
 
         <input
+          type="file"
+          accept="image/*"
           className="border p-2 rounded w-full"
-          placeholder="Imagen (URL)"
-          value={imagenUrl}
-          onChange={(e) => setImagenUrl(e.target.value)}
+          onChange={(e) => setImagen(e.target.files?.[0] || null)}
         />
 
         <button
