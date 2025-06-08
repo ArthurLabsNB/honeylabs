@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.71
+- Evitamos un error 500 en `/api/almacenes` cuando el usuario no tiene almacenes.
 ## 0.2.70
 - Guardamos el orden de los almacenes por usuario.
 - Se creó el endpoint `/api/almacenes/orden` para actualizarlo.
