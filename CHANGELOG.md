@@ -1,4 +1,10 @@
 # Changelog
+## 0.2.57
+- Permitimos eliminar almacenes junto con sus registros relacionados.
+- Las imágenes editadas ahora reemplazan correctamente la anterior.
+- Añadimos un formulario de operaciones para entradas y salidas.
+- El listado de almacenes se actualiza cada diez segundos.
+- Mostramos el inventario con un estilo más destacado.
 ## 0.2.56
 - Muestra el correo del creador en las tarjetas de almacenes.
 - Añadimos la fecha de última actualización en la vista de un almacén.

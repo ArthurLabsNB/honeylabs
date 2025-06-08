@@ -79,6 +79,17 @@ export default function AlmacenesPage() {
   }, [registerCreate]);
 
   useEffect(() => {
+    if (!usuario) return;
+    const interval = setInterval(() => {
+      const fav = filter === "favoritos" ? "&favoritos=1" : "";
+      fetch(`/api/almacenes?usuarioId=${usuario.id}${fav}`)
+        .then(jsonOrNull)
+        .then((data) => setAlmacenes(data.almacenes || []));
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [usuario, filter]);
+
+  useEffect(() => {
     if (loadingUsuario || !usuario || error) return;
     setLoading(true);
     const fav = filter === "favoritos" ? "&favoritos=1" : "";
@@ -181,7 +192,7 @@ export default function AlmacenesPage() {
             <div className="text-xs mt-1 flex gap-2">
               <span>📥 {a.entradas ?? 0}</span>
               <span>📤 {a.salidas ?? 0}</span>
-              <span>📦 {a.inventario ?? 0}</span>
+              <span className="font-semibold text-lg">📦 {a.inventario ?? 0}</span>
             </div>
             <div className="mt-auto flex justify-between items-end">
               <span className="text-xs text-[var(--dashboard-muted)]">
@@ -320,7 +331,7 @@ function SortableAlmacen({
       <div className="flex flex-col flex-1" onClick={onOpen}>
         <div className="flex justify-between items-center">
           <h3 className="font-semibold">{almacen.nombre}</h3>
-          <span className="text-sm">{almacen.inventario ?? 0} u.</span>
+          <span className="text-lg font-semibold text-[var(--dashboard-accent)]">{almacen.inventario ?? 0} u.</span>
         </div>
         {almacen.descripcion && (
           <p className="text-xs text-[var(--dashboard-muted)] mt-1">
