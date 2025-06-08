@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.80
+- Añadimos pruebas de login y registro con mocks de Prisma.
+- Documentamos cómo ejecutar las pruebas.
 ## 0.2.78
 - Registramos el proceso de alta con el nuevo logger y unificamos los mensajes de error.
 ## 0.2.77

@@ -37,3 +37,6 @@ Este documento resume los archivos y directorios clave del proyecto para que cua
 - **package.json** – Dependencias y scripts disponibles.
 
 Este resumen sirve como guía rápida de la estructura del proyecto y los principales archivos que lo componen.
+
+## Pruebas
+Ejecuta `npm test` en la raíz para correr todas las pruebas con Vitest.

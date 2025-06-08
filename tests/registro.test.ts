@@ -31,4 +31,17 @@ describe('registro', () => {
     const res = await POST(req)
     expect(res.status).toBe(409)
   })
+
+  it('rechaza contrasena corta', async () => {
+    vi.spyOn(prisma.usuario, 'findUnique').mockResolvedValue(null as any)
+    const form = new FormData()
+    form.set('nombre', 'Test')
+    form.set('apellidos', 'User')
+    form.set('correo', 'nuevo2@ejemplo.com')
+    form.set('contrasena', '123')
+    form.set('tipoCuenta', 'individual')
+    const req = new NextRequest('http://localhost/api/registro', { method: 'POST', body: form })
+    const res = await POST(req)
+    expect(res.status).toBe(400)
+  })
 })
