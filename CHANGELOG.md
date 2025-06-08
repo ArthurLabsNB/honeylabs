@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.67
+- Ajustamos las clases `md` y `xl` en los grids principales para mejor distribucion en pantallas medianas y grandes.
 ## 0.2.66
 - Movemos almacenes con las flechas del teclado y enter abre el seleccionado.
 ## 0.2.63

@@ -4,7 +4,7 @@ import type { Almacen } from "@/hooks/useAlmacenes";
 
 export default function AlmacenesGrid({ almacenes, onOpen }: { almacenes: Almacen[]; onOpen: (id: number) => void }) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" data-oid="p2a3lo_">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4" data-oid="p2a3lo_">
       {almacenes.map((a) => (
         <div
           key={a.id}
