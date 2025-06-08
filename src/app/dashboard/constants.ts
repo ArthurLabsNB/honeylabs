@@ -1,5 +1,5 @@
-export const SIDEBAR_GLOBAL_WIDTH = 224;            // px, sidebar global expandido
-export const SIDEBAR_GLOBAL_COLLAPSED_WIDTH = 72;   // px, sidebar global colapsado
-export const SIDEBAR_TOOLS_WIDTH = 176;            // px, sidebar herramientas
-export const SIDEBAR_GAP = 12;                     // px, separacion entre sidebars
-export const NAVBAR_HEIGHT = 70;                    // px, navbar superior
+export const SIDEBAR_GLOBAL_WIDTH = 'var(--sidebar-width)';
+export const SIDEBAR_GLOBAL_COLLAPSED_WIDTH = 'var(--sidebar-collapsed-width)';
+export const SIDEBAR_TOOLS_WIDTH = 'var(--tools-sidebar-width)';
+export const SIDEBAR_GAP = 'var(--sidebar-gap)';
+export const NAVBAR_HEIGHT = 'var(--navbar-height)';

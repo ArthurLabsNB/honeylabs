@@ -23,6 +23,13 @@
   --dashboard-glass: rgba(255,255,255,0.11);
   --dashboard-widget-glow: 0 8px 24px 0 #ffe06630;
   --dashboard-widget-resize: #ffe066cc;
+
+  /* Layout variables */
+  --sidebar-width: clamp(12rem, 15vw, 14rem);
+  --sidebar-collapsed-width: clamp(4rem, 5vw, 4.5rem);
+  --tools-sidebar-width: clamp(10rem, 12vw, 11rem);
+  --sidebar-gap: clamp(0.5rem, 1vw, 0.75rem);
+  --navbar-height: clamp(3.5rem, 5vh, 4.375rem);
 }
 
 @media (prefers-color-scheme: dark) {
