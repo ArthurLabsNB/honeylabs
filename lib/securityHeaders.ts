@@ -3,7 +3,7 @@ const dev = process.env.NODE_ENV !== 'production';
 export const ContentSecurityPolicy = dev
   ? `
     default-src 'self' http://localhost:*;
-    script-src 'self' 'unsafe-inline' 'unsafe-eval' vitals.vercel-insights.com http://localhost:*;
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' vitals.vercel-insights.com va.vercel-scripts.com http://localhost:*;
     style-src 'self' 'unsafe-inline';
     img-src 'self' http: https: data: blob:;
     connect-src 'self' http://localhost:* ws://localhost:*;
@@ -11,7 +11,7 @@ export const ContentSecurityPolicy = dev
   `
   : `
     default-src 'self';
-    script-src 'self' 'unsafe-inline' vitals.vercel-insights.com;
+    script-src 'self' 'unsafe-inline' vitals.vercel-insights.com va.vercel-scripts.com;
     style-src 'self' 'unsafe-inline';
     img-src 'self' https: data: blob:;
     connect-src 'self';
