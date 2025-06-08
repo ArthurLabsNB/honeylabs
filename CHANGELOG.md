@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.54
+
+- Evitamos errores de Next Image usando `<img>` para los avatares dinámicos.
 ## 0.2.53
 
 - Habilitamos carga de archivos para las imágenes de los almacenes.

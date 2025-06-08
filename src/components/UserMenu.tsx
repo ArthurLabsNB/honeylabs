@@ -169,7 +169,7 @@ export default function UserMenu({
   const renderAvatar = () => {
     if (fotoPerfil) {
       return (
-        <Image
+        <img
           src={fotoPerfil}
           alt="Avatar"
           width={36}
