@@ -17,6 +17,7 @@ export default function AlmacenesPage() {
   const {
     usuario,
     almacenes,
+    favoritos,
     loading,
     error,
     handleDragStart,
@@ -24,6 +25,7 @@ export default function AlmacenesPage() {
     handleDragEnd,
     moveItem,
     eliminar,
+    toggleFavorito,
   } = useAlmacenesLogic();
 
   if (error)
@@ -58,6 +60,8 @@ export default function AlmacenesPage() {
       {view === "list" ? (
         <AlmacenesList
           almacenes={almacenes}
+          favoritos={favoritos}
+          onToggleFavorito={toggleFavorito}
           onEdit={(id) => router.push(`/dashboard/almacenes/${id}/editar`)}
           onDelete={eliminar}
           onOpen={(id) => router.push(`/dashboard/almacenes/${id}`)}
@@ -69,6 +73,8 @@ export default function AlmacenesPage() {
       ) : view === "grid" ? (
         <AlmacenesGrid
           almacenes={almacenes}
+          favoritos={favoritos}
+          onToggleFavorito={toggleFavorito}
           onOpen={(id) => router.push(`/dashboard/almacenes/${id}`)}
         />
       ) : (

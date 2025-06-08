@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.84
+- Mostramos un estado con badge en las tarjetas de almacenes.
+- Añadimos opción para marcar favoritos y guardamos la preferencia.
 ## 0.2.83
 - Añadí controles de subir y bajar en las tarjetas para ordenar almacenes.
 ## 0.2.82
