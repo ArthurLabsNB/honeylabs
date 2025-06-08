@@ -1,9 +1,17 @@
 # Changelog
 ## 0.2.86
+
 - Actualizamos la vista de almacenes para que las imágenes usen `w-24` y `h-24` con `object-cover`, adaptándose mejor a pantallas pequeñas.
+- Añadí `sizes` en todas las imágenes para optimizar la carg
+- Reemplazamos medidas fijas por variables CSS en el dashboard.
+- Definimos valores con `clamp()` para adaptar el la
+
 ## 0.2.85
 - Implementé redirección automática al login cuando no hay sesión.
 - Ajusté el layout para validar la autenticación en todas las vistas.
+## 0.2.86
+- Mejoré el responsive agregando breakpoints de 768px y 1024px.
+- Ajusté los paddings de navbar y sidebars para tablets y pantallas amplias.
 ## 0.2.84
 - Mostramos un estado con badge en las tarjetas de almacenes.
 - Añadimos opción para marcar favoritos y guardamos la preferencia.

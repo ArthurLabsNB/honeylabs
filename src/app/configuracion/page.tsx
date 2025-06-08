@@ -230,6 +230,7 @@ export default function Configuracion() {
                 alt="Foto de perfil"
                 width={112}
                 height={112}
+                sizes="112px"
                 className="w-28 h-28 rounded-full border-4 border-yellow-300 object-cover bg-yellow-100 shadow-lg transition group-hover:ring-4 group-hover:ring-amber-200"
                 data-oid=".aa5.n4"
               />

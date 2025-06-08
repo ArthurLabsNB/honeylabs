@@ -18,6 +18,7 @@ export default function EmptyState({ allowCreate }: { allowCreate: boolean }) {
         alt="Sin almacenes"
         width={160}
         height={160}
+        sizes="(max-width: 640px) 120px, 160px"
         className="select-none"
       />
       <h2 className="text-lg font-semibold">Aún no hay almacenes</h2>
