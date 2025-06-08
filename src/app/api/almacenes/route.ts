@@ -4,8 +4,6 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@lib/prisma";
 import crypto from "node:crypto";
-import { promises as fs } from 'fs';
-import path from 'path';
 import { getUsuarioFromSession } from "@lib/auth";
 import { hasManagePerms, normalizeTipoCuenta } from "@lib/permisos";
 
@@ -34,6 +32,7 @@ export async function GET(req: NextRequest) {
         nombre: true,
         descripcion: true,
         imagenUrl: true,
+        imagenNombre: true,
         usuarios: {
           take: 1,
           select: {
@@ -71,7 +70,7 @@ export async function GET(req: NextRequest) {
       id: a.id,
       nombre: a.nombre,
       descripcion: a.descripcion,
-      imagenUrl: a.imagenUrl,
+      imagenUrl: a.imagenNombre ? `/api/almacenes/foto?nombre=${encodeURIComponent(a.imagenNombre)}` : a.imagenUrl,
       encargado: a.usuarios[0]?.usuario.nombre ?? null,
       correo: a.usuarios[0]?.usuario.correo ?? null,
       ultimaActualizacion: a.movimientos[0]?.fecha ?? null,
@@ -106,7 +105,9 @@ export async function POST(req: NextRequest) {
     let descripcion = '';
     let funciones = '';
     let permisosPredeterminados = '';
-    let imagenUrl: string | null = null;
+  let imagenNombre: string | null = null;
+  let imagenBuffer: Buffer | null = null;
+  let imagenUrl: string | null = null;
 
     if (req.headers.get('content-type')?.includes('multipart/form-data')) {
       const formData = await req.formData();
@@ -124,14 +125,9 @@ export async function POST(req: NextRequest) {
           return NextResponse.json({ error: `Imagen demasiado grande. Máx: ${MAX_IMAGE_MB}MB` }, { status: 413 });
         }
         const nombreArchivo = `${crypto.randomUUID()}_${archivo.name}`;
-        const dir = path.join(process.cwd(), 'public/almacenes');
-        try {
-          await fs.mkdir(dir, { recursive: true });
-          await fs.writeFile(path.join(dir, nombreArchivo), buffer);
-          imagenUrl = `/almacenes/${nombreArchivo}`;
-        } catch {
-          imagenUrl = `data:${archivo.type};base64,${buffer.toString('base64')}`;
-        }
+        imagenNombre = nombreArchivo;
+        imagenBuffer = buffer;
+        imagenUrl = `/api/almacenes/foto?nombre=${encodeURIComponent(nombreArchivo)}`;
       }
     } else {
       const body = await req.json();
@@ -140,6 +136,7 @@ export async function POST(req: NextRequest) {
       funciones = body.funciones;
       permisosPredeterminados = body.permisosPredeterminados;
       imagenUrl = body.imagenUrl;
+      imagenNombre = body.imagenNombre ?? null;
     }
 
     if (!nombre) {
@@ -171,15 +168,21 @@ export async function POST(req: NextRequest) {
         permisosPredeterminados,
         codigoUnico,
         imagenUrl,
+        imagenNombre,
+        imagen: imagenBuffer as any,
         entidadId: usuario.entidadId,
         usuarios: {
           create: { usuarioId: usuario.id, rolEnAlmacen: 'propietario' },
         },
       },
-      select: { id: true, nombre: true, descripcion: true, imagenUrl: true },
+      select: { id: true, nombre: true, descripcion: true, imagenNombre: true },
     });
 
-    return NextResponse.json({ almacen });
+    const resp = {
+      ...almacen,
+      imagenUrl: imagenNombre ? `/api/almacenes/foto?nombre=${encodeURIComponent(imagenNombre)}` : null,
+    };
+    return NextResponse.json({ almacen: resp });
   } catch (err) {
     console.error('POST /api/almacenes', err);
     return NextResponse.json(

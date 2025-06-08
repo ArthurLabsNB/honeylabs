@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@lib/prisma';
+import { createHash } from 'crypto';
 
 // Mime types permitidos para evitar servir archivos no deseados
 const MIME_BY_EXT: Record<string, string> = {
@@ -47,15 +48,20 @@ export async function GET(req: NextRequest) {
       ? usuario.fotoPerfil
       : Buffer.from(usuario.fotoPerfil);
 
-    // Responder con el contenido binario de la imagen
+    const hash = createHash('sha1').update(buffer).digest('hex');
+    if (req.headers.get('if-none-match') === hash) {
+      return new NextResponse(null, { status: 304 });
+    }
+
     const fileName = nombre ?? usuario.fotoPerfilNombre;
     return new NextResponse(buffer, {
       status: 200,
       headers: {
         'Content-Type': MIME_BY_EXT[ext],
         'Content-Disposition': `inline; filename="${encodeURIComponent(fileName)}"`,
-        'Cache-Control': 'public, max-age=604800', // Cache 1 semana
-        'Content-Length': buffer.length.toString()
+        'Cache-Control': 'public, max-age=0, must-revalidate',
+        'Content-Length': buffer.length.toString(),
+        ETag: hash,
       }
     });
 

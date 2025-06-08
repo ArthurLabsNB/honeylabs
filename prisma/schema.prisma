@@ -168,6 +168,8 @@ model Almacen {
   id                      Int              @id @default(autoincrement())
   nombre                  String
   descripcion             String?
+  imagen                  Bytes?
+  imagenNombre            String?
   imagenUrl               String?
   codigoUnico             String           @unique
   funciones               String?
