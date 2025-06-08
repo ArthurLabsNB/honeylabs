@@ -1,5 +1,5 @@
 "use client";
-import { useCallback } from "react";
+import { useCallback, memo } from "react";
 import Image from "next/image";
 import { Pencil, Trash } from "lucide-react";
 import { motion } from "framer-motion";
@@ -140,7 +140,7 @@ export default function AlmacenesPage() {
   );
 }
 
-function SortableAlmacen({
+const SortableAlmacen = memo(function SortableAlmacen({
   almacen,
   onEdit,
   onDelete,
@@ -216,4 +216,4 @@ function SortableAlmacen({
       </div>
     </motion.li>
   );
-}
+}, (prev, next) => prev.almacen === next.almacen);
