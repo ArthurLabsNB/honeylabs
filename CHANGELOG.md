@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.58
+- Guardamos imágenes en base64 cuando no es posible escribir archivos.
 ## 0.2.57
 - Permitimos eliminar almacenes junto con sus registros relacionados.
 - Las imágenes editadas ahora reemplazan correctamente la anterior.
