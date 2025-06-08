@@ -26,6 +26,7 @@ export async function GET(req: NextRequest) {
 
     const data = await prisma.almacen.findMany({
       take: 20,
+      orderBy: { id: 'asc' },
       where,
       select: {
         id: true,
