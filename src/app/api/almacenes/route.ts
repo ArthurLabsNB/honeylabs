@@ -46,7 +46,6 @@ export async function GET(req: NextRequest) {
         },
         notificaciones: {
           where: { leida: false },
-          take: 1,
           select: { id: true },
         },
       },
@@ -74,7 +73,7 @@ export async function GET(req: NextRequest) {
       encargado: a.usuarios[0]?.usuario.nombre ?? null,
       correo: a.usuarios[0]?.usuario.correo ?? null,
       ultimaActualizacion: a.movimientos[0]?.fecha ?? null,
-      notificaciones: a.notificaciones.length > 0,
+      notificaciones: a.notificaciones.length,
       entradas: counts[a.id].entradas,
       salidas: counts[a.id].salidas,
       inventario: counts[a.id].entradas - counts[a.id].salidas,
