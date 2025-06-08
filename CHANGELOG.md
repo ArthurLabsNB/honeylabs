@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.85
+- Implementé redirección automática al login cuando no hay sesión.
+- Ajusté el layout para validar la autenticación en todas las vistas.
 ## 0.2.84
 - Mostramos un estado con badge en las tarjetas de almacenes.
 - Añadimos opción para marcar favoritos y guardamos la preferencia.
