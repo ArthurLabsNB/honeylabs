@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, memo } from "react";
 import { jsonOrNull } from "@lib/http";
 import { useParams } from "next/navigation";
 import Spinner from "@/components/Spinner";
@@ -19,6 +19,66 @@ interface Fila {
   cantidad: number;
   lote: string;
 }
+
+const FilaRow = memo(
+  function FilaRow({
+    fila,
+    index,
+    onChange,
+  }: {
+    fila: Fila;
+    index: number;
+    onChange: (
+      idx: number,
+      campo: keyof Fila,
+      valor: string | number,
+    ) => void;
+  }) {
+    const handleProducto = useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) =>
+        onChange(index, "producto", e.target.value),
+      [index, onChange],
+    );
+    const handleCantidad = useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) =>
+        onChange(index, "cantidad", e.target.value),
+      [index, onChange],
+    );
+    const handleLote = useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) =>
+        onChange(index, "lote", e.target.value),
+      [index, onChange],
+    );
+
+    return (
+      <tr className="border-t border-white/10">
+        <td className="px-3 py-2">
+          <input
+            value={fila.producto}
+            onChange={handleProducto}
+            className="bg-transparent w-full focus:outline-none"
+          />
+        </td>
+        <td className="px-3 py-2">
+          <input
+            type="number"
+            value={fila.cantidad}
+            onChange={handleCantidad}
+            className="bg-transparent w-full focus:outline-none"
+          />
+        </td>
+        <td className="px-3 py-2">
+          <input
+            value={fila.lote}
+            onChange={handleLote}
+            className="bg-transparent w-full focus:outline-none"
+          />
+        </td>
+      </tr>
+    );
+  },
+  (prev, next) => prev.fila === next.fila && prev.index === next.index,
+);
 
 export default function AlmacenDetallePage() {
   const params = useParams();
@@ -113,30 +173,7 @@ export default function AlmacenDetallePage() {
         </thead>
         <tbody>
           {filas.map((f, idx) => (
-            <tr key={idx} className="border-t border-white/10">
-              <td className="px-3 py-2">
-                <input
-                  value={f.producto}
-                  onChange={(e) => actualizar(idx, "producto", e.target.value)}
-                  className="bg-transparent w-full focus:outline-none"
-                />
-              </td>
-              <td className="px-3 py-2">
-                <input
-                  type="number"
-                  value={f.cantidad}
-                  onChange={(e) => actualizar(idx, "cantidad", e.target.value)}
-                  className="bg-transparent w-full focus:outline-none"
-                />
-              </td>
-              <td className="px-3 py-2">
-                <input
-                  value={f.lote}
-                  onChange={(e) => actualizar(idx, "lote", e.target.value)}
-                  className="bg-transparent w-full focus:outline-none"
-                />
-              </td>
-            </tr>
+            <FilaRow key={idx} fila={f} index={idx} onChange={actualizar} />
           ))}
         </tbody>
       </table>
