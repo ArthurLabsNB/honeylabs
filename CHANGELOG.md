@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.86
+- Añadí `sizes` en todas las imágenes para optimizar la carga.
 ## 0.2.85
 - Implementé redirección automática al login cuando no hay sesión.
 - Ajusté el layout para validar la autenticación en todas las vistas.

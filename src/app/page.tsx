@@ -131,6 +131,7 @@ function AboutSection() {
             alt="Ilustración Almacén"
             width={320}
             height={320}
+            sizes="(max-width: 768px) 320px, 416px"
             className="w-80 h-80 md:w-[26rem] md:h-[26rem] object-cover rounded-2xl shadow-2xl border-2 border-amber-100 group-hover:scale-105 group-hover:rotate-2 group-hover:shadow-3xl transition-transform duration-500"
             draggable={false}
             loading="lazy"
@@ -402,6 +403,7 @@ function PartnersSection() {
                 alt={a.nombre}
                 width={a.principal ? 96 : 80}
                 height={a.principal ? 96 : 80}
+                sizes={a.principal ? '96px' : '80px'}
                 className={clsx(
                   "rounded-2xl shadow border-2 object-cover transition",
                   a.principal
