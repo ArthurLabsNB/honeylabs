@@ -59,13 +59,15 @@ export default function UserMenu({
   useEffect(() => {
     async function cargarTema() {
       let temaGuardado = localStorage.getItem("tema");
-      try {
-        const res = await fetch("/api/preferences");
-        if (res.ok) {
-          const prefs = await res.json();
-          if (prefs.theme) temaGuardado = prefs.theme;
-        }
-      } catch {}
+      if (usuario) {
+        try {
+          const res = await fetch("/api/preferences", { credentials: "include" });
+          if (res.ok) {
+            const prefs = await res.json();
+            if (prefs.theme) temaGuardado = prefs.theme;
+          }
+        } catch {}
+      }
       if (!temaGuardado) {
         const preferenciaSistema = window.matchMedia(
           "(prefers-color-scheme: light)",
@@ -82,7 +84,7 @@ export default function UserMenu({
       );
     }
     cargarTema();
-  }, []);
+  }, [usuario]);
 
   useEffect(() => {
     async function checkAdmin() {
@@ -149,11 +151,14 @@ export default function UserMenu({
       document.documentElement.classList.toggle("light", !nextIsDark);
       const tema = nextIsDark ? "dark" : "light";
       localStorage.setItem("tema", tema);
-      fetch("/api/preferences", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ theme: tema }),
-      }).catch(() => {});
+      if (usuario) {
+        fetch("/api/preferences", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ theme: tema }),
+        }).catch(() => {});
+      }
       return nextIsDark;
     });
   };

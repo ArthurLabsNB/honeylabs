@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { BookOpen, Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import useSession from "@/hooks/useSession";
 import { usePathname } from "next/navigation";
 import UserMenu from "./UserMenu";
 import { jsonOrNull } from "@lib/http";
@@ -18,23 +19,30 @@ const linkBase =
   "px-4 py-2 rounded-xl font-medium text-amber-50/90 bg-navglass/80 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow-sm";
 
 export default function Navbar() {
+  const { usuario: sesion } = useSession();
   const [usuario, setUsuario] = useState<any | null>(null);
   const [showTooltip, setShowTooltip] = useState(false);
 
   // Obtiene el usuario en vivo del backend
   useEffect(() => {
     async function fetchUser() {
+      if (!sesion) {
+        setUsuario(null);
+        return;
+      }
       try {
         const res = await fetch("/api/perfil", { credentials: "include" });
         const data = await jsonOrNull(res);
-        if (data.success && data.usuario) {
+        if (data?.success && data.usuario) {
           setUsuario({
             nombre: data.usuario.nombre,
             correo: data.usuario.correo,
             imagen: data.usuario.fotoPerfilNombre
-              ? `/api/perfil/foto?nombre=${encodeURIComponent(data.usuario.fotoPerfilNombre)}`
+              ? `/api/perfil/foto?nombre=${encodeURIComponent(
+                  data.usuario.fotoPerfilNombre,
+                )}`
               : undefined,
-            plan: data.usuario.planNombre, // Asegúrate que lo traes en el select
+            plan: data.usuario.planNombre,
             tiene2FA: data.usuario.tiene2FA,
           });
         } else {
@@ -45,7 +53,7 @@ export default function Navbar() {
       }
     }
     fetchUser();
-  }, []);
+  }, [sesion]);
 
   const [showTopBar, setShowTopBar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
