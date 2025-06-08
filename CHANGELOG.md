@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.53
+
+- Habilitamos carga de archivos para las imágenes de los almacenes.
+- Incrementamos ligeramente el tamaño visual de las tarjetas.
 ## 0.2.52
 
 - Imágenes actualizadas a `<Image>` de Next.js para un mejor rendimiento.

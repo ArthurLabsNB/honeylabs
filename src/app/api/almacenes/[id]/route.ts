@@ -1,6 +1,21 @@
+export const runtime = 'nodejs';
+
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@lib/prisma";
+import { promises as fs } from 'fs';
+import path from 'path';
 import { getUsuarioFromSession } from "@lib/auth";
+import crypto from 'node:crypto';
+
+const MAX_IMAGE_MB = 5;
+const MAX_IMAGE_BYTES = MAX_IMAGE_MB * 1024 * 1024;
+const IMAGE_TYPES = [
+  'image/png',
+  'image/jpeg',
+  'image/jpg',
+  'image/webp',
+  'image/gif',
+];
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -41,7 +56,37 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
     const id = Number(params.id);
-    const { nombre, descripcion, imagenUrl } = await req.json();
+
+    let nombre = '';
+    let descripcion = '';
+    let imagenUrl: string | undefined = undefined;
+
+    if (req.headers.get('content-type')?.includes('multipart/form-data')) {
+      const formData = await req.formData();
+      nombre = String(formData.get('nombre') ?? '').trim();
+      descripcion = String(formData.get('descripcion') ?? '').trim();
+      const archivo = formData.get('imagen') as File | null;
+      if (archivo) {
+        if (!IMAGE_TYPES.includes(archivo.type)) {
+          return NextResponse.json({ error: 'Formato de imagen no permitido' }, { status: 415 });
+        }
+        const buffer = Buffer.from(await archivo.arrayBuffer());
+        if (buffer.byteLength > MAX_IMAGE_BYTES) {
+          return NextResponse.json({ error: `Imagen demasiado grande. Máx: ${MAX_IMAGE_MB}MB` }, { status: 413 });
+        }
+        const nombreArchivo = `${crypto.randomUUID()}_${archivo.name}`;
+        const dir = path.join(process.cwd(), 'public/almacenes');
+        await fs.mkdir(dir, { recursive: true });
+        await fs.writeFile(path.join(dir, nombreArchivo), buffer);
+        imagenUrl = `/almacenes/${nombreArchivo}`;
+      }
+    } else {
+      const body = await req.json();
+      nombre = body.nombre;
+      descripcion = body.descripcion;
+      imagenUrl = body.imagenUrl;
+    }
+
     const almacen = await prisma.almacen.update({
       where: { id },
       data: { nombre, descripcion, imagenUrl },
