@@ -2,6 +2,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@lib/prisma";
 import crypto from "crypto";
+import * as logger from '@lib/logger'
 export async function POST(req: NextRequest) {
   try {
     const { almacenId, rolAsignado, permisos, usosDisponibles, fechaExpiracion } = await req.json();
@@ -21,7 +22,7 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json({ codigo: nuevo.codigo }, { status: 201 });
   } catch (err: any) {
-    console.error("[CODIGO_GENERAR]", err);
+    logger.error("[CODIGO_GENERAR]", err);
     return NextResponse.json({ error: "Error generando código" }, { status: 500 });
   }
 }

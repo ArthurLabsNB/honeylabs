@@ -5,6 +5,7 @@ import prisma from "@lib/prisma";
 import { getUsuarioFromSession } from "@lib/auth";
 import { hasManagePerms } from "@lib/permisos";
 import crypto from 'node:crypto';
+import * as logger from '@lib/logger'
 
 const MAX_IMAGE_MB = 5;
 const MAX_IMAGE_BYTES = MAX_IMAGE_MB * 1024 * 1024;
@@ -66,7 +67,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       },
     });
   } catch (err) {
-    console.error("Error en /api/almacenes/[id]", err);
+    logger.error("Error en /api/almacenes/[id]", err);
     return NextResponse.json({ error: "Error al obtener almacén" }, { status: 500 });
   }
 }
@@ -99,7 +100,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     ]);
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error('DELETE /api/almacenes/[id]', err);
+    logger.error('DELETE /api/almacenes/[id]', err);
     return NextResponse.json({ error: 'Error al eliminar' }, { status: 500 });
   }
 }
@@ -163,7 +164,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     };
     return NextResponse.json({ almacen: resp });
   } catch (err) {
-    console.error('PUT /api/almacenes/[id]', err);
+    logger.error('PUT /api/almacenes/[id]', err);
     return NextResponse.json({ error: 'Error al actualizar' }, { status: 500 });
   }
 }

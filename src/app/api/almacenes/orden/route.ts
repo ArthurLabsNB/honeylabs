@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@lib/prisma'
 import { getUsuarioFromSession } from '@lib/auth'
+import * as logger from '@lib/logger'
 
 export async function GET() {
   try {
@@ -10,7 +11,7 @@ export async function GET() {
     const orden = Array.isArray(prefs.ordenAlmacenes) ? prefs.ordenAlmacenes : []
     return NextResponse.json({ orden })
   } catch (err) {
-    console.error('GET /api/almacenes/orden', err)
+    logger.error('GET /api/almacenes/orden', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
   }
 }
@@ -31,7 +32,7 @@ export async function POST(req: NextRequest) {
     })
     return NextResponse.json({ ok: true })
   } catch (err) {
-    console.error('POST /api/almacenes/orden', err)
+    logger.error('POST /api/almacenes/orden', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
   }
 }

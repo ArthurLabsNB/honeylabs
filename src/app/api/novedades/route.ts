@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@lib/prisma'
 import jwt from 'jsonwebtoken'
 import { SESSION_COOKIE } from '@lib/constants'
+import * as logger from '@lib/logger'
 
 const JWT_SECRET = process.env.JWT_SECRET
 if (!JWT_SECRET) {
@@ -29,7 +30,7 @@ export async function GET(req: NextRequest) {
     })
     return NextResponse.json({ novedades })
   } catch (error) {
-    console.error('Error en /api/novedades:', error)
+    logger.error('Error en /api/novedades:', error)
     return NextResponse.json({ error: 'Error interno' }, { status: 500 })
   }
 }

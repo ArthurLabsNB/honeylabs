@@ -3,6 +3,7 @@ export const runtime = 'nodejs';
 
 import { NextResponse } from 'next/server';
 import prisma from '@lib/prisma';
+import * as logger from '@lib/logger'
 
 export async function GET() {
   try {
@@ -11,7 +12,7 @@ export async function GET() {
 
     return NextResponse.json({ ok: true, mensaje: '✅ Conexión a la base de datos exitosa.' }, { status: 200 });
   } catch (error: any) {
-    console.error('[ERROR_PING_DB]', error);
+    logger.error('[ERROR_PING_DB]', error);
     return NextResponse.json({ ok: false, error: '❌ Error al conectar con la base de datos.', detalle: String(error) }, { status: 500 });
   }
 }

@@ -5,6 +5,7 @@ import prisma from '@lib/prisma';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { SESSION_COOKIE, sessionCookieOptions } from '@lib/constants';
+import * as logger from '@lib/logger'
 
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -125,7 +126,7 @@ export async function POST(req: NextRequest) {
 
     return res;
   } catch (error) {
-    console.error('[ERROR_LOGIN]', error);
+    logger.error('[ERROR_LOGIN]', error);
     return NextResponse.json({ success: false, error: 'Error interno.' }, { status: 500 });
   }
 }
@@ -144,7 +145,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'Sesión expirada.' }, { status: 401 });
     }
   } catch (error) {
-    console.error('[ERROR_GET_SESSION]', error);
+    logger.error('[ERROR_GET_SESSION]', error);
     return NextResponse.json({ success: false, error: 'Error interno.' }, { status: 500 });
   }
 }

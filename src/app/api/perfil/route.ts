@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { SESSION_COOKIE, sessionCookieOptions } from '@lib/constants';
 import prisma from '@lib/prisma';
+import * as logger from '@lib/logger'
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
@@ -223,7 +224,7 @@ export async function PUT(req: NextRequest) {
 
     return res;
   } catch (error: any) {
-    console.error('[ERROR_UPDATE_PERFIL]', error);
+    logger.error('[ERROR_UPDATE_PERFIL]', error);
     return NextResponse.json({ error: 'Error al actualizar perfil.', detalle: error.message }, { status: 500 });
   }
 }

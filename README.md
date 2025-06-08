@@ -91,6 +91,10 @@ npm run dev
 La aplicación estará disponible en [honeylabs.vercel.app] por el momento hasta que se tenga un host fijo.
 Entender que este repositorio solo cuenta "Funcional" la base del proyecto, no se piensa colocar completo por el momento.
 
+### Modo debug
+
+Para ver mensajes detallados de la aplicación establece `LOG_LEVEL=debug` antes de ejecutar los comandos de desarrollo o producción.
+
 ---
 
 ## Estructura del Proyecto
