@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.70
+- Guardamos el orden de los almacenes por usuario.
+- Se creó el endpoint `/api/almacenes/orden` para actualizarlo.
 ## 0.2.69
 - Reemplazamos el emoji de notificaciones por una etiqueta con conteo.
 - El listado de almacenes indica cuántas alertas no se han leído.
