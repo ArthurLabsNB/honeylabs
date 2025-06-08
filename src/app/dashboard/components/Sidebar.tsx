@@ -194,7 +194,7 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
       {/* Footer: usuario */}
       <div className="dashboard-sidebar-footer mb-4" data-oid="3f:v6ch">
         {usuario.avatarUrl ? (
-          <Image
+          <img
             src={usuario.avatarUrl}
             alt="Avatar"
             width={48}
