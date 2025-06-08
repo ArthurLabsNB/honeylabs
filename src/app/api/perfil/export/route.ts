@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import { SESSION_COOKIE } from '@lib/constants';
 import prisma from '@lib/prisma';
+import * as logger from '@lib/logger'
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
@@ -123,7 +124,7 @@ export async function GET(req: NextRequest) {
     });
 
   } catch (error: any) {
-    console.error('[ERROR_EXPORTAR_PERFIL]', error);
+    logger.error('[ERROR_EXPORTAR_PERFIL]', error);
     return NextResponse.json({
       error: 'No se pudo exportar tu perfil.',
       detalle: error.message ?? String(error),

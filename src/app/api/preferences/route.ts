@@ -3,6 +3,7 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@lib/prisma';
 import { getUsuarioFromSession } from '@lib/auth';
+import * as logger from '@lib/logger'
 
 export async function GET() {
   try {
@@ -13,7 +14,7 @@ export async function GET() {
     const prefs = usuario.preferencias ? JSON.parse(usuario.preferencias) : {};
     return NextResponse.json(prefs);
   } catch (err) {
-    console.error('GET /api/preferences', err);
+    logger.error('GET /api/preferences', err);
     return NextResponse.json({ error: 'Error' }, { status: 500 });
   }
 }
@@ -36,7 +37,7 @@ export async function PUT(req: NextRequest) {
     });
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error('PUT /api/preferences', err);
+    logger.error('PUT /api/preferences', err);
     return NextResponse.json({ error: 'Error' }, { status: 500 });
   }
 }

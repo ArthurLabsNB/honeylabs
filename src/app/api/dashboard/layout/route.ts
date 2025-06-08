@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@lib/prisma';
 import { getUsuarioFromSession } from '@lib/auth';
+import * as logger from '@lib/logger';
 
 export async function GET() {
   try {
@@ -9,7 +10,7 @@ export async function GET() {
     const prefs = usuario.preferencias ? JSON.parse(usuario.preferencias) : {};
     return NextResponse.json(prefs.dashboardLayout || { widgets: [], layout: [] });
   } catch (err) {
-    console.error('GET /api/dashboard/layout', err);
+    logger.error('GET /api/dashboard/layout', err);
     return NextResponse.json({ error: 'Error' }, { status: 500 });
   }
 }
@@ -24,7 +25,7 @@ export async function POST(req: NextRequest) {
     await prisma.usuario.update({ where: { id: usuario.id }, data: { preferencias: JSON.stringify(prefs) } });
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error('POST /api/dashboard/layout', err);
+    logger.error('POST /api/dashboard/layout', err);
     return NextResponse.json({ error: 'Error' }, { status: 500 });
   }
 }

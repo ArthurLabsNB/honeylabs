@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@lib/prisma'
 import { createHash } from 'crypto'
+import * as logger from '@lib/logger'
 
 const MIME_BY_EXT: Record<string, string> = {
   png: 'image/png',
@@ -57,7 +58,7 @@ export async function GET(req: NextRequest) {
       },
     })
   } catch (err) {
-    console.error('[ALMACEN_FOTO]', err)
+    logger.error('[ALMACEN_FOTO]', err)
     return NextResponse.json({ error: 'No se pudo recuperar la imagen.' }, { status: 500 })
   }
 }

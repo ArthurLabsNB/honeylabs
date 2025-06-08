@@ -6,6 +6,7 @@ import prisma from "@lib/prisma";
 import crypto from "node:crypto";
 import { getUsuarioFromSession } from "@lib/auth";
 import { hasManagePerms, normalizeTipoCuenta } from "@lib/permisos";
+import * as logger from '@lib/logger'
 
 const MAX_IMAGE_MB = 5;
 const MAX_IMAGE_BYTES = MAX_IMAGE_MB * 1024 * 1024;
@@ -109,7 +110,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ almacenes })
   } catch (err) {
-    console.error("Error en /api/almacenes:", err);
+    logger.error("Error en /api/almacenes:", err);
     return NextResponse.json(
       { error: "Error al obtener almacenes" },
       { status: 500 },
@@ -211,7 +212,7 @@ export async function POST(req: NextRequest) {
     };
     return NextResponse.json({ almacen: resp });
   } catch (err) {
-    console.error('POST /api/almacenes', err);
+    logger.error('POST /api/almacenes', err);
     return NextResponse.json(
       { error: 'Error al crear almacén' },
       { status: 500 },

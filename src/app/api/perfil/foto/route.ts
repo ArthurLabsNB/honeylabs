@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@lib/prisma';
 import { createHash } from 'crypto';
+import * as logger from '@lib/logger'
 
 // Mime types permitidos para evitar servir archivos no deseados
 const MIME_BY_EXT: Record<string, string> = {
@@ -66,7 +67,7 @@ export async function GET(req: NextRequest) {
     });
 
   } catch (err: any) {
-    console.error('[ERROR_FOTO_PERFIL]', err);
+    logger.error('[ERROR_FOTO_PERFIL]', err);
     return NextResponse.json({ error: 'No se pudo recuperar la imagen.' }, { status: 500 });
   }
 }

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@lib/prisma"; // Ajusta el import si tu alias es diferente
+import * as logger from '@lib/logger'
 
 export async function GET(req: NextRequest) {
   try {
@@ -33,7 +34,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ alertas });
   } catch (err) {
-    console.error("Error en /api/alertas:", err);
+    logger.error("Error en /api/alertas:", err);
     return NextResponse.json({ error: "Error consultando alertas" }, { status: 500 });
   }
 }

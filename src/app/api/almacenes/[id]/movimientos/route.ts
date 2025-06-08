@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@lib/prisma';
 import { getUsuarioFromSession } from '@lib/auth';
 import { hasManagePerms } from '@lib/permisos';
+import * as logger from '@lib/logger'
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -40,7 +41,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error('POST /api/almacenes/[id]/movimientos', err);
+    logger.error('POST /api/almacenes/[id]/movimientos', err);
     return NextResponse.json({ error: 'Error al registrar' }, { status: 500 });
   }
 }

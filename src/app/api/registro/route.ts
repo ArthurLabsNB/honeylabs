@@ -5,6 +5,7 @@ import prisma from '@lib/prisma';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import { enviarCorreoValidacionEmpresa } from '@/lib/email/enviarRegistro';
+import * as logger from '@lib/logger'
 
 
 const TAMAÑO_MAXIMO_MB = 2;
@@ -32,7 +33,7 @@ async function obtenerIdPlanInicial(tipoCuenta: string): Promise<number | null> 
 
 export async function POST(req: NextRequest) {
   try {
-    console.info('📥 Iniciando registro de usuario');
+    logger.info('📥 Iniciando registro de usuario');
     const formData = await req.formData();
 
     // Extracción y sanitización de campos
@@ -88,7 +89,7 @@ export async function POST(req: NextRequest) {
         archivoNombre = `${uuidv4()}_${archivo.name}`;
         archivoBuffer = Buffer.from(buffer);
       } catch (err: any) {
-        console.error('❌ Error al procesar archivo:', err);
+        logger.error('❌ Error al procesar archivo:', err);
         return NextResponse.json({ error: 'No se pudo procesar el archivo.', detalle: err.message }, { status: 500 });
       }
     }
@@ -114,7 +115,7 @@ export async function POST(req: NextRequest) {
         entidadId = almacen.entidadId;
         codigoUsado = codigo;
       } catch (err: any) {
-        console.error('❌ Error en validación de código:', err);
+        logger.error('❌ Error en validación de código:', err);
         return NextResponse.json({ error: 'Fallo al validar el código proporcionado.', detalle: err.message }, { status: 500 });
       }
     }
@@ -145,9 +146,9 @@ export async function POST(req: NextRequest) {
           // Puedes agregar más campos aquí según extiendas el modelo
         },
       });
-      console.info('✅ Usuario creado:', nuevoUsuario.id, correo);
+      logger.info('✅ Usuario creado:', nuevoUsuario.id, correo);
     } catch (err: any) {
-      console.error('❌ Error al crear usuario:', err);
+      logger.error('❌ Error al crear usuario:', err);
       return NextResponse.json({ error: 'Error al guardar el usuario.' }, { status: 500 });
     }
 
@@ -155,10 +156,10 @@ export async function POST(req: NextRequest) {
     try {
       const enviado = await enviarCorreoValidacionEmpresa({ nombre, correo, tipoCuenta });
       if (!enviado.enviado) {
-        console.warn('⚠️ Error al enviar correo de validación:', enviado.error);
+        logger.warn('⚠️ Error al enviar correo de validación:', enviado.error);
       }
     } catch (err: any) {
-      console.warn('❌ Error al enviar correo de validación:', err);
+      logger.warn('❌ Error al enviar correo de validación:', err);
       // No bloquea el registro, pero se informa en logs.
     }
 
@@ -171,7 +172,7 @@ export async function POST(req: NextRequest) {
     }, { status: 200 });
 
   } catch (error: any) {
-    console.error('❌ [ERROR_REGISTRO_GENERAL]', error);
+    logger.error('❌ [ERROR_REGISTRO_GENERAL]', error);
     return NextResponse.json({
       error: 'Error general del servidor al procesar el registro.',
       nombre: error.name,

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@lib/prisma'; // Asegúrate que el alias es correcto
+import * as logger from '@lib/logger'
 
 // Función auxiliar para obtener usuario desde JWT (por implementar)
 async function getUsuarioFromRequest(req: NextRequest) {
@@ -29,7 +30,7 @@ export async function GET(req: NextRequest) {
       // advertencia: 'Límite alcanzado', // puedes añadir si quieres
     });
   } catch (error) {
-    console.error('[ERROR_METRICAS]', error);
+    logger.error('[ERROR_METRICAS]', error);
     return NextResponse.json(
       { error: 'No se pudieron recuperar las métricas', details: String(error) },
       { status: 500 }

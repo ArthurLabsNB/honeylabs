@@ -1,6 +1,7 @@
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@lib/prisma";
+import * as logger from '@lib/logger'
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,7 +25,7 @@ export async function POST(req: NextRequest) {
       permisos: existente.permisos ?? null,
     });
   } catch (err: any) {
-    console.error("[CODIGO_VALIDAR]", err);
+    logger.error("[CODIGO_VALIDAR]", err);
     return NextResponse.json({ error: "Error validando código" }, { status: 500 });
   }
 }

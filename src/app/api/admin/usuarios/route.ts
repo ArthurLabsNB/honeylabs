@@ -1,6 +1,7 @@
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@lib/prisma";
+import * as logger from '@lib/logger'
 
 export async function GET(req: NextRequest) {
   try {
@@ -27,7 +28,7 @@ export async function GET(req: NextRequest) {
     });
     return NextResponse.json({ usuarios });
   } catch (err: any) {
-    console.error("[ADMIN_USUARIOS]", err);
+    logger.error("[ADMIN_USUARIOS]", err);
     return NextResponse.json({ error: "Error listando usuarios" }, { status: 500 });
   }
 }

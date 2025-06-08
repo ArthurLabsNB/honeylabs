@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.77
+- Añadimos un sistema de logging configurable con `LOG_LEVEL`.
 ## 0.2.76
 - Corregimos un 404 al consultar `/api/perfil`.
 
