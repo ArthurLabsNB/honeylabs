@@ -1,121 +1,29 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useCallback } from "react";
 import Image from "next/image";
 import { Pencil, Trash } from "lucide-react";
 import { motion } from "framer-motion";
-import { jsonOrNull } from "@lib/http";
 import { useRouter } from "next/navigation";
 import { useAlmacenesUI } from "./ui";
-import type { Usuario } from "@/types/usuario";
-import { getMainRole, hasManagePerms, normalizeTipoCuenta } from "@lib/permisos";
-import useSession from "@/hooks/useSession";
-import useAlmacenes, { Almacen } from "@/hooks/useAlmacenes";
-import { useToast } from "@/components/Toast";
+import { hasManagePerms } from "@lib/permisos";
 import Spinner from "@/components/Spinner";
 import EmptyState from "@/components/EmptyState";
-
-
-function arrayMove<T>(arr: T[], from: number, to: number): T[] {
-  const newArr = arr.slice();
-  const [item] = newArr.splice(from, 1);
-  newArr.splice(to, 0, item);
-  return newArr;
-}
+import useAlmacenesLogic from "@/hooks/useAlmacenesLogic";
+import type { Almacen } from "@/hooks/useAlmacenes";
 
 export default function AlmacenesPage() {
-  const allowed = ["admin", "administrador", "institucional", "empresarial", "individual"];
-  const { usuario, loading: loadingUsuario } = useSession();
-  const [almacenes, setAlmacenes] = useState<Almacen[]>([]);
-  const [error, setError] = useState("");
   const router = useRouter();
-  const toast = useToast();
-  const { view, filter, registerCreate } = useAlmacenesUI();
-  const [dragId, setDragId] = useState<number | null>(null);
+  const { view } = useAlmacenesUI();
   const {
-    almacenes: fetchedAlmacenes,
-    loading: loadingAlmacenes,
-    error: fetchError,
-    mutate,
-  } = useAlmacenes(
-    usuario ? { usuarioId: usuario.id, favoritos: filter === "favoritos" } : undefined,
-  );
-
-  useEffect(() => {
-    if (loadingUsuario) return;
-    if (!usuario) {
-      setError("Debes iniciar sesión");
-      return;
-    }
-    const rol = getMainRole(usuario)?.toLowerCase();
-    const tipo = normalizeTipoCuenta(usuario.tipoCuenta);
-    if (rol !== "admin" && rol !== "administrador" && !allowed.includes(tipo)) {
-      setError("No autorizado");
-      return;
-    }
-    setError("");
-  }, [usuario, loadingUsuario]);
-
-  const crearAlmacen = async (nombre: string, descripcion: string) => {
-    try {
-      const res = await fetch("/api/almacenes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre, descripcion }),
-      });
-      const data = await jsonOrNull(res);
-      if (res.ok && data.almacen) {
-        mutate();
-        toast.show("Almacén creado", "success");
-      } else {
-        toast.show(data.error || "Error al crear", "error");
-      }
-    } catch {
-      toast.show("Error de red", "error");
-    }
-  };
-
-  useEffect(() => {
-    registerCreate(crearAlmacen);
-  }, [registerCreate]);
-
-  useEffect(() => {
-    setAlmacenes(fetchedAlmacenes);
-  }, [fetchedAlmacenes]);
-
-  useEffect(() => {
-    if (fetchError) setError("Error al cargar datos");
-  }, [fetchError]);
-
-  const eliminar = useCallback(async (id: number) => {
-    const ok = await toast.confirm("¿Eliminar almacén?");
-    if (!ok) return;
-    const res = await fetch(`/api/almacenes/${id}`, { method: "DELETE" });
-    if (res.ok) {
-      mutate();
-      toast.show("Almacén eliminado", "success");
-    } else {
-      toast.show("Error al eliminar", "error");
-    }
-  }, [toast]);
-
-  const handleDragStart = useCallback((id: number) => {
-    setDragId(id);
-  }, []);
-
-  const handleDragEnter = useCallback(
-    (id: number) => {
-      if (dragId === null || dragId === id) return;
-      const oldIndex = almacenes.findIndex((a) => a.id === dragId);
-      const newIndex = almacenes.findIndex((a) => a.id === id);
-      setAlmacenes((items) => arrayMove(items, oldIndex, newIndex));
-      setDragId(id);
-    },
-    [dragId, almacenes],
-  );
-
-  const handleDragEnd = useCallback(() => {
-    setDragId(null);
-  }, []);
+    usuario,
+    almacenes,
+    loading,
+    error,
+    handleDragStart,
+    handleDragEnter,
+    handleDragEnd,
+    eliminar,
+  } = useAlmacenesLogic();
 
   if (error)
     return (
@@ -124,7 +32,7 @@ export default function AlmacenesPage() {
       </div>
     );
 
-  if (loadingAlmacenes || loadingUsuario)
+  if (loading)
     return (
       <div className="p-4" data-oid="8xwpkrd">
         <Spinner />
