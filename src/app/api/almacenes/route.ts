@@ -52,17 +52,20 @@ export async function GET(req: NextRequest) {
     });
 
     const ids = data.map((a) => a.id);
-    const movs = await prisma.movimiento.groupBy({
-      by: ["almacenId", "tipo"],
-      _sum: { cantidad: true },
-      where: { almacenId: { in: ids } },
-    });
-
     const counts: Record<number, { entradas: number; salidas: number }> = {};
     ids.forEach((id) => (counts[id] = { entradas: 0, salidas: 0 }));
-    for (const m of movs) {
-      if (m.tipo === "entrada") counts[m.almacenId].entradas = m._sum.cantidad ?? 0;
-      if (m.tipo === "salida") counts[m.almacenId].salidas = m._sum.cantidad ?? 0;
+
+    if (ids.length > 0) {
+      const movs = await prisma.movimiento.groupBy({
+        by: ["almacenId", "tipo"],
+        _sum: { cantidad: true },
+        where: { almacenId: { in: ids } },
+      });
+
+      for (const m of movs) {
+        if (m.tipo === "entrada") counts[m.almacenId].entradas = m._sum.cantidad ?? 0;
+        if (m.tipo === "salida") counts[m.almacenId].salidas = m._sum.cantidad ?? 0;
+      }
     }
 
     let orden: number[] = []
