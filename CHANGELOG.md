@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.76
+- Corregimos un 404 al consultar `/api/perfil`.
+
 ## 0.2.75
 - Añadimos `vitest.config.ts` para resolver alias en las pruebas.
 ## 0.2.73
