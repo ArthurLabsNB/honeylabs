@@ -1,7 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@lib/prisma';
-import { createHash } from 'crypto';
+export const runtime = 'nodejs'
+import { NextRequest, NextResponse } from 'next/server'
+import prisma from '@lib/prisma'
+import { createHash } from 'crypto'
 import * as logger from '@lib/logger'
+import { respuestaError } from '@/lib/http'
 
 // Mime types permitidos para evitar servir archivos no deseados
 const MIME_BY_EXT: Record<string, string> = {
@@ -31,19 +33,16 @@ export async function GET(req: NextRequest) {
         select: { fotoPerfil: true, fotoPerfilNombre: true }
       });
     } else {
-      return NextResponse.json(
-        { error: 'Nombre o correo requerido.' },
-        { status: 400 }
-      );
+      return respuestaError('Nombre o correo requerido.', '', 400)
     }
 
     if (!usuario || !usuario.fotoPerfil || !usuario.fotoPerfilNombre) {
-      return NextResponse.json({ error: 'Imagen no encontrada.' }, { status: 404 });
+      return respuestaError('Imagen no encontrada.', '', 404)
     }
 
-    const ext = usuario.fotoPerfilNombre.split('.').pop()?.toLowerCase() ?? '';
+    const ext = usuario.fotoPerfilNombre.split('.').pop()?.toLowerCase() ?? ''
     if (!(ext in MIME_BY_EXT)) {
-      return NextResponse.json({ error: 'Tipo de archivo no permitido.' }, { status: 400 });
+      return respuestaError('Tipo de archivo no permitido.', ext, 400)
     }
     const buffer = Buffer.isBuffer(usuario.fotoPerfil)
       ? usuario.fotoPerfil
@@ -67,7 +66,7 @@ export async function GET(req: NextRequest) {
     });
 
   } catch (err: any) {
-    logger.error('[ERROR_FOTO_PERFIL]', err);
-    return NextResponse.json({ error: 'No se pudo recuperar la imagen.' }, { status: 500 });
+    logger.error(req, '[ERROR_FOTO_PERFIL]', err)
+    return respuestaError('No se pudo recuperar la imagen.', err.message, 500)
   }
 }
