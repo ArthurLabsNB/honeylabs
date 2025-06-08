@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.72
+- Ordenamos los almacenes por ID para evitar fallos al consultar la lista.
 ## 0.2.71
 - Evitamos un error 500 en `/api/almacenes` cuando el usuario no tiene almacenes.
 ## 0.2.70
