@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.75
+- Corregimos el endpoint de perfil definiendo el runtime de Node.
 ## 0.2.73
 - Permitimos scripts de analytics de Vercel en la CSP.
 ## 0.2.72
