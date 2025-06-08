@@ -3,6 +3,8 @@
 - Unificamos la carga de almacenes con un hook que refresca cada diez segundos.
 ## 0.2.64
 - Extraemos la lógica de la página de almacenes a un nuevo hook de utilidad.
+## 0.2.65
+- Reorganizamos los renderizadores de almacenes en componentes separados y añadimos un botón flotante reutilizable.
 ## 0.2.62
 - Mostramos un estado vacío con opciones para crear o conectar almacenes.
 ## 0.2.61
