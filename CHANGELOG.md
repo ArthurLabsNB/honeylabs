@@ -1,4 +1,9 @@
 # Changelog
+## 0.2.50
+
+- Vista de almacenes rediseñada en forma de tarjetas con imagen destacada.
+- Campos de imagen añadidos al crear y editar almacenes.
+- Ordenamiento de la lista ahora se realiza mediante arrastrar y soltar.
 ## 0.2.49
 
 - Nuevo archivo `README_ARCHIVOS.md` con análisis detallado del proyecto.

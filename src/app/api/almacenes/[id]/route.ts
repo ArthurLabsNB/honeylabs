@@ -7,7 +7,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const id = Number(params.id);
     const almacen = await prisma.almacen.findUnique({
       where: { id },
-      select: { id: true, nombre: true, descripcion: true },
+      select: { id: true, nombre: true, descripcion: true, imagenUrl: true },
     });
     if (!almacen) {
       return NextResponse.json({ error: "No encontrado" }, { status: 404 });
@@ -41,11 +41,11 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
     const id = Number(params.id);
-    const { nombre, descripcion } = await req.json();
+    const { nombre, descripcion, imagenUrl } = await req.json();
     const almacen = await prisma.almacen.update({
       where: { id },
-      data: { nombre, descripcion },
-      select: { id: true, nombre: true, descripcion: true },
+      data: { nombre, descripcion, imagenUrl },
+      select: { id: true, nombre: true, descripcion: true, imagenUrl: true },
     });
     return NextResponse.json({ almacen });
   } catch (err) {

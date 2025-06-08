@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
     }
 
-    const { nombre, descripcion, funciones, permisosPredeterminados } = await req.json();
+    const { nombre, descripcion, funciones, permisosPredeterminados, imagenUrl } = await req.json();
     if (!nombre) {
       return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 });
     }
@@ -114,12 +114,13 @@ export async function POST(req: NextRequest) {
         funciones,
         permisosPredeterminados,
         codigoUnico,
+        imagenUrl,
         entidadId: usuario.entidadId,
         usuarios: {
           create: { usuarioId: usuario.id, rolEnAlmacen: 'propietario' },
         },
       },
-      select: { id: true, nombre: true, descripcion: true },
+      select: { id: true, nombre: true, descripcion: true, imagenUrl: true },
     });
 
     return NextResponse.json({ almacen });
