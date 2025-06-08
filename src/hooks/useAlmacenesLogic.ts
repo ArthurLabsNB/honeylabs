@@ -22,6 +22,7 @@ export default function useAlmacenesLogic() {
   const [almacenes, setAlmacenes] = useState<Almacen[]>([])
   const [error, setError] = useState('')
   const [dragId, setDragId] = useState<number | null>(null)
+  const [favoritos, setFavoritos] = useState<number[]>([])
 
   const {
     almacenes: fetchedAlmacenes,
@@ -78,6 +79,18 @@ export default function useAlmacenesLogic() {
     if (fetchError) setError('Error al cargar datos')
   }, [fetchError])
 
+  useEffect(() => {
+    if (!usuario) return
+    fetch('/api/preferences', { credentials: 'include' })
+      .then(jsonOrNull)
+      .then((prefs) => {
+        if (prefs && Array.isArray(prefs.favoritosAlmacenes)) {
+          setFavoritos(prefs.favoritosAlmacenes)
+        }
+      })
+      .catch(() => {})
+  }, [usuario])
+
   const eliminar = useCallback(
     async (id: number) => {
       const ok = await toast.confirm('¿Eliminar almacén?')
@@ -131,11 +144,26 @@ export default function useAlmacenesLogic() {
     [almacenes],
   )
 
+  const toggleFavorito = useCallback((id: number) => {
+    setFavoritos((prev) => {
+      const exists = prev.includes(id)
+      const updated = exists ? prev.filter((f) => f !== id) : [...prev, id]
+      fetch('/api/preferences', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ favoritosAlmacenes: updated }),
+      }).catch(() => {})
+      return updated
+    })
+  }, [])
+
   const loading = loadingAlmacenes || loadingUsuario
 
   return {
     usuario,
     almacenes,
+    favoritos,
     loading,
     error,
     handleDragStart,
@@ -143,5 +171,6 @@ export default function useAlmacenesLogic() {
     handleDragEnd,
     moveItem,
     eliminar,
+    toggleFavorito,
   }
 }
