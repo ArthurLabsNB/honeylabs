@@ -8,13 +8,23 @@ export default function ScanAlmacenPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [permiso, setPermiso] = useState(false);
   const [codigo, setCodigo] = useState<string | null>(null);
+  const [stream, setStream] = useState<MediaStream | null>(null);
 
   useEffect(() => {
     navigator.mediaDevices
       .getUserMedia({ video: { facingMode: "environment" } })
-      .then(() => setPermiso(true))
+      .then((s) => {
+        setStream(s);
+        setPermiso(true);
+      })
       .catch(() => setPermiso(false));
   }, []);
+
+  useEffect(() => {
+    return () => {
+      stream?.getTracks().forEach((track) => track.stop());
+    };
+  }, [stream]);
 
   useZxing({
     ref: videoRef,
