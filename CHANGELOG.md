@@ -21,6 +21,9 @@
 - Generamos identificadores de materiales usando `crypto.randomUUID` con reserva.
 - Pruebas para el hook `useMateriales` verifican el comportamiento.
 
+## 0.2.134
+- Validamos el parámetro `take` y respondemos 400 si no es numérico.
+
 ## 0.2.128
 - Oculté los campos de unidad, estado y niveles mínimo y máximo en el formulario de materiales.
 
