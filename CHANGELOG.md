@@ -1,3 +1,6 @@
+## 0.2.110
+- Nuevo endpoint `/api/materiales` para listar materiales de todos los almacenes.
+
 ## 0.2.109
 - Creamos `useMateriales` para centralizar la gestión de inventario.
 - Actualizamos la vista de almacén para usar este hook.
