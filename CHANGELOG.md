@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.96
+- Implementé escaneo con react-zxing dentro de cada almacén.
+- Generé códigos QR y de barras para los materiales.
 ## 0.2.95
 - Integramos una página de escaneo para códigos de barras y QR.
 - Registramos movimientos de cada lote con un historial dedicado.
