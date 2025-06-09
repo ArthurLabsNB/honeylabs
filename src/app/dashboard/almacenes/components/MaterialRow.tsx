@@ -2,7 +2,10 @@
 import { memo, useCallback } from "react";
 
 export interface Material {
-  id?: number;
+  /** Identificador único local */
+  id: string;
+  /** Identificador de base de datos */
+  dbId?: number;
   nombre: string;
   cantidad: number;
   lote: string;
@@ -22,25 +25,24 @@ export interface Material {
 
 interface Props {
   material: Material;
-  index: number;
-  onChange: (idx: number, campo: keyof Material, valor: string | number) => void;
+  onChange: (id: string, campo: keyof Material, valor: string | number) => void;
 }
 
-const MaterialRow = memo(function MaterialRow({ material, index, onChange }: Props) {
+const MaterialRow = memo(function MaterialRow({ material, onChange }: Props) {
   const handleNombre = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) =>
-      onChange(index, "nombre", e.target.value),
-    [index, onChange],
+      onChange(material.id, "nombre", e.target.value),
+    [material.id, onChange],
   );
   const handleCantidad = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) =>
-      onChange(index, "cantidad", e.target.value),
-    [index, onChange],
+      onChange(material.id, "cantidad", e.target.value),
+    [material.id, onChange],
   );
   const handleLote = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) =>
-      onChange(index, "lote", e.target.value),
-    [index, onChange],
+      onChange(material.id, "lote", e.target.value),
+    [material.id, onChange],
   );
 
   return (
@@ -69,6 +71,6 @@ const MaterialRow = memo(function MaterialRow({ material, index, onChange }: Pro
       </td>
     </tr>
   );
-}, (prev, next) => prev.material === next.material && prev.index === next.index);
+}, (prev, next) => prev.material === next.material);
 
 export default MaterialRow;

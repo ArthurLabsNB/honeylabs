@@ -36,7 +36,7 @@ export default function AlmacenPage() {
     mutate,
   } = useMateriales(id as string);
   const [materiales, setMateriales] = useState<Material[]>([]);
-  const [seleccion, setSeleccion] = useState<number | null>(0);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [busqueda, setBusqueda] = useState("");
   const [orden, setOrden] = useState<"nombre" | "cantidad">("nombre");
   const [loading, setLoading] = useState(true);
@@ -56,7 +56,7 @@ export default function AlmacenPage() {
 
   useEffect(() => {
     setMateriales(fetchedMateriales)
-    if (fetchedMateriales.length === 0) setSeleccion(null)
+    if (fetchedMateriales.length === 0) setSelectedId(null)
   }, [fetchedMateriales])
 
   const filtrados = materiales
@@ -66,23 +66,24 @@ export default function AlmacenPage() {
     );
 
   const actualizar = (
-    idx: number,
+    idMat: string,
     campo: keyof Material,
     valor: any,
   ) => {
-    setMateriales((ms) => {
-      const arr = [...ms];
-      // @ts-ignore
-      if (campo === 'cantidad') arr[idx][campo] = Number(valor);
-      else arr[idx][campo] = valor;
-      return arr;
-    });
-  };
+    setMateriales((ms) =>
+      ms.map((m) =>
+        m.id === idMat
+          ? { ...m, [campo]: campo === 'cantidad' ? Number(valor) : valor }
+          : m,
+      ),
+    )
+  }
 
   const guardar = async () => {
-    if (seleccion === null) return;
-    const m = materiales[seleccion]
-    const res = m.id ? await actualizarMaterial(m) : await crear(m)
+    if (!selectedId) return
+    const m = materiales.find((mat) => mat.id === selectedId)
+    if (!m) return
+    const res = m.dbId ? await actualizarMaterial(m) : await crear(m)
     if (res?.error) {
       toast.show(res.error, 'error')
       return
@@ -91,13 +92,13 @@ export default function AlmacenPage() {
   };
   const cancelar = () => {
     mutate()
-    setSeleccion(null)
+    setSelectedId(null)
   };
   const eliminar = async () => {
-    if (seleccion === null) return;
-    const m = materiales[seleccion];
-    if (m.id) {
-      const res = await eliminarMaterial(m.id)
+    if (!selectedId) return
+    const m = materiales.find((mat) => mat.id === selectedId)
+    if (m?.dbId) {
+      const res = await eliminarMaterial(m.dbId)
       if (res?.error) {
         toast.show(res.error, 'error')
         return
@@ -105,11 +106,13 @@ export default function AlmacenPage() {
       toast.show('Eliminado', 'success')
     }
     mutate()
-    setSeleccion(null)
+    setSelectedId(null)
   };
   const duplicar = () => {
-    if (seleccion === null) return;
-    setMateriales((ms) => [...ms, { ...ms[seleccion] }]);
+    if (!selectedId) return
+    const orig = materiales.find((m) => m.id === selectedId)
+    if (orig)
+      setMateriales((ms) => [...ms, { ...orig, id: crypto.randomUUID(), dbId: undefined }])
   };
 
   const loadingTotal = loading || loadingMateriales
@@ -162,9 +165,9 @@ export default function AlmacenPage() {
       <div className="flex flex-col md:flex-row gap-4 h-full">
         <section className="md:w-1/2 p-4 border-r border-white/10 overflow-y-auto">
           <MaterialForm
-            material={seleccion !== null ? materiales[seleccion] : null}
+            material={selectedId ? materiales.find((m) => m.id === selectedId) ?? null : null}
             onChange={(campo, valor) =>
-              seleccion !== null && actualizar(seleccion, campo, valor)
+              selectedId && actualizar(selectedId, campo, valor)
             }
             onGuardar={guardar}
             onCancelar={cancelar}
@@ -175,8 +178,8 @@ export default function AlmacenPage() {
         <aside className="md:w-1/2 p-4 overflow-y-auto">
           <MaterialList
             materiales={materiales}
-            seleccion={seleccion}
-            onSeleccion={setSeleccion}
+            selectedId={selectedId}
+            onSeleccion={setSelectedId}
             busqueda={busqueda}
             setBusqueda={setBusqueda}
             orden={orden}
@@ -185,6 +188,7 @@ export default function AlmacenPage() {
               setMateriales((ms) => [
                 ...ms,
                 {
+                  id: crypto.randomUUID(),
                   nombre: 'New',
                   cantidad: 0,
                   lote: '',

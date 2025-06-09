@@ -3,8 +3,8 @@ import type { Material } from "./MaterialRow";
 
 interface Props {
   materiales: Material[];
-  seleccion: number | null;
-  onSeleccion: (idx: number) => void;
+  selectedId: string | null;
+  onSeleccion: (id: string) => void;
   busqueda: string;
   setBusqueda: (v: string) => void;
   orden: "nombre" | "cantidad";
@@ -15,7 +15,7 @@ interface Props {
 
 export default function MaterialList({
   materiales,
-  seleccion,
+  selectedId,
   onSeleccion,
   busqueda,
   setBusqueda,
@@ -49,11 +49,11 @@ export default function MaterialList({
         </select>
       </div>
       <ul className="space-y-1 overflow-y-auto max-h-[calc(100vh-16rem)]">
-        {filtrados.map((m, idx) => (
-          <li key={idx}>
+        {filtrados.map((m) => (
+          <li key={m.id}>
             <button
-              onClick={() => onSeleccion(idx)}
-              className={`w-full text-left p-2 rounded-md transition ${idx === seleccion ? 'bg-white/10' : 'hover:bg-white/5'}`}
+              onClick={() => onSeleccion(m.id)}
+              className={`w-full text-left p-2 rounded-md transition ${m.id === selectedId ? 'bg-white/10' : 'hover:bg-white/5'}`}
             >
               {m.nombre}
             </button>
@@ -69,7 +69,7 @@ export default function MaterialList({
         </button>
         <button
           onClick={onDuplicar}
-          disabled={seleccion === null}
+          disabled={selectedId === null}
           className="flex-1 py-1 rounded-md bg-white/10 text-white text-sm disabled:opacity-50"
         >
           Duplicar
