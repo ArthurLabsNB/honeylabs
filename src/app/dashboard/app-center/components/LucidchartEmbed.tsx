@@ -9,7 +9,7 @@ export default function LucidchartEmbed({ docId }: LucidchartEmbedProps) {
   return (
     <iframe
       src={url}
-      className="w-full h-[600px] rounded-lg border"
+      className="w-full min-h-[60vh] rounded-lg border"
       allowFullScreen
       data-oid="u3rndlc"
     />

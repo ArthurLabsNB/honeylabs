@@ -9,7 +9,7 @@ export default function MiroBoard({ boardId }: MiroBoardProps) {
   return (
     <iframe
       src={url}
-      className="w-full h-[600px] rounded-lg border"
+      className="w-full min-h-[60vh] rounded-lg border"
       allowFullScreen
       data-oid="xbd.67x"
     />
