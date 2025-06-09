@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.100
+- Ajustamos las relaciones en Prisma para evitar errores de validación.
 ## 0.2.99
 - Manejamos IDs no numéricos para evitar errores al consultar almacenes y materiales.
 ## 0.2.98
