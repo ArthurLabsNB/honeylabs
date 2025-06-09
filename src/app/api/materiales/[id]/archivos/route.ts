@@ -7,12 +7,19 @@ import { hasManagePerms } from '@lib/permisos'
 import crypto from 'node:crypto'
 import * as logger from '@lib/logger'
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+function getMaterialIdFromRequest(req: NextRequest): number | null {
+  const parts = req.nextUrl.pathname.split('/')
+  const idx = parts.findIndex((p) => p === 'materiales')
+  const id = idx !== -1 && parts.length > idx + 1 ? Number(parts[idx + 1]) : null
+  return id && !Number.isNaN(id) ? id : null
+}
+
+export async function GET(req: NextRequest) {
   try {
     const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
-    const materialId = Number(params.id)
-    if (Number.isNaN(materialId)) {
+    const materialId = getMaterialIdFromRequest(req)
+    if (!materialId) {
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
     }
     const material = await prisma.material.findUnique({ where: { id: materialId }, select: { almacenId: true } })
@@ -42,12 +49,12 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest) {
   try {
     const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
-    const materialId = Number(params.id)
-    if (Number.isNaN(materialId)) {
+    const materialId = getMaterialIdFromRequest(req)
+    if (!materialId) {
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
     }
     const material = await prisma.material.findUnique({ where: { id: materialId }, select: { almacenId: true } })

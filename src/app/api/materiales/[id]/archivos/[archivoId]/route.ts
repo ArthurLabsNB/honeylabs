@@ -6,6 +6,13 @@ import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import * as logger from '@lib/logger'
 
+function getArchivoIdFromRequest(req: NextRequest): number | null {
+  const parts = req.nextUrl.pathname.split('/')
+  const idx = parts.findIndex((p) => p === 'archivos')
+  const id = idx !== -1 && parts.length > idx + 1 ? Number(parts[idx + 1]) : null
+  return id && !Number.isNaN(id) ? id : null
+}
+
 const MIME_BY_EXT: Record<string, string> = {
   png: 'image/png',
   jpg: 'image/jpeg',
@@ -15,12 +22,12 @@ const MIME_BY_EXT: Record<string, string> = {
   pdf: 'application/pdf',
 }
 
-export async function GET(req: NextRequest, { params }: { params: { id: string; archivoId: string } }) {
+export async function GET(req: NextRequest) {
   try {
     const usuario = await getUsuarioFromSession(req)
     if (!usuario) return new NextResponse('No autenticado', { status: 401 })
-    const archivoId = Number(params.archivoId)
-    if (Number.isNaN(archivoId)) return new NextResponse('ID inválido', { status: 400 })
+    const archivoId = getArchivoIdFromRequest(req)
+    if (!archivoId) return new NextResponse('ID inválido', { status: 400 })
     const archivo = await prisma.archivoMaterial.findUnique({
       where: { id: archivoId },
       select: { archivo: true, archivoNombre: true, material: { select: { almacenId: true } } },
@@ -43,12 +50,12 @@ export async function GET(req: NextRequest, { params }: { params: { id: string; 
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string; archivoId: string } }) {
+export async function DELETE(req: NextRequest) {
   try {
     const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
-    const archivoId = Number(params.archivoId)
-    if (Number.isNaN(archivoId)) {
+    const archivoId = getArchivoIdFromRequest(req)
+    if (!archivoId) {
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
     }
     const archivo = await prisma.archivoMaterial.findUnique({
