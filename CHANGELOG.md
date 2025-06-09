@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.93
+- Mejoramos la vista de almacén con paneles separados y un navbar renovado.
+
 ## 0.2.92
 - Ajustamos la cookie de sesión para que use opciones coherentes en cada entorno.
 - El middleware aplica estas configuraciones sin depender del host.

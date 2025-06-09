@@ -5,6 +5,12 @@ export interface Material {
   producto: string;
   cantidad: number;
   lote: string;
+  descripcion?: string;
+  fechaCaducidad?: string;
+  ubicacion?: string;
+  proveedor?: string;
+  estado?: string;
+  observaciones?: string;
 }
 
 interface Props {

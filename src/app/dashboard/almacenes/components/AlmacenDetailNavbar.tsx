@@ -2,6 +2,10 @@
 import { ArrowLeft, Save } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import useSession from "@/hooks/useSession";
+import UserMenu from "@/components/UserMenu";
+import AlmacenTools from "./AlmacenTools";
 import { jsonOrNull } from "@lib/http";
 import { useDashboardUI } from "../../ui";
 import { NAVBAR_HEIGHT } from "../../constants";
@@ -11,6 +15,7 @@ export default function AlmacenDetailNavbar() {
   const router = useRouter();
   const { id } = useParams();
   const { fullscreen } = useDashboardUI();
+  const { usuario } = useSession();
   const toast = useToast();
   const [nombre, setNombre] = useState("");
   const [original, setOriginal] = useState("");
@@ -67,19 +72,27 @@ export default function AlmacenDetailNavbar() {
         <button onClick={volver} className="p-2 text-gray-400 hover:bg-white/10 rounded-lg" title="Regresar">
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <input
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-          className="bg-transparent text-white text-lg font-semibold focus:outline-none"
-        />
+        <Image src="/logo-honeylabs.png" alt="HoneyLabs" width={28} height={28} className="rounded" />
+        <span className="font-semibold text-sm">HoneyLabs</span>
       </div>
-      <button
-        onClick={guardar}
-        disabled={!cambios || guardando}
-        className={`flex items-center gap-2 px-4 h-9 rounded-lg text-sm font-medium transition-colors ${cambios ? "bg-[var(--dashboard-accent)] text-white hover:bg-[var(--dashboard-accent-hover)]" : "bg-gray-600 text-gray-300"}`}
-      >
-        <Save className="w-4 h-4" /> Guardar
-      </button>
+      <input
+        value={nombre}
+        onChange={(e) => setNombre(e.target.value)}
+        className="bg-transparent text-center flex-1 mx-4 text-white text-lg font-semibold focus:outline-none"
+      />
+      <div className="flex items-center gap-2">
+        <AlmacenTools id={id as string} />
+        <button
+          onClick={guardar}
+          disabled={!cambios || guardando}
+          className={`flex items-center gap-2 px-4 h-9 rounded-lg text-sm font-medium transition-colors ${cambios ? "bg-[var(--dashboard-accent)] text-black hover:bg-[var(--dashboard-accent-hover)]" : "bg-gray-600 text-gray-300"}`}
+        >
+          <Save className="w-4 h-4" /> Guardar
+        </button>
+        {usuario && (
+          <UserMenu usuario={usuario} />
+        )}
+      </div>
     </header>
   );
 }
