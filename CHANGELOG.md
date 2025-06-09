@@ -1,3 +1,7 @@
+## 0.2.114
+- Generamos id único al duplicar materiales y seleccionamos la copia.
+- Agregamos "(copia)" al nombre y limpiamos el lote.
+
 ## 0.2.113
 - Ajustamos `MaterialRow` para usar id en lugar de índice.
 - Las vistas de inventario actualizan materiales por id.

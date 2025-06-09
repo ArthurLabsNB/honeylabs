@@ -111,8 +111,17 @@ export default function AlmacenPage() {
   const duplicar = () => {
     if (!selectedId) return
     const orig = materiales.find((m) => m.id === selectedId)
-    if (orig)
-      setMateriales((ms) => [...ms, { ...orig, id: crypto.randomUUID(), dbId: undefined }])
+    if (orig) {
+      const copia = {
+        ...orig,
+        id: crypto.randomUUID(),
+        dbId: undefined,
+        nombre: `${orig.nombre} (copia)`,
+        lote: '',
+      }
+      setMateriales((ms) => [...ms, copia])
+      setSelectedId(copia.id)
+    }
   };
 
   const loadingTotal = loading || loadingMateriales
