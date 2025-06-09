@@ -1,8 +1,9 @@
 "use client";
-import { useEffect, useState, useCallback, memo } from "react";
+import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
 import { useParams } from "next/navigation";
 import Spinner from "@/components/Spinner";
+import MaterialRow, { Material } from "../components/MaterialRow";
 
 interface Almacen {
   id: number;
@@ -14,77 +15,12 @@ interface Almacen {
   ultimaActualizacion?: string | null;
 }
 
-interface Fila {
-  producto: string;
-  cantidad: number;
-  lote: string;
-}
-
-const FilaRow = memo(
-  function FilaRow({
-    fila,
-    index,
-    onChange,
-  }: {
-    fila: Fila;
-    index: number;
-    onChange: (
-      idx: number,
-      campo: keyof Fila,
-      valor: string | number,
-    ) => void;
-  }) {
-    const handleProducto = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) =>
-        onChange(index, "producto", e.target.value),
-      [index, onChange],
-    );
-    const handleCantidad = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) =>
-        onChange(index, "cantidad", e.target.value),
-      [index, onChange],
-    );
-    const handleLote = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) =>
-        onChange(index, "lote", e.target.value),
-      [index, onChange],
-    );
-
-    return (
-      <tr className="border-t border-white/10">
-        <td className="px-3 py-2">
-          <input
-            value={fila.producto}
-            onChange={handleProducto}
-            className="bg-transparent w-full focus:outline-none"
-          />
-        </td>
-        <td className="px-3 py-2">
-          <input
-            type="number"
-            value={fila.cantidad}
-            onChange={handleCantidad}
-            className="bg-transparent w-full focus:outline-none"
-          />
-        </td>
-        <td className="px-3 py-2">
-          <input
-            value={fila.lote}
-            onChange={handleLote}
-            className="bg-transparent w-full focus:outline-none"
-          />
-        </td>
-      </tr>
-    );
-  },
-  (prev, next) => prev.fila === next.fila && prev.index === next.index,
-);
 
 export default function AlmacenDetallePage() {
   const params = useParams();
   const id = params.id as string;
   const [almacen, setAlmacen] = useState<Almacen | null>(null);
-  const [filas, setFilas] = useState<Fila[]>([]);
+  const [filas, setFilas] = useState<Material[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -127,7 +63,11 @@ export default function AlmacenDetallePage() {
       </div>
     );
 
-  const actualizar = (idx: number, campo: keyof Fila, valor: string | number) => {
+  const actualizar = (
+    idx: number,
+    campo: keyof Material,
+    valor: string | number,
+  ) => {
     setFilas((f) => {
       const arr = [...f];
       // @ts-ignore
@@ -173,7 +113,7 @@ export default function AlmacenDetallePage() {
         </thead>
         <tbody>
           {filas.map((f, idx) => (
-            <FilaRow key={idx} fila={f} index={idx} onChange={actualizar} />
+            <MaterialRow key={idx} material={f} index={idx} onChange={actualizar} />
           ))}
         </tbody>
       </table>

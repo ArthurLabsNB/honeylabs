@@ -1,4 +1,9 @@
 # Changelog
+## 0.2.87
+- Creamos la vista de inventario con doble panel para gestionar materiales.
+- Reutilizamos el formulario de detalle para editar materiales seleccionados.
+- Agregamos filtros, ordenamiento y acciones rápidas en la lista.
+- Incluimos botones de guardar, cancelar y duplicar en el editor.
 ## 0.2.86
 
 - Actualizamos la vista de almacenes para que las imágenes usen `w-24` y `h-24` con `object-cover`, adaptándose mejor a pantallas pequeñas.
