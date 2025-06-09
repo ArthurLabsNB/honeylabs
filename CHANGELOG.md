@@ -4,6 +4,9 @@
 ## 0.2.121
 - Guardamos un flag global para no crear intervalos repetidos en desarrollo.
 
+## 0.2.122
+- Memoricé los materiales para evitar ciclos de actualización infinitos al abrir un almacén.
+
 ## 0.2.119
 - Usamos un ref para controlar el scroll del `Navbar` y el efecto solo se monta una vez.
 
