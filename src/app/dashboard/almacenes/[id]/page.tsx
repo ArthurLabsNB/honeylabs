@@ -71,10 +71,54 @@ export default function AlmacenPage() {
     });
   };
 
-  const guardar = () => {
-    alert("Guardado");
+  const guardar = async () => {
+    if (seleccion === null) return;
+    const m = materiales[seleccion];
+    const body = {
+      nombre: m.producto,
+      descripcion: m.descripcion,
+      cantidad: m.cantidad,
+      unidad: m.unidad,
+      lote: m.lote,
+      fechaCaducidad: m.fechaCaducidad,
+      ubicacion: m.ubicacion,
+      proveedor: m.proveedor,
+      estado: m.estado,
+      observaciones: m.observaciones,
+      minimo: m.minimo,
+      maximo: m.maximo,
+    };
+    const res = await fetch(
+      m.id ? `/api/materiales/${m.id}` : `/api/almacenes/${id}/materiales`,
+      {
+        method: m.id ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      },
+    );
+    const data = await res.json();
+    if (data.error) {
+      alert(data.error);
+      return;
+    }
+    if (!m.id) {
+      setMateriales((ms) => {
+        const arr = [...ms];
+        arr[seleccion] = { ...m, id: data.material.id };
+        return arr;
+      });
+    }
   };
   const cancelar = () => setSeleccion(null);
+  const eliminar = async () => {
+    if (seleccion === null) return;
+    const m = materiales[seleccion];
+    if (m.id) {
+      await fetch(`/api/materiales/${m.id}`, { method: 'DELETE' });
+    }
+    setMateriales((ms) => ms.filter((_, idx) => idx !== seleccion));
+    setSeleccion(null);
+  };
   const duplicar = () => {
     if (seleccion === null) return;
     setMateriales((ms) => [...ms, { ...ms[seleccion] }]);
@@ -134,6 +178,7 @@ export default function AlmacenPage() {
             onGuardar={guardar}
             onCancelar={cancelar}
             onDuplicar={duplicar}
+            onEliminar={eliminar}
           />
         </section>
         <aside className="md:w-1/2 p-4 overflow-y-auto">
@@ -149,7 +194,7 @@ export default function AlmacenPage() {
               setMateriales((ms) => [
                 ...ms,
                 {
-                  producto: '',
+                  producto: 'New',
                   cantidad: 0,
                   lote: '',
                   unidad: '',

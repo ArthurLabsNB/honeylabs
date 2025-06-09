@@ -9,6 +9,7 @@ interface Props {
   onGuardar: () => void;
   onCancelar: () => void;
   onDuplicar: () => void;
+  onEliminar: () => void;
 }
 
 export default function MaterialForm({
@@ -17,6 +18,7 @@ export default function MaterialForm({
   onGuardar,
   onCancelar,
   onDuplicar,
+  onEliminar,
 }: Props) {
   if (!material)
     return (
@@ -168,6 +170,12 @@ export default function MaterialForm({
           className="px-4 py-2 rounded-lg bg-white/10 text-white text-sm"
         >
           Duplicar
+        </button>
+        <button
+          onClick={onEliminar}
+          className="px-4 py-2 rounded-lg bg-red-600 text-white text-sm"
+        >
+          Borrar
         </button>
       </div>
     </div>

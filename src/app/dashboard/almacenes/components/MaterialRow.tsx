@@ -2,6 +2,7 @@
 import { memo, useCallback } from "react";
 
 export interface Material {
+  id?: number;
   producto: string;
   cantidad: number;
   lote: string;
