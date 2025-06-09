@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter as useNextRouter } from "next/navigation";
+import Router from "next/router";
 import { jsonOrNull } from "@lib/http";
 import Spinner from "@/components/Spinner";
 import { useToast } from "@/components/Toast";
@@ -43,6 +44,7 @@ export default function AlmacenPage() {
   const [orden, setOrden] = useState<"nombre" | "cantidad">("nombre");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [dirty, setDirty] = useState(false);
 
   useEffect(() => {
     setLoading(true)
@@ -59,7 +61,42 @@ export default function AlmacenPage() {
   useEffect(() => {
     setMateriales(fetchedMateriales)
     if (fetchedMateriales.length === 0) setSelectedId(null)
+    setDirty(false)
   }, [fetchedMateriales])
+
+  const routerNav = useNextRouter()
+
+  useEffect(() => {
+    if (!dirty) return
+    let blocked = false
+    const askSave = async (url?: string) => {
+      const ok = await toast.confirm('¿Guardar todos los cambios?')
+      if (ok) await guardar()
+      else cancelar()
+      if (url) routerNav.push(url)
+    }
+    const handleRoute = (url: string) => {
+      if (blocked) return
+      blocked = true
+      Router.events.emit('routeChangeError')
+      askSave(url).finally(() => {
+        blocked = false
+      })
+      throw 'Abort route change'
+    }
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (!dirty) return
+      e.preventDefault()
+      e.returnValue = ''
+      askSave()
+    }
+    Router.events.on('routeChangeStart', handleRoute)
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => {
+      Router.events.off('routeChangeStart', handleRoute)
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [dirty, toast, routerNav, guardar, cancelar])
 
   const filtrados = materiales
     .filter((m) => (m?.nombre ?? "").toLowerCase().includes(busqueda.toLowerCase()))
@@ -85,6 +122,7 @@ export default function AlmacenPage() {
       }
       return [...arr.slice(0, idx), actualizado, ...arr.slice(idx + 1)]
     })
+    setDirty(true)
   }
 
   const guardar = async () => {
@@ -97,10 +135,12 @@ export default function AlmacenPage() {
       return
     }
     toast.show('Guardado', 'success')
+    setDirty(false)
   };
   const cancelar = () => {
     mutate()
     setSelectedId(null)
+    setDirty(false)
   };
   const eliminar = async () => {
     if (!selectedId) return
@@ -115,6 +155,7 @@ export default function AlmacenPage() {
     }
     mutate()
     setSelectedId(null)
+    setDirty(false)
   };
   const duplicar = () => {
     if (!selectedId) return
@@ -129,6 +170,7 @@ export default function AlmacenPage() {
       }
       setMateriales((ms) => [...ms, copia])
       setSelectedId(copia.id)
+      setDirty(true)
     }
   };
 
@@ -222,6 +264,7 @@ export default function AlmacenPage() {
                 },
               ])
               setSelectedId(nuevoId)
+              setDirty(true)
             }}
             onDuplicar={duplicar}
           />

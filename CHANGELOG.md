@@ -4,6 +4,9 @@
 ## 0.2.129
 - Sincronizamos las unidades del material desde el panel de unidades.
 
+## 0.2.130
+- Avisamos si hay cambios sin guardar al salir de la vista de materiales.
+
 ## 0.2.128
 - Oculté los campos de unidad, estado y niveles mínimo y máximo en el formulario de materiales.
 
