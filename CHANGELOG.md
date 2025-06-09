@@ -1,6 +1,9 @@
 ## 0.2.119
 - Usamos un ref para controlar el scroll del `Navbar` y el efecto solo se monta una vez.
 
+## 0.2.120
+- Obtenemos los IDs de materiales y almacenes directamente desde la URL.
+
 ## 0.2.116
 - Al crear o duplicar un material se selecciona automáticamente para editarlo.
 
