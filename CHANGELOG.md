@@ -4,6 +4,9 @@
 ## 0.2.117
 - Evitamos actualizaciones repetidas al sincronizar los almacenes.
 
+## 0.2.118
+- Cerramos la cámara al salir de la página de escaneo.
+
 ## 0.2.114
 - Generamos id único al duplicar materiales y seleccionamos la copia.
 - Agregamos "(copia)" al nombre y limpiamos el lote.
