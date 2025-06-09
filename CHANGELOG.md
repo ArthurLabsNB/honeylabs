@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.106
+- Agregamos endpoints para adjuntos de materiales.
+
 ## 0.2.104
 - Mostramos confirmación al guardar materiales.
 - Evitamos advertencias de inputs sin controlar.
