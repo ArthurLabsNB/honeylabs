@@ -11,6 +11,7 @@ import MaterialForm from "../components/MaterialForm";
 import MaterialList from "../components/MaterialList";
 import UnidadesPanel from "./UnidadesPanel";
 import HistorialPanel from "./HistorialPanel";
+import MovimientosMaterialPanel from "./MovimientosMaterialPanel";
 
 interface Almacen {
   id: number;
@@ -276,6 +277,7 @@ export default function AlmacenPage() {
               }
             />
             <HistorialPanel almacenId={almacen.id} />
+            <MovimientosMaterialPanel material={selectedMaterial} />
           </div>
         </aside>
       </div>
