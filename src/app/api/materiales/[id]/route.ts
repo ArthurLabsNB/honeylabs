@@ -12,6 +12,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const usuario = await getUsuarioFromSession()
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const id = Number(params.id)
+    if (Number.isNaN(id)) {
+      return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
+    }
     const material = await prisma.material.findUnique({
       where: { id },
       select: {
@@ -49,6 +52,9 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     const usuario = await getUsuarioFromSession()
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const id = Number(params.id)
+    if (Number.isNaN(id)) {
+      return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
+    }
     const material = await prisma.material.findUnique({ where: { id }, select: { almacenId: true } })
     if (!material) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
 
@@ -102,6 +108,9 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     const usuario = await getUsuarioFromSession()
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const id = Number(params.id)
+    if (Number.isNaN(id)) {
+      return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
+    }
     const material = await prisma.material.findUnique({ where: { id }, select: { almacenId: true } })
     if (!material) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
 

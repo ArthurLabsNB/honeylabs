@@ -12,6 +12,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const usuario = await getUsuarioFromSession()
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const almacenId = Number(params.id)
+    if (Number.isNaN(almacenId)) {
+      return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
+    }
     const pertenece = await prisma.usuarioAlmacen.findFirst({
       where: { usuarioId: usuario.id, almacenId },
       select: { id: true },
@@ -55,6 +58,9 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     const usuario = await getUsuarioFromSession()
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const almacenId = Number(params.id)
+    if (Number.isNaN(almacenId)) {
+      return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
+    }
     const pertenece = await prisma.usuarioAlmacen.findFirst({
       where: { usuarioId: usuario.id, almacenId },
       select: { id: true },

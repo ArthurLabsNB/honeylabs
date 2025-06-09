@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.99
+- Manejamos IDs no numéricos para evitar errores al consultar almacenes y materiales.
 ## 0.2.98
 - Cambié la ruta de `QRCodeSVG` para evitar errores de módulo.
 ## 0.2.97
