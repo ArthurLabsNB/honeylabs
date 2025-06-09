@@ -68,6 +68,25 @@ export default function AlmacenPage() {
 
   const routerNav = useNextRouter()
 
+  const guardar = async () => {
+    if (!selectedId) return
+    const m = materiales.find((mat) => mat.id === selectedId)
+    if (!m) return
+    const res = m.dbId ? await actualizarMaterial(m) : await crear(m)
+    if (res?.error) {
+      toast.show(res.error, 'error')
+      return
+    }
+    toast.show('Guardado', 'success')
+    setDirty(false)
+  };
+
+  const cancelar = () => {
+    mutate()
+    setSelectedId(null)
+    setDirty(false)
+  };
+
   useEffect(() => {
     if (!dirty) return
     let blocked = false
@@ -127,23 +146,6 @@ export default function AlmacenPage() {
     setDirty(true)
   }
 
-  const guardar = async () => {
-    if (!selectedId) return
-    const m = materiales.find((mat) => mat.id === selectedId)
-    if (!m) return
-    const res = m.dbId ? await actualizarMaterial(m) : await crear(m)
-    if (res?.error) {
-      toast.show(res.error, 'error')
-      return
-    }
-    toast.show('Guardado', 'success')
-    setDirty(false)
-  };
-  const cancelar = () => {
-    mutate()
-    setSelectedId(null)
-    setDirty(false)
-  };
   const eliminar = async () => {
     if (!selectedId) return
     const m = materiales.find((mat) => mat.id === selectedId)

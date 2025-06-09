@@ -1,3 +1,6 @@
+## 0.2.137
+- Solucioné el acceso prematuro a `guardar` en la vista de almacén.
+
 ## 0.2.136
 - Implementé `generarUUID` con verificación segura.
 - Reemplacé usos directos de `randomUUID` en las vistas de materiales.
