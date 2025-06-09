@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.98
+- Cambié la ruta de `QRCodeSVG` para evitar errores de módulo.
 ## 0.2.97
 - Corregí la importación de `qrcode.react` para evitar errores al cargar los códigos.
 ## 0.2.96

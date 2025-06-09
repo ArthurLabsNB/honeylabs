@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { QRCodeSVG } from "qrcode.react/esm";
+import { QRCodeSVG } from "qrcode.react";
 import JsBarcode from "jsbarcode";
 
 export default function MaterialCodes({ value }: { value: string }) {
