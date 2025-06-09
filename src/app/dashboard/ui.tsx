@@ -36,15 +36,22 @@ export function DashboardUIProvider({
   const [toolsSidebarVisible, setToolsSidebarVisible] = useState(false);
 
   useEffect(() => {
-    const width = window.innerWidth;
-    if (width < 640) {
-      setSidebarGlobalVisible(false);
-      setSidebarGlobalCollapsed(false);
-    } else if (width < 1024) {
-      setSidebarGlobalCollapsed(true);
-    } else {
-      setSidebarGlobalCollapsed(false);
-    }
+    const update = () => {
+      const width = window.innerWidth;
+      if (width < 640) {
+        setSidebarGlobalVisible(false);
+        setSidebarGlobalCollapsed(false);
+      } else if (width < 1024) {
+        setSidebarGlobalVisible(true);
+        setSidebarGlobalCollapsed(true);
+      } else {
+        setSidebarGlobalVisible(true);
+        setSidebarGlobalCollapsed(false);
+      }
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, []);
 
   const toggleFullscreen = () => setFullscreen((f) => !f);
