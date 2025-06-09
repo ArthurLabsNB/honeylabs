@@ -12,6 +12,7 @@ import MaterialList from "../components/MaterialList";
 import UnidadesPanel from "./UnidadesPanel";
 import HistorialPanel from "./HistorialPanel";
 import MovimientosMaterialPanel from "./MovimientosMaterialPanel";
+import { generarUUID } from "@/lib/uuid";
 
 interface Almacen {
   id: number;
@@ -164,7 +165,7 @@ export default function AlmacenPage() {
     if (orig) {
       const copia = {
         ...orig,
-        id: crypto.randomUUID(),
+        id: generarUUID(),
         dbId: undefined,
         nombre: `${orig.nombre} (copia)`,
         lote: '',
@@ -248,7 +249,7 @@ export default function AlmacenPage() {
             orden={orden}
             setOrden={setOrden}
             onNuevo={() => {
-              const nuevoId = crypto.randomUUID()
+              const nuevoId = generarUUID()
               setMateriales((ms) => [
                 ...ms,
                 {

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import useMateriales from '../src/hooks/useMateriales'
 import useSWR from 'swr'
-import * as uuid from 'uuid'
+import * as uuidFns from '../src/lib/uuid'
 
 vi.mock('react', () => ({
   useMemo: (fn: any) => fn(),
@@ -39,7 +39,7 @@ describe('useMateriales', () => {
   it('usa uuid.v4 si no hay UUID global', () => {
     const originalCrypto = globalThis.crypto
     Object.defineProperty(globalThis, 'crypto', { value: undefined, configurable: true })
-    const nodeRand = vi.spyOn(uuid, 'v4').mockReturnValue('node-id')
+    const nodeRand = vi.spyOn(uuidFns, 'generarUUID').mockReturnValue('node-id')
 
     const swr = useSWR as unknown as ReturnType<typeof vi.fn>
     swr.mockReturnValue({

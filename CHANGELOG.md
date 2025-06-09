@@ -1,3 +1,8 @@
+## 0.2.136
+- Implementé `generarUUID` con verificación segura.
+- Reemplacé usos directos de `randomUUID` en las vistas de materiales.
+- Añadimos pruebas unitarias para la función de UUID.
+
 ## 0.2.18
 - Ajustamos logs en almacenes.
 - Corrigimos generacion de IDs de materiales.

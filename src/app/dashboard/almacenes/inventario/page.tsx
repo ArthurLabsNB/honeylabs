@@ -1,12 +1,12 @@
 "use client";
 import { useState } from "react";
-import crypto from "node:crypto";
+import { generarUUID } from "@/lib/uuid";
 import MaterialRow, { Material } from "../components/MaterialRow";
 
 export default function InventarioPage() {
   const [materiales, setMateriales] = useState<Material[]>([
     {
-      id: crypto.randomUUID(),
+      id: generarUUID(),
       nombre: "Reactivo A",
       cantidad: 20,
       lote: "L001",
@@ -14,7 +14,7 @@ export default function InventarioPage() {
       ubicacion: "Lab 1",
     },
     {
-      id: crypto.randomUUID(),
+      id: generarUUID(),
       nombre: "Reactivo B",
       cantidad: 10,
       lote: "L002",
@@ -64,7 +64,7 @@ export default function InventarioPage() {
     if (m) {
       const nuevo = {
         ...m,
-        id: crypto.randomUUID(),
+        id: generarUUID(),
         nombre: `${m.nombre} (copia)`,
         lote: "",
       };
@@ -109,7 +109,7 @@ export default function InventarioPage() {
         <div className="flex gap-2">
           <button
             onClick={() => {
-              const nuevoId = crypto.randomUUID();
+              const nuevoId = generarUUID();
               setMateriales((ms) => [
                 ...ms,
                 { id: nuevoId, nombre: "", cantidad: 0, lote: "" },

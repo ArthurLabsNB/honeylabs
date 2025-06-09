@@ -1,17 +1,14 @@
 import useSWR from 'swr'
 import { jsonOrNull } from '@lib/http'
 import { useMemo } from 'react'
-import * as uuid from 'uuid'
+import { generarUUID } from '@/lib/uuid'
 import type { Material } from '@/app/dashboard/almacenes/components/MaterialRow'
 
 const fetcher = (url: string) => fetch(url).then(jsonOrNull)
 
 const EMPTY_MATERIALS: Material[] = []
 
-const genId = () =>
-  globalThis.crypto?.randomUUID
-    ? globalThis.crypto.randomUUID()
-    : uuid.v4()
+const genId = generarUUID
 
 export default function useMateriales(almacenId?: number | string) {
   const id = Number(almacenId)
