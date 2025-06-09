@@ -30,6 +30,8 @@
   --tools-sidebar-width: clamp(10rem, 12vw, 11rem);
   --sidebar-gap: clamp(0.5rem, 1vw, 0.75rem);
   --navbar-height: clamp(3.5rem, 5vh, 4.375rem);
+
+  font-size: clamp(15px, 1vw, 16px);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -356,6 +358,14 @@ html, body {
 }
 
 /* --------- RESPONSIVE --------- */
+@media (max-width: 480px) {
+  :root {
+    --sidebar-width: clamp(11rem, 80vw, 13rem);
+    --sidebar-collapsed-width: clamp(3.5rem, 12vw, 4rem);
+    --tools-sidebar-width: clamp(9rem, 75vw, 10rem);
+  }
+}
+
 @media (max-width: 640px) {
   .dashboard-navbar {
     padding-left: 1rem;
@@ -411,6 +421,17 @@ html, body {
   .tools-sidebar {
     padding-left: 1.25rem;
     padding-right: 1.25rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  :root {
+    --sidebar-width: clamp(14rem, 16vw, 16rem);
+    --tools-sidebar-width: clamp(11rem, 14vw, 12rem);
+  }
+  .dashboard-navbar {
+    padding-left: 4rem;
+    padding-right: 4rem;
   }
 }
 

@@ -55,7 +55,7 @@ export default function Footer() {
       className="bg-[var(--color-background)] border-t border-amber-200 dark:border-zinc-700 py-6 text-sm text-[var(--color-foreground)]"
       role="contentinfo"
     >
-      <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-8">
+      <div className="max-w-screen-2xl mx-auto px-3 sm:px-6 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-8">
         {/* 🔗 Navegación principal */}
         <nav
           className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-6"
