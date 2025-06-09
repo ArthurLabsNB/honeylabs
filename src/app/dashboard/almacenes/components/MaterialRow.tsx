@@ -24,25 +24,26 @@ export interface Material {
 }
 
 interface Props {
+  id: string;
   material: Material;
   onChange: (id: string, campo: keyof Material, valor: string | number) => void;
 }
 
-const MaterialRow = memo(function MaterialRow({ material, onChange }: Props) {
+const MaterialRow = memo(function MaterialRow({ id, material, onChange }: Props) {
   const handleNombre = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) =>
-      onChange(material.id, "nombre", e.target.value),
-    [material.id, onChange],
+      onChange(id, "nombre", e.target.value),
+    [id, onChange],
   );
   const handleCantidad = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) =>
-      onChange(material.id, "cantidad", e.target.value),
-    [material.id, onChange],
+      onChange(id, "cantidad", e.target.value),
+    [id, onChange],
   );
   const handleLote = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) =>
-      onChange(material.id, "lote", e.target.value),
-    [material.id, onChange],
+      onChange(id, "lote", e.target.value),
+    [id, onChange],
   );
 
   return (
@@ -71,6 +72,11 @@ const MaterialRow = memo(function MaterialRow({ material, onChange }: Props) {
       </td>
     </tr>
   );
-}, (prev, next) => prev.material === next.material);
+}, (prev, next) =>
+  prev.id === next.id &&
+  prev.material.nombre === next.material.nombre &&
+  prev.material.cantidad === next.material.cantidad &&
+  prev.material.lote === next.material.lote,
+);
 
 export default MaterialRow;
