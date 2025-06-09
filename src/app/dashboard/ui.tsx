@@ -36,7 +36,15 @@ export function DashboardUIProvider({
   const [toolsSidebarVisible, setToolsSidebarVisible] = useState(false);
 
   useEffect(() => {
-    if (window.innerWidth < 640) setSidebarGlobalVisible(false);
+    const width = window.innerWidth;
+    if (width < 640) {
+      setSidebarGlobalVisible(false);
+      setSidebarGlobalCollapsed(false);
+    } else if (width < 1024) {
+      setSidebarGlobalCollapsed(true);
+    } else {
+      setSidebarGlobalCollapsed(false);
+    }
   }, []);
 
   const toggleFullscreen = () => setFullscreen((f) => !f);

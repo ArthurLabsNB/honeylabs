@@ -1,3 +1,6 @@
+## 0.2.124
+- Adapté el navbar y los sidebars para móviles y tablets con overlay.
+
 ## 0.2.123
 - Simplifiqué el navbar eliminando búsqueda, creación rápida y cambio de tema.
 

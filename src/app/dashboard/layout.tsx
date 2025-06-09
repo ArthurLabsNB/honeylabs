@@ -28,9 +28,14 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { usuario, loading } = useSession();
   const [isMobile, setIsMobile] = useState(false);
+  const [isCompact, setIsCompact] = useState(false);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 640);
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < 640);
+      setIsCompact(width < 1024);
+    };
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -112,6 +117,14 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
         </div>
       )}
 
+      {/* Overlay for sidebar on mobile/tablet */}
+      {isCompact && sidebarGlobalVisible && (
+        <div
+          className="dashboard-overlay"
+          onClick={() => toggleSidebarVisible(false)}
+        />
+      )}
+
       {/* --- SIDEBAR TOOLS --- */}
       {!fullscreen && toolsSidebarVisible && (
         <div
@@ -128,6 +141,13 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
         >
           <ToolsSidebar usuario={usuario} />
         </div>
+      )}
+
+      {isCompact && toolsSidebarVisible && (
+        <div
+          className="dashboard-overlay"
+          onClick={() => toggleToolsSidebar(false)}
+        />
       )}
 
       {/* CONTENIDO PRINCIPAL */}
