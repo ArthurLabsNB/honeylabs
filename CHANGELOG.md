@@ -1,6 +1,10 @@
 ## 0.2.110
 - Nuevo endpoint `/api/materiales` para listar materiales de todos los almacenes.
 
+## 0.2.111
+- Renombramos `producto` a `nombre` en los formularios y listas.
+- Ajustamos el hook `useMateriales` para enviar y recibir este campo.
+
 ## 0.2.109
 - Creamos `useMateriales` para centralizar la gestión de inventario.
 - Actualizamos la vista de almacén para usar este hook.

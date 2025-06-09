@@ -42,8 +42,8 @@ export default function MaterialForm({
       <div>
         <label className="text-xs text-[var(--dashboard-muted)]">Nombre</label>
         <input
-          value={material.producto ?? ""}
-          onChange={handle("producto")}
+          value={material.nombre ?? ""}
+          onChange={handle("nombre")}
           className="dashboard-input w-full mt-1"
         />
       </div>
@@ -169,7 +169,7 @@ export default function MaterialForm({
         <label className="text-xs text-[var(--dashboard-muted)]">Miniatura</label>
         <input type="file" onChange={handle("miniatura") as any} className="dashboard-input w-full mt-1" />
       </div>
-      <MaterialCodes value={`${material.producto}-${material.lote}`} />
+      <MaterialCodes value={`${material.nombre}-${material.lote}`} />
       <div className="flex gap-2 pt-2">
         <button
           onClick={onGuardar}

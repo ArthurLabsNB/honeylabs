@@ -4,18 +4,18 @@ import MaterialRow, { Material } from "../components/MaterialRow";
 
 export default function InventarioPage() {
   const [materiales, setMateriales] = useState<Material[]>([
-    { producto: "Reactivo A", cantidad: 20, lote: "L001" },
-    { producto: "Reactivo B", cantidad: 10, lote: "L002" },
+    { nombre: "Reactivo A", cantidad: 20, lote: "L001" },
+    { nombre: "Reactivo B", cantidad: 10, lote: "L002" },
   ]);
   const [seleccion, setSeleccion] = useState<number | null>(0);
   const [busqueda, setBusqueda] = useState("");
-  const [orden, setOrden] = useState<"producto" | "cantidad">("producto");
+  const [orden, setOrden] = useState<"nombre" | "cantidad">("nombre");
 
   const filtrados = materiales
-    .filter((m) => m.producto.toLowerCase().includes(busqueda.toLowerCase()))
+    .filter((m) => m.nombre.toLowerCase().includes(busqueda.toLowerCase()))
     .sort((a, b) =>
-      orden === "producto"
-        ? a.producto.localeCompare(b.producto)
+      orden === "nombre"
+        ? a.nombre.localeCompare(b.nombre)
         : a.cantidad - b.cantidad
     );
 
@@ -56,7 +56,7 @@ export default function InventarioPage() {
             onChange={(e) => setOrden(e.target.value as any)}
             className="p-2 rounded-md bg-white/5"
           >
-            <option value="producto">Nombre</option>
+            <option value="nombre">Nombre</option>
             <option value="cantidad">Cantidad</option>
           </select>
         </div>
@@ -69,7 +69,7 @@ export default function InventarioPage() {
                   idx === seleccion ? "bg-white/10" : "hover:bg-white/5"
                 }`}
               >
-                {m.producto}
+                {m.nombre}
               </button>
             </li>
           ))}
@@ -79,7 +79,7 @@ export default function InventarioPage() {
             onClick={() =>
               setMateriales((ms) => [
                 ...ms,
-                { producto: "", cantidad: 0, lote: "" },
+                { nombre: "", cantidad: 0, lote: "" },
               ])
             }
             className="flex-1 py-1 rounded-md bg-[var(--dashboard-accent)] text-white text-sm hover:bg-[var(--dashboard-accent-hover)]"

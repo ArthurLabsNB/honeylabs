@@ -7,8 +7,8 @@ interface Props {
   onSeleccion: (idx: number) => void;
   busqueda: string;
   setBusqueda: (v: string) => void;
-  orden: "producto" | "cantidad";
-  setOrden: (v: "producto" | "cantidad") => void;
+  orden: "nombre" | "cantidad";
+  setOrden: (v: "nombre" | "cantidad") => void;
   onNuevo: () => void;
   onDuplicar: () => void;
 }
@@ -25,9 +25,9 @@ export default function MaterialList({
   onDuplicar,
 }: Props) {
   const filtrados = materiales
-    .filter((m) => (m?.producto ?? "").toLowerCase().includes(busqueda.toLowerCase()))
+    .filter((m) => (m?.nombre ?? "").toLowerCase().includes(busqueda.toLowerCase()))
     .sort((a, b) =>
-      orden === "producto" ? a.producto.localeCompare(b.producto) : a.cantidad - b.cantidad
+      orden === "nombre" ? a.nombre.localeCompare(b.nombre) : a.cantidad - b.cantidad
     );
 
   return (
@@ -44,7 +44,7 @@ export default function MaterialList({
           onChange={(e) => setOrden(e.target.value as any)}
           className="p-2 rounded-md bg-white/5"
         >
-          <option value="producto">Nombre</option>
+          <option value="nombre">Nombre</option>
           <option value="cantidad">Cantidad</option>
         </select>
       </div>
@@ -55,7 +55,7 @@ export default function MaterialList({
               onClick={() => onSeleccion(idx)}
               className={`w-full text-left p-2 rounded-md transition ${idx === seleccion ? 'bg-white/10' : 'hover:bg-white/5'}`}
             >
-              {m.producto}
+              {m.nombre}
             </button>
           </li>
         ))}

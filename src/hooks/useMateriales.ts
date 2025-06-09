@@ -18,7 +18,7 @@ export default function useMateriales(almacenId?: number | string) {
   const crear = async (m: Material) => {
     if (Number.isNaN(id)) return { error: 'Sin almacén' }
     const form = new FormData()
-    form.append('nombre', m.producto)
+    form.append('nombre', m.nombre)
     if (m.descripcion) form.append('descripcion', m.descripcion)
     form.append('cantidad', String(m.cantidad))
     if (m.unidad) form.append('unidad', m.unidad)
@@ -42,7 +42,7 @@ export default function useMateriales(almacenId?: number | string) {
   const actualizar = async (m: Material) => {
     if (!m.id) return { error: 'ID requerido' }
     const form = new FormData()
-    form.append('nombre', m.producto)
+    form.append('nombre', m.nombre)
     if (m.descripcion) form.append('descripcion', m.descripcion)
     form.append('cantidad', String(m.cantidad))
     if (m.unidad) form.append('unidad', m.unidad)
@@ -72,7 +72,6 @@ export default function useMateriales(almacenId?: number | string) {
 
   const mats = (data?.materiales as any[] | undefined)?.map((m) => ({
     ...m,
-    producto: m.nombre,
     fechaCaducidad: m.fechaCaducidad?.slice(0, 10) ?? '',
   })) as Material[] | undefined
 

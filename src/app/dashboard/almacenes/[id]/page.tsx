@@ -38,7 +38,7 @@ export default function AlmacenPage() {
   const [materiales, setMateriales] = useState<Material[]>([]);
   const [seleccion, setSeleccion] = useState<number | null>(0);
   const [busqueda, setBusqueda] = useState("");
-  const [orden, setOrden] = useState<"producto" | "cantidad">("producto");
+  const [orden, setOrden] = useState<"nombre" | "cantidad">("nombre");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -60,9 +60,9 @@ export default function AlmacenPage() {
   }, [fetchedMateriales])
 
   const filtrados = materiales
-    .filter((m) => (m?.producto ?? "").toLowerCase().includes(busqueda.toLowerCase()))
+    .filter((m) => (m?.nombre ?? "").toLowerCase().includes(busqueda.toLowerCase()))
     .sort((a, b) =>
-      orden === "producto" ? a.producto.localeCompare(b.producto) : a.cantidad - b.cantidad,
+      orden === "nombre" ? a.nombre.localeCompare(b.nombre) : a.cantidad - b.cantidad,
     );
 
   const actualizar = (
@@ -185,7 +185,7 @@ export default function AlmacenPage() {
               setMateriales((ms) => [
                 ...ms,
                 {
-                  producto: 'New',
+                  nombre: 'New',
                   cantidad: 0,
                   lote: '',
                   unidad: '',
