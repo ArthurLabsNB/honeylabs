@@ -19,6 +19,7 @@ import Image from "next/image";
 import clsx from "clsx";
 import { usePathname, useRouter } from "next/navigation";
 import { jsonOrNull } from "@lib/http";
+import { apiPath } from "@lib/api";
 import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
 import { clearSessionCache } from "@/hooks/useSession";
 
@@ -134,7 +135,10 @@ export default function UserMenu({
     if (usuario?.imagen) {
       setFotoPerfil(usuario.imagen);
     } else if (usuario?.correo) {
-      fetch(`/api/perfil/foto?correo=${encodeURIComponent(usuario.correo)}`, { cache: 'no-store', credentials: 'include' })
+      fetch(
+        apiPath(`/api/perfil/foto?correo=${encodeURIComponent(usuario.correo)}`),
+        { cache: 'no-store', credentials: 'include' },
+      )
         .then((r) => (r.ok ? r.blob() : null))
         .then((blob) => {
           if (blob) setFotoPerfil(URL.createObjectURL(blob));

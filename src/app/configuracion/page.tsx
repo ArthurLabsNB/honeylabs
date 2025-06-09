@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { jsonOrNull } from "@lib/http";
+import { apiPath } from "@lib/api";
 
 interface Perfil {
   nombre: string;
@@ -36,7 +37,7 @@ export default function Configuracion() {
     async function cargarPerfil() {
       try {
         setCargando(true);
-        const res = await fetch("/api/perfil", { method: "GET" });
+        const res = await fetch(apiPath("/api/perfil"), { method: "GET" });
         const data = await jsonOrNull(res);
         if (data.success && data.usuario) {
           setPerfil(data.usuario);
@@ -50,7 +51,11 @@ export default function Configuracion() {
           });
           if (data.usuario.fotoPerfilNombre) {
             setFotoPreview(
-              `/api/perfil/foto?nombre=${encodeURIComponent(data.usuario.fotoPerfilNombre)}`,
+              apiPath(
+                `/api/perfil/foto?nombre=${encodeURIComponent(
+                  data.usuario.fotoPerfilNombre,
+                )}`,
+              ),
             );
           }
         }
@@ -92,14 +97,14 @@ export default function Configuracion() {
         formData.append("contrasenaActual", form.contrasenaActual);
         formData.append("nuevaContrasena", form.nuevaContrasena);
       }
-      const res = await fetch("/api/perfil", {
+      const res = await fetch(apiPath("/api/perfil"), {
         method: "PUT",
         body: formData,
       });
       const data = await jsonOrNull(res);
       if (data.success) {
         setMensaje({ tipo: "ok", texto: "Perfil actualizado correctamente." });
-        const newPerfilRes = await fetch("/api/perfil", { method: "GET" });
+        const newPerfilRes = await fetch(apiPath("/api/perfil"), { method: "GET" });
         const newPerfil = await jsonOrNull(newPerfilRes);
         if (newPerfil.success && newPerfil.usuario) {
           setPerfil(newPerfil.usuario);
@@ -110,7 +115,11 @@ export default function Configuracion() {
           }));
           if (newPerfil.usuario.fotoPerfilNombre) {
             setFotoPreview(
-              `/api/perfil/foto?nombre=${encodeURIComponent(newPerfil.usuario.fotoPerfilNombre)}`,
+              apiPath(
+                `/api/perfil/foto?nombre=${encodeURIComponent(
+                  newPerfil.usuario.fotoPerfilNombre,
+                )}`,
+              ),
             );
           }
         }
@@ -131,7 +140,7 @@ export default function Configuracion() {
     try {
       const secciones = ["perfil", "almacenes", "bitacora"];
       const res = await fetch(
-        `/api/perfil/export?secciones=${secciones.join(",")}`,
+        apiPath(`/api/perfil/export?secciones=${secciones.join(",")}`),
         {
           method: "GET",
           credentials: "include",
