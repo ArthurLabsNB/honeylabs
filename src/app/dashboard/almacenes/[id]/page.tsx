@@ -156,6 +156,9 @@ export default function AlmacenPage() {
       </div>
     );
 
+  const selectedMaterial =
+    selectedId ? materiales.find((m) => m.id === selectedId) ?? null : null;
+
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold">{almacen.nombre}</h1>
@@ -182,7 +185,7 @@ export default function AlmacenPage() {
       <div className="flex flex-col md:flex-row gap-4 h-full">
         <section className="md:w-1/2 p-4 border-r border-white/10 overflow-y-auto">
           <MaterialForm
-            material={selectedId ? materiales.find((m) => m.id === selectedId) ?? null : null}
+            material={selectedMaterial}
             onChange={(campo, valor) =>
               selectedId && actualizar(selectedId, campo, valor)
             }
@@ -223,7 +226,12 @@ export default function AlmacenPage() {
             onDuplicar={duplicar}
           />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <UnidadesPanel />
+            <UnidadesPanel
+              material={selectedMaterial}
+              onChange={(campo, valor) =>
+                selectedId && actualizar(selectedId, campo, valor)
+              }
+            />
             <HistorialPanel almacenId={almacen.id} />
           </div>
         </aside>
