@@ -1,6 +1,9 @@
 ## 0.1.0
 - Ajustamos contenedores y variables para respuesta fluida en todo tamaño.
 
+## 0.2.127
+- Integramos dos paneles nuevos en la vista de almacén para unidades e historial.
+
 ## 0.2.124
 - Adapté el navbar y los sidebars para móviles y tablets con overlay.
 
