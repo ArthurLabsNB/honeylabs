@@ -38,7 +38,16 @@ export default function InventarioPage() {
   const duplicar = () => {
     if (!selectedId) return;
     const m = materiales.find((mat) => mat.id === selectedId);
-    if (m) setMateriales((ms) => [...ms, { ...m, id: crypto.randomUUID() }]);
+    if (m) {
+      const nuevo = {
+        ...m,
+        id: crypto.randomUUID(),
+        nombre: `${m.nombre} (copia)`,
+        lote: "",
+      };
+      setMateriales((ms) => [...ms, nuevo]);
+      setSelectedId(nuevo.id);
+    }
   };
 
   return (
