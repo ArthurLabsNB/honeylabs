@@ -1,7 +1,13 @@
 "use client";
 import { useState } from "react";
+import type { Material } from "../components/MaterialRow";
 
-export default function UnidadesPanel() {
+interface Props {
+  material: Material | null;
+  onChange: (campo: keyof Material, valor: Material[keyof Material]) => void;
+}
+
+export default function UnidadesPanel({ material, onChange }: Props) {
   const [value, setValue] = useState("");
   const [items, setItems] = useState<string[]>([]);
 
@@ -10,7 +16,12 @@ export default function UnidadesPanel() {
     if (v && !items.includes(v)) {
       setItems((arr) => [...arr, v]);
       setValue("");
+      onChange("unidad", v);
     }
+  };
+
+  const select = (u: string) => {
+    onChange("unidad", u);
   };
 
   return (
@@ -32,7 +43,15 @@ export default function UnidadesPanel() {
       </div>
       <ul className="space-y-1 max-h-32 overflow-y-auto">
         {items.map((u) => (
-          <li key={u} className="p-1 rounded-md bg-white/5">
+          <li
+            key={u}
+            onClick={() => select(u)}
+            className={`p-1 rounded-md cursor-pointer ${
+              material?.unidad === u
+                ? 'bg-[var(--dashboard-accent)] text-black'
+                : 'bg-white/5'
+            }`}
+          >
             {u}
           </li>
         ))}
