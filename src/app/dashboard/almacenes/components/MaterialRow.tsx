@@ -45,6 +45,16 @@ const MaterialRow = memo(function MaterialRow({ id, material, onChange }: Props)
       onChange(id, "lote", e.target.value),
     [id, onChange],
   );
+  const handleEstado = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      onChange(id, "estado", e.target.value),
+    [id, onChange],
+  );
+  const handleUbicacion = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      onChange(id, "ubicacion", e.target.value),
+    [id, onChange],
+  );
 
   return (
     <tr className="border-t border-white/10">
@@ -70,13 +80,29 @@ const MaterialRow = memo(function MaterialRow({ id, material, onChange }: Props)
           className="bg-transparent w-full focus:outline-none"
         />
       </td>
+      <td className="px-3 py-2">
+        <input
+          value={material.estado ?? ""}
+          onChange={handleEstado}
+          className="bg-transparent w-full focus:outline-none"
+        />
+      </td>
+      <td className="px-3 py-2">
+        <input
+          value={material.ubicacion ?? ""}
+          onChange={handleUbicacion}
+          className="bg-transparent w-full focus:outline-none"
+        />
+      </td>
     </tr>
   );
 }, (prev, next) =>
   prev.id === next.id &&
   prev.material.nombre === next.material.nombre &&
   prev.material.cantidad === next.material.cantidad &&
-  prev.material.lote === next.material.lote,
+  prev.material.lote === next.material.lote &&
+  prev.material.estado === next.material.estado &&
+  prev.material.ubicacion === next.material.ubicacion,
 );
 
 export default MaterialRow;

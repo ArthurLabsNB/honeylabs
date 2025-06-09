@@ -1,5 +1,6 @@
 "use client";
 import { ChangeEvent } from "react";
+import useUnidades from "@/hooks/useUnidades";
 import type { Material } from "./MaterialRow";
 import MaterialCodes from "./MaterialCodes";
 
@@ -25,8 +26,10 @@ export default function MaterialForm({
       <p className="text-sm text-[var(--dashboard-muted)]">Selecciona o crea un material.</p>
     );
 
+  const { unidades } = useUnidades(material?.dbId);
+
   const handle = (campo: keyof Material) => (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
     if (campo === 'cantidad') {
       onChange(campo, Number(e.target.value));
@@ -65,16 +68,21 @@ export default function MaterialForm({
             className="dashboard-input w-full mt-1"
           />
         </div>
-        {/*
         <div>
           <label className="text-xs text-[var(--dashboard-muted)]">Unidad</label>
-          <input
+          <select
             value={material.unidad ?? ""}
             onChange={handle("unidad")}
             className="dashboard-input w-full mt-1"
-          />
+          >
+            <option value="">-</option>
+            {unidades.map((u) => (
+              <option key={u.id} value={u.nombre}>
+                {u.nombre}
+              </option>
+            ))}
+          </select>
         </div>
-        */}
         <div>
           <label className="text-xs text-[var(--dashboard-muted)]">Lote</label>
           <input

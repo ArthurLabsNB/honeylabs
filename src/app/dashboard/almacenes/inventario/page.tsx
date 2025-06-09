@@ -1,11 +1,26 @@
 "use client";
 import { useState } from "react";
+import crypto from "node:crypto";
 import MaterialRow, { Material } from "../components/MaterialRow";
 
 export default function InventarioPage() {
   const [materiales, setMateriales] = useState<Material[]>([
-    { id: crypto.randomUUID(), nombre: "Reactivo A", cantidad: 20, lote: "L001" },
-    { id: crypto.randomUUID(), nombre: "Reactivo B", cantidad: 10, lote: "L002" },
+    {
+      id: crypto.randomUUID(),
+      nombre: "Reactivo A",
+      cantidad: 20,
+      lote: "L001",
+      estado: "Bueno",
+      ubicacion: "Lab 1",
+    },
+    {
+      id: crypto.randomUUID(),
+      nombre: "Reactivo B",
+      cantidad: 10,
+      lote: "L002",
+      estado: "Bueno",
+      ubicacion: "Lab 2",
+    },
   ]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [busqueda, setBusqueda] = useState("");
@@ -127,6 +142,8 @@ export default function InventarioPage() {
                   <th className="px-3 py-2 text-left">Producto</th>
                   <th className="px-3 py-2 text-left">Cantidad</th>
                   <th className="px-3 py-2 text-left">Lote</th>
+                  <th className="px-3 py-2 text-left">Estado</th>
+                  <th className="px-3 py-2 text-left">Ubicación</th>
                 </tr>
               </thead>
               <tbody>
