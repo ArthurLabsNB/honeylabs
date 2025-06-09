@@ -416,3 +416,45 @@ model Alerta {
   almacenId   Int
   almacen     Almacen          @relation(fields: [almacenId], references: [id])
 }
+
+// ================================
+// Materiales y archivos adjuntos
+// ================================
+model Material {
+  id                Int       @id @default(autoincrement())
+  nombre            String
+  descripcion       String?
+  miniatura         Bytes?
+  miniaturaNombre   String?
+  cantidad          Float
+  unidad            String
+  lote              String?
+  fechaCaducidad    DateTime?
+  ubicacion         String?
+  proveedor         String?
+  estado            String?
+  observaciones     String?
+  minimo            Float?
+  maximo            Float?
+  fechaRegistro     DateTime @default(now())
+  fechaActualizacion DateTime @updatedAt
+
+  almacenId   Int
+  almacen     Almacen  @relation(fields: [almacenId], references: [id])
+  usuarioId   Int?
+  usuario     Usuario? @relation(fields: [usuarioId], references: [id])
+
+  archivos    ArchivoMaterial[]
+}
+
+model ArchivoMaterial {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  archivo       Bytes?
+  archivoNombre String?
+  fecha         DateTime @default(now())
+  materialId    Int
+  material      Material  @relation(fields: [materialId], references: [id])
+  subidoPorId   Int?
+  subidoPor     Usuario?  @relation(fields: [subidoPorId], references: [id])
+}

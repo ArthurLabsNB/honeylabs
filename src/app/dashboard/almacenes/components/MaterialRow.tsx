@@ -11,6 +11,10 @@ export interface Material {
   proveedor?: string;
   estado?: string;
   observaciones?: string;
+  unidad?: string;
+  minimo?: number;
+  maximo?: number;
+  miniatura?: File | null;
 }
 
 interface Props {

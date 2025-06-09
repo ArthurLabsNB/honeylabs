@@ -68,6 +68,29 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       if (r.tipo === "salida") salidas = r._sum.cantidad ?? 0;
     }
 
+    const materiales = await prisma.material.findMany({
+      where: { almacenId: id },
+      orderBy: { id: 'asc' },
+      select: {
+        id: true,
+        nombre: true,
+        descripcion: true,
+        miniaturaNombre: true,
+        cantidad: true,
+        unidad: true,
+        lote: true,
+        fechaCaducidad: true,
+        ubicacion: true,
+        proveedor: true,
+        estado: true,
+        observaciones: true,
+        minimo: true,
+        maximo: true,
+        fechaRegistro: true,
+        fechaActualizacion: true,
+      },
+    })
+
     return NextResponse.json({
       almacen: {
         id: almacen.id,
@@ -80,12 +103,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
         entradas,
         salidas,
         inventario: entradas - salidas,
-        inventarioDetalle: [
-          { producto: "Reactivo A", cantidad: 20, lote: "L001" },
-          { producto: "Reactivo B", cantidad: 10, lote: "L002" },
-        ],
+        materiales,
       },
-    });
+    })
   } catch (err) {
     logger.error("Error en /api/almacenes/[id]", err);
     return NextResponse.json({ error: "Error al obtener almacén" }, { status: 500 });

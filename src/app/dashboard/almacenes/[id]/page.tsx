@@ -31,20 +31,25 @@ export default function AlmacenPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    setLoading(true);
-    fetch(`/api/almacenes/${id}`)
-      .then(jsonOrNull)
-      .then((data) => {
-        if (data.error) throw new Error(data.error);
-        setAlmacen(data.almacen);
-        setMateriales(data.almacen?.inventarioDetalle || []);
-        if ((data.almacen?.inventarioDetalle || []).length === 0) {
-          setSeleccion(null);
+    setLoading(true)
+    Promise.all([
+      fetch(`/api/almacenes/${id}`).then(jsonOrNull),
+      fetch(`/api/almacenes/${id}/materiales`).then(jsonOrNull),
+    ])
+      .then(([info, inv]) => {
+        if (info.error) throw new Error(info.error)
+        setAlmacen(info.almacen)
+        if (inv?.materiales) {
+          setMateriales(inv.materiales)
+          if (inv.materiales.length === 0) setSeleccion(null)
+        } else {
+          setMateriales([])
+          setSeleccion(null)
         }
       })
-      .catch(() => setError("Error al cargar almacén"))
-      .finally(() => setLoading(false));
-  }, [id]);
+      .catch(() => setError('Error al cargar almacén'))
+      .finally(() => setLoading(false))
+  }, [id])
 
   const filtrados = materiales
     .filter((m) => m.producto.toLowerCase().includes(busqueda.toLowerCase()))
@@ -55,12 +60,13 @@ export default function AlmacenPage() {
   const actualizar = (
     idx: number,
     campo: keyof Material,
-    valor: string | number,
+    valor: any,
   ) => {
     setMateriales((ms) => {
       const arr = [...ms];
       // @ts-ignore
-      arr[idx][campo] = campo === "cantidad" ? Number(valor) : valor;
+      if (campo === 'cantidad') arr[idx][campo] = Number(valor);
+      else arr[idx][campo] = valor;
       return arr;
     });
   };
@@ -140,7 +146,17 @@ export default function AlmacenPage() {
             orden={orden}
             setOrden={setOrden}
             onNuevo={() =>
-              setMateriales((ms) => [...ms, { producto: '', cantidad: 0, lote: '' }])
+              setMateriales((ms) => [
+                ...ms,
+                {
+                  producto: '',
+                  cantidad: 0,
+                  lote: '',
+                  unidad: '',
+                  minimo: 0,
+                  maximo: 0,
+                },
+              ])
             }
             onDuplicar={duplicar}
           />
