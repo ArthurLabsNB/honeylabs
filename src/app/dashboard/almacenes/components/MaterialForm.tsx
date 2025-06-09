@@ -65,6 +65,7 @@ export default function MaterialForm({
             className="dashboard-input w-full mt-1"
           />
         </div>
+        {/*
         <div>
           <label className="text-xs text-[var(--dashboard-muted)]">Unidad</label>
           <input
@@ -73,6 +74,7 @@ export default function MaterialForm({
             className="dashboard-input w-full mt-1"
           />
         </div>
+        */}
         <div>
           <label className="text-xs text-[var(--dashboard-muted)]">Lote</label>
           <input
@@ -110,6 +112,7 @@ export default function MaterialForm({
             className="dashboard-input w-full mt-1"
           />
         </div>
+        {/*
         <div>
           <label className="text-xs text-[var(--dashboard-muted)]">Estado</label>
           <input
@@ -118,6 +121,7 @@ export default function MaterialForm({
             className="dashboard-input w-full mt-1"
           />
         </div>
+        */}
       </div>
       <div className="grid grid-cols-2 gap-2">
         <div>
@@ -137,6 +141,7 @@ export default function MaterialForm({
           />
         </div>
       </div>
+      {/*
       <div className="grid grid-cols-2 gap-2">
         <div>
           <label className="text-xs text-[var(--dashboard-muted)]">Mínimo</label>
@@ -157,6 +162,7 @@ export default function MaterialForm({
           />
         </div>
       </div>
+      */}
       <div>
         <label className="text-xs text-[var(--dashboard-muted)]">Observaciones</label>
         <textarea
