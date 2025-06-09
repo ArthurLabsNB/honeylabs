@@ -11,6 +11,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const usuario = await getUsuarioFromSession();
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     const id = Number(params.id);
+    if (Number.isNaN(id)) {
+      return NextResponse.json({ error: 'ID inválido' }, { status: 400 });
+    }
     const historial = await prisma.historialLote.findMany({
       where: { materialId: id },
       orderBy: { fecha: 'desc' },
@@ -36,6 +39,9 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     const usuario = await getUsuarioFromSession();
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     const id = Number(params.id);
+    if (Number.isNaN(id)) {
+      return NextResponse.json({ error: 'ID inválido' }, { status: 400 });
+    }
     const body = await req.json();
     const pertenece = await prisma.usuarioAlmacen.findFirst({
       where: { usuarioId: usuario.id, almacenId: body.almacenId },
