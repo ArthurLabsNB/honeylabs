@@ -7,6 +7,11 @@
 ## 0.2.130
 - Avisamos si hay cambios sin guardar al salir de la vista de materiales.
 
+## 0.2.131
+- Añadimos el modelo `MaterialUnidad` y migración correspondiente.
+- Nuevas rutas `/api/materiales/[id]/unidades` para gestionar unidades.
+- Hook `useUnidades` y panel actualizado para listar y editar unidades.
+
 ## 0.2.128
 - Oculté los campos de unidad, estado y niveles mínimo y máximo en el formulario de materiales.
 

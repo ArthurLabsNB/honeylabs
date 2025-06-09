@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import type { Material } from "../components/MaterialRow";
+import useUnidades from "@/hooks/useUnidades";
 
 interface Props {
   material: Material | null;
@@ -9,12 +10,12 @@ interface Props {
 
 export default function UnidadesPanel({ material, onChange }: Props) {
   const [value, setValue] = useState("");
-  const [items, setItems] = useState<string[]>([]);
+  const { unidades, crear, eliminar } = useUnidades(material?.dbId);
 
-  const add = () => {
+  const add = async () => {
     const v = value.trim();
-    if (v && !items.includes(v)) {
-      setItems((arr) => [...arr, v]);
+    if (v) {
+      await crear(v);
       setValue("");
       onChange("unidad", v);
     }
@@ -22,6 +23,10 @@ export default function UnidadesPanel({ material, onChange }: Props) {
 
   const select = (u: string) => {
     onChange("unidad", u);
+  };
+
+  const remove = async (id: number) => {
+    await eliminar(id);
   };
 
   return (
@@ -42,17 +47,19 @@ export default function UnidadesPanel({ material, onChange }: Props) {
         </button>
       </div>
       <ul className="space-y-1 max-h-32 overflow-y-auto">
-        {items.map((u) => (
+        {unidades.map((u) => (
           <li
-            key={u}
-            onClick={() => select(u)}
-            className={`p-1 rounded-md cursor-pointer ${
-              material?.unidad === u
+            key={u.id}
+            className={`p-1 rounded-md cursor-pointer flex justify-between ${
+              material?.unidad === u.nombre
                 ? 'bg-[var(--dashboard-accent)] text-black'
                 : 'bg-white/5'
             }`}
           >
-            {u}
+            <span onClick={() => select(u.nombre)}>{u.nombre}</span>
+            <button onClick={() => remove(u.id)} className="ml-2 text-xs">
+              ✕
+            </button>
           </li>
         ))}
       </ul>
