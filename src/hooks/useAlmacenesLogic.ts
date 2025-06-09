@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { jsonOrNull } from '@lib/http'
 import { useToast } from '@/components/Toast'
 import useSession from '@/hooks/useSession'
@@ -23,6 +23,7 @@ export default function useAlmacenesLogic() {
   const [error, setError] = useState('')
   const [dragId, setDragId] = useState<number | null>(null)
   const [favoritos, setFavoritos] = useState<number[]>([])
+  const prevAlmacenes = useRef<Almacen[]>([])
 
   const {
     almacenes: fetchedAlmacenes,
@@ -72,7 +73,10 @@ export default function useAlmacenesLogic() {
   }, [registerCreate])
 
   useEffect(() => {
-    setAlmacenes(fetchedAlmacenes)
+    if (prevAlmacenes.current !== fetchedAlmacenes) {
+      prevAlmacenes.current = fetchedAlmacenes
+      setAlmacenes(fetchedAlmacenes)
+    }
   }, [fetchedAlmacenes])
 
   useEffect(() => {
