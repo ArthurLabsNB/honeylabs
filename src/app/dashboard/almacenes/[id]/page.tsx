@@ -65,18 +65,24 @@ export default function AlmacenPage() {
       orden === "nombre" ? a.nombre.localeCompare(b.nombre) : a.cantidad - b.cantidad,
     );
 
-  const actualizar = (
+  const numericFields: Array<keyof Material> = ['cantidad', 'minimo', 'maximo']
+
+  const actualizar = <K extends keyof Material>(
     idMat: string,
-    campo: keyof Material,
-    valor: any,
+    campo: K,
+    valor: Material[K] | string,
   ) => {
-    setMateriales((ms) =>
-      ms.map((m) =>
-        m.id === idMat
-          ? { ...m, [campo]: campo === 'cantidad' ? Number(valor) : valor }
-          : m,
-      ),
-    )
+    setMateriales((arr) => {
+      const idx = arr.findIndex((m) => m.id === idMat)
+      if (idx === -1) return arr
+      const actualizado = {
+        ...arr[idx],
+        [campo]: numericFields.includes(campo)
+          ? Number(valor)
+          : (valor as Material[K]),
+      }
+      return [...arr.slice(0, idx), actualizado, ...arr.slice(idx + 1)]
+    })
   }
 
   const guardar = async () => {
