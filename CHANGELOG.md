@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.108
+- Permitimos guardar códigos de barra y QR en materiales.
+- Extendimos el formulario y la API para manejarlos.
 ## 0.2.107
 - Calculamos el inventario como total de materiales y actualizamos las vistas.
 ## 0.2.106

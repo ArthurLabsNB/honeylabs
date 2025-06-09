@@ -39,6 +39,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
         proveedor: true,
         estado: true,
         observaciones: true,
+        codigoBarra: true,
+        codigoQR: true,
         minimo: true,
         maximo: true,
         fechaRegistro: true,
@@ -83,6 +85,8 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     let observaciones: string | null = null
     let minimo: number | null = null
     let maximo: number | null = null
+    let codigoBarra: string | null = null
+    let codigoQR: string | null = null
 
     if (req.headers.get('content-type')?.includes('multipart/form-data')) {
       const formData = await req.formData()
@@ -98,6 +102,8 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       observaciones = String(formData.get('observaciones') ?? '').trim() || null
       minimo = formData.get('minimo') ? Number(formData.get('minimo')) : null
       maximo = formData.get('maximo') ? Number(formData.get('maximo')) : null
+      codigoBarra = String(formData.get('codigoBarra') ?? '').trim() || null
+      codigoQR = String(formData.get('codigoQR') ?? '').trim() || null
       const archivo = formData.get('miniatura') as File | null
       if (archivo) {
         const buffer = Buffer.from(await archivo.arrayBuffer())
@@ -119,6 +125,8 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       observaciones = body.observaciones || null
       minimo = body.minimo ?? null
       maximo = body.maximo ?? null
+      codigoBarra = body.codigoBarra || null
+      codigoQR = body.codigoQR || null
       miniaturaNombre = body.miniaturaNombre ?? null
     }
 
@@ -139,6 +147,8 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         proveedor,
         estado,
         observaciones,
+        codigoBarra,
+        codigoQR,
         minimo,
         maximo,
         almacenId,

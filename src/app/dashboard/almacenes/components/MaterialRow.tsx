@@ -12,6 +12,8 @@ export interface Material {
   proveedor?: string;
   estado?: string;
   observaciones?: string;
+  codigoBarra?: string;
+  codigoQR?: string;
   unidad?: string;
   minimo?: number;
   maximo?: number;

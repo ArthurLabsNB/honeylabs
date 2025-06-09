@@ -86,16 +86,18 @@ export default function AlmacenPage() {
     if (seleccion === null) return;
     const m = materiales[seleccion];
     const form = new FormData();
-    form.append('nombre', m.producto);
-    if (m.descripcion) form.append('descripcion', m.descripcion);
-    form.append('cantidad', String(m.cantidad));
-    if (m.unidad) form.append('unidad', m.unidad);
-    if (m.lote) form.append('lote', m.lote);
-    if (m.fechaCaducidad) form.append('fechaCaducidad', m.fechaCaducidad);
-    if (m.ubicacion) form.append('ubicacion', m.ubicacion);
-    if (m.proveedor) form.append('proveedor', m.proveedor);
-    if (m.estado) form.append('estado', m.estado);
-    if (m.observaciones) form.append('observaciones', m.observaciones);
+   form.append('nombre', m.producto);
+   if (m.descripcion) form.append('descripcion', m.descripcion);
+   form.append('cantidad', String(m.cantidad));
+   if (m.unidad) form.append('unidad', m.unidad);
+   if (m.lote) form.append('lote', m.lote);
+   if (m.fechaCaducidad) form.append('fechaCaducidad', m.fechaCaducidad);
+   if (m.ubicacion) form.append('ubicacion', m.ubicacion);
+   if (m.proveedor) form.append('proveedor', m.proveedor);
+   if (m.estado) form.append('estado', m.estado);
+    if (m.codigoBarra) form.append('codigoBarra', m.codigoBarra);
+    if (m.codigoQR) form.append('codigoQR', m.codigoQR);
+   if (m.observaciones) form.append('observaciones', m.observaciones);
     if (typeof m.minimo === 'number') form.append('minimo', String(m.minimo));
     if (typeof m.maximo === 'number') form.append('maximo', String(m.maximo));
     if (m.miniatura) form.append('miniatura', m.miniatura);
@@ -212,6 +214,8 @@ export default function AlmacenPage() {
                   cantidad: 0,
                   lote: '',
                   unidad: '',
+                  codigoBarra: '',
+                  codigoQR: '',
                   minimo: 0,
                   maximo: 0,
                   miniatura: null,
