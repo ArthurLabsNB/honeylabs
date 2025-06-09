@@ -360,9 +360,9 @@ html, body {
 /* --------- RESPONSIVE --------- */
 @media (max-width: 480px) {
   :root {
-    --sidebar-width: clamp(11rem, 80vw, 13rem);
-    --sidebar-collapsed-width: clamp(3.5rem, 12vw, 4rem);
-    --tools-sidebar-width: clamp(9rem, 75vw, 10rem);
+    --sidebar-width: clamp(0rem, 80vw, 13rem);
+    --sidebar-collapsed-width: clamp(0rem, 18vw, 4rem);
+    --tools-sidebar-width: clamp(0rem, 75vw, 10rem);
   }
 }
 
@@ -372,8 +372,8 @@ html, body {
     padding-right: 1rem;
   }
   .dashboard-sidebar {
-    width: 14rem;
-    min-width: 14rem;
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
     transform: translateX(-100%);
     position: fixed;
     z-index: 50;

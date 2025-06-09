@@ -4,6 +4,10 @@
 ## 0.2.124
 - Adapté el navbar y los sidebars para móviles y tablets con overlay.
 
+## 0.2.125
+- Ajusté la lógica del proveedor de UI para reaccionar a los cambios de tamaño.
+- Refiné las variables de ancho en `globals.css` para pantallas muy pequeñas.
+
 ## 0.2.123
 - Simplifiqué el navbar eliminando búsqueda, creación rápida y cambio de tema.
 
