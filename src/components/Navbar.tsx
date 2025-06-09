@@ -59,7 +59,7 @@ export default function Navbar() {
   }, [sesion]);
 
   const [showTopBar, setShowTopBar] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollY = useRef(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
   const tooltipTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -76,16 +76,20 @@ export default function Navbar() {
   useEffect(() => {
     const controlNavbar = () => {
       const y = window.scrollY;
-      if (y > lastScrollY && y > 64) {
-        setShowTopBar(false);
-      } else if (y < lastScrollY - 4 || y <= 0) {
-        setShowTopBar(true);
-      }
-      setLastScrollY(y);
+      setShowTopBar((prev) => {
+        if (y > lastScrollY.current && y > 64) {
+          return false;
+        }
+        if (y < lastScrollY.current - 4 || y <= 0) {
+          return true;
+        }
+        return prev;
+      });
+      lastScrollY.current = y;
     };
     window.addEventListener("scroll", controlNavbar);
     return () => window.removeEventListener("scroll", controlNavbar);
-  }, [lastScrollY]);
+  }, []);
 
   // Drawer mobile
   useEffect(() => {
