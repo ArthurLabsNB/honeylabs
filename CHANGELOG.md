@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.102
+- Añadimos la migración para crear `Material` y sus tablas relacionadas.
 ## 0.2.101
 - Corregimos un bucle infinito en `useAlmacenesLogic` al sincronizar los datos.
 ## 0.2.100
