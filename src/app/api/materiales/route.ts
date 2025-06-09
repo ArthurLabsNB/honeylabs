@@ -30,7 +30,7 @@ const MATERIAL_SELECT = {
 
 export async function GET(req: NextRequest) {
   try {
-    const usuario = await getUsuarioFromSession()
+    const usuario = await getUsuarioFromSession(req)
     if (!usuario) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     }

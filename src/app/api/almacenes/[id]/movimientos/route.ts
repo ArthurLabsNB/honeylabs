@@ -8,7 +8,7 @@ import * as logger from '@lib/logger'
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const usuario = await getUsuarioFromSession();
+    const usuario = await getUsuarioFromSession(req);
     if (!usuario) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }

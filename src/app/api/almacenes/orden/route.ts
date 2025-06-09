@@ -18,7 +18,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const usuario = await getUsuarioFromSession()
+    const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const { ids } = await req.json()
     if (!Array.isArray(ids) || !ids.every((n) => typeof n === 'number')) {

@@ -1,14 +1,14 @@
-import { cookies } from 'next/headers'
+import { cookies, type RequestCookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
 import prisma from '@lib/prisma'
 import { SESSION_COOKIE } from '@lib/constants'
 
 const JWT_SECRET = process.env.JWT_SECRET
 
-export async function getUsuarioFromSession() {
+export async function getUsuarioFromSession(req?: { cookies: RequestCookies }) {
   if (!JWT_SECRET) return null
 
-  const cookieStore = cookies()
+  const cookieStore = req?.cookies ?? cookies()
   const token = cookieStore.get(SESSION_COOKIE)?.value
 
   if (!token) return null

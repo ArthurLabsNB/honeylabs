@@ -17,7 +17,7 @@ const MIME_BY_EXT: Record<string, string> = {
 
 export async function GET(req: NextRequest, { params }: { params: { id: string; archivoId: string } }) {
   try {
-    const usuario = await getUsuarioFromSession()
+    const usuario = await getUsuarioFromSession(req)
     if (!usuario) return new NextResponse('No autenticado', { status: 401 })
     const archivoId = Number(params.archivoId)
     if (Number.isNaN(archivoId)) return new NextResponse('ID inválido', { status: 400 })
@@ -45,7 +45,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string; 
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string; archivoId: string } }) {
   try {
-    const usuario = await getUsuarioFromSession()
+    const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const archivoId = Number(params.archivoId)
     if (Number.isNaN(archivoId)) {
