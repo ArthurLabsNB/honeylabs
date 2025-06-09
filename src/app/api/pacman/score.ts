@@ -4,7 +4,7 @@ import { getUsuarioFromSession } from '@lib/auth'
 
 export async function POST(req: NextRequest) {
   try {
-    const usuario = await getUsuarioFromSession()
+    const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ ok: false, error: "No autenticado" }, { status: 401 })
 
     const { score } = await req.json()

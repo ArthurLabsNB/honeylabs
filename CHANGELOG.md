@@ -7,6 +7,9 @@
 ## 0.2.118
 - Cerramos la cámara al salir de la página de escaneo.
 
+## 0.2.119
+- Leemos las cookies desde la petición para evitar fallos de sesión.
+
 ## 0.2.114
 - Generamos id único al duplicar materiales y seleccionamos la copia.
 - Agregamos "(copia)" al nombre y limpiamos el lote.

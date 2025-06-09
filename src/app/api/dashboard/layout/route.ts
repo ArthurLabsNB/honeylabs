@@ -17,7 +17,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const usuario = await getUsuarioFromSession();
+    const usuario = await getUsuarioFromSession(req);
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     const data = await req.json();
     const prefs = usuario.preferencias ? JSON.parse(usuario.preferencias) : {};

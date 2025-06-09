@@ -9,7 +9,7 @@ import * as logger from '@lib/logger'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const usuario = await getUsuarioFromSession()
+    const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const almacenId = Number(params.id)
     if (Number.isNaN(almacenId)) {
@@ -57,7 +57,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const usuario = await getUsuarioFromSession()
+    const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const almacenId = Number(params.id)
     if (Number.isNaN(almacenId)) {
