@@ -1,3 +1,6 @@
+## 0.2.143
+- Conectamos la vista de inventario con la API de materiales.
+
 ## 0.2.142
 - Reubiqué el panel de historial a la derecha del de unidades.
 - Alargué las listas para mostrar más elementos.
