@@ -178,7 +178,7 @@ export default function AlmacenPage() {
       )}
       {typeof almacen.inventario === 'number' && (
         <p className="text-xs text-[var(--dashboard-muted)]">
-          Inventario actual: {almacen.inventario} u.
+          Total de materiales: {almacen.inventario}
         </p>
       )}
 
