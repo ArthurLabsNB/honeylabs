@@ -42,7 +42,7 @@ export default function MaterialForm({
       <div>
         <label className="text-xs text-[var(--dashboard-muted)]">Nombre</label>
         <input
-          value={material.producto}
+          value={material.producto ?? ""}
           onChange={handle("producto")}
           className="dashboard-input w-full mt-1"
         />
@@ -50,7 +50,7 @@ export default function MaterialForm({
       <div>
         <label className="text-xs text-[var(--dashboard-muted)]">Descripción</label>
         <textarea
-          value={material.descripcion || ""}
+          value={material.descripcion ?? ""}
           onChange={handle("descripcion")}
           className="dashboard-input w-full mt-1"
         />
@@ -60,7 +60,7 @@ export default function MaterialForm({
           <label className="text-xs text-[var(--dashboard-muted)]">Cantidad</label>
           <input
             type="number"
-            value={material.cantidad}
+            value={material.cantidad ?? ""}
             onChange={handle("cantidad")}
             className="dashboard-input w-full mt-1"
           />
@@ -68,7 +68,7 @@ export default function MaterialForm({
         <div>
           <label className="text-xs text-[var(--dashboard-muted)]">Unidad</label>
           <input
-            value={material.unidad || ""}
+            value={material.unidad ?? ""}
             onChange={handle("unidad")}
             className="dashboard-input w-full mt-1"
           />
@@ -76,7 +76,7 @@ export default function MaterialForm({
         <div>
           <label className="text-xs text-[var(--dashboard-muted)]">Lote</label>
           <input
-            value={material.lote}
+            value={material.lote ?? ""}
             onChange={handle("lote")}
             className="dashboard-input w-full mt-1"
           />
@@ -87,7 +87,7 @@ export default function MaterialForm({
           <label className="text-xs text-[var(--dashboard-muted)]">Fecha caducidad</label>
           <input
             type="date"
-            value={material.fechaCaducidad || ""}
+            value={material.fechaCaducidad ?? ""}
             onChange={handle("fechaCaducidad")}
             className="dashboard-input w-full mt-1"
           />
@@ -95,7 +95,7 @@ export default function MaterialForm({
         <div>
           <label className="text-xs text-[var(--dashboard-muted)]">Ubicación</label>
           <input
-            value={material.ubicacion || ""}
+            value={material.ubicacion ?? ""}
             onChange={handle("ubicacion")}
             className="dashboard-input w-full mt-1"
           />
@@ -105,7 +105,7 @@ export default function MaterialForm({
         <div>
           <label className="text-xs text-[var(--dashboard-muted)]">Proveedor</label>
           <input
-            value={material.proveedor || ""}
+            value={material.proveedor ?? ""}
             onChange={handle("proveedor")}
             className="dashboard-input w-full mt-1"
           />
@@ -113,7 +113,7 @@ export default function MaterialForm({
         <div>
           <label className="text-xs text-[var(--dashboard-muted)]">Estado</label>
           <input
-            value={material.estado || ""}
+            value={material.estado ?? ""}
             onChange={handle("estado")}
             className="dashboard-input w-full mt-1"
           />
@@ -124,7 +124,7 @@ export default function MaterialForm({
           <label className="text-xs text-[var(--dashboard-muted)]">Mínimo</label>
           <input
             type="number"
-            value={material.minimo || ""}
+            value={material.minimo ?? ""}
             onChange={handle("minimo")}
             className="dashboard-input w-full mt-1"
           />
@@ -133,7 +133,7 @@ export default function MaterialForm({
           <label className="text-xs text-[var(--dashboard-muted)]">Máximo</label>
           <input
             type="number"
-            value={material.maximo || ""}
+            value={material.maximo ?? ""}
             onChange={handle("maximo")}
             className="dashboard-input w-full mt-1"
           />
@@ -142,7 +142,7 @@ export default function MaterialForm({
       <div>
         <label className="text-xs text-[var(--dashboard-muted)]">Observaciones</label>
         <textarea
-          value={material.observaciones || ""}
+          value={material.observaciones ?? ""}
           onChange={handle("observaciones")}
           className="dashboard-input w-full mt-1"
         />
