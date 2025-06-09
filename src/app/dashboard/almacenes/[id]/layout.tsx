@@ -1,36 +1,15 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { jsonOrNull } from "@lib/http";
+import React, { useEffect } from "react";
 import { useDashboardUI } from "../../ui";
 import { useRouter } from "next/navigation";
 import AlmacenDetailNavbar from "../components/AlmacenDetailNavbar";
-import type { Usuario } from "@/types/usuario";
 import Spinner from "@/components/Spinner";
+import useSession from "@/hooks/useSession";
 
 function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
   const { fullscreen, setFullscreen } = useDashboardUI();
   const router = useRouter();
-  const [usuario, setUsuario] = useState<Usuario | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const cargarUsuario = async () => {
-      try {
-        const res = await fetch("/api/login", { credentials: "include" });
-        const data = await jsonOrNull(res);
-        if (data?.success && data?.usuario) {
-          setUsuario(data.usuario);
-        } else {
-          setUsuario(null);
-        }
-      } catch {
-        setUsuario(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-    cargarUsuario();
-  }, []);
+  const { usuario, loading } = useSession();
 
 
   useEffect(() => {

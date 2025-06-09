@@ -1,3 +1,6 @@
+## 0.2.57
+- Usamos `useSession` en el layout de almacén para evitar redirecciones inesperadas.
+
 ## 0.2.110
 - Nuevo endpoint `/api/materiales` para listar materiales de todos los almacenes.
 
