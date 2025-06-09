@@ -101,6 +101,7 @@ export default function AlmacenPage() {
       alert(data.error);
       return;
     }
+    alert('Guardado');
     if (!m.id) {
       setMateriales((ms) => {
         const arr = [...ms];

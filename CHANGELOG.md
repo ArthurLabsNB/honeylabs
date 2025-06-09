@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.104
+- Mostramos confirmación al guardar materiales.
+- Evitamos advertencias de inputs sin controlar.
 ## 0.2.103
 - Manejamos casos sin nombre al filtrar materiales para evitar fallos al guardar.
 ## 0.2.102
