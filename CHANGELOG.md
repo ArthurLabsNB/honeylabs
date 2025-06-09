@@ -1,3 +1,6 @@
+## 0.2.122
+- Evitamos el bucle de enfoque al iniciar sesión.
+
 ## 0.2.121
 - Guardamos un flag global para no crear intervalos repetidos en desarrollo.
 
