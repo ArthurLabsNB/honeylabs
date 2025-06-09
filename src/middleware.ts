@@ -22,8 +22,10 @@ function limpiarRegistrosViejos() {
     }
   }
 }
-if (typeof global !== "undefined") {
-  setInterval(limpiarRegistrosViejos, RATE_LIMIT_WINDOW_MS);
+// Evitamos múltiples intervalos durante los recargos en desarrollo
+if (typeof globalThis !== 'undefined' && !globalThis.__limiterInitialized) {
+  globalThis.__limiterInitialized = true
+  setInterval(limpiarRegistrosViejos, RATE_LIMIT_WINDOW_MS)
 }
 
 /**
