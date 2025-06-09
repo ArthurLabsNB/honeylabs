@@ -1,3 +1,6 @@
+## 0.2.123
+- Simplifiqué el navbar eliminando búsqueda, creación rápida y cambio de tema.
+
 ## 0.2.122
 - Evitamos el bucle de enfoque al iniciar sesión.
 
