@@ -119,6 +119,9 @@ model Usuario {
   notificaciones       Notificacion[]
   bitacoraCambios      BitacoraCambioPerfil[]
   sesiones            SesionUsuario[]
+  materiales          Material[]
+  archivosMaterial    ArchivoMaterial[]
+  historialLotes      HistorialLote[]
 }
 
 // ================================
@@ -189,6 +192,7 @@ model Almacen {
   incidencias     Incidencia[]
   notificaciones  Notificacion[]
   alertas                 Alerta[]
+  materiales    Material[]
 }
 
 // ================================
@@ -445,6 +449,7 @@ model Material {
   usuario     Usuario? @relation(fields: [usuarioId], references: [id])
 
   archivos    ArchivoMaterial[]
+  historialLotes HistorialLote[]
 }
 
 model ArchivoMaterial {
