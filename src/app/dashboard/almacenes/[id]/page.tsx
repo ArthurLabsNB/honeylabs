@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { jsonOrNull } from "@lib/http";
 import Spinner from "@/components/Spinner";
+import { useToast } from "@/components/Toast";
 import { Material } from "../components/MaterialRow";
 import MaterialForm from "../components/MaterialForm";
 import MaterialList from "../components/MaterialList";
@@ -22,6 +23,7 @@ interface Almacen {
 
 export default function AlmacenPage() {
   const { id } = useParams();
+  const toast = useToast();
   const [almacen, setAlmacen] = useState<Almacen | null>(null);
   const [materiales, setMateriales] = useState<Material[]>([]);
   const [seleccion, setSeleccion] = useState<number | null>(0);
@@ -30,22 +32,31 @@ export default function AlmacenPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const cargarMateriales = async () => {
+    const inv = await fetch(`/api/almacenes/${id}/materiales`).then(jsonOrNull);
+    if (inv?.materiales) {
+      setMateriales(
+        inv.materiales.map((m: any) => ({
+          ...m,
+          producto: m.nombre,
+          fechaCaducidad: m.fechaCaducidad?.slice(0, 10) ?? "",
+        }))
+      );
+      if (inv.materiales.length === 0) setSeleccion(null);
+    } else {
+      setMateriales([]);
+      setSeleccion(null);
+    }
+  };
+
   useEffect(() => {
     setLoading(true)
-    Promise.all([
-      fetch(`/api/almacenes/${id}`).then(jsonOrNull),
-      fetch(`/api/almacenes/${id}/materiales`).then(jsonOrNull),
-    ])
-      .then(([info, inv]) => {
+    fetch(`/api/almacenes/${id}`)
+      .then(jsonOrNull)
+      .then((info) => {
         if (info.error) throw new Error(info.error)
         setAlmacen(info.almacen)
-        if (inv?.materiales) {
-          setMateriales(inv.materiales)
-          if (inv.materiales.length === 0) setSeleccion(null)
-        } else {
-          setMateriales([])
-          setSeleccion(null)
-        }
+        return cargarMateriales()
       })
       .catch(() => setError('Error al cargar almacén'))
       .finally(() => setLoading(false))
@@ -74,50 +85,52 @@ export default function AlmacenPage() {
   const guardar = async () => {
     if (seleccion === null) return;
     const m = materiales[seleccion];
-    const body = {
-      nombre: m.producto,
-      descripcion: m.descripcion,
-      cantidad: m.cantidad,
-      unidad: m.unidad,
-      lote: m.lote,
-      fechaCaducidad: m.fechaCaducidad,
-      ubicacion: m.ubicacion,
-      proveedor: m.proveedor,
-      estado: m.estado,
-      observaciones: m.observaciones,
-      minimo: m.minimo,
-      maximo: m.maximo,
-    };
+    const form = new FormData();
+    form.append('nombre', m.producto);
+    if (m.descripcion) form.append('descripcion', m.descripcion);
+    form.append('cantidad', String(m.cantidad));
+    if (m.unidad) form.append('unidad', m.unidad);
+    if (m.lote) form.append('lote', m.lote);
+    if (m.fechaCaducidad) form.append('fechaCaducidad', m.fechaCaducidad);
+    if (m.ubicacion) form.append('ubicacion', m.ubicacion);
+    if (m.proveedor) form.append('proveedor', m.proveedor);
+    if (m.estado) form.append('estado', m.estado);
+    if (m.observaciones) form.append('observaciones', m.observaciones);
+    if (typeof m.minimo === 'number') form.append('minimo', String(m.minimo));
+    if (typeof m.maximo === 'number') form.append('maximo', String(m.maximo));
+    if (m.miniatura) form.append('miniatura', m.miniatura);
     const res = await fetch(
       m.id ? `/api/materiales/${m.id}` : `/api/almacenes/${id}/materiales`,
       {
         method: m.id ? 'PUT' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        body: form,
       },
     );
     const data = await res.json();
     if (data.error) {
-      alert(data.error);
+      toast.show(data.error, 'error');
       return;
     }
-    alert('Guardado');
-    if (!m.id) {
-      setMateriales((ms) => {
-        const arr = [...ms];
-        arr[seleccion] = { ...m, id: data.material.id };
-        return arr;
-      });
-    }
+    toast.show('Guardado', 'success');
+    await cargarMateriales();
   };
-  const cancelar = () => setSeleccion(null);
+  const cancelar = () => {
+    cargarMateriales();
+    setSeleccion(null);
+  };
   const eliminar = async () => {
     if (seleccion === null) return;
     const m = materiales[seleccion];
     if (m.id) {
-      await fetch(`/api/materiales/${m.id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/materiales/${m.id}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.error) {
+        toast.show(data.error, 'error');
+        return;
+      }
+      toast.show('Eliminado', 'success');
     }
-    setMateriales((ms) => ms.filter((_, idx) => idx !== seleccion));
+    await cargarMateriales();
     setSeleccion(null);
   };
   const duplicar = () => {
@@ -201,6 +214,7 @@ export default function AlmacenPage() {
                   unidad: '',
                   minimo: 0,
                   maximo: 0,
+                  miniatura: null,
                 },
               ])
             }
