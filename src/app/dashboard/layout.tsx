@@ -23,6 +23,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
     sidebarGlobalVisible = true,
     sidebarGlobalCollapsed,
     toolsSidebarVisible,
+    toggleSidebarVisible: toggleSidebar,
   } = useDashboardUI();
   const router = useRouter();
   const pathname = usePathname();
@@ -121,7 +122,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
       {isCompact && sidebarGlobalVisible && (
         <div
           className="dashboard-overlay"
-          onClick={() => toggleSidebarVisible(false)}
+          onClick={() => toggleSidebar(false)}
         />
       )}
 

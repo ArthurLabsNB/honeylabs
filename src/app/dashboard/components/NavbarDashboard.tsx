@@ -18,7 +18,8 @@ import type { Usuario } from "@/types/usuario";
 export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
   // Estado UI
   const navRef = useRef<HTMLDivElement>(null);
-  const { toggleSidebarVisible, sidebarGlobalVisible } = useDashboardUI();
+  const { toggleSidebarVisible: toggleSidebar, sidebarGlobalVisible } =
+    useDashboardUI();
 
   const logout = async (redirectUrl?: string) => {
     await fetch("/api/login", { method: "DELETE" });
@@ -34,7 +35,7 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
     >
       <div className="flex gap-4 items-center relative" data-oid="ikd.5r1">
         <button
-          onClick={() => toggleSidebarVisible()}
+          onClick={() => toggleSidebar()}
           className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
           aria-label="Toggle sidebar"
         >
