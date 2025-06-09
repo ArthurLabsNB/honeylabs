@@ -47,6 +47,7 @@ export default function AlmacenPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [dirty, setDirty] = useState(false);
+  const [panel, setPanel] = useState<'material' | 'unidad'>('material');
 
   useEffect(() => {
     setLoading(true)
@@ -230,16 +231,26 @@ export default function AlmacenPage() {
 
       <div className="flex flex-col md:flex-row gap-4 h-full">
         <section className="md:w-1/2 p-4 border-r border-white/10 overflow-y-auto">
-          <MaterialForm
-            material={selectedMaterial}
-            onChange={(campo, valor) =>
-              selectedId && actualizar(selectedId, campo, valor)
-            }
-            onGuardar={guardar}
-            onCancelar={cancelar}
-            onDuplicar={duplicar}
-            onEliminar={eliminar}
-          />
+          {panel === 'material' ? (
+            <MaterialForm
+              material={selectedMaterial}
+              onChange={(campo, valor) =>
+                selectedId && actualizar(selectedId, campo, valor)
+              }
+              onGuardar={guardar}
+              onCancelar={cancelar}
+              onDuplicar={duplicar}
+              onEliminar={eliminar}
+            />
+          ) : (
+            <UnidadesPanel
+              material={selectedMaterial}
+              onChange={(campo, valor) =>
+                selectedId && actualizar(selectedId, campo, valor)
+              }
+              onBack={() => setPanel('material')}
+            />
+          )}
         </section>
         <aside className="md:w-1/2 p-4 space-y-4 overflow-y-auto">
           <MaterialList
@@ -278,6 +289,7 @@ export default function AlmacenPage() {
               onChange={(campo, valor) =>
                 selectedId && actualizar(selectedId, campo, valor)
               }
+              onSelect={() => setPanel('unidad')}
             />
             <HistorialPanel almacenId={almacen.id} />
             <MovimientosMaterialPanel material={selectedMaterial} />

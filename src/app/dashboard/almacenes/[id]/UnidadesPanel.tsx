@@ -6,9 +6,16 @@ import useUnidades from "@/hooks/useUnidades";
 interface Props {
   material: Material | null;
   onChange: (campo: keyof Material, valor: Material[keyof Material]) => void;
+  onSelect?: () => void;
+  onBack?: () => void;
 }
 
-export default function UnidadesPanel({ material, onChange }: Props) {
+export default function UnidadesPanel({
+  material,
+  onChange,
+  onSelect,
+  onBack,
+}: Props) {
   const [value, setValue] = useState("");
   const { unidades, crear, eliminar } = useUnidades(material?.dbId);
 
@@ -23,6 +30,7 @@ export default function UnidadesPanel({ material, onChange }: Props) {
 
   const select = (u: string) => {
     onChange("unidad", u);
+    onSelect?.();
   };
 
   const remove = async (id: number) => {
@@ -31,7 +39,14 @@ export default function UnidadesPanel({ material, onChange }: Props) {
 
   return (
     <div className="p-4 border rounded-md space-y-2">
-      <h2 className="font-semibold">Unidades</h2>
+      <div className="flex justify-between">
+        <h2 className="font-semibold">Unidades</h2>
+        {onBack && (
+          <button onClick={onBack} className="text-xs text-[var(--dashboard-muted)]">
+            Volver
+          </button>
+        )}
+      </div>
       <div className="flex gap-2">
         <input
           value={value}
