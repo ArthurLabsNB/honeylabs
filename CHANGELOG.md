@@ -1,3 +1,6 @@
+## 0.1.0
+- Ajustamos contenedores y variables para respuesta fluida en todo tamaño.
+
 ## 0.2.124
 - Adapté el navbar y los sidebars para móviles y tablets con overlay.
 

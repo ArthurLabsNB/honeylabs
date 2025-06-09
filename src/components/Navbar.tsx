@@ -138,7 +138,7 @@ export default function Navbar() {
         role="banner"
         aria-label="Barra superior"
       >
-        <div className="flex items-center justify-between w-full max-w-7xl mx-auto px-3 md:px-6 py-2 gap-2 min-h-[64px]">
+        <div className="flex items-center justify-between w-full max-w-screen-2xl mx-auto px-2 sm:px-4 md:px-6 py-2 gap-2 min-h-[64px]">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center mr-2">
             <Link

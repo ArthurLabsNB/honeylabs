@@ -95,14 +95,15 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
 
   return (
     <aside
-      className={`
-        dashboard-sidebar flex flex-col transition-all duration-200 shadow-xl
-        ${collapsed ? "w-[72px]" : "w-56"}
-        h-screen fixed top-0 left-0 z-30
-        bg-[var(--dashboard-sidebar)] border-r border-[var(--dashboard-border)]
-      `}
+      className="dashboard-sidebar flex flex-col transition-all duration-200 shadow-xl fixed top-0 left-0 z-30 bg-[var(--dashboard-sidebar)] border-r border-[var(--dashboard-border)]"
       style={{
-        minHeight: "100vh",
+        minHeight: '100vh',
+        width: collapsed
+          ? 'var(--sidebar-collapsed-width)'
+          : 'var(--sidebar-width)',
+        minWidth: collapsed
+          ? 'var(--sidebar-collapsed-width)'
+          : 'var(--sidebar-width)',
       }}
       data-oid="ru25x:g"
     >

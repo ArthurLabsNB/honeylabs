@@ -194,7 +194,7 @@ function KpiSection() {
 
   return (
     <section
-      className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-12 py-24 px-4"
+      className="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-12 py-24 px-4"
       data-oid="0rnyvxj"
     >
       <KpiCard className="animate-float-card" data-oid="z5.spuq">

@@ -61,7 +61,7 @@ export default function ClientLayout({
         className="
           min-h-[calc(100vh-120px)]
           pt-[96px] pb-8
-          max-w-7xl mx-auto w-full
+          max-w-screen-2xl mx-auto w-full px-3 sm:px-5 md:px-7
         "
         aria-label="Contenido principal"
       >
