@@ -43,6 +43,8 @@ Actualmente se están implementando las funcionalidades principales. Se aceptan 
 
 - Registro y autenticación de usuarios
 - Gestión avanzada de inventarios
+- Trazabilidad completa y seguimiento de lote
+- Integración con escáner de códigos de barras y QR
 - Control de préstamos y devoluciones de materiales
 - Administración de usuarios y roles
 - Reporte y seguimiento de incidencias
