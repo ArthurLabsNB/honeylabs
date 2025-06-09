@@ -71,6 +71,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       if (r.tipo === "salida") salidas = r._sum.cantidad ?? 0;
     }
 
+    const totalMateriales = await prisma.material.count({ where: { almacenId: id } });
+
     const materiales = await prisma.material.findMany({
       where: { almacenId: id },
       orderBy: { id: 'asc' },
@@ -105,7 +107,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
         ultimaActualizacion: almacen.movimientos[0]?.fecha ?? null,
         entradas,
         salidas,
-        inventario: entradas - salidas,
+        inventario: totalMateriales,
         materiales,
       },
     })

@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.107
+- Calculamos el inventario como total de materiales y actualizamos las vistas.
 ## 0.2.106
 - Agregamos endpoints para adjuntos de materiales.
 

@@ -125,7 +125,7 @@ const SortableAlmacen = memo(function SortableAlmacen({
       <div className="flex flex-col flex-1" onClick={onOpen}>
         <div className="flex justify-between items-center gap-2">
           <h3 className="font-semibold">{almacen.nombre}</h3>
-          <span className="text-lg font-semibold text-[var(--dashboard-accent)]">{almacen.inventario ?? 0} u.</span>
+          <span className="text-lg font-semibold text-[var(--dashboard-accent)]">{almacen.inventario ?? 0} mat.</span>
           <span
             className={cn(
               "px-2 py-0.5 rounded-full text-xs",
