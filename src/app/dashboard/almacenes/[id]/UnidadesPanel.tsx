@@ -68,7 +68,7 @@ export default function UnidadesPanel({
         placeholder="Buscar"
         className="p-1 w-full rounded-md bg-white/5 focus:outline-none"
       />
-      <ul className="space-y-1 max-h-32 overflow-y-auto">
+      <ul className="space-y-1 max-h-48 overflow-y-auto">
         {unidades
           .filter(
             (u) =>

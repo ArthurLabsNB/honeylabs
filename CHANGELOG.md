@@ -1,3 +1,7 @@
+## 0.2.142
+- Reubiqué el panel de historial a la derecha del de unidades.
+- Alargué las listas para mostrar más elementos.
+
 ## 0.2.141
 - Eliminé duplicado de panel de unidad.
 - Agregamos búsqueda de unidades.
