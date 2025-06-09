@@ -36,6 +36,12 @@ export async function GET(req: NextRequest) {
     }
 
     const take = Number(req.nextUrl.searchParams.get('take') || '20')
+    if (Number.isNaN(take)) {
+      return NextResponse.json({ error: 'Límite inválido' }, { status: 400 })
+    }
+    if (take < 1 || take > 1000) // Previene ataques DoS o abusos
+      return NextResponse.json({ error: 'Límite fuera de rango' }, { status: 400 })
+
     const search = req.nextUrl.searchParams.get('q')?.toLowerCase() || ''
     const almacenParam = req.nextUrl.searchParams.get('almacenId')
     const almacenId = almacenParam ? Number(almacenParam) : null
