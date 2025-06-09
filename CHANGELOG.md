@@ -1,3 +1,7 @@
+## 0.2.109
+- Creamos `useMateriales` para centralizar la gestión de inventario.
+- Actualizamos la vista de almacén para usar este hook.
+
 # Changelog
 ## 0.2.108
 - Permitimos guardar códigos de barra y QR en materiales.
