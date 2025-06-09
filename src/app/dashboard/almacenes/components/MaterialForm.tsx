@@ -1,6 +1,5 @@
 "use client";
 import { ChangeEvent } from "react";
-import useUnidades from "@/hooks/useUnidades";
 import type { Material } from "./MaterialRow";
 import MaterialCodes from "./MaterialCodes";
 
@@ -26,7 +25,6 @@ export default function MaterialForm({
       <p className="text-sm text-[var(--dashboard-muted)]">Selecciona o crea un material.</p>
     );
 
-  const { unidades } = useUnidades(material?.dbId);
 
   const handle = (campo: keyof Material) => (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -69,18 +67,21 @@ export default function MaterialForm({
           />
         </div>
         <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Unidad</label>
+          <label className="text-xs text-[var(--dashboard-muted)]">Unidad de Medida</label>
           <select
             value={material.unidad ?? ""}
             onChange={handle("unidad")}
             className="dashboard-input w-full mt-1"
           >
             <option value="">-</option>
-            {unidades.map((u) => (
-              <option key={u.id} value={u.nombre}>
-                {u.nombre}
-              </option>
-            ))}
+            <option value="pieza">pieza</option>
+            <option value="kg">kg</option>
+            <option value="g">g</option>
+            <option value="L">L</option>
+            <option value="ml">ml</option>
+            <option value="m">m</option>
+            <option value="cm">cm</option>
+            <option value="mm">mm</option>
           </select>
         </div>
         <div>

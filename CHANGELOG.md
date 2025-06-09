@@ -1,3 +1,6 @@
+## 0.2.138
+- Ajusté paneles al seleccionar unidad y actualicé opciones.
+
 ## 0.2.137
 - Solucioné el acceso prematuro a `guardar` en la vista de almacén.
 
