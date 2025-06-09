@@ -4,11 +4,10 @@ import prisma from '@lib/prisma'
 import { SESSION_COOKIE } from '@lib/constants'
 
 const JWT_SECRET = process.env.JWT_SECRET
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET no definido en el entorno')
-}
 
 export async function getUsuarioFromSession() {
+  if (!JWT_SECRET) return null
+
   const cookieStore = cookies()
   const token = cookieStore.get(SESSION_COOKIE)?.value
 
