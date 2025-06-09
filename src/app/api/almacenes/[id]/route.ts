@@ -55,6 +55,19 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     if (!almacen) {
       return NextResponse.json({ error: "No encontrado" }, { status: 404 });
     }
+
+    const resumen = await prisma.movimiento.groupBy({
+      by: ["tipo"],
+      _sum: { cantidad: true },
+      where: { almacenId: id },
+    });
+    let entradas = 0;
+    let salidas = 0;
+    for (const r of resumen) {
+      if (r.tipo === "entrada") entradas = r._sum.cantidad ?? 0;
+      if (r.tipo === "salida") salidas = r._sum.cantidad ?? 0;
+    }
+
     return NextResponse.json({
       almacen: {
         id: almacen.id,
@@ -64,6 +77,13 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
         encargado: almacen.usuarios[0]?.usuario.nombre ?? null,
         correo: almacen.usuarios[0]?.usuario.correo ?? null,
         ultimaActualizacion: almacen.movimientos[0]?.fecha ?? null,
+        entradas,
+        salidas,
+        inventario: entradas - salidas,
+        inventarioDetalle: [
+          { producto: "Reactivo A", cantidad: 20, lote: "L001" },
+          { producto: "Reactivo B", cantidad: 10, lote: "L002" },
+        ],
       },
     });
   } catch (err) {

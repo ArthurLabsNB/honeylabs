@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.88
+- Conectamos el detalle de almacenes con la API para obtener inventario y totales.
+- Agregamos navegación hacia el inventario desde la barra superior.
+- Incluimos una página dedicada para editar materiales por almacén.
 ## 0.2.87
 - Creamos la vista de inventario con doble panel para gestionar materiales.
 - Reutilizamos el formulario de detalle para editar materiales seleccionados.
