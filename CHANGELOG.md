@@ -17,6 +17,10 @@
 - Endpoint `/api/materiales/[id]/movimientos` para crear y listar movimientos.
 - Panel con historial del material en el dashboard.
 
+## 0.2.133
+- Generamos identificadores de materiales usando `crypto.randomUUID` con reserva.
+- Pruebas para el hook `useMateriales` verifican el comportamiento.
+
 ## 0.2.128
 - Oculté los campos de unidad, estado y niveles mínimo y máximo en el formulario de materiales.
 
