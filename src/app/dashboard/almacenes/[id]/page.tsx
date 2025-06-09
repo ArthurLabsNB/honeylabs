@@ -199,11 +199,12 @@ export default function AlmacenPage() {
             setBusqueda={setBusqueda}
             orden={orden}
             setOrden={setOrden}
-            onNuevo={() =>
+            onNuevo={() => {
+              const nuevoId = crypto.randomUUID()
               setMateriales((ms) => [
                 ...ms,
                 {
-                  id: crypto.randomUUID(),
+                  id: nuevoId,
                   nombre: 'New',
                   cantidad: 0,
                   lote: '',
@@ -215,7 +216,8 @@ export default function AlmacenPage() {
                   miniatura: null,
                 },
               ])
-            }
+              setSelectedId(nuevoId)
+            }}
             onDuplicar={duplicar}
           />
         </aside>

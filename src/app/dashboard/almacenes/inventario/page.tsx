@@ -93,12 +93,14 @@ export default function InventarioPage() {
         </ul>
         <div className="flex gap-2">
           <button
-            onClick={() =>
+            onClick={() => {
+              const nuevoId = crypto.randomUUID();
               setMateriales((ms) => [
                 ...ms,
-                { id: crypto.randomUUID(), nombre: "", cantidad: 0, lote: "" },
-              ])
-            }
+                { id: nuevoId, nombre: "", cantidad: 0, lote: "" },
+              ]);
+              setSelectedId(nuevoId);
+            }}
             className="flex-1 py-1 rounded-md bg-[var(--dashboard-accent)] text-white text-sm hover:bg-[var(--dashboard-accent-hover)]"
           >
             Nuevo
