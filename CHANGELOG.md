@@ -1,3 +1,8 @@
+## 0.2.141
+- Eliminé duplicado de panel de unidad.
+- Agregamos búsqueda de unidades.
+- Fusionamos historial y movimientos en un solo panel.
+
 ## 0.2.140
 - Añadimos formulario detallado para editar cada unidad.
 
