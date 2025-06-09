@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.90
+- Añadimos un middleware que protege todas las rutas privadas y APIs.
+- Se aplican cabeceras `no-store` para evitar caché en contenido sensible.
+- Redirección automática a `/login` si no hay sesión activa.
 ## 0.2.89
 - Unificamos la vista de almacén en una sola página con doble panel.
 - Eliminamos la pestaña de inventario del navbar de detalle.
