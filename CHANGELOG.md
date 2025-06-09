@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.92
+- Ajustamos la cookie de sesión para que use opciones coherentes en cada entorno.
+- El middleware aplica estas configuraciones sin depender del host.
 ## 0.2.90
 - Añadimos un middleware que protege todas las rutas privadas y APIs.
 - Se aplican cabeceras `no-store` para evitar caché en contenido sensible.
