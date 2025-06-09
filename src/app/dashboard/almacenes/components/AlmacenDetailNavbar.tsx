@@ -1,7 +1,6 @@
 "use client";
 import { ArrowLeft, Save } from "lucide-react";
-import Link from "next/link";
-import { useRouter, useParams, usePathname } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
 import { useDashboardUI } from "../../ui";
@@ -12,7 +11,6 @@ export default function AlmacenDetailNavbar() {
   const router = useRouter();
   const { id } = useParams();
   const { fullscreen } = useDashboardUI();
-  const pathname = usePathname();
   const toast = useToast();
   const [nombre, setNombre] = useState("");
   const [original, setOriginal] = useState("");
@@ -59,10 +57,6 @@ export default function AlmacenDetailNavbar() {
     router.push("/dashboard/almacenes");
   };
 
-  const tabs = [
-    { label: "Detalle", href: `/dashboard/almacenes/${id}` },
-    { label: "Inventario", href: `/dashboard/almacenes/${id}/inventario` },
-  ];
 
   return (
     <header
@@ -78,17 +72,6 @@ export default function AlmacenDetailNavbar() {
           onChange={(e) => setNombre(e.target.value)}
           className="bg-transparent text-white text-lg font-semibold focus:outline-none"
         />
-        <nav className="ml-4 flex gap-4">
-          {tabs.map((t) => (
-            <Link
-              key={t.href}
-              href={t.href}
-              className={`text-sm ${pathname === t.href ? 'text-white' : 'text-gray-400 hover:text-white'}`}
-            >
-              {t.label}
-            </Link>
-          ))}
-        </nav>
       </div>
       <button
         onClick={guardar}

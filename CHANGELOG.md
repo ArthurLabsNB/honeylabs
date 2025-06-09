@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.89
+- Unificamos la vista de almacén en una sola página con doble panel.
+- Eliminamos la pestaña de inventario del navbar de detalle.
 ## 0.2.88
 - Conectamos el detalle de almacenes con la API para obtener inventario y totales.
 - Agregamos navegación hacia el inventario desde la barra superior.
