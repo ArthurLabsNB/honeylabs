@@ -8,6 +8,7 @@ import useSession from "@/hooks/useSession";
 import { usePathname } from "next/navigation";
 import UserMenu from "./UserMenu";
 import { jsonOrNull } from "@lib/http";
+import { apiPath } from "@lib/api";
 
 const navLinks = [
   { href: "/", label: "Inicio" },
@@ -31,16 +32,18 @@ export default function Navbar() {
         return;
       }
       try {
-        const res = await fetch("/api/perfil", { credentials: "include" });
+        const res = await fetch(apiPath("/api/perfil"), { credentials: "include" });
         const data = await jsonOrNull(res);
         if (data?.success && data.usuario) {
           setUsuario({
             nombre: data.usuario.nombre,
             correo: data.usuario.correo,
             imagen: data.usuario.fotoPerfilNombre
-              ? `/api/perfil/foto?nombre=${encodeURIComponent(
-                  data.usuario.fotoPerfilNombre,
-                )}`
+              ? apiPath(
+                  `/api/perfil/foto?nombre=${encodeURIComponent(
+                    data.usuario.fotoPerfilNombre,
+                  )}`,
+                )
               : undefined,
             plan: data.usuario.planNombre,
             tiene2FA: data.usuario.tiene2FA,
