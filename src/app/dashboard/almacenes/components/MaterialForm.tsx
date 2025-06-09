@@ -1,6 +1,7 @@
 "use client";
 import { ChangeEvent } from "react";
 import type { Material } from "./MaterialRow";
+import MaterialCodes from "./MaterialCodes";
 
 interface Props {
   material: Material | null;
@@ -148,6 +149,7 @@ export default function MaterialForm({
         <label className="text-xs text-[var(--dashboard-muted)]">Miniatura</label>
         <input type="file" onChange={handle("miniatura") as any} className="dashboard-input w-full mt-1" />
       </div>
+      <MaterialCodes value={`${material.producto}-${material.lote}`} />
       <div className="flex gap-2 pt-2">
         <button
           onClick={onGuardar}
