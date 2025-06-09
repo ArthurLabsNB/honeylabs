@@ -7,12 +7,19 @@ import { hasManagePerms } from '@lib/permisos'
 import crypto from 'node:crypto'
 import * as logger from '@lib/logger'
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+function getMaterialId(req: NextRequest): number | null {
+  const parts = req.nextUrl.pathname.split('/');
+  const idx = parts.findIndex((p) => p === 'materiales');
+  const id = idx !== -1 && parts.length > idx + 1 ? Number(parts[idx + 1]) : null;
+  return id && !Number.isNaN(id) ? id : null;
+}
+
+export async function GET(req: NextRequest) {
   try {
     const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
-    const id = Number(params.id)
-    if (Number.isNaN(id)) {
+    const id = getMaterialId(req)
+    if (!id) {
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
     }
     const material = await prisma.material.findUnique({
@@ -49,12 +56,12 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest) {
   try {
     const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
-    const id = Number(params.id)
-    if (Number.isNaN(id)) {
+    const id = getMaterialId(req)
+    if (!id) {
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
     }
     const material = await prisma.material.findUnique({ where: { id }, select: { almacenId: true } })
@@ -107,12 +114,12 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest) {
   try {
     const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
-    const id = Number(params.id)
-    if (Number.isNaN(id)) {
+    const id = getMaterialId(req)
+    if (!id) {
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
     }
     const material = await prisma.material.findUnique({ where: { id }, select: { almacenId: true } })

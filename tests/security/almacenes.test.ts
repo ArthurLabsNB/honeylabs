@@ -10,7 +10,7 @@ afterEach(() => vi.restoreAllMocks())
 describe('seguridad de almacenes', () => {
   it('GET requiere sesion', async () => {
     vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue(null as any)
-    const res = await GET(new NextRequest('http://localhost'), { params: { id: '1' } })
+    const res = await GET(new NextRequest('http://localhost/api/almacenes/1'))
     expect(res.status).toBe(401)
   })
 
@@ -18,7 +18,7 @@ describe('seguridad de almacenes', () => {
     vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue({ id: 1 } as any)
     vi.spyOn(prisma.usuarioAlmacen, 'findFirst').mockResolvedValue(null as any)
     vi.spyOn(permisos, 'hasManagePerms').mockReturnValue(false)
-    const res = await GET(new NextRequest('http://localhost'), { params: { id: '1' } })
+    const res = await GET(new NextRequest('http://localhost/api/almacenes/1'))
     expect(res.status).toBe(403)
   })
 
@@ -26,8 +26,8 @@ describe('seguridad de almacenes', () => {
     vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue({ id: 1 } as any)
     vi.spyOn(prisma.usuarioAlmacen, 'findFirst').mockResolvedValue(null as any)
     vi.spyOn(permisos, 'hasManagePerms').mockReturnValue(false)
-    const req = new NextRequest('http://localhost', { method: 'PUT', body: '{}' })
-    const res = await PUT(req, { params: { id: '1' } })
+    const req = new NextRequest('http://localhost/api/almacenes/1', { method: 'PUT', body: '{}' })
+    const res = await PUT(req)
     expect(res.status).toBe(403)
   })
 
@@ -35,7 +35,7 @@ describe('seguridad de almacenes', () => {
     vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue({ id: 1 } as any)
     vi.spyOn(prisma.usuarioAlmacen, 'findFirst').mockResolvedValue(null as any)
     vi.spyOn(permisos, 'hasManagePerms').mockReturnValue(false)
-    const res = await DELETE(new NextRequest('http://localhost', { method: 'DELETE' }), { params: { id: '1' } })
+    const res = await DELETE(new NextRequest('http://localhost/api/almacenes/1', { method: 'DELETE' }))
     expect(res.status).toBe(403)
   })
 })

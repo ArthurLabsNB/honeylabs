@@ -7,6 +7,13 @@ import { hasManagePerms } from "@lib/permisos";
 import crypto from 'node:crypto';
 import * as logger from '@lib/logger'
 
+function getAlmacenId(req: NextRequest): number | null {
+  const parts = req.nextUrl.pathname.split('/');
+  const idx = parts.findIndex((p) => p === 'almacenes');
+  const id = idx !== -1 && parts.length > idx + 1 ? Number(parts[idx + 1]) : null;
+  return id && !Number.isNaN(id) ? id : null;
+}
+
 const MAX_IMAGE_MB = 5;
 const MAX_IMAGE_BYTES = MAX_IMAGE_MB * 1024 * 1024;
 const IMAGE_TYPES = [
@@ -17,14 +24,14 @@ const IMAGE_TYPES = [
   'image/gif',
 ];
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest) {
   try {
     const usuario = await getUsuarioFromSession(req);
     if (!usuario) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
-    const id = Number(params.id);
-    if (Number.isNaN(id)) {
+    const id = getAlmacenId(req);
+    if (!id) {
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 });
     }
     const pertenece = await prisma.usuarioAlmacen.findFirst({
@@ -117,14 +124,14 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest) {
   try {
     const usuario = await getUsuarioFromSession(req);
     if (!usuario) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
-    const id = Number(params.id);
-    if (Number.isNaN(id)) {
+    const id = getAlmacenId(req);
+    if (!id) {
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 });
     }
     const pertenece = await prisma.usuarioAlmacen.findFirst({
@@ -153,14 +160,14 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest) {
   try {
     const usuario = await getUsuarioFromSession(req);
     if (!usuario) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
-    const id = Number(params.id);
-    if (Number.isNaN(id)) {
+    const id = getAlmacenId(req);
+    if (!id) {
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 });
     }
     const pertenece = await prisma.usuarioAlmacen.findFirst({
