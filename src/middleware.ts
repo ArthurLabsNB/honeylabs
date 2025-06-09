@@ -1,5 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { SESSION_COOKIE } from '@lib/constants';
+import { NextRequest, NextResponse } from 'next/server'
+import { SESSION_COOKIE } from '@lib/constants'
+
+const PROTECTED_PREFIXES = ['/dashboard', '/configuracion', '/admin']
+const API_LOGIN = '/api/login'
+const API_REGISTRO = '/api/registro'
 
 // --- Memory Rate Limiter ---
 // Solo para desarrollo, VPS o entornos con estado.
@@ -46,39 +50,61 @@ function getRateLimitKey(req: NextRequest): string {
 }
 
 export function middleware(req: NextRequest) {
-  const key = getRateLimitKey(req);
-  const path = req.nextUrl.pathname;
-  const now = Date.now();
+  const path = req.nextUrl.pathname
 
-  const entry = limiterMemory.get(key);
+  const shouldRateLimit = path.startsWith(API_LOGIN) || path.startsWith(API_REGISTRO)
+  if (shouldRateLimit) {
+    const key = getRateLimitKey(req)
+    const now = Date.now()
+    const entry = limiterMemory.get(key)
 
-  // Rate limit: bloquea si excede el máximo en la ventana
-  if (entry && now - entry.lastRequest < RATE_LIMIT_WINDOW_MS) {
-    if (entry.count >= RATE_LIMIT_MAX) {
-      console.warn(`[RATE LIMIT] Bloqueado: ${key} en ${path} (${entry.count} reqs/min)`);
-      return new NextResponse(
-        JSON.stringify({ error: 'Demasiadas peticiones. Intenta más tarde.' }),
-        {
-          status: 429,
-          headers: {
-            'Content-Type': 'application/json',
-            'Retry-After': String(Math.ceil(RATE_LIMIT_WINDOW_MS / 1000)),
-          },
-        }
-      );
+    if (entry && now - entry.lastRequest < RATE_LIMIT_WINDOW_MS) {
+      if (entry.count >= RATE_LIMIT_MAX) {
+        console.warn(`[RATE LIMIT] Bloqueado: ${key} en ${path} (${entry.count} reqs/min)`)
+        return new NextResponse(
+          JSON.stringify({ error: 'Demasiadas peticiones. Intenta más tarde.' }),
+          {
+            status: 429,
+            headers: {
+              'Content-Type': 'application/json',
+              'Retry-After': String(Math.ceil(RATE_LIMIT_WINDOW_MS / 1000)),
+            },
+          }
+        )
+      }
+      entry.count += 1
+      entry.lastRequest = now
+      limiterMemory.set(key, entry)
+    } else {
+      limiterMemory.set(key, { count: 1, lastRequest: now })
     }
-    entry.count += 1;
-    entry.lastRequest = now;
-    limiterMemory.set(key, entry);
-  } else {
-    // Nueva ventana de rate limit para la clave
-    limiterMemory.set(key, { count: 1, lastRequest: now });
   }
 
-  return NextResponse.next();
+  const isApiProtected =
+    path.startsWith('/api') &&
+    !path.startsWith(API_LOGIN) &&
+    !path.startsWith(API_REGISTRO)
+  const isPageProtected = PROTECTED_PREFIXES.some((p) => path.startsWith(p))
+  const requiresSession = isApiProtected || isPageProtected
+
+  if (requiresSession && !req.cookies.get(SESSION_COOKIE)) {
+    const loginUrl = new URL('/login', req.url)
+    return NextResponse.redirect(loginUrl)
+  }
+
+  const res = NextResponse.next()
+  if (requiresSession) {
+    res.headers.set('Cache-Control', 'no-store')
+  }
+  return res
 }
 
 // Aplica SOLO a login y registro (puedes agregar más rutas aquí si quieres)
 export const config = {
-  matcher: ['/api/registro', '/api/login'],
-};
+  matcher: [
+    '/api/:path*',
+    '/dashboard/:path*',
+    '/configuracion/:path*',
+    '/admin/:path*',
+  ],
+}
