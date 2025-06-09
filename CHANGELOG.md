@@ -12,6 +12,11 @@
 - Nuevas rutas `/api/materiales/[id]/unidades` para gestionar unidades.
 - Hook `useUnidades` y panel actualizado para listar y editar unidades.
 
+## 0.2.132
+- Registramos los movimientos de cada material.
+- Endpoint `/api/materiales/[id]/movimientos` para crear y listar movimientos.
+- Panel con historial del material en el dashboard.
+
 ## 0.2.128
 - Oculté los campos de unidad, estado y niveles mínimo y máximo en el formulario de materiales.
 
