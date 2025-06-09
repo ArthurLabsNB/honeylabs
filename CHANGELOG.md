@@ -1,3 +1,6 @@
+## 0.2.116
+- Al crear o duplicar un material se selecciona automáticamente para editarlo.
+
 ## 0.2.114
 - Generamos id único al duplicar materiales y seleccionamos la copia.
 - Agregamos "(copia)" al nombre y limpiamos el lote.
