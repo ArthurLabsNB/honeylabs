@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.97
+- Corregí la importación de `qrcode.react` para evitar errores al cargar los códigos.
 ## 0.2.96
 - Implementé escaneo con react-zxing dentro de cada almacén.
 - Generé códigos QR y de barras para los materiales.
