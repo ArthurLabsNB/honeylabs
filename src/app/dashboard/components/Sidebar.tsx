@@ -76,7 +76,7 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
   if (!usuario || !usuario.nombre) {
     return (
       <aside
-        className="dashboard-sidebar flex flex-col w-[72px] h-screen fixed top-0 left-0 z-30 justify-center items-center bg-[var(--dashboard-sidebar)] shadow-xl"
+        className="dashboard-sidebar flex flex-col w-[4.5rem] min-w-[4.5rem] h-screen fixed top-0 left-0 z-30 justify-center items-center bg-[var(--dashboard-sidebar)] shadow-xl"
         data-oid="skizcvj"
       >
         <Spinner className="text-[var(--dashboard-accent)]" />

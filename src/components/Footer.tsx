@@ -116,12 +116,11 @@ export default function Footer() {
             <div
               ref={dropdownRef}
               id="legal-dropdown"
-              className={`absolute z-50 min-w-[200px] max-w-xs w-fit bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-2xl text-left py-2 px-3 animate-fade-scale transition pointer-events-auto
+              className={`absolute z-50 min-w-[11.875rem] max-w-[18.125rem] w-fit bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-2xl text-left py-2 px-3 animate-fade-scale transition pointer-events-auto
                 ${showLegal ? "opacity-100 scale-100 visible" : "opacity-0 scale-95 invisible"}
                 ${dropdownPosition === "right" ? "right-0" : "left-0"}
                 bottom-full mb-2
               `}
-              style={{ minWidth: 190, maxWidth: 290 }}
               tabIndex={-1}
               role="menu"
               aria-label="Políticas legales"

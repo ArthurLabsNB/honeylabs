@@ -147,7 +147,7 @@ export default function LoginPage() {
             type="button"
             tabIndex={-1}
             onClick={() => setVerContrasena((v) => !v)}
-            className="absolute right-3 top-[10px] text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
+            className="absolute right-3 top-2.5 text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
             aria-label={
               verContrasena ? "Ocultar contraseña" : "Mostrar contraseña"
             }

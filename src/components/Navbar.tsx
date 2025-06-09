@@ -165,7 +165,7 @@ export default function Navbar() {
             <Link
               href="/configuracion"
               title={usuario.nombre}
-              className="hidden md:inline-block text-base font-semibold text-amber-100 ml-3 mr-2 drop-shadow max-w-[260px] truncate hover:underline cursor-pointer transition"
+              className="hidden md:inline-block text-base font-semibold text-amber-100 ml-3 mr-2 drop-shadow max-w-[16.25rem] truncate hover:underline cursor-pointer transition"
               style={{ lineHeight: "1.2" }}
             >
               Bienvenido, <span className="font-bold">{usuario.nombre}</span>
@@ -188,11 +188,8 @@ export default function Navbar() {
                 `}
                 tabIndex={0}
                 aria-current={isActive(link.href) ? "page" : undefined}
-                style={{
-                  fontSize: "1rem",
-                  minWidth: 92,
-                  textAlign: "center",
-                }}
+                style={{ fontSize: "1rem", textAlign: "center" }}
+                className="min-w-[5.75rem]"
               >
                 {link.label}
               </Link>
@@ -251,11 +248,7 @@ export default function Navbar() {
           {!usuario && (
             <Link
               href="/registro"
-              className="hidden md:inline-flex ml-2 px-4 py-2 rounded-xl font-semibold bg-[#222]/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow text-base"
-              style={{
-                minWidth: 120,
-                textAlign: "center",
-              }}
+              className="hidden md:inline-flex ml-2 px-4 py-2 rounded-xl font-semibold bg-[#222]/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 shadow text-base min-w-[7.5rem] text-center"
               tabIndex={0}
               onClick={rippleEffect}
             >
@@ -328,8 +321,7 @@ export default function Navbar() {
           {usuario ? (
             <Link
               href="/dashboard"
-              className="py-2 px-3 rounded-xl font-semibold bg-navglass/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 shadow text-lg"
-              style={{ minWidth: 120, textAlign: "center" }}
+              className="py-2 px-3 rounded-xl font-semibold bg-navglass/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 shadow text-lg min-w-[7.5rem] text-center"
               onClick={() => setMenuOpen(false)}
             >
               Comenzar Ahora!
@@ -337,8 +329,7 @@ export default function Navbar() {
           ) : (
             <>
               <button
-                className="py-2 px-3 rounded-xl font-semibold bg-navglass/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 shadow text-lg relative"
-                style={{ minWidth: 120, textAlign: "center" }}
+                className="py-2 px-3 rounded-xl font-semibold bg-navglass/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 shadow text-lg relative min-w-[7.5rem] text-center"
                 onClick={handleComenzar}
               >
                 Comenzar Ahora!
@@ -356,8 +347,7 @@ export default function Navbar() {
               </button>
               <Link
                 href="/registro"
-                className="mt-2 py-2 px-3 rounded-xl font-semibold bg-[#222]/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 shadow text-lg"
-                style={{ minWidth: 120, textAlign: "center" }}
+                className="mt-2 py-2 px-3 rounded-xl font-semibold bg-[#222]/80 text-amber-100 hover:bg-amber-400/90 hover:text-[#101014] transition-all duration-300 shadow text-lg min-w-[7.5rem] text-center"
                 onClick={() => setMenuOpen(false)}
               >
                 Regístrate
@@ -368,7 +358,7 @@ export default function Navbar() {
       </div>
 
       {/* Espaciador navbar */}
-      <div className="h-[80px] sm:h-[88px]" aria-hidden="true" />
+      <div className="h-[5rem] sm:h-[5.5rem]" aria-hidden="true" />
 
       <style jsx global>{`
         .ripple {

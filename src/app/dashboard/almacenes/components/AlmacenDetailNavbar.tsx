@@ -65,7 +65,7 @@ export default function AlmacenDetailNavbar() {
 
   return (
     <header
-      className="flex items-center justify-between h-[56px] px-4 border-b border-[var(--dashboard-border)] bg-[var(--dashboard-navbar)] fixed left-0 right-0 z-30"
+      className="flex items-center justify-between h-[3.5rem] min-h-[3.5rem] px-4 border-b border-[var(--dashboard-border)] bg-[var(--dashboard-navbar)] fixed left-0 right-0 z-30"
       style={{ top: fullscreen ? 0 : NAVBAR_HEIGHT }}
     >
       <div className="flex items-center gap-3">

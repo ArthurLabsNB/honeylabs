@@ -310,7 +310,7 @@ function KpiCard({
 }) {
   return (
     <div
-      className={`rounded-2xl bg-zinc-900/85 shadow-xl p-8 border border-amber-400/10 flex flex-col items-center transition-transform hover:scale-105 min-h-[170px] ${className}`}
+      className={`rounded-2xl bg-zinc-900/85 shadow-xl p-8 border border-amber-400/10 flex flex-col items-center transition-transform hover:scale-105 min-h-[10.625rem] ${className}`}
       data-oid="6wqw87x"
     >
       {children}
@@ -320,7 +320,7 @@ function KpiCard({
 function LoaderKPI() {
   return (
     <div
-      className="flex flex-col items-center justify-center gap-2 min-h-[80px]"
+      className="flex flex-col items-center justify-center gap-2 min-h-[5rem]"
       data-oid="-vf79ds"
     >
       <span

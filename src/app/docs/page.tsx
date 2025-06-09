@@ -86,7 +86,7 @@ export default function Docs() {
       >
         {/* Emoji o icono */}
         <span
-          className="text-[13px] text-miel select-none pointer-events-none"
+          className="text-[0.8125rem] text-miel select-none pointer-events-none"
           data-oid="-lrupw0"
         >
           🐝

@@ -8,6 +8,10 @@
 - Ajusté la lógica del proveedor de UI para reaccionar a los cambios de tamaño.
 - Refiné las variables de ancho en `globals.css` para pantallas muy pequeñas.
 
+## 0.2.126
+- Reemplacé medidas fijas en navbars y sidebars por unidades relativas.
+- Usé min-height y min-width para prevenir colapsos.
+
 ## 0.2.123
 - Simplifiqué el navbar eliminando búsqueda, creación rápida y cambio de tema.
 
