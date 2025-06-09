@@ -24,6 +24,11 @@
 ## 0.2.134
 - Validamos el parámetro `take` y respondemos 400 si no es numérico.
 
+## 0.2.135
+- El formulario carga las unidades desde la API `MaterialUnidad`.
+- La lista de inventario muestra también el estado y la ubicación editables.
+- Los cambios de materiales se sincronizan mediante los hooks correspondientes.
+
 ## 0.2.128
 - Oculté los campos de unidad, estado y niveles mínimo y máximo en el formulario de materiales.
 
