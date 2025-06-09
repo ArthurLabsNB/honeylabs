@@ -413,3 +413,11 @@ html, body {
     padding-right: 1.25rem;
   }
 }
+
+/* --------- OVERLAY --------- */
+.dashboard-overlay {
+  @apply fixed inset-0 bg-black/40 z-30 transition-opacity;
+}
+.dashboard-overlay.hidden {
+  @apply opacity-0 pointer-events-none;
+}
