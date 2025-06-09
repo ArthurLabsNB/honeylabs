@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.94
+- Añadimos gestión de materiales por almacén con archivos adjuntos.
+- La API devuelve el inventario real y acepta altas completas.
+- El formulario incluye unidad y límites para cada producto.
 ## 0.2.93
 - Mejoramos la vista de almacén con paneles separados y un navbar renovado.
 

@@ -4,7 +4,7 @@ import type { Material } from "./MaterialRow";
 
 interface Props {
   material: Material | null;
-  onChange: (campo: keyof Material, valor: string | number) => void;
+  onChange: (campo: keyof Material, valor: any) => void;
   onGuardar: () => void;
   onCancelar: () => void;
   onDuplicar: () => void;
@@ -22,8 +22,16 @@ export default function MaterialForm({
       <p className="text-sm text-[var(--dashboard-muted)]">Selecciona o crea un material.</p>
     );
 
-  const handle = (campo: keyof Material) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    onChange(campo, campo === "cantidad" ? Number(e.target.value) : e.target.value);
+  const handle = (campo: keyof Material) => (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    if (campo === 'cantidad') {
+      onChange(campo, Number(e.target.value));
+    } else if (campo === 'miniatura') {
+      onChange(campo, (e.target as HTMLInputElement).files?.[0] || null);
+    } else {
+      onChange(campo, e.target.value);
+    }
   };
 
   return (
@@ -51,6 +59,14 @@ export default function MaterialForm({
             type="number"
             value={material.cantidad}
             onChange={handle("cantidad")}
+            className="dashboard-input w-full mt-1"
+          />
+        </div>
+        <div>
+          <label className="text-xs text-[var(--dashboard-muted)]">Unidad</label>
+          <input
+            value={material.unidad || ""}
+            onChange={handle("unidad")}
             className="dashboard-input w-full mt-1"
           />
         </div>
@@ -100,6 +116,26 @@ export default function MaterialForm({
           />
         </div>
       </div>
+      <div className="grid grid-cols-2 gap-2">
+        <div>
+          <label className="text-xs text-[var(--dashboard-muted)]">Mínimo</label>
+          <input
+            type="number"
+            value={material.minimo || ""}
+            onChange={handle("minimo")}
+            className="dashboard-input w-full mt-1"
+          />
+        </div>
+        <div>
+          <label className="text-xs text-[var(--dashboard-muted)]">Máximo</label>
+          <input
+            type="number"
+            value={material.maximo || ""}
+            onChange={handle("maximo")}
+            className="dashboard-input w-full mt-1"
+          />
+        </div>
+      </div>
       <div>
         <label className="text-xs text-[var(--dashboard-muted)]">Observaciones</label>
         <textarea
@@ -107,6 +143,10 @@ export default function MaterialForm({
           onChange={handle("observaciones")}
           className="dashboard-input w-full mt-1"
         />
+      </div>
+      <div>
+        <label className="text-xs text-[var(--dashboard-muted)]">Miniatura</label>
+        <input type="file" onChange={handle("miniatura") as any} className="dashboard-input w-full mt-1" />
       </div>
       <div className="flex gap-2 pt-2">
         <button
