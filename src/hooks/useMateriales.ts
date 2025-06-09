@@ -40,7 +40,7 @@ export default function useMateriales(almacenId?: number | string) {
   }
 
   const actualizar = async (m: Material) => {
-    if (!m.id) return { error: 'ID requerido' }
+    if (!m.dbId) return { error: 'ID requerido' }
     const form = new FormData()
     form.append('nombre', m.nombre)
     if (m.descripcion) form.append('descripcion', m.descripcion)
@@ -57,7 +57,7 @@ export default function useMateriales(almacenId?: number | string) {
     if (m.codigoBarra) form.append('codigoBarra', m.codigoBarra)
     if (m.codigoQR) form.append('codigoQR', m.codigoQR)
     if (m.miniatura) form.append('miniatura', m.miniatura)
-    const res = await fetch(`/api/materiales/${m.id}`, { method: 'PUT', body: form })
+    const res = await fetch(`/api/materiales/${m.dbId}`, { method: 'PUT', body: form })
     const data = await jsonOrNull(res)
     if (res.ok) mutate()
     return data
@@ -71,6 +71,8 @@ export default function useMateriales(almacenId?: number | string) {
   }
 
   const mats = (data?.materiales as any[] | undefined)?.map((m) => ({
+    id: String(m.id ?? crypto.randomUUID()),
+    dbId: m.id,
     ...m,
     fechaCaducidad: m.fechaCaducidad?.slice(0, 10) ?? '',
   })) as Material[] | undefined

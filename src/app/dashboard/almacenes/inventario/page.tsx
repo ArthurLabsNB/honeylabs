@@ -4,10 +4,10 @@ import MaterialRow, { Material } from "../components/MaterialRow";
 
 export default function InventarioPage() {
   const [materiales, setMateriales] = useState<Material[]>([
-    { nombre: "Reactivo A", cantidad: 20, lote: "L001" },
-    { nombre: "Reactivo B", cantidad: 10, lote: "L002" },
+    { id: crypto.randomUUID(), nombre: "Reactivo A", cantidad: 20, lote: "L001" },
+    { id: crypto.randomUUID(), nombre: "Reactivo B", cantidad: 10, lote: "L002" },
   ]);
-  const [seleccion, setSeleccion] = useState<number | null>(0);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [busqueda, setBusqueda] = useState("");
   const [orden, setOrden] = useState<"nombre" | "cantidad">("nombre");
 
@@ -20,25 +20,25 @@ export default function InventarioPage() {
     );
 
   const actualizar = (
-    idx: number,
+    idMat: string,
     campo: keyof Material,
-    valor: string | number
+    valor: string | number,
   ) => {
-    setMateriales((ms) => {
-      const arr = [...ms];
-      // @ts-ignore
-      arr[idx][campo] = campo === "cantidad" ? Number(valor) : valor;
-      return arr;
-    });
+    setMateriales((ms) =>
+      ms.map((m) =>
+        m.id === idMat ? { ...m, [campo]: campo === "cantidad" ? Number(valor) : valor } : m,
+      ),
+    );
   };
 
   const guardar = () => {
     alert("Guardado");
   };
-  const cancelar = () => setSeleccion(null);
+  const cancelar = () => setSelectedId(null);
   const duplicar = () => {
-    if (seleccion === null) return;
-    setMateriales((ms) => [...ms, { ...ms[seleccion] }]);
+    if (!selectedId) return;
+    const m = materiales.find((mat) => mat.id === selectedId);
+    if (m) setMateriales((ms) => [...ms, { ...m, id: crypto.randomUUID() }]);
   };
 
   return (
@@ -61,12 +61,12 @@ export default function InventarioPage() {
           </select>
         </div>
         <ul className="space-y-1 overflow-y-auto max-h-[calc(100vh-12rem)]">
-          {filtrados.map((m, idx) => (
-            <li key={idx}>
+          {filtrados.map((m) => (
+            <li key={m.id}>
               <button
-                onClick={() => setSeleccion(idx)}
+                onClick={() => setSelectedId(m.id)}
                 className={`w-full text-left p-2 rounded-md transition ${
-                  idx === seleccion ? "bg-white/10" : "hover:bg-white/5"
+                  m.id === selectedId ? "bg-white/10" : "hover:bg-white/5"
                 }`}
               >
                 {m.nombre}
@@ -79,7 +79,7 @@ export default function InventarioPage() {
             onClick={() =>
               setMateriales((ms) => [
                 ...ms,
-                { nombre: "", cantidad: 0, lote: "" },
+                { id: crypto.randomUUID(), nombre: "", cantidad: 0, lote: "" },
               ])
             }
             className="flex-1 py-1 rounded-md bg-[var(--dashboard-accent)] text-white text-sm hover:bg-[var(--dashboard-accent-hover)]"
@@ -88,7 +88,7 @@ export default function InventarioPage() {
           </button>
           <button
             onClick={duplicar}
-            disabled={seleccion === null}
+            disabled={selectedId === null}
             className="flex-1 py-1 rounded-md bg-white/10 text-white text-sm disabled:opacity-50"
           >
             Duplicar
@@ -96,7 +96,7 @@ export default function InventarioPage() {
         </div>
       </aside>
       <section className="flex-1 p-4 space-y-4 overflow-y-auto">
-        {seleccion === null ? (
+        {selectedId === null ? (
           <p className="text-sm text-[var(--dashboard-muted)]">
             Selecciona un material para editar.
           </p>
@@ -112,8 +112,7 @@ export default function InventarioPage() {
               </thead>
               <tbody>
                 <MaterialRow
-                  material={materiales[seleccion]}
-                  index={seleccion}
+                  material={materiales.find((m) => m.id === selectedId)!}
                   onChange={actualizar}
                 />
               </tbody>
