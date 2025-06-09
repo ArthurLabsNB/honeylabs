@@ -14,7 +14,7 @@ UI adaptativa según permisos
 
 Integración sin romper código, sin perder datos y respetando la arquitectura actual
 
-2. Análisis y requerimientos previos
+2. Análiis y requerimientos previos
 El backend utiliza Prisma + PostgreSQL
 
 El frontend es React (Next.js), CSS modular y Tailwind, con hooks para sesión y autenticación
