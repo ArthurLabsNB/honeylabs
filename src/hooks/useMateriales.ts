@@ -1,5 +1,6 @@
 import useSWR from 'swr'
 import { jsonOrNull } from '@lib/http'
+import { useMemo } from 'react'
 import type { Material } from '@/app/dashboard/almacenes/components/MaterialRow'
 
 const fetcher = (url: string) => fetch(url).then(jsonOrNull)
@@ -70,12 +71,16 @@ export default function useMateriales(almacenId?: number | string) {
     return data
   }
 
-  const mats = (data?.materiales as any[] | undefined)?.map((m) => ({
-    id: String(m.id ?? crypto.randomUUID()),
-    dbId: m.id,
-    ...m,
-    fechaCaducidad: m.fechaCaducidad?.slice(0, 10) ?? '',
-  })) as Material[] | undefined
+  const mats = useMemo(
+    () =>
+      (data?.materiales as any[] | undefined)?.map((m) => ({
+        id: String(m.id ?? crypto.randomUUID()),
+        dbId: m.id,
+        ...m,
+        fechaCaducidad: m.fechaCaducidad?.slice(0, 10) ?? '',
+      })) as Material[] | undefined,
+    [data],
+  )
 
   return {
     materiales: mats ?? EMPTY_MATERIALS,
