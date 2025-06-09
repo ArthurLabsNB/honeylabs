@@ -17,6 +17,8 @@ export interface Almacen {
 
 const fetcher = (url: string) => fetch(url).then(jsonOrNull)
 
+const EMPTY_ALMACENES: Almacen[] = []
+
 export default function useAlmacenes(opts?: {
   usuarioId?: number
   favoritos?: boolean
@@ -32,7 +34,7 @@ export default function useAlmacenes(opts?: {
   })
 
   return {
-    almacenes: (data?.almacenes as Almacen[]) || [],
+    almacenes: (data?.almacenes as Almacen[]) ?? EMPTY_ALMACENES,
     loading: isLoading,
     error,
     mutate,
