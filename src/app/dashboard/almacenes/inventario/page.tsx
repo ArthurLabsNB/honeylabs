@@ -1,182 +1,71 @@
 "use client";
 import { useState } from "react";
-import { generarUUID } from "@/lib/uuid";
-import MaterialRow, { Material } from "../components/MaterialRow";
+import useSession from "@/hooks/useSession";
+import useAlmacenes from "@/hooks/useAlmacenes";
+import useMateriales from "@/hooks/useMateriales";
 
 export default function InventarioPage() {
-  const [materiales, setMateriales] = useState<Material[]>([
-    {
-      id: generarUUID(),
-      nombre: "Reactivo A",
-      cantidad: 20,
-      lote: "L001",
-      estado: "Bueno",
-      ubicacion: "Lab 1",
-    },
-    {
-      id: generarUUID(),
-      nombre: "Reactivo B",
-      cantidad: 10,
-      lote: "L002",
-      estado: "Bueno",
-      ubicacion: "Lab 2",
-    },
-  ]);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const { usuario } = useSession();
+  const { almacenes } = useAlmacenes(
+    usuario ? { usuarioId: usuario.id } : undefined,
+  );
+  const [almacenId, setAlmacenId] = useState<number | null>(null);
+  const {
+    materiales,
+    loading: loadingMateriales,
+  } = useMateriales(almacenId ?? undefined);
   const [busqueda, setBusqueda] = useState("");
   const [orden, setOrden] = useState<"nombre" | "cantidad">("nombre");
 
   const filtrados = materiales
-    .filter((m) => m.nombre.toLowerCase().includes(busqueda.toLowerCase()))
+    .filter((m) => (m?.nombre ?? "").toLowerCase().includes(busqueda.toLowerCase()))
     .sort((a, b) =>
       orden === "nombre"
         ? a.nombre.localeCompare(b.nombre)
-        : a.cantidad - b.cantidad
+        : a.cantidad - b.cantidad,
     );
 
-  const numericFields: Array<keyof Material> = ['cantidad', 'minimo', 'maximo'];
-
-  const actualizar = <K extends keyof Material>(
-    idMat: string,
-    campo: K,
-    valor: Material[K] | string,
-  ) => {
-    setMateriales((arr) => {
-      const idx = arr.findIndex((m) => m.id === idMat);
-      if (idx === -1) return arr;
-      const actualizado = {
-        ...arr[idx],
-        [campo]: numericFields.includes(campo)
-          ? Number(valor)
-          : (valor as Material[K]),
-      };
-      return [...arr.slice(0, idx), actualizado, ...arr.slice(idx + 1)];
-    });
-  };
-
-  const guardar = () => {
-    alert("Guardado");
-  };
-  const cancelar = () => setSelectedId(null);
-  const duplicar = () => {
-    if (!selectedId) return;
-    const m = materiales.find((mat) => mat.id === selectedId);
-    if (m) {
-      const nuevo = {
-        ...m,
-        id: generarUUID(),
-        nombre: `${m.nombre} (copia)`,
-        lote: "",
-      };
-      setMateriales((ms) => [...ms, nuevo]);
-      setSelectedId(nuevo.id);
-    }
-  };
-
   return (
-    <div className="flex h-full" data-oid="inv.layout">
-      <aside className="w-72 max-w-sm border-r border-white/10 p-4 space-y-4">
-        <div className="flex gap-2">
-          <input
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
-            placeholder="Buscar"
-            className="flex-1 p-2 rounded-md bg-white/5 focus:outline-none"
-          />
-          <select
-            value={orden}
-            onChange={(e) => setOrden(e.target.value as any)}
-            className="p-2 rounded-md bg-white/5"
-          >
-            <option value="nombre">Nombre</option>
-            <option value="cantidad">Cantidad</option>
-          </select>
-        </div>
-        <ul className="space-y-1 overflow-y-auto max-h-[calc(100vh-12rem)]">
-          {filtrados.map((m) => (
-            <li key={m.id}>
-              <button
-                onClick={() => setSelectedId(m.id)}
-                className={`w-full text-left p-2 rounded-md transition ${
-                  m.id === selectedId ? "bg-white/10" : "hover:bg-white/5"
-                }`}
-              >
-                {m.nombre}
-              </button>
-            </li>
-          ))}
-        </ul>
-        <div className="flex gap-2">
-          <button
-            onClick={() => {
-              const nuevoId = generarUUID();
-              setMateriales((ms) => [
-                ...ms,
-                { id: nuevoId, nombre: "", cantidad: 0, lote: "" },
-              ]);
-              setSelectedId(nuevoId);
-            }}
-            className="flex-1 py-1 rounded-md bg-[var(--dashboard-accent)] text-white text-sm hover:bg-[var(--dashboard-accent-hover)]"
-          >
-            Nuevo
-          </button>
-          <button
-            onClick={duplicar}
-            disabled={selectedId === null}
-            className="flex-1 py-1 rounded-md bg-white/10 text-white text-sm disabled:opacity-50"
-          >
-            Duplicar
-          </button>
-        </div>
-      </aside>
-      <section className="flex-1 p-4 space-y-4 overflow-y-auto">
-        {selectedId === null ? (
-          <p className="text-sm text-[var(--dashboard-muted)]">
-            Selecciona un material para editar.
-          </p>
-        ) : (
-          <>
-            <table className="w-full text-sm bg-white/5 rounded-md overflow-hidden">
-              <thead className="bg-white/10">
-                <tr>
-                  <th className="px-3 py-2 text-left">Producto</th>
-                  <th className="px-3 py-2 text-left">Cantidad</th>
-                  <th className="px-3 py-2 text-left">Lote</th>
-                  <th className="px-3 py-2 text-left">Estado</th>
-                  <th className="px-3 py-2 text-left">Ubicación</th>
-                </tr>
-              </thead>
-              <tbody>
-                <MaterialRow
-                  id={selectedId!}
-                  material={materiales.find((m) => m.id === selectedId)!}
-                  onChange={actualizar}
-                />
-              </tbody>
-            </table>
-            <div className="flex gap-2">
-              <button
-                onClick={guardar}
-                className="px-4 py-2 rounded-lg bg-[var(--dashboard-accent)] text-white text-sm hover:bg-[var(--dashboard-accent-hover)]"
-              >
-                Guardar
-              </button>
-              <button
-                onClick={cancelar}
-                className="px-4 py-2 rounded-lg bg-white/10 text-white text-sm"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={duplicar}
-                className="px-4 py-2 rounded-lg bg-white/10 text-white text-sm"
-              >
-                Duplicar
-              </button>
-            </div>
-          </>
-        )}
-      </section>
+    <div className="p-4 space-y-4">
+      <h1 className="text-2xl font-bold">Inventario</h1>
+      <select
+        value={almacenId ?? ""}
+        onChange={(e) => setAlmacenId(Number(e.target.value) || null)}
+        className="p-2 border rounded-md"
+      >
+        <option value="">Selecciona almacén</option>
+        {almacenes.map((a) => (
+          <option key={a.id} value={a.id}>
+            {a.nombre}
+          </option>
+        ))}
+      </select>
+      {loadingMateriales ? (
+        <p>Cargando...</p>
+      ) : (
+        <table className="w-full text-sm bg-white/5 rounded-md overflow-hidden">
+          <thead className="bg-white/10">
+            <tr>
+              <th className="px-3 py-2 text-left">Producto</th>
+              <th className="px-3 py-2 text-left">Cantidad</th>
+              <th className="px-3 py-2 text-left">Lote</th>
+              <th className="px-3 py-2 text-left">Estado</th>
+              <th className="px-3 py-2 text-left">Ubicación</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtrados.map((m) => (
+              <tr key={m.id} className="border-t border-white/10">
+                <td className="px-3 py-2">{m.nombre}</td>
+                <td className="px-3 py-2">{m.cantidad}</td>
+                <td className="px-3 py-2">{m.lote}</td>
+                <td className="px-3 py-2">{m.estado}</td>
+                <td className="px-3 py-2">{m.ubicacion}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }
