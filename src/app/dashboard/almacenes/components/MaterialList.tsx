@@ -25,7 +25,7 @@ export default function MaterialList({
   onDuplicar,
 }: Props) {
   const filtrados = materiales
-    .filter((m) => m.producto.toLowerCase().includes(busqueda.toLowerCase()))
+    .filter((m) => (m?.producto ?? "").toLowerCase().includes(busqueda.toLowerCase()))
     .sort((a, b) =>
       orden === "producto" ? a.producto.localeCompare(b.producto) : a.cantidad - b.cantidad
     );

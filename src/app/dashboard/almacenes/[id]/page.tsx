@@ -52,7 +52,7 @@ export default function AlmacenPage() {
   }, [id])
 
   const filtrados = materiales
-    .filter((m) => m.producto.toLowerCase().includes(busqueda.toLowerCase()))
+    .filter((m) => (m?.producto ?? "").toLowerCase().includes(busqueda.toLowerCase()))
     .sort((a, b) =>
       orden === "producto" ? a.producto.localeCompare(b.producto) : a.cantidad - b.cantidad,
     );

@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.103
+- Manejamos casos sin nombre al filtrar materiales para evitar fallos al guardar.
 ## 0.2.102
 - Añadimos la migración para crear `Material` y sus tablas relacionadas.
 ## 0.2.101
