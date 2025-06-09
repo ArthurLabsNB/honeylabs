@@ -458,3 +458,16 @@ model ArchivoMaterial {
   subidoPorId   Int?
   subidoPor     Usuario?  @relation(fields: [subidoPorId], references: [id])
 }
+
+model HistorialLote {
+  id          Int      @id @default(autoincrement())
+  materialId  Int
+  lote        String?
+  descripcion String?
+  ubicacion   String?
+  cantidad    Float?
+  fecha       DateTime @default(now())
+  usuarioId   Int?
+  usuario     Usuario?  @relation(fields: [usuarioId], references: [id])
+  material    Material  @relation(fields: [materialId], references: [id])
+}

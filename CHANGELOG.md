@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.95
+- Integramos una página de escaneo para códigos de barras y QR.
+- Registramos movimientos de cada lote con un historial dedicado.
 ## 0.2.94
 - Añadimos gestión de materiales por almacén con archivos adjuntos.
 - La API devuelve el inventario real y acepta altas completas.
