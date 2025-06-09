@@ -11,8 +11,7 @@ import MaterialForm from "../components/MaterialForm";
 import MaterialList from "../components/MaterialList";
 import UnidadesPanel from "./UnidadesPanel";
 import UnidadForm from "../components/UnidadForm";
-import HistorialPanel from "./HistorialPanel";
-import MovimientosMaterialPanel from "./MovimientosMaterialPanel";
+import HistorialMovimientosPanel from "./HistorialMovimientosPanel";
 import { generarUUID } from "@/lib/uuid";
 import type { UnidadDetalle } from "@/types/unidad-detalle";
 
@@ -254,14 +253,6 @@ export default function AlmacenPage() {
               onCancelar={() => setPanel('material')}
             />
           )}
-          {panel === 'unidad' && (
-            <UnidadForm
-              unidad={unidadSel}
-              onChange={(campo, valor) => setUnidadSel((d) => d ? { ...d, [campo]: valor } : d)}
-              onGuardar={() => setPanel('unidades')}
-              onCancelar={() => setPanel('unidades')}
-            />
-          )}
         </section>
         <aside className="md:w-1/2 p-4 space-y-4 overflow-y-auto">
           <MaterialList
@@ -305,8 +296,7 @@ export default function AlmacenPage() {
                 setPanel('unidad')
               }}
             />
-            <HistorialPanel almacenId={almacen.id} />
-            <MovimientosMaterialPanel material={selectedMaterial} />
+            <HistorialMovimientosPanel material={selectedMaterial} />
           </div>
         </aside>
       </div>

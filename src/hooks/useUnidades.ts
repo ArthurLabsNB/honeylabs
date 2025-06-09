@@ -14,6 +14,17 @@ export default function useUnidades(materialId?: number | string) {
 
   const { data, error, isLoading, mutate } = useSWR(url, fetcher)
 
+  const registrar = async (descripcion: string) => {
+    if (Number.isNaN(id)) return
+    try {
+      await fetch(`/api/materiales/${id}/historial`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ descripcion, cantidad: 1 }),
+      })
+    } catch {}
+  }
+
   const crear = async (nombre: string) => {
     if (Number.isNaN(id)) return { error: 'ID inválido' }
     const res = await fetch(`/api/materiales/${id}/unidades`, {
@@ -22,7 +33,10 @@ export default function useUnidades(materialId?: number | string) {
       body: JSON.stringify({ nombre }),
     })
     const result = await jsonOrNull(res)
-    if (res.ok) mutate()
+    if (res.ok) {
+      mutate()
+      registrar('Entrada de Unidad')
+    }
     return result
   }
 
@@ -34,14 +48,20 @@ export default function useUnidades(materialId?: number | string) {
       body: JSON.stringify({ nombre: unidad.nombre }),
     })
     const result = await jsonOrNull(res)
-    if (res.ok) mutate()
+    if (res.ok) {
+      mutate()
+      registrar('Modificacion de Unidad')
+    }
     return result
   }
 
   const eliminar = async (unidadId: number) => {
     const res = await fetch(`/api/materiales/${id}/unidades/${unidadId}`, { method: 'DELETE' })
     const result = await jsonOrNull(res)
-    if (res.ok) mutate()
+    if (res.ok) {
+      mutate()
+      registrar('Eliminacion de Unidad')
+    }
     return result
   }
 

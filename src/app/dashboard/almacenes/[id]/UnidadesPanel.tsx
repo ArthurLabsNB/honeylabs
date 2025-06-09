@@ -17,6 +17,7 @@ export default function UnidadesPanel({
   onBack,
 }: Props) {
   const [value, setValue] = useState("");
+  const [busqueda, setBusqueda] = useState("");
   const { unidades, crear, eliminar } = useUnidades(material?.dbId);
 
   const add = async () => {
@@ -61,8 +62,20 @@ export default function UnidadesPanel({
           Agregar
         </button>
       </div>
+      <input
+        value={busqueda}
+        onChange={(e) => setBusqueda(e.target.value)}
+        placeholder="Buscar"
+        className="p-1 w-full rounded-md bg-white/5 focus:outline-none"
+      />
       <ul className="space-y-1 max-h-32 overflow-y-auto">
-        {unidades.map((u) => (
+        {unidades
+          .filter(
+            (u) =>
+              u.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+              String(u.id).includes(busqueda),
+          )
+          .map((u) => (
           <li
             key={u.id}
             className={`p-1 rounded-md cursor-pointer flex justify-between ${
@@ -76,7 +89,7 @@ export default function UnidadesPanel({
               ✕
             </button>
           </li>
-        ))}
+          ))}
       </ul>
     </div>
   );
