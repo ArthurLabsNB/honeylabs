@@ -55,3 +55,42 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Error al registrar' }, { status: 500 });
   }
 }
+
+export async function GET(req: NextRequest) {
+  try {
+    const usuario = await getUsuarioFromSession(req);
+    if (!usuario) {
+      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
+    }
+    const id = getAlmacenIdFromRequest(req);
+    if (!id) {
+      return NextResponse.json({ error: 'ID inválido' }, { status: 400 });
+    }
+    const pertenece = await prisma.usuarioAlmacen.findFirst({
+      where: { usuarioId: usuario.id, almacenId: id },
+      select: { id: true },
+    });
+    if (!pertenece && !hasManagePerms(usuario)) {
+      return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
+    }
+    const movimientos = await prisma.movimiento.findMany({
+      where: { almacenId: id },
+      orderBy: { fecha: 'desc' },
+      take: 20,
+      select: {
+        id: true,
+        tipo: true,
+        cantidad: true,
+        fecha: true,
+        descripcion: true,
+      },
+    });
+    return NextResponse.json({ movimientos });
+  } catch (err) {
+    logger.error('GET /api/almacenes/[id]/movimientos', err);
+    return NextResponse.json(
+      { error: 'Error al obtener movimientos' },
+      { status: 500 },
+    );
+  }
+}

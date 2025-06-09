@@ -8,6 +8,8 @@ import { Material } from "../components/MaterialRow";
 import useMateriales from "@/hooks/useMateriales";
 import MaterialForm from "../components/MaterialForm";
 import MaterialList from "../components/MaterialList";
+import UnidadesPanel from "./UnidadesPanel";
+import HistorialPanel from "./HistorialPanel";
 
 interface Almacen {
   id: number;
@@ -190,7 +192,7 @@ export default function AlmacenPage() {
             onEliminar={eliminar}
           />
         </section>
-        <aside className="md:w-1/2 p-4 overflow-y-auto">
+        <aside className="md:w-1/2 p-4 space-y-4 overflow-y-auto">
           <MaterialList
             materiales={materiales}
             selectedId={selectedId}
@@ -220,6 +222,10 @@ export default function AlmacenPage() {
             }}
             onDuplicar={duplicar}
           />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <UnidadesPanel />
+            <HistorialPanel almacenId={almacen.id} />
+          </div>
         </aside>
       </div>
     </div>
