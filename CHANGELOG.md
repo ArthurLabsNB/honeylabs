@@ -1,3 +1,6 @@
+## 0.2.140
+- Añadimos formulario detallado para editar cada unidad.
+
 ## 0.2.138
 - Ajusté paneles al seleccionar unidad y actualicé opciones.
 
