@@ -3,7 +3,7 @@ import { memo, useCallback } from "react";
 
 export interface Material {
   id?: number;
-  producto: string;
+  nombre: string;
   cantidad: number;
   lote: string;
   descripcion?: string;
@@ -27,9 +27,9 @@ interface Props {
 }
 
 const MaterialRow = memo(function MaterialRow({ material, index, onChange }: Props) {
-  const handleProducto = useCallback(
+  const handleNombre = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) =>
-      onChange(index, "producto", e.target.value),
+      onChange(index, "nombre", e.target.value),
     [index, onChange],
   );
   const handleCantidad = useCallback(
@@ -47,8 +47,8 @@ const MaterialRow = memo(function MaterialRow({ material, index, onChange }: Pro
     <tr className="border-t border-white/10">
       <td className="px-3 py-2">
         <input
-          value={material.producto}
-          onChange={handleProducto}
+          value={material.nombre}
+          onChange={handleNombre}
           className="bg-transparent w-full focus:outline-none"
         />
       </td>
