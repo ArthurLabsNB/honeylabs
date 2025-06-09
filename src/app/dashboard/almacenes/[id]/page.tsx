@@ -13,6 +13,9 @@ interface Almacen {
   encargado?: string | null;
   correo?: string | null;
   ultimaActualizacion?: string | null;
+  entradas?: number;
+  salidas?: number;
+  inventario?: number;
 }
 
 
@@ -31,12 +34,7 @@ export default function AlmacenDetallePage() {
       .then((data) => {
         if (data.error) throw new Error(data.error);
         setAlmacen(data.almacen);
-        setFilas(
-          data.almacen?.inventario || [
-            { producto: "Reactivo A", cantidad: 20, lote: "L001" },
-            { producto: "Reactivo B", cantidad: 10, lote: "L002" },
-          ],
-        );
+        setFilas(data.almacen?.inventarioDetalle || []);
       })
       .catch(() => setError("Error al cargar almacén"))
       .finally(() => setLoading(false));
@@ -100,6 +98,11 @@ export default function AlmacenDetallePage() {
         <p className="text-xs text-[var(--dashboard-muted)]">
           Última actualización:{' '}
           {new Date(almacen.ultimaActualizacion).toLocaleString()}
+        </p>
+      )}
+      {typeof almacen.inventario === 'number' && (
+        <p className="text-xs text-[var(--dashboard-muted)]">
+          Inventario actual: {almacen.inventario} u.
         </p>
       )}
 
