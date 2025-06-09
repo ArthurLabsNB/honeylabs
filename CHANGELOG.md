@@ -1,3 +1,7 @@
+## 0.2.18
+- Ajustamos logs en almacenes.
+- Corrigimos generacion de IDs de materiales.
+
 ## 0.1.0
 - Ajustamos contenedores y variables para respuesta fluida en todo tamaño.
 

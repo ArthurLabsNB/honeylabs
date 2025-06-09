@@ -15,6 +15,7 @@ function getAlmacenIdFromRequest(req: NextRequest): number | null {
 }
 
 export async function GET(req: NextRequest) {
+  logger.debug(req, 'GET /api/almacenes/[id]/materiales')
   try {
     const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
@@ -55,7 +56,9 @@ export async function GET(req: NextRequest) {
       },
     })
 
-    return NextResponse.json({ materiales })
+    const res = NextResponse.json({ materiales })
+    logger.info(req, `Listados ${materiales.length} materiales`)
+    return res
   } catch (err) {
     logger.error('GET /api/almacenes/[id]/materiales', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
@@ -63,6 +66,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  logger.debug(req, 'POST /api/almacenes/[id]/materiales')
   try {
     const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
@@ -168,7 +172,9 @@ export async function POST(req: NextRequest) {
       },
     })
 
-    return NextResponse.json({ material })
+    const res = NextResponse.json({ material })
+    logger.info(req, `Material ${material.id} creado`)
+    return res
   } catch (err) {
     logger.error('POST /api/almacenes/[id]/materiales', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })

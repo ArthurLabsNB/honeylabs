@@ -25,6 +25,7 @@ const IMAGE_TYPES = [
 ];
 
 export async function GET(req: NextRequest) {
+  logger.debug(req, 'GET /api/almacenes/[id]')
   try {
     const usuario = await getUsuarioFromSession(req);
     if (!usuario) {
@@ -103,7 +104,7 @@ export async function GET(req: NextRequest) {
       },
     })
 
-    return NextResponse.json({
+    const res = NextResponse.json({
       almacen: {
         id: almacen.id,
         nombre: almacen.nombre,
@@ -118,6 +119,8 @@ export async function GET(req: NextRequest) {
         materiales,
       },
     })
+    logger.info(req, `Almacén ${id} consultado`)
+    return res
   } catch (err) {
     logger.error("Error en /api/almacenes/[id]", err);
     return NextResponse.json({ error: "Error al obtener almacén" }, { status: 500 });
