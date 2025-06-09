@@ -37,10 +37,11 @@ export default function LoginPage() {
     mode: "onTouched",
   });
 
-  // Enfoca el correo al cargar
+  // Enfoca el correo solo una vez al cargar
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     setFocus("correo");
-  }, [setFocus]);
+  }, []);
 
   const { usuario } = useSession();
 
