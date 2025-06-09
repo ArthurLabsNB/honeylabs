@@ -438,6 +438,8 @@ model Material {
   proveedor         String?
   estado            String?
   observaciones     String?
+  codigoBarra       String?
+  codigoQR          String?
   minimo            Float?
   maximo            Float?
   fechaRegistro     DateTime @default(now())

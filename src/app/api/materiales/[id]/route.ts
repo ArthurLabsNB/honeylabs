@@ -30,6 +30,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
         proveedor: true,
         estado: true,
         observaciones: true,
+        codigoBarra: true,
+        codigoQR: true,
         minimo: true,
         maximo: true,
         fechaRegistro: true,
@@ -79,6 +81,8 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       if (formData.has('proveedor')) datos.proveedor = String(formData.get('proveedor'))
       if (formData.has('estado')) datos.estado = String(formData.get('estado'))
       if (formData.has('observaciones')) datos.observaciones = String(formData.get('observaciones'))
+      if (formData.has('codigoBarra')) datos.codigoBarra = String(formData.get('codigoBarra'))
+      if (formData.has('codigoQR')) datos.codigoQR = String(formData.get('codigoQR'))
       if (formData.has('minimo')) datos.minimo = Number(formData.get('minimo'))
       if (formData.has('maximo')) datos.maximo = Number(formData.get('maximo'))
       const archivo = formData.get('miniatura') as File | null
