@@ -112,6 +112,7 @@ export default function InventarioPage() {
               </thead>
               <tbody>
                 <MaterialRow
+                  id={selectedId!}
                   material={materiales.find((m) => m.id === selectedId)!}
                   onChange={actualizar}
                 />

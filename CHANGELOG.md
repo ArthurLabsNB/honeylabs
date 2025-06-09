@@ -1,3 +1,8 @@
+## 0.2.113
+- Ajustamos `MaterialRow` para usar id en lugar de índice.
+- Las vistas de inventario actualizan materiales por id.
+- Solo se re-renderiza un renglón cuando su contenido cambia.
+
 ## 0.2.57
 - Usamos `useSession` en el layout de almacén para evitar redirecciones inesperadas.
 
