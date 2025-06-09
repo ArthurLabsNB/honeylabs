@@ -2,6 +2,7 @@
 import { ChangeEvent } from "react";
 import type { Material } from "./MaterialRow";
 import MaterialCodes from "./MaterialCodes";
+import useUnidades from "@/hooks/useUnidades";
 
 interface Props {
   material: Material | null;
@@ -24,6 +25,8 @@ export default function MaterialForm({
     return (
       <p className="text-sm text-[var(--dashboard-muted)]">Selecciona o crea un material.</p>
     );
+
+  const { unidades } = useUnidades(material.dbId);
 
 
   const handle = (campo: keyof Material) => (
@@ -56,81 +59,39 @@ export default function MaterialForm({
           className="dashboard-input w-full mt-1"
         />
       </div>
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Cantidad</label>
-          <input
-            type="number"
-            value={material.cantidad ?? ""}
-            onChange={handle("cantidad")}
-            className="dashboard-input w-full mt-1"
-          />
-        </div>
-        <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Unidad de Medida</label>
-          <select
-            value={material.unidad ?? ""}
-            onChange={handle("unidad")}
-            className="dashboard-input w-full mt-1"
-          >
-            <option value="">-</option>
-            <option value="pieza">pieza</option>
-            <option value="kg">kg</option>
-            <option value="g">g</option>
-            <option value="L">L</option>
-            <option value="ml">ml</option>
-            <option value="m">m</option>
-            <option value="cm">cm</option>
-            <option value="mm">mm</option>
-          </select>
-        </div>
-        <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Lote</label>
-          <input
-            value={material.lote ?? ""}
-            onChange={handle("lote")}
-            className="dashboard-input w-full mt-1"
-          />
-        </div>
+      <div>
+        <label className="text-xs text-[var(--dashboard-muted)]">Número de unidades</label>
+        <input
+          value={unidades.length}
+          readOnly
+          className="dashboard-input w-full mt-1"
+        />
       </div>
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Fecha caducidad</label>
-          <input
-            type="date"
-            value={material.fechaCaducidad ?? ""}
-            onChange={handle("fechaCaducidad")}
-            className="dashboard-input w-full mt-1"
-          />
-        </div>
-        <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Ubicación</label>
-          <input
-            value={material.ubicacion ?? ""}
-            onChange={handle("ubicacion")}
-            className="dashboard-input w-full mt-1"
-          />
-        </div>
+      <div>
+        <label className="text-xs text-[var(--dashboard-muted)]">Unidad de medida base</label>
+        <select
+          value={material.unidad ?? ""}
+          onChange={handle("unidad")}
+          className="dashboard-input w-full mt-1"
+        >
+          <option value="">-</option>
+          <option value="pieza">pieza</option>
+          <option value="kg">kg</option>
+          <option value="g">g</option>
+          <option value="L">L</option>
+          <option value="ml">ml</option>
+          <option value="m">m</option>
+          <option value="cm">cm</option>
+          <option value="mm">mm</option>
+        </select>
       </div>
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Proveedor</label>
-          <input
-            value={material.proveedor ?? ""}
-            onChange={handle("proveedor")}
-            className="dashboard-input w-full mt-1"
-          />
-        </div>
-        {/*
-        <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Estado</label>
-          <input
-            value={material.estado ?? ""}
-            onChange={handle("estado")}
-            className="dashboard-input w-full mt-1"
-          />
-        </div>
-        */}
+      <div>
+        <label className="text-xs text-[var(--dashboard-muted)]">Ubicación</label>
+        <input
+          value={material.ubicacion ?? ""}
+          onChange={handle("ubicacion")}
+          className="dashboard-input w-full mt-1"
+        />
       </div>
       <div className="grid grid-cols-2 gap-2">
         <div>
@@ -184,7 +145,7 @@ export default function MaterialForm({
         <label className="text-xs text-[var(--dashboard-muted)]">Miniatura</label>
         <input type="file" onChange={handle("miniatura") as any} className="dashboard-input w-full mt-1" />
       </div>
-      <MaterialCodes value={`${material.nombre}-${material.lote}`} />
+      <MaterialCodes value={material.nombre} />
       <div className="flex gap-2 pt-2">
         <button
           onClick={onGuardar}
