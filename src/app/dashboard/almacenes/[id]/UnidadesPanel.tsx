@@ -1,12 +1,12 @@
 "use client";
 import { useState } from "react";
 import type { Material } from "../components/MaterialRow";
-import useUnidades from "@/hooks/useUnidades";
+import useUnidades, { type Unidad as UnidadAPI } from "@/hooks/useUnidades";
 
 interface Props {
   material: Material | null;
   onChange: (campo: keyof Material, valor: Material[keyof Material]) => void;
-  onSelect?: () => void;
+  onSelect?: (u: UnidadAPI) => void;
   onBack?: () => void;
 }
 
@@ -28,9 +28,9 @@ export default function UnidadesPanel({
     }
   };
 
-  const select = (u: string) => {
-    onChange("unidad", u);
-    onSelect?.();
+  const select = (u: UnidadAPI) => {
+    onChange("unidad", u.nombre);
+    onSelect?.(u);
   };
 
   const remove = async (id: number) => {
@@ -71,7 +71,7 @@ export default function UnidadesPanel({
                 : 'bg-white/5'
             }`}
           >
-            <span onClick={() => select(u.nombre)}>{u.nombre}</span>
+            <span onClick={() => select(u)}>{u.nombre}</span>
             <button onClick={() => remove(u.id)} className="ml-2 text-xs">
               ✕
             </button>

@@ -10,9 +10,11 @@ import useMateriales from "@/hooks/useMateriales";
 import MaterialForm from "../components/MaterialForm";
 import MaterialList from "../components/MaterialList";
 import UnidadesPanel from "./UnidadesPanel";
+import UnidadForm from "../components/UnidadForm";
 import HistorialPanel from "./HistorialPanel";
 import MovimientosMaterialPanel from "./MovimientosMaterialPanel";
 import { generarUUID } from "@/lib/uuid";
+import type { UnidadDetalle } from "@/types/unidad-detalle";
 
 interface Almacen {
   id: number;
@@ -48,6 +50,7 @@ export default function AlmacenPage() {
   const [error, setError] = useState("");
   const [dirty, setDirty] = useState(false);
   const [panel, setPanel] = useState<'material' | 'unidad'>('material');
+  const [unidadSel, setUnidadSel] = useState<UnidadDetalle | null>(null);
 
   useEffect(() => {
     setLoading(true)
@@ -231,7 +234,7 @@ export default function AlmacenPage() {
 
       <div className="flex flex-col md:flex-row gap-4 h-full">
         <section className="md:w-1/2 p-4 border-r border-white/10 overflow-y-auto">
-          {panel === 'material' ? (
+          {panel === 'material' && (
             <MaterialForm
               material={selectedMaterial}
               onChange={(campo, valor) =>
@@ -242,13 +245,21 @@ export default function AlmacenPage() {
               onDuplicar={duplicar}
               onEliminar={eliminar}
             />
-          ) : (
-            <UnidadesPanel
-              material={selectedMaterial}
-              onChange={(campo, valor) =>
-                selectedId && actualizar(selectedId, campo, valor)
-              }
-              onBack={() => setPanel('material')}
+          )}
+          {panel === 'unidad' && (
+            <UnidadForm
+              unidad={unidadSel}
+              onChange={(campo, valor) => setUnidadSel((d) => (d ? { ...d, [campo]: valor } : d))}
+              onGuardar={() => setPanel('material')}
+              onCancelar={() => setPanel('material')}
+            />
+          )}
+          {panel === 'unidad' && (
+            <UnidadForm
+              unidad={unidadSel}
+              onChange={(campo, valor) => setUnidadSel((d) => d ? { ...d, [campo]: valor } : d)}
+              onGuardar={() => setPanel('unidades')}
+              onCancelar={() => setPanel('unidades')}
             />
           )}
         </section>
@@ -289,7 +300,10 @@ export default function AlmacenPage() {
               onChange={(campo, valor) =>
                 selectedId && actualizar(selectedId, campo, valor)
               }
-              onSelect={() => setPanel('unidad')}
+              onSelect={(u) => {
+                setUnidadSel({ id: u.id, nombreMaterial: selectedMaterial?.nombre })
+                setPanel('unidad')
+              }}
             />
             <HistorialPanel almacenId={almacen.id} />
             <MovimientosMaterialPanel material={selectedMaterial} />

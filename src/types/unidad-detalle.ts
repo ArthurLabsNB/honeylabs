@@ -1,0 +1,36 @@
+export interface UnidadDetalle {
+  id?: number;
+  nombreMaterial?: string;
+  internoId?: string;
+  serie?: string;
+  codigoBarra?: string;
+  codigoQR?: string;
+  lote?: string;
+  qrGenerado?: string;
+  unidadMedida?: string;
+  peso?: number;
+  volumen?: number;
+  alto?: number;
+  largo?: number;
+  ancho?: number;
+  color?: string;
+  temperatura?: string;
+  estado?: string;
+  ubicacionExacta?: string;
+  area?: string;
+  subcategoria?: string;
+  riesgo?: string;
+  disponible?: boolean;
+  asignadoA?: string;
+  fechaIngreso?: string;
+  fechaModificacion?: string;
+  fechaCaducidad?: string;
+  fechaInspeccion?: string;
+  fechaBaja?: string;
+  responsableIngreso?: string;
+  modificadoPor?: string;
+  proyecto?: string;
+  observaciones?: string;
+  imagen?: File | null;
+  archivos?: File[] | null;
+}
