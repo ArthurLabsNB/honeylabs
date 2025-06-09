@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.101
+- Corregimos un bucle infinito en `useAlmacenesLogic` al sincronizar los datos.
 ## 0.2.100
 - Ajustamos las relaciones en Prisma para evitar errores de validación.
 ## 0.2.99
