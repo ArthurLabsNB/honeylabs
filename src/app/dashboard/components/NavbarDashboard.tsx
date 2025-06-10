@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { apiFetch } from "@lib/api";
 import Link from "next/link";
 import {
   Home,
@@ -22,7 +23,7 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
     useDashboardUI();
 
   const logout = async (redirectUrl?: string) => {
-    await fetch("/api/login", { method: "DELETE" });
+    await apiFetch("/api/login", { method: "DELETE" });
     if (redirectUrl) window.location.href = redirectUrl;
   };
 

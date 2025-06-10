@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { jsonOrNull } from '@lib/http'
+import { apiFetch } from '@lib/api'
 import { useToast } from '@/components/Toast'
 import useSession from '@/hooks/useSession'
 import useAlmacenes, { Almacen } from '@/hooks/useAlmacenes'
@@ -51,7 +52,7 @@ export default function useAlmacenesLogic() {
 
   const crearAlmacen = async (nombre: string, descripcion: string) => {
     try {
-      const res = await fetch('/api/almacenes', {
+      const res = await apiFetch('/api/almacenes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nombre, descripcion }),
@@ -85,7 +86,7 @@ export default function useAlmacenesLogic() {
 
   useEffect(() => {
     if (!usuario) return
-    fetch('/api/preferences', { credentials: 'include' })
+    apiFetch('/api/preferences')
       .then(jsonOrNull)
       .then((prefs) => {
         if (prefs && Array.isArray(prefs.favoritosAlmacenes)) {
@@ -128,7 +129,7 @@ export default function useAlmacenesLogic() {
   const handleDragEnd = useCallback(async () => {
     setDragId(null)
     try {
-      await fetch('/api/almacenes/orden', {
+      await apiFetch('/api/almacenes/orden', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids: almacenes.map((a) => a.id) }),
@@ -152,10 +153,9 @@ export default function useAlmacenesLogic() {
     setFavoritos((prev) => {
       const exists = prev.includes(id)
       const updated = exists ? prev.filter((f) => f !== id) : [...prev, id]
-      fetch('/api/preferences', {
+      apiFetch('/api/preferences', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ favoritosAlmacenes: updated }),
       }).catch(() => {})
       return updated

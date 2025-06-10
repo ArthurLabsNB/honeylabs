@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
+import { apiFetch } from "@lib/api";
 import type { Usuario } from "@/types/usuario";
 import useSession from "@/hooks/useSession";
 
@@ -41,7 +42,7 @@ export default function DashboardPage() {
     async function loadWidgets() {
       try {
         const plan = usuario.plan?.nombre || "Free";
-        const res = await fetch("/api/widgets");
+        const res = await apiFetch("/api/widgets");
         const data = await jsonOrNull(res);
 
         const permitidos = data.widgets.filter(
@@ -77,7 +78,7 @@ export default function DashboardPage() {
 
         let saved: { widgets: string[]; layout: Layout[] } | null = null;
         try {
-          const resLayout = await fetch("/api/dashboard/layout");
+          const resLayout = await apiFetch("/api/dashboard/layout");
           if (resLayout.ok) saved = await jsonOrNull(resLayout);
         } catch {}
 
@@ -112,7 +113,7 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!usuario) return;
     const data = { widgets, layout };
-    fetch("/api/dashboard/layout", {
+    apiFetch("/api/dashboard/layout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),

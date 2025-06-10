@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
+import { apiFetch } from "@lib/api";
 import type { Usuario } from "@/types/usuario";
 import useSession from "@/hooks/useSession";
 import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
@@ -36,7 +37,7 @@ export default function ReportesPage() {
   useEffect(() => {
     if (loadingUsuario || !usuario || error) return;
     setLoading(true);
-    fetch("/api/reportes")
+    apiFetch("/api/reportes")
       .then(jsonOrNull)
       .then((d) => setReportes(d.reportes || []))
       .catch(() => setError("Error al cargar datos"))

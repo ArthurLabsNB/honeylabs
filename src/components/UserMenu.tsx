@@ -19,7 +19,7 @@ import Image from "next/image";
 import clsx from "clsx";
 import { usePathname, useRouter } from "next/navigation";
 import { jsonOrNull } from "@lib/http";
-import { apiPath } from "@lib/api";
+import { apiPath, apiFetch } from "@lib/api";
 import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
 import { clearSessionCache } from "@/hooks/useSession";
 
@@ -63,7 +63,7 @@ export default function UserMenu({
       let temaGuardado = localStorage.getItem("tema");
       if (usuario) {
         try {
-          const res = await fetch("/api/preferences", { credentials: "include" });
+          const res = await apiFetch("/api/preferences");
           if (res.ok) {
             const prefs = await res.json();
             if (prefs.theme) temaGuardado = prefs.theme;
@@ -91,7 +91,7 @@ export default function UserMenu({
   useEffect(() => {
     async function checkAdmin() {
       try {
-        const res = await fetch("/api/login", { credentials: "include" });
+        const res = await apiFetch("/api/login");
         const data = await jsonOrNull(res);
         if (data?.success && data.usuario) {
           const rol = getMainRole(data.usuario)?.toLowerCase();
@@ -181,10 +181,9 @@ export default function UserMenu({
       const tema = nextIsDark ? "dark" : "light";
       localStorage.setItem("tema", tema);
       if (usuario) {
-        fetch("/api/preferences", {
+        apiFetch("/api/preferences", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          credentials: "include",
           body: JSON.stringify({ theme: tema }),
         }).catch(() => {});
       }
@@ -195,7 +194,7 @@ export default function UserMenu({
   // --- Nuevo logout sin contexto ---
   const cerrarSesion = async () => {
     setOpen(false);
-    await fetch("/api/login", { method: "DELETE" });
+    await apiFetch("/api/login", { method: "DELETE" });
     clearSessionCache();
     router.replace("/login");
   };

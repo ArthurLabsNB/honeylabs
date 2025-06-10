@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useToast } from "@/components/Toast";
 import { jsonOrNull } from "@lib/http";
+import { apiFetch } from "@lib/api";
 import { useRouter } from "next/navigation";
 
 export default function NuevoAlmacenPage() {
@@ -24,7 +25,7 @@ export default function NuevoAlmacenPage() {
       form.append('funciones', funciones);
       form.append('permisosPredeterminados', permisos);
       if (imagen) form.append('imagen', imagen);
-      const res = await fetch('/api/almacenes', { method: 'POST', body: form });
+      const res = await apiFetch('/api/almacenes', { method: 'POST', body: form });
       const data = await jsonOrNull(res);
       if (res.ok) {
         toast.show("Almacén creado", "success");

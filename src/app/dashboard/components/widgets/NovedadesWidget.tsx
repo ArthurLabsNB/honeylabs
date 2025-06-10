@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
+import { apiFetch } from "@lib/api";
 import Spinner from "@/components/Spinner";
 
 export default function NovedadesWidget({ usuario }: { usuario: any }) {
@@ -13,7 +14,7 @@ export default function NovedadesWidget({ usuario }: { usuario: any }) {
   useEffect(() => {
     if (!usuario) return;
     setLoading(true);
-    fetch("/api/novedades")
+    apiFetch("/api/novedades")
       .then(jsonOrNull)
       .then((d) => setItems(d.novedades || []))
       .catch((e) => setErr(e.message))

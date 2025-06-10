@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
+import { apiFetch } from "@lib/api";
 import Spinner from "@/components/Spinner";
 import {
   Chart as ChartJS,
@@ -26,7 +27,7 @@ export default function GraficaWidget({ usuario }: { usuario: any }) {
   const [metrics, setMetrics] = useState<any>(null);
 
   useEffect(() => {
-    fetch("/api/metrics")
+    apiFetch("/api/metrics")
       .then(jsonOrNull)
       .then(setMetrics)
       .catch(() => setMetrics(null));
