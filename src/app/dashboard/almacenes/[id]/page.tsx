@@ -14,6 +14,7 @@ import UnidadForm from "../components/UnidadForm";
 import HistorialMovimientosPanel from "./HistorialMovimientosPanel";
 import { generarUUID } from "@/lib/uuid";
 import type { UnidadDetalle } from "@/types/unidad-detalle";
+import useUnidades from "@/hooks/useUnidades";
 
 interface Almacen {
   id: number;
@@ -51,6 +52,11 @@ export default function AlmacenPage() {
   const [panel, setPanel] = useState<'material' | 'unidad'>('material');
   const [unidadSel, setUnidadSel] = useState<UnidadDetalle | null>(null);
 
+  const routerNav = useNextRouter();
+  const selectedMaterial =
+    selectedId ? materiales.find((m) => m.id === selectedId) ?? null : null;
+  const { actualizar: actualizarUnidad } = useUnidades(selectedMaterial?.dbId);
+
   useEffect(() => {
     setLoading(true)
     fetch(`/api/almacenes/${id}`)
@@ -69,8 +75,6 @@ export default function AlmacenPage() {
     setDirty(false)
   }, [fetchedMateriales])
 
-  const routerNav = useNextRouter()
-
   const guardar = async () => {
     if (!selectedId) return
     const m = materiales.find((mat) => mat.id === selectedId)
@@ -88,6 +92,17 @@ export default function AlmacenPage() {
     mutate()
     setSelectedId(null)
     setDirty(false)
+  };
+
+  const guardarUnidad = async () => {
+    if (!unidadSel?.id || !unidadSel.nombreMaterial) {
+      setPanel('material');
+      return;
+    }
+    const res = await actualizarUnidad({ id: unidadSel.id, nombre: unidadSel.nombreMaterial });
+    if (res?.error) toast.show(res.error, 'error');
+    else toast.show('Guardado', 'success');
+    setPanel('material');
   };
 
   useEffect(() => {
@@ -205,9 +220,6 @@ export default function AlmacenPage() {
       </div>
     );
 
-  const selectedMaterial =
-    selectedId ? materiales.find((m) => m.id === selectedId) ?? null : null;
-
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold">{almacen.nombre}</h1>
@@ -248,8 +260,10 @@ export default function AlmacenPage() {
           {panel === 'unidad' && (
             <UnidadForm
               unidad={unidadSel}
-              onChange={(campo, valor) => setUnidadSel((d) => (d ? { ...d, [campo]: valor } : d))}
-              onGuardar={() => setPanel('material')}
+              onChange={(campo, valor) =>
+                setUnidadSel((d) => (d ? { ...d, [campo]: valor } : d))
+              }
+              onGuardar={guardarUnidad}
               onCancelar={() => setPanel('material')}
             />
           )}
