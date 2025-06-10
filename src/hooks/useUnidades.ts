@@ -44,12 +44,12 @@ const fetcher = (url: string) =>
 
 export default function useUnidades(materialId?: number | string) {
   const id = Number(materialId)
-  const url = !Number.isNaN(id) ? `/api/materiales/${id}/unidades` : null
+  const url = !Number.isNaN(id) && id > 0 ? `/api/materiales/${id}/unidades` : null
 
   const { data, error, isLoading, mutate } = useSWR(url, fetcher)
 
   const registrar = async (descripcion: string, cantidad = 1) => {
-    if (Number.isNaN(id)) return
+    if (Number.isNaN(id) || id <= 0) return
     try {
       const res = await fetch(`/api/materiales/${id}/historial`, {
         method: 'POST',
@@ -65,7 +65,7 @@ export default function useUnidades(materialId?: number | string) {
   }
 
   const crear = async (datos: Partial<Unidad> & { nombre: string }) => {
-    if (Number.isNaN(id)) return { error: 'ID inválido' }
+    if (Number.isNaN(id) || id <= 0) return { error: 'ID inválido' }
     const res = await fetch(`/api/materiales/${id}/unidades`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -84,6 +84,7 @@ export default function useUnidades(materialId?: number | string) {
   const actualizar = async (unidad: Partial<Unidad> & { id: number }) => {
     if (!unidad.id) return { error: 'ID requerido' }
     const { id: uid, ...payload } = unidad
+    if (Number.isNaN(id) || id <= 0) return { error: 'ID inválido' }
     const res = await fetch(`/api/materiales/${id}/unidades/${uid}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -100,6 +101,8 @@ export default function useUnidades(materialId?: number | string) {
   }
 
   const eliminar = async (unidadId: number) => {
+    if (Number.isNaN(id) || id <= 0) return { error: 'ID inválido' }
+    if (Number.isNaN(id) || id <= 0) return undefined
     const res = await fetch(`/api/materiales/${id}/unidades/${unidadId}`, {
       method: 'DELETE',
       credentials: 'include',
@@ -113,11 +116,31 @@ export default function useUnidades(materialId?: number | string) {
   }
 
   const obtener = async (unidadId: number) => {
+    if (Number.isNaN(id) || id <= 0) return undefined
     const res = await fetch(`/api/materiales/${id}/unidades/${unidadId}`, {
       credentials: 'include',
     })
     const result = await jsonOrNull(res)
-    return result?.unidad as Unidad | undefined
+    const unidad = result?.unidad as Unidad | undefined
+    if (unidad) {
+      const fechas = [
+        'fechaIngreso',
+        'fechaModificacion',
+        'fechaCaducidad',
+        'fechaInspeccion',
+        'fechaBaja',
+      ] as const
+      for (const f of fechas) {
+        const v = (unidad as any)[f]
+        if (v) {
+          const d = new Date(v as any)
+          if (!Number.isNaN(d.getTime())) {
+            ;(unidad as any)[f] = d.toISOString().slice(0, 10)
+          }
+        }
+      }
+    }
+    return unidad
   }
 
   return {
