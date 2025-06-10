@@ -1,3 +1,6 @@
+## 0.2.162
+- Devolvemos 409 cuando la unidad ya existe al crearla o actualizarla.
+
 ## 0.2.161
 - Validamos el ID de unidad antes de eliminarla desde el hook.
 
