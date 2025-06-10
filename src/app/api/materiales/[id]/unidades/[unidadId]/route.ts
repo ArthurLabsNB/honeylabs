@@ -39,7 +39,7 @@ export async function PUT(req: NextRequest) {
     const actualizado = await prisma.materialUnidad.update({
       where: { id: unidadId },
       data: { nombre },
-      select: { id: true, nombre: true },
+      select: { id: true, nombre: true, codigoQR: true },
     })
     return NextResponse.json({ unidad: actualizado })
   } catch (err) {

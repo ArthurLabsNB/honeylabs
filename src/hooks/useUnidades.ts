@@ -4,6 +4,7 @@ import { jsonOrNull } from '@lib/http'
 export interface Unidad {
   id: number
   nombre: string
+  codigoQR: string
 }
 
 const fetcher = (url: string) => fetch(url).then(jsonOrNull)

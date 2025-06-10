@@ -485,6 +485,7 @@ model HistorialLote {
 model MaterialUnidad {
   id         Int      @id @default(autoincrement())
   nombre     String
+  codigoQR   String   @default(uuid()) @unique
   materialId Int
   material   Material @relation(fields: [materialId], references: [id])
 

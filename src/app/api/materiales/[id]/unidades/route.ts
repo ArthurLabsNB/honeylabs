@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
     const unidades = await prisma.materialUnidad.findMany({
       where: { materialId },
       orderBy: { id: 'asc' },
-      select: { id: true, nombre: true },
+      select: { id: true, nombre: true, codigoQR: true },
     })
     return NextResponse.json({ unidades })
   } catch (err) {
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
     if (!nombre) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 })
     const creado = await prisma.materialUnidad.create({
       data: { nombre, materialId },
-      select: { id: true, nombre: true },
+      select: { id: true, nombre: true, codigoQR: true },
     })
     return NextResponse.json({ unidad: creado })
   } catch (err) {

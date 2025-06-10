@@ -1,6 +1,10 @@
 ## 0.2.143
 - Conectamos la vista de inventario con la API de materiales.
 
+## 0.2.144
+- Generamos códigos QR únicos al crear nuevas unidades.
+- Ajustamos las rutas de unidades para devolver este valor.
+
 ## 0.2.142
 - Reubiqué el panel de historial a la derecha del de unidades.
 - Alargué las listas para mostrar más elementos.
