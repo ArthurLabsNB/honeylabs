@@ -55,7 +55,7 @@ export default function AlmacenPage() {
   const routerNav = useNextRouter();
   const selectedMaterial =
     selectedId ? materiales.find((m) => m.id === selectedId) ?? null : null;
-  const { actualizar: actualizarUnidad } = useUnidades(selectedMaterial?.dbId);
+  const { actualizar: actualizarUnidad, obtener } = useUnidades(selectedMaterial?.dbId);
 
   useEffect(() => {
     setLoading(true)
@@ -310,9 +310,12 @@ export default function AlmacenPage() {
               onChange={(campo, valor) =>
                 selectedId && actualizar(selectedId, campo, valor)
               }
-              onSelect={(u) => {
-                setUnidadSel({ id: u.id, nombreMaterial: u.nombre })
-                setPanel('unidad')
+              onSelect={async (u) => {
+                const info = await obtener(u.id)
+                if (info) {
+                  setUnidadSel({ nombreMaterial: u.nombre, ...info })
+                  setPanel('unidad')
+                }
               }}
             />
             <HistorialMovimientosPanel material={selectedMaterial} />

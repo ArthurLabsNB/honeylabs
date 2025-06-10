@@ -5,6 +5,10 @@
 - Incluimos todos los campos de unidad en la base de datos.
 - Actualizamos APIs y hooks para manejar la nueva información.
 
+## 0.2.153
+- Agregamos la consulta individual de unidades con verificación de permisos.
+- Cargamos los datos completos al abrir el panel de edición.
+
 ## 0.2.150
 - Guardamos correctamente los cambios de la unidad desde el panel de edición.
 
