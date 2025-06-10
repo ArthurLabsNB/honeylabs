@@ -1,6 +1,9 @@
 ## 0.2.157
 - Ajustamos el botón Agregar de Unidades para que permanezca alineado.
 
+## 0.2.159
+- Eliminamos las unidades asociadas antes de borrar un material.
+
 ## 0.2.158
 - Validamos los IDs de material antes de consultar las unidades.
 - Normalizamos valores y fechas al crear o modificar unidades.

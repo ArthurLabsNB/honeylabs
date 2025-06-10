@@ -132,6 +132,7 @@ export async function DELETE(req: NextRequest) {
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
     }
+    await prisma.materialUnidad.deleteMany({ where: { materialId: id } })
     await prisma.archivoMaterial.deleteMany({ where: { materialId: id } })
     await prisma.material.delete({ where: { id } })
     return NextResponse.json({ success: true })
