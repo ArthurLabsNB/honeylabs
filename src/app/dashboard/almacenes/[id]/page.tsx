@@ -100,6 +100,7 @@ export default function AlmacenPage() {
       return;
     }
     const { id: uid, nombreMaterial, ...rest } = unidadSel
+    delete (rest as any).nombre
     const res = await actualizarUnidad({ id: uid, nombre: nombreMaterial, ...rest })
     if (res?.error) toast.show(res.error, 'error')
     else toast.show('Guardado', 'success')
