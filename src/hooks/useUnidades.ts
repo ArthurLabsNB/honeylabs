@@ -27,6 +27,7 @@ export default function useUnidades(materialId?: number | string) {
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({ descripcion, cantidad }),
+
       })
       return await jsonOrNull(res)
     } catch {
@@ -44,6 +45,7 @@ export default function useUnidades(materialId?: number | string) {
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify({ nombre, ...extras }),
+
     })
     const result = await jsonOrNull(res)
     if (res.ok) {
@@ -61,6 +63,7 @@ export default function useUnidades(materialId?: number | string) {
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify(payload),
+
     })
     const result = await jsonOrNull(res)
     if (res.ok) {
