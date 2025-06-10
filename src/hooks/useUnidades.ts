@@ -112,6 +112,14 @@ export default function useUnidades(materialId?: number | string) {
     return result
   }
 
+  const obtener = async (unidadId: number) => {
+    const res = await fetch(`/api/materiales/${id}/unidades/${unidadId}`, {
+      credentials: 'include',
+    })
+    const result = await jsonOrNull(res)
+    return result?.unidad as Unidad | undefined
+  }
+
   return {
     unidades: (data?.unidades as Unidad[]) ?? [],
     loading: isLoading,
@@ -119,6 +127,7 @@ export default function useUnidades(materialId?: number | string) {
     crear,
     actualizar,
     eliminar,
+    obtener,
     mutate,
   }
 }

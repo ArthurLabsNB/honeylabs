@@ -18,6 +18,30 @@ function getIds(req: NextRequest): { materialId: number | null; unidadId: number
   }
 }
 
+export async function GET(req: NextRequest) {
+  try {
+    const usuario = await getUsuarioFromSession(req)
+    if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
+    const { materialId, unidadId } = getIds(req)
+    if (!materialId || !unidadId) return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
+    const material = await prisma.material.findUnique({ where: { id: materialId }, select: { almacenId: true } })
+    if (!material) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
+    const pertenece = await prisma.usuarioAlmacen.findFirst({
+      where: { usuarioId: usuario.id, almacenId: material.almacenId },
+      select: { id: true },
+    })
+    if (!pertenece && !hasManagePerms(usuario)) {
+      return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
+    }
+    const unidad = await prisma.materialUnidad.findUnique({ where: { id: unidadId } })
+    if (!unidad) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
+    return NextResponse.json({ unidad })
+  } catch (err) {
+    logger.error('GET /api/materiales/[id]/unidades/[unidadId]', err)
+    return NextResponse.json({ error: 'Error' }, { status: 500 })
+  }
+}
+
 export async function PUT(req: NextRequest) {
   try {
     const usuario = await getUsuarioFromSession(req)
