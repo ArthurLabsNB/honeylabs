@@ -3,6 +3,7 @@
 import { useState, useEffect, ReactNode, useRef } from "react";
 import Image from "next/image";
 import { jsonOrNull } from "@lib/http";
+import { apiFetch } from "@lib/api";
 import clsx from "clsx";
 
 // ========================
@@ -178,7 +179,7 @@ function KpiSection() {
 
   useEffect(() => {
     setLoading(true);
-    fetch("/api/metrics")
+    apiFetch("/api/metrics")
       .then(jsonOrNull)
       .then((d) => setData(d || null))
       .catch(() =>

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
+import { apiFetch } from "@lib/api";
 import type { Usuario } from "@/types/usuario";
 import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
 import Spinner from "@/components/Spinner";
@@ -19,7 +20,7 @@ export default function AlertasPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/login", { credentials: "include" })
+    apiFetch("/api/login")
       .then(jsonOrNull)
       .then((data) => {
         if (!data?.success) throw new Error();
@@ -38,7 +39,7 @@ export default function AlertasPage() {
   useEffect(() => {
     if (!usuario) return;
     setLoading(true);
-    fetch(`/api/alertas?usuarioId=${usuario.id}`)
+    apiFetch(`/api/alertas?usuarioId=${usuario.id}`)
       .then(jsonOrNull)
       .then((data) => setAlertas(data.alertas || []))
       .catch(() => setError("Error al cargar datos"))

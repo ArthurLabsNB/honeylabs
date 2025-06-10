@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { jsonOrNull } from "@lib/http";
+import { apiFetch } from "@lib/api";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import useSession from "@/hooks/useSession";
@@ -45,7 +46,7 @@ export default function RegistroPage() {
     }
 
     try {
-      const res = await fetch("/api/registro", {
+      const res = await apiFetch("/api/registro", {
         method: "POST",
         body: formData,
       });

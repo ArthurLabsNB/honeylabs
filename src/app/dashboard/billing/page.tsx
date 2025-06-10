@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
+import { apiFetch } from "@lib/api";
 import type { Usuario } from "@/types/usuario";
 import useSession from "@/hooks/useSession";
 import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
@@ -38,7 +39,7 @@ export default function BillingPage() {
   useEffect(() => {
     if (loadingUsuario || !usuario || error) return;
     setLoading(true);
-    fetch("/api/billing")
+    apiFetch("/api/billing")
       .then(jsonOrNull)
       .then((d) => setInvoices(d.invoices || []))
       .catch(() => setError("Error al cargar datos"))

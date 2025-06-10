@@ -12,6 +12,9 @@
 ## 0.2.154
 - Añadimos la relación `archivosUnidad` en el modelo `Usuario` para enlazar los archivos de unidad.
 
+## 0.2.155
+- Unificamos las llamadas fetch con apiFetch incluyendo las credenciales.
+
 ## 0.2.150
 - Guardamos correctamente los cambios de la unidad desde el panel de edición.
 

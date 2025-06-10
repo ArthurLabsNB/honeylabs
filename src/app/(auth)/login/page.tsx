@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
+import { apiFetch } from "@lib/api";
 import useSession, { clearSessionCache } from "@/hooks/useSession";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -55,7 +56,7 @@ export default function LoginPage() {
     setCargando(true);
     try {
       clearSessionCache();
-      const res = await fetch("/api/login", {
+      const res = await apiFetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(datos),

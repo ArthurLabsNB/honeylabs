@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
+import { apiFetch } from "@lib/api";
 import type { Usuario } from "@/types/usuario";
 import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
 import Spinner from "@/components/Spinner";
@@ -18,7 +19,7 @@ export default function NetworkPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/login", { credentials: "include" })
+    apiFetch("/api/login")
       .then(jsonOrNull)
       .then((data) => {
         if (!data?.success) throw new Error();
@@ -34,7 +35,7 @@ export default function NetworkPage() {
   useEffect(() => {
     if (!usuario) return;
     setLoading(true);
-    fetch("/api/network")
+    apiFetch("/api/network")
       .then(jsonOrNull)
       .then((d) => setPeers(d.peers || []))
       .catch(() => setError("Error al cargar datos"))
