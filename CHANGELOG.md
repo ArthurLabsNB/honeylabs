@@ -9,6 +9,9 @@
 - Agregamos la consulta individual de unidades con verificación de permisos.
 - Cargamos los datos completos al abrir el panel de edición.
 
+## 0.2.154
+- Añadimos la relación `archivosUnidad` en el modelo `Usuario` para enlazar los archivos de unidad.
+
 ## 0.2.150
 - Guardamos correctamente los cambios de la unidad desde el panel de edición.
 

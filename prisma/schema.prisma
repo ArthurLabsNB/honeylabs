@@ -122,6 +122,7 @@ model Usuario {
   sesiones            SesionUsuario[]
   materiales          Material[]
   archivosMaterial    ArchivoMaterial[]
+  archivosUnidad      ArchivoUnidad[]
   historialLotes      HistorialLote[]
   movimientosMaterial MovimientoMaterial[]
 }
