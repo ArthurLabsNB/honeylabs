@@ -25,7 +25,7 @@ export default function UnidadesPanel({
   const add = async () => {
     const v = value.trim();
     if (!v) return;
-    const res = await crear(v);
+    const res = await crear({ nombre: v });
     if (res?.error) {
       toast.show(res.error, "error");
       return;
