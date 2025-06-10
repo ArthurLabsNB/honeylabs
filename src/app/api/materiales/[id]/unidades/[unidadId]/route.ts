@@ -2,6 +2,7 @@ export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@lib/prisma'
+import { Prisma } from '@prisma/client'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import * as logger from '@lib/logger'
@@ -115,12 +116,25 @@ export async function PUT(req: NextRequest) {
       imagenNombre: str(body.imagenNombre),
     }
     if (imagenBuffer !== undefined) data.imagen = imagenBuffer
-    const actualizado = await prisma.materialUnidad.update({
-      where: { id: unidadId },
-      data,
-      select: { id: true, nombre: true, codigoQR: true },
-    })
-    return NextResponse.json({ unidad: actualizado })
+    try {
+      const actualizado = await prisma.materialUnidad.update({
+        where: { id: unidadId },
+        data,
+        select: { id: true, nombre: true, codigoQR: true },
+      })
+      return NextResponse.json({ unidad: actualizado })
+    } catch (e) {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === 'P2002'
+      ) {
+        return NextResponse.json(
+          { error: 'Unidad ya existente' },
+          { status: 409 },
+        )
+      }
+      throw e
+    }
   } catch (err) {
     logger.error('PUT /api/materiales/[id]/unidades/[unidadId]', err)
     if (process.env.NODE_ENV === 'development') console.error(err)
