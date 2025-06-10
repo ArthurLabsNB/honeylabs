@@ -114,7 +114,9 @@ export async function PUT(req: NextRequest) {
       proyecto: str(body.proyecto),
       observaciones: str(body.observaciones),
       imagenNombre: str(body.imagenNombre),
+      codigoQR: str(body.codigoQR) ?? undefined,
     }
+    if (data.codigoQR == null) delete data.codigoQR
     if (imagenBuffer !== undefined) data.imagen = imagenBuffer
     try {
       const actualizado = await prisma.materialUnidad.update({
