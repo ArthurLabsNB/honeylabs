@@ -15,6 +15,8 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
       <p className="text-sm text-[var(--dashboard-muted)]">Selecciona o crea una unidad.</p>
     );
 
+  const nombreValido = Boolean(unidad.nombreMaterial && unidad.nombreMaterial.trim())
+
   const numericFields: Array<keyof UnidadDetalle> = [
     "peso",
     "volumen",
@@ -26,13 +28,24 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
   const handle = (campo: keyof UnidadDetalle) => (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
-    const { type, value, files, checked } = e.target as HTMLInputElement;
-    let val: any = value;
-    if (type === "checkbox") val = checked;
-    else if (type === "file") val = files ? (campo === "archivos" ? Array.from(files) : files[0]) : null;
-    else if (numericFields.includes(campo)) val = Number(value);
-    onChange(campo, val);
-  };
+    const target = e.target as HTMLInputElement
+    const { type, value, files, checked } = target
+    let val: any = value
+    if (type === 'checkbox') val = checked
+    else if (type === 'file')
+      val = files ? (campo === 'archivos' ? Array.from(files) : files[0]) : null
+    else if (numericFields.includes(campo))
+      val = value === '' ? null : Number(value)
+    onChange(campo, val)
+  }
+
+  const handleFile = (campo: keyof UnidadDetalle) => (
+    e: ChangeEvent<HTMLInputElement>,
+  ) => {
+    const files = e.target.files
+    const val = campo === 'archivos' ? (files ? Array.from(files) : null) : files ? files[0] : null
+    onChange(campo, val)
+  }
 
   return (
     <div className="space-y-4 overflow-y-auto p-2 max-h-[calc(100vh-8rem)]">
@@ -42,10 +55,15 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
         <label htmlFor="unidad-nombreMaterial" className="text-xs text-[var(--dashboard-muted)]">Nombre del material</label>
         <input
           id="unidad-nombreMaterial"
-          value={unidad.nombreMaterial ?? ""}
-          onChange={handle("nombreMaterial")}
+          value={unidad.nombreMaterial ?? ''}
+          onChange={handle('nombreMaterial')}
+          autoFocus
+          required
           className="dashboard-input w-full mt-1"
         />
+        {!nombreValido && (
+          <p className="text-xs text-red-500">Requerido</p>
+        )}
         </div>
         <div>
         <label htmlFor="unidad-internoId" className="text-xs text-[var(--dashboard-muted)]">ID interno</label>
@@ -350,9 +368,16 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           <input
             id="unidad-imagen"
             type="file"
-            onChange={handle("imagen") as any}
+            onChange={handleFile('imagen')}
             className="dashboard-input w-full mt-1"
           />
+          {unidad.imagen && typeof unidad.imagen !== 'string' && (
+            <img
+              src={URL.createObjectURL(unidad.imagen)}
+              alt="preview"
+              className="mt-2 w-24 h-24 object-cover rounded"
+            />
+          )}
         </div>
         <div>
           <label htmlFor="unidad-archivos" className="text-xs text-[var(--dashboard-muted)]">Archivos adjuntos</label>
@@ -360,7 +385,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
             id="unidad-archivos"
             type="file"
             multiple
-            onChange={handle("archivos") as any}
+            onChange={handleFile('archivos')}
             className="dashboard-input w-full mt-1"
           />
         </div>
@@ -369,7 +394,8 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
       <div className="flex gap-2 pt-2">
         <button
           onClick={onGuardar}
-          className="px-4 py-2 rounded-lg bg-[var(--dashboard-accent)] text-black text-sm hover:bg-[var(--dashboard-accent-hover)]"
+          disabled={!nombreValido}
+          className="px-4 py-2 rounded-lg bg-[var(--dashboard-accent)] text-black text-sm hover:bg-[var(--dashboard-accent-hover)] disabled:opacity-50"
         >
           Guardar
         </button>

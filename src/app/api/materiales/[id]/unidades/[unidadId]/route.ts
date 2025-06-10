@@ -38,6 +38,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ unidad })
   } catch (err) {
     logger.error('GET /api/materiales/[id]/unidades/[unidadId]', err)
+    if (process.env.NODE_ENV === 'development') console.error(err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
   }
 }
@@ -64,46 +65,54 @@ export async function PUT(req: NextRequest) {
       if (typeof body.imagen === 'string') {
         try {
           imagenBuffer = Buffer.from(body.imagen, 'base64')
+          if (imagenBuffer.toString('base64') !== body.imagen.replace(/\s/g, '')) throw new Error('invalid')
         } catch {
-          imagenBuffer = null
+          return NextResponse.json({ error: 'Imagen inválida' }, { status: 400 })
         }
       } else if (body.imagen === null) {
         imagenBuffer = null
       }
     }
     if (!nombre) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 })
+    const num = (v: any) => (v === '' || v === null || v === undefined || Number.isNaN(Number(v)) ? null : Number(v))
+    const fecha = (v: any) => {
+      if (!v) return null
+      const d = new Date(v)
+      return Number.isNaN(d.getTime()) ? null : d
+    }
+    const str = (v: any) => (v === undefined || v === null ? null : String(v).trim() || null)
     const data: any = {
       nombre,
-      internoId: body.internoId ?? null,
-      serie: body.serie ?? null,
-      codigoBarra: body.codigoBarra ?? null,
-      lote: body.lote ?? null,
-      qrGenerado: body.qrGenerado ?? null,
-      unidadMedida: body.unidadMedida ?? null,
-      peso: body.peso !== undefined ? Number(body.peso) : null,
-      volumen: body.volumen !== undefined ? Number(body.volumen) : null,
-      alto: body.alto !== undefined ? Number(body.alto) : null,
-      largo: body.largo !== undefined ? Number(body.largo) : null,
-      ancho: body.ancho !== undefined ? Number(body.ancho) : null,
-      color: body.color ?? null,
-      temperatura: body.temperatura ?? null,
-      estado: body.estado ?? null,
-      ubicacionExacta: body.ubicacionExacta ?? null,
-      area: body.area ?? null,
-      subcategoria: body.subcategoria ?? null,
-      riesgo: body.riesgo ?? null,
+      internoId: str(body.internoId),
+      serie: str(body.serie),
+      codigoBarra: str(body.codigoBarra),
+      lote: str(body.lote),
+      qrGenerado: str(body.qrGenerado),
+      unidadMedida: str(body.unidadMedida),
+      peso: num(body.peso),
+      volumen: num(body.volumen),
+      alto: num(body.alto),
+      largo: num(body.largo),
+      ancho: num(body.ancho),
+      color: str(body.color),
+      temperatura: str(body.temperatura),
+      estado: str(body.estado),
+      ubicacionExacta: str(body.ubicacionExacta),
+      area: str(body.area),
+      subcategoria: str(body.subcategoria),
+      riesgo: str(body.riesgo),
       disponible: typeof body.disponible === 'boolean' ? body.disponible : null,
-      asignadoA: body.asignadoA ?? null,
-      fechaIngreso: body.fechaIngreso ? new Date(body.fechaIngreso) : null,
-      fechaModificacion: body.fechaModificacion ? new Date(body.fechaModificacion) : null,
-      fechaCaducidad: body.fechaCaducidad ? new Date(body.fechaCaducidad) : null,
-      fechaInspeccion: body.fechaInspeccion ? new Date(body.fechaInspeccion) : null,
-      fechaBaja: body.fechaBaja ? new Date(body.fechaBaja) : null,
-      responsableIngreso: body.responsableIngreso ?? null,
-      modificadoPor: body.modificadoPor ?? null,
-      proyecto: body.proyecto ?? null,
-      observaciones: body.observaciones ?? null,
-      imagenNombre: body.imagenNombre ?? null,
+      asignadoA: str(body.asignadoA),
+      fechaIngreso: fecha(body.fechaIngreso),
+      fechaModificacion: fecha(body.fechaModificacion),
+      fechaCaducidad: fecha(body.fechaCaducidad),
+      fechaInspeccion: fecha(body.fechaInspeccion),
+      fechaBaja: fecha(body.fechaBaja),
+      responsableIngreso: str(body.responsableIngreso),
+      modificadoPor: str(body.modificadoPor),
+      proyecto: str(body.proyecto),
+      observaciones: str(body.observaciones),
+      imagenNombre: str(body.imagenNombre),
     }
     if (imagenBuffer !== undefined) data.imagen = imagenBuffer
     const actualizado = await prisma.materialUnidad.update({
@@ -114,6 +123,7 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ unidad: actualizado })
   } catch (err) {
     logger.error('PUT /api/materiales/[id]/unidades/[unidadId]', err)
+    if (process.env.NODE_ENV === 'development') console.error(err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
   }
 }
@@ -137,6 +147,7 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ success: true })
   } catch (err) {
     logger.error('DELETE /api/materiales/[id]/unidades/[unidadId]', err)
+    if (process.env.NODE_ENV === 'development') console.error(err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
   }
 }
