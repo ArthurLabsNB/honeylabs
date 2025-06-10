@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import useSession from "@/hooks/useSession";
 import useAlmacenes from "@/hooks/useAlmacenes";
 import useMateriales from "@/hooks/useMateriales";
@@ -17,13 +17,17 @@ export default function InventarioPage() {
   const [busqueda, setBusqueda] = useState("");
   const [orden, setOrden] = useState<"nombre" | "cantidad">("nombre");
 
-  const filtrados = materiales
-    .filter((m) => (m?.nombre ?? "").toLowerCase().includes(busqueda.toLowerCase()))
-    .sort((a, b) =>
-      orden === "nombre"
-        ? a.nombre.localeCompare(b.nombre)
-        : a.cantidad - b.cantidad,
-    );
+  const filtrados = useMemo(
+    () =>
+      materiales
+        .filter((m) => (m?.nombre ?? "").toLowerCase().includes(busqueda.toLowerCase()))
+        .sort((a, b) =>
+          orden === "nombre"
+            ? a.nombre.localeCompare(b.nombre)
+            : a.cantidad - b.cantidad,
+        ),
+    [materiales, busqueda, orden],
+  );
 
   return (
     <div className="p-4 space-y-4">

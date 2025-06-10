@@ -44,32 +44,36 @@ export default function MaterialForm({
   return (
     <div className="space-y-3">
       <div>
-        <label className="text-xs text-[var(--dashboard-muted)]">Nombre</label>
+        <label htmlFor="material-nombre" className="text-xs text-[var(--dashboard-muted)]">Nombre</label>
         <input
+          id="material-nombre"
           value={material.nombre ?? ""}
           onChange={handle("nombre")}
           className="dashboard-input w-full mt-1"
         />
       </div>
       <div>
-        <label className="text-xs text-[var(--dashboard-muted)]">Descripción</label>
+        <label htmlFor="material-descripcion" className="text-xs text-[var(--dashboard-muted)]">Descripción</label>
         <textarea
+          id="material-descripcion"
           value={material.descripcion ?? ""}
           onChange={handle("descripcion")}
           className="dashboard-input w-full mt-1"
         />
       </div>
       <div>
-        <label className="text-xs text-[var(--dashboard-muted)]">Número de unidades</label>
+        <label htmlFor="material-num-unidades" className="text-xs text-[var(--dashboard-muted)]">Número de unidades</label>
         <input
+          id="material-num-unidades"
           value={unidades.length}
           readOnly
           className="dashboard-input w-full mt-1"
         />
       </div>
       <div>
-        <label className="text-xs text-[var(--dashboard-muted)]">Unidad de medida base</label>
+        <label htmlFor="material-unidad" className="text-xs text-[var(--dashboard-muted)]">Unidad de medida base</label>
         <select
+          id="material-unidad"
           value={material.unidad ?? ""}
           onChange={handle("unidad")}
           className="dashboard-input w-full mt-1"
@@ -86,8 +90,9 @@ export default function MaterialForm({
         </select>
       </div>
       <div>
-        <label className="text-xs text-[var(--dashboard-muted)]">Ubicación</label>
+        <label htmlFor="material-ubicacion" className="text-xs text-[var(--dashboard-muted)]">Ubicación</label>
         <input
+          id="material-ubicacion"
           value={material.ubicacion ?? ""}
           onChange={handle("ubicacion")}
           className="dashboard-input w-full mt-1"
@@ -95,16 +100,18 @@ export default function MaterialForm({
       </div>
       <div className="grid grid-cols-2 gap-2">
         <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Código de barras</label>
+          <label htmlFor="material-codigo-barra" className="text-xs text-[var(--dashboard-muted)]">Código de barras</label>
           <input
+            id="material-codigo-barra"
             value={material.codigoBarra ?? ""}
             onChange={handle("codigoBarra")}
             className="dashboard-input w-full mt-1"
           />
         </div>
         <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Código QR</label>
+          <label htmlFor="material-codigo-qr" className="text-xs text-[var(--dashboard-muted)]">Código QR</label>
           <input
+            id="material-codigo-qr"
             value={material.codigoQR ?? ""}
             onChange={handle("codigoQR")}
             className="dashboard-input w-full mt-1"
@@ -134,16 +141,22 @@ export default function MaterialForm({
       </div>
       */}
       <div>
-        <label className="text-xs text-[var(--dashboard-muted)]">Observaciones</label>
+        <label htmlFor="material-observaciones" className="text-xs text-[var(--dashboard-muted)]">Observaciones</label>
         <textarea
+          id="material-observaciones"
           value={material.observaciones ?? ""}
           onChange={handle("observaciones")}
           className="dashboard-input w-full mt-1"
         />
       </div>
       <div>
-        <label className="text-xs text-[var(--dashboard-muted)]">Miniatura</label>
-        <input type="file" onChange={handle("miniatura") as any} className="dashboard-input w-full mt-1" />
+        <label htmlFor="material-miniatura" className="text-xs text-[var(--dashboard-muted)]">Miniatura</label>
+        <input
+          id="material-miniatura"
+          type="file"
+          onChange={handle("miniatura") as any}
+          className="dashboard-input w-full mt-1"
+        />
       </div>
       <MaterialCodes value={material.nombre} />
       <div className="flex gap-2 pt-2">

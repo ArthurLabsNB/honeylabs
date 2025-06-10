@@ -1,7 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { Material } from "../components/MaterialRow";
 import useUnidades, { type Unidad as UnidadAPI } from "@/hooks/useUnidades";
+import { useToast } from "@/components/Toast";
 
 interface Props {
   material: Material | null;
@@ -19,14 +20,18 @@ export default function UnidadesPanel({
   const [value, setValue] = useState("");
   const [busqueda, setBusqueda] = useState("");
   const { unidades, crear, eliminar } = useUnidades(material?.dbId);
+  const toast = useToast();
 
   const add = async () => {
     const v = value.trim();
-    if (v) {
-      await crear(v);
-      setValue("");
-      onChange("unidad", v);
+    if (!v) return;
+    const res = await crear(v);
+    if (res?.error) {
+      toast.show(res.error, "error");
+      return;
     }
+    setValue("");
+    onChange("unidad", v);
   };
 
   const select = (u: UnidadAPI) => {
@@ -37,6 +42,16 @@ export default function UnidadesPanel({
   const remove = async (id: number) => {
     await eliminar(id);
   };
+
+  const filtrados = useMemo(
+    () =>
+      unidades.filter(
+        (u) =>
+          u.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+          String(u.id).includes(busqueda),
+      ),
+    [unidades, busqueda],
+  );
 
   return (
     <div className="p-4 border rounded-md space-y-2">
@@ -69,13 +84,7 @@ export default function UnidadesPanel({
         className="p-1 w-full rounded-md bg-white/5 focus:outline-none"
       />
       <ul className="space-y-1 max-h-48 overflow-y-auto">
-        {unidades
-          .filter(
-            (u) =>
-              u.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-              String(u.id).includes(busqueda),
-          )
-          .map((u) => (
+        {filtrados.map((u) => (
           <li
             key={u.id}
             className={`p-1 rounded-md cursor-pointer flex justify-between ${
@@ -89,7 +98,7 @@ export default function UnidadesPanel({
               ✕
             </button>
           </li>
-          ))}
+        ))}
       </ul>
     </div>
   );

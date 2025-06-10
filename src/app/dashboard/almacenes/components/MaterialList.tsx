@@ -1,4 +1,5 @@
 "use client";
+import { useMemo } from "react";
 import type { Material } from "./MaterialRow";
 
 interface Props {
@@ -24,11 +25,15 @@ export default function MaterialList({
   onNuevo,
   onDuplicar,
 }: Props) {
-  const filtrados = materiales
-    .filter((m) => (m?.nombre ?? "").toLowerCase().includes(busqueda.toLowerCase()))
-    .sort((a, b) =>
-      orden === "nombre" ? a.nombre.localeCompare(b.nombre) : a.cantidad - b.cantidad
-    );
+  const filtrados = useMemo(
+    () =>
+      materiales
+        .filter((m) => (m?.nombre ?? "").toLowerCase().includes(busqueda.toLowerCase()))
+        .sort((a, b) =>
+          orden === "nombre" ? a.nombre.localeCompare(b.nombre) : a.cantidad - b.cantidad,
+        ),
+    [materiales, busqueda, orden],
+  );
 
   return (
     <div className="space-y-4">
