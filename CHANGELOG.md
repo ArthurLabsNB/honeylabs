@@ -1,6 +1,10 @@
 ## 0.2.151
 - Eliminamos una migración vacía que interrumpía la generación.
 
+## 0.2.152
+- Incluimos todos los campos de unidad en la base de datos.
+- Actualizamos APIs y hooks para manejar la nueva información.
+
 ## 0.2.150
 - Guardamos correctamente los cambios de la unidad desde el panel de edición.
 

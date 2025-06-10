@@ -470,6 +470,18 @@ model ArchivoMaterial {
   subidoPor     Usuario?  @relation(fields: [subidoPorId], references: [id])
 }
 
+model ArchivoUnidad {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  archivo       Bytes?
+  archivoNombre String?
+  fecha         DateTime @default(now())
+  unidadId      Int
+  unidad        MaterialUnidad @relation(fields: [unidadId], references: [id])
+  subidoPorId   Int?
+  subidoPor     Usuario?  @relation(fields: [subidoPorId], references: [id])
+}
+
 model HistorialLote {
   id          Int      @id @default(autoincrement())
   materialId  Int
@@ -486,9 +498,42 @@ model HistorialLote {
 model MaterialUnidad {
   id         Int      @id @default(autoincrement())
   nombre     String
+  internoId  String?
+  serie      String?
+  codigoBarra String?
   codigoQR   String   @default(uuid()) @unique
+  lote       String?
+  qrGenerado String?
+  unidadMedida String?
+  peso       Float?
+  volumen    Float?
+  alto       Float?
+  largo      Float?
+  ancho      Float?
+  color      String?
+  temperatura String?
+  estado     String?
+  ubicacionExacta String?
+  area       String?
+  subcategoria String?
+  riesgo     String?
+  disponible Boolean?
+  asignadoA  String?
+  fechaIngreso DateTime?
+  fechaModificacion DateTime?
+  fechaCaducidad DateTime?
+  fechaInspeccion DateTime?
+  fechaBaja  DateTime?
+  responsableIngreso String?
+  modificadoPor String?
+  proyecto   String?
+  observaciones String?
+  imagen         Bytes?
+  imagenNombre   String?
   materialId Int
   material   Material @relation(fields: [materialId], references: [id])
+
+  archivos   ArchivoUnidad[]
 
   @@unique([materialId, nombre])
 }

@@ -5,8 +5,37 @@ export interface Unidad {
   id: number
   nombre: string
   codigoQR: string
+  internoId?: string
+  serie?: string
+  codigoBarra?: string
+  lote?: string
+  qrGenerado?: string
+  unidadMedida?: string
+  peso?: number
+  volumen?: number
+  alto?: number
+  largo?: number
+  ancho?: number
+  color?: string
+  temperatura?: string
   estado?: string
+  ubicacionExacta?: string
   area?: string
+  subcategoria?: string
+  riesgo?: string
+  disponible?: boolean
+  asignadoA?: string
+  fechaIngreso?: string
+  fechaModificacion?: string
+  fechaCaducidad?: string
+  fechaInspeccion?: string
+  fechaBaja?: string
+  responsableIngreso?: string
+  modificadoPor?: string
+  proyecto?: string
+  observaciones?: string
+  imagen?: string | null
+  imagenNombre?: string | null
   [clave: string]: any
 }
 
@@ -35,16 +64,13 @@ export default function useUnidades(materialId?: number | string) {
     }
   }
 
-  const crear = async (
-    nombre: string,
-    extras: Record<string, any> = {},
-  ) => {
+  const crear = async (datos: Partial<Unidad> & { nombre: string }) => {
     if (Number.isNaN(id)) return { error: 'ID inválido' }
     const res = await fetch(`/api/materiales/${id}/unidades`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ nombre, ...extras }),
+      body: JSON.stringify(datos),
 
     })
     const result = await jsonOrNull(res)
