@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter as useNextRouter } from "next/navigation";
 import Router from "next/router";
 import { jsonOrNull } from "@lib/http";
@@ -137,11 +137,15 @@ export default function AlmacenPage() {
     }
   }, [dirty, toast, routerNav, guardar, cancelar])
 
-  const filtrados = materiales
-    .filter((m) => (m?.nombre ?? "").toLowerCase().includes(busqueda.toLowerCase()))
-    .sort((a, b) =>
-      orden === "nombre" ? a.nombre.localeCompare(b.nombre) : a.cantidad - b.cantidad,
-    );
+  const filtrados = useMemo(
+    () =>
+      materiales
+        .filter((m) => (m?.nombre ?? "").toLowerCase().includes(busqueda.toLowerCase()))
+        .sort((a, b) =>
+          orden === "nombre" ? a.nombre.localeCompare(b.nombre) : a.cantidad - b.cantidad,
+        ),
+    [materiales, busqueda, orden],
+  );
 
   const numericFields: Array<keyof Material> = ['cantidad', 'minimo', 'maximo']
 

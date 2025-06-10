@@ -39,41 +39,46 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
       <section className="space-y-2">
         <h3 className="font-semibold">Identificación y control</h3>
         <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Nombre del material</label>
-          <input
-            value={unidad.nombreMaterial ?? ""}
-            onChange={handle("nombreMaterial")}
-            className="dashboard-input w-full mt-1"
-          />
+        <label htmlFor="unidad-nombreMaterial" className="text-xs text-[var(--dashboard-muted)]">Nombre del material</label>
+        <input
+          id="unidad-nombreMaterial"
+          value={unidad.nombreMaterial ?? ""}
+          onChange={handle("nombreMaterial")}
+          className="dashboard-input w-full mt-1"
+        />
         </div>
         <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">ID interno</label>
-          <input
-            value={unidad.internoId ?? ""}
-            onChange={handle("internoId")}
-            className="dashboard-input w-full mt-1"
-          />
+        <label htmlFor="unidad-internoId" className="text-xs text-[var(--dashboard-muted)]">ID interno</label>
+        <input
+          id="unidad-internoId"
+          value={unidad.internoId ?? ""}
+          onChange={handle("internoId")}
+          className="dashboard-input w-full mt-1"
+        />
         </div>
         <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Número de serie</label>
-          <input
-            value={unidad.serie ?? ""}
-            onChange={handle("serie")}
-            className="dashboard-input w-full mt-1"
-          />
+        <label htmlFor="unidad-serie" className="text-xs text-[var(--dashboard-muted)]">Número de serie</label>
+        <input
+          id="unidad-serie"
+          value={unidad.serie ?? ""}
+          onChange={handle("serie")}
+          className="dashboard-input w-full mt-1"
+        />
         </div>
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="text-xs text-[var(--dashboard-muted)]">Código de barras</label>
+            <label htmlFor="unidad-codigoBarra" className="text-xs text-[var(--dashboard-muted)]">Código de barras</label>
             <input
+              id="unidad-codigoBarra"
               value={unidad.codigoBarra ?? ""}
               onChange={handle("codigoBarra")}
               className="dashboard-input w-full mt-1"
             />
           </div>
           <div>
-            <label className="text-xs text-[var(--dashboard-muted)]">Código QR</label>
+            <label htmlFor="unidad-codigoQR" className="text-xs text-[var(--dashboard-muted)]">Código QR</label>
             <input
+              id="unidad-codigoQR"
               value={unidad.codigoQR ?? ""}
               onChange={handle("codigoQR")}
               className="dashboard-input w-full mt-1"
@@ -81,29 +86,32 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           </div>
         </div>
         <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Lote</label>
-          <input
-            value={unidad.lote ?? ""}
-            onChange={handle("lote")}
-            className="dashboard-input w-full mt-1"
-          />
+        <label htmlFor="unidad-lote" className="text-xs text-[var(--dashboard-muted)]">Lote</label>
+        <input
+          id="unidad-lote"
+          value={unidad.lote ?? ""}
+          onChange={handle("lote")}
+          className="dashboard-input w-full mt-1"
+        />
         </div>
       </section>
 
       <section className="space-y-2">
         <h3 className="font-semibold">Medición y propiedades físicas</h3>
         <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Unidad de medida</label>
-          <input
-            value={unidad.unidadMedida ?? ""}
-            onChange={handle("unidadMedida")}
-            className="dashboard-input w-full mt-1"
-          />
+        <label htmlFor="unidad-medida" className="text-xs text-[var(--dashboard-muted)]">Unidad de medida</label>
+        <input
+          id="unidad-medida"
+          value={unidad.unidadMedida ?? ""}
+          onChange={handle("unidadMedida")}
+          className="dashboard-input w-full mt-1"
+        />
         </div>
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="text-xs text-[var(--dashboard-muted)]">Peso</label>
+            <label htmlFor="unidad-peso" className="text-xs text-[var(--dashboard-muted)]">Peso</label>
             <input
+              id="unidad-peso"
               type="number"
               value={unidad.peso ?? ""}
               onChange={handle("peso")}
@@ -111,8 +119,9 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
             />
           </div>
           <div>
-            <label className="text-xs text-[var(--dashboard-muted)]">Volumen</label>
+            <label htmlFor="unidad-volumen" className="text-xs text-[var(--dashboard-muted)]">Volumen</label>
             <input
+              id="unidad-volumen"
               type="number"
               value={unidad.volumen ?? ""}
               onChange={handle("volumen")}
@@ -122,8 +131,9 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
         </div>
         <div className="grid grid-cols-3 gap-2">
           <div>
-            <label className="text-xs text-[var(--dashboard-muted)]">Alto</label>
+            <label htmlFor="unidad-alto" className="text-xs text-[var(--dashboard-muted)]">Alto</label>
             <input
+              id="unidad-alto"
               type="number"
               value={unidad.alto ?? ""}
               onChange={handle("alto")}
@@ -131,8 +141,9 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
             />
           </div>
           <div>
-            <label className="text-xs text-[var(--dashboard-muted)]">Largo</label>
+            <label htmlFor="unidad-largo" className="text-xs text-[var(--dashboard-muted)]">Largo</label>
             <input
+              id="unidad-largo"
               type="number"
               value={unidad.largo ?? ""}
               onChange={handle("largo")}
@@ -140,8 +151,9 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
             />
           </div>
           <div>
-            <label className="text-xs text-[var(--dashboard-muted)]">Ancho</label>
+            <label htmlFor="unidad-ancho" className="text-xs text-[var(--dashboard-muted)]">Ancho</label>
             <input
+              id="unidad-ancho"
               type="number"
               value={unidad.ancho ?? ""}
               onChange={handle("ancho")}
@@ -150,53 +162,59 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           </div>
         </div>
         <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Color</label>
-          <input
-            value={unidad.color ?? ""}
-            onChange={handle("color")}
-            className="dashboard-input w-full mt-1"
-          />
+        <label htmlFor="unidad-color" className="text-xs text-[var(--dashboard-muted)]">Color</label>
+        <input
+          id="unidad-color"
+          value={unidad.color ?? ""}
+          onChange={handle("color")}
+          className="dashboard-input w-full mt-1"
+        />
         </div>
         <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Temperatura ideal</label>
-          <input
-            value={unidad.temperatura ?? ""}
-            onChange={handle("temperatura")}
-            className="dashboard-input w-full mt-1"
-          />
+        <label htmlFor="unidad-temperatura" className="text-xs text-[var(--dashboard-muted)]">Temperatura ideal</label>
+        <input
+          id="unidad-temperatura"
+          value={unidad.temperatura ?? ""}
+          onChange={handle("temperatura")}
+          className="dashboard-input w-full mt-1"
+        />
         </div>
       </section>
 
       <section className="space-y-2">
         <h3 className="font-semibold">Estado y ubicación</h3>
         <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Estado</label>
-          <input
-            value={unidad.estado ?? ""}
-            onChange={handle("estado")}
-            className="dashboard-input w-full mt-1"
-          />
+        <label htmlFor="unidad-estado" className="text-xs text-[var(--dashboard-muted)]">Estado</label>
+        <input
+          id="unidad-estado"
+          value={unidad.estado ?? ""}
+          onChange={handle("estado")}
+          className="dashboard-input w-full mt-1"
+        />
         </div>
         <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Ubicación exacta</label>
-          <input
-            value={unidad.ubicacionExacta ?? ""}
-            onChange={handle("ubicacionExacta")}
-            className="dashboard-input w-full mt-1"
-          />
+        <label htmlFor="unidad-ubicacionExacta" className="text-xs text-[var(--dashboard-muted)]">Ubicación exacta</label>
+        <input
+          id="unidad-ubicacionExacta"
+          value={unidad.ubicacionExacta ?? ""}
+          onChange={handle("ubicacionExacta")}
+          className="dashboard-input w-full mt-1"
+        />
         </div>
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="text-xs text-[var(--dashboard-muted)]">Área o zona</label>
+            <label htmlFor="unidad-area" className="text-xs text-[var(--dashboard-muted)]">Área o zona</label>
             <input
+              id="unidad-area"
               value={unidad.area ?? ""}
               onChange={handle("area")}
               className="dashboard-input w-full mt-1"
             />
           </div>
           <div>
-            <label className="text-xs text-[var(--dashboard-muted)]">Subcategoría</label>
+            <label htmlFor="unidad-subcategoria" className="text-xs text-[var(--dashboard-muted)]">Subcategoría</label>
             <input
+              id="unidad-subcategoria"
               value={unidad.subcategoria ?? ""}
               onChange={handle("subcategoria")}
               className="dashboard-input w-full mt-1"
@@ -204,28 +222,31 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           </div>
         </div>
         <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Riesgo</label>
-          <input
-            value={unidad.riesgo ?? ""}
-            onChange={handle("riesgo")}
-            className="dashboard-input w-full mt-1"
-          />
+        <label htmlFor="unidad-riesgo" className="text-xs text-[var(--dashboard-muted)]">Riesgo</label>
+        <input
+          id="unidad-riesgo"
+          value={unidad.riesgo ?? ""}
+          onChange={handle("riesgo")}
+          className="dashboard-input w-full mt-1"
+        />
         </div>
         <div className="flex items-center gap-2">
           <input
+            id="unidad-disponible"
             type="checkbox"
             checked={unidad.disponible ?? false}
             onChange={handle("disponible")}
           />
-          <label className="text-xs text-[var(--dashboard-muted)]">Disponible</label>
+          <label htmlFor="unidad-disponible" className="text-xs text-[var(--dashboard-muted)]">Disponible</label>
         </div>
         <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Asignado a</label>
-          <input
-            value={unidad.asignadoA ?? ""}
-            onChange={handle("asignadoA")}
-            className="dashboard-input w-full mt-1"
-          />
+        <label htmlFor="unidad-asignadoA" className="text-xs text-[var(--dashboard-muted)]">Asignado a</label>
+        <input
+          id="unidad-asignadoA"
+          value={unidad.asignadoA ?? ""}
+          onChange={handle("asignadoA")}
+          className="dashboard-input w-full mt-1"
+        />
         </div>
       </section>
 
@@ -284,16 +305,18 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
         <h3 className="font-semibold">Responsable y uso</h3>
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="text-xs text-[var(--dashboard-muted)]">Responsable del ingreso</label>
+            <label htmlFor="unidad-responsableIngreso" className="text-xs text-[var(--dashboard-muted)]">Responsable del ingreso</label>
             <input
+              id="unidad-responsableIngreso"
               value={unidad.responsableIngreso ?? ""}
               onChange={handle("responsableIngreso")}
               className="dashboard-input w-full mt-1"
             />
           </div>
           <div>
-            <label className="text-xs text-[var(--dashboard-muted)]">Modificado por</label>
+            <label htmlFor="unidad-modificadoPor" className="text-xs text-[var(--dashboard-muted)]">Modificado por</label>
             <input
+              id="unidad-modificadoPor"
               value={unidad.modificadoPor ?? ""}
               onChange={handle("modificadoPor")}
               className="dashboard-input w-full mt-1"
@@ -301,32 +324,45 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           </div>
         </div>
         <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Proyecto asociado</label>
-          <input
-            value={unidad.proyecto ?? ""}
-            onChange={handle("proyecto")}
-            className="dashboard-input w-full mt-1"
-          />
+        <label htmlFor="unidad-proyecto" className="text-xs text-[var(--dashboard-muted)]">Proyecto asociado</label>
+        <input
+          id="unidad-proyecto"
+          value={unidad.proyecto ?? ""}
+          onChange={handle("proyecto")}
+          className="dashboard-input w-full mt-1"
+        />
         </div>
         <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Observaciones</label>
-          <textarea
-            value={unidad.observaciones ?? ""}
-            onChange={handle("observaciones")}
-            className="dashboard-input w-full mt-1"
-          />
+        <label htmlFor="unidad-observaciones" className="text-xs text-[var(--dashboard-muted)]">Observaciones</label>
+        <textarea
+          id="unidad-observaciones"
+          value={unidad.observaciones ?? ""}
+          onChange={handle("observaciones")}
+          className="dashboard-input w-full mt-1"
+        />
         </div>
       </section>
 
       <section className="space-y-2">
         <h3 className="font-semibold">Extras</h3>
         <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Imagen</label>
-          <input type="file" onChange={handle("imagen") as any} className="dashboard-input w-full mt-1" />
+          <label htmlFor="unidad-imagen" className="text-xs text-[var(--dashboard-muted)]">Imagen</label>
+          <input
+            id="unidad-imagen"
+            type="file"
+            onChange={handle("imagen") as any}
+            className="dashboard-input w-full mt-1"
+          />
         </div>
         <div>
-          <label className="text-xs text-[var(--dashboard-muted)]">Archivos adjuntos</label>
-          <input type="file" multiple onChange={handle("archivos") as any} className="dashboard-input w-full mt-1" />
+          <label htmlFor="unidad-archivos" className="text-xs text-[var(--dashboard-muted)]">Archivos adjuntos</label>
+          <input
+            id="unidad-archivos"
+            type="file"
+            multiple
+            onChange={handle("archivos") as any}
+            className="dashboard-input w-full mt-1"
+          />
         </div>
       </section>
 
