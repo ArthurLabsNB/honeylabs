@@ -102,7 +102,8 @@ export default function useUnidades(materialId?: number | string) {
 
   const eliminar = async (unidadId: number) => {
     if (Number.isNaN(id) || id <= 0) return { error: 'ID inválido' }
-    if (Number.isNaN(id) || id <= 0) return undefined
+    if (Number.isNaN(unidadId) || unidadId <= 0)
+      return { error: 'ID de unidad inválido' }
     const res = await fetch(`/api/materiales/${id}/unidades/${unidadId}`, {
       method: 'DELETE',
       credentials: 'include',

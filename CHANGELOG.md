@@ -1,3 +1,6 @@
+## 0.2.161
+- Validamos el ID de unidad antes de eliminarla desde el hook.
+
 ## 0.2.160
 - Eliminamos materiales y archivos relacionados antes de borrar un almacén.
 
