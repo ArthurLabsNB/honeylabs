@@ -1,3 +1,7 @@
+## 0.2.155
+- Liberamos URLs de imagen en el menú de usuario y en la página de configuración.
+- Evitamos fugas al revocar los object URLs cuando cambian.
+
 ## 0.2.151
 - Eliminamos una migración vacía que interrumpía la generación.
 
