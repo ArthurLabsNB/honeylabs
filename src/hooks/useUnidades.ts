@@ -5,6 +5,9 @@ export interface Unidad {
   id: number
   nombre: string
   codigoQR: string
+  estado?: string
+  area?: string
+  [clave: string]: any
 }
 
 const fetcher = (url: string) =>
@@ -16,25 +19,33 @@ export default function useUnidades(materialId?: number | string) {
 
   const { data, error, isLoading, mutate } = useSWR(url, fetcher)
 
-  const registrar = async (descripcion: string) => {
+  const registrar = async (descripcion: string, cantidad = 1) => {
     if (Number.isNaN(id)) return
     try {
-      await fetch(`/api/materiales/${id}/historial`, {
+      const res = await fetch(`/api/materiales/${id}/historial`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ descripcion, cantidad: 1 }),
+        body: JSON.stringify({ descripcion, cantidad }),
+
       })
-    } catch {}
+      return await jsonOrNull(res)
+    } catch {
+      return null
+    }
   }
 
-  const crear = async (nombre: string) => {
+  const crear = async (
+    nombre: string,
+    extras: Record<string, any> = {},
+  ) => {
     if (Number.isNaN(id)) return { error: 'ID inválido' }
     const res = await fetch(`/api/materiales/${id}/unidades`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ nombre }),
+      body: JSON.stringify({ nombre, ...extras }),
+
     })
     const result = await jsonOrNull(res)
     if (res.ok) {
@@ -44,13 +55,15 @@ export default function useUnidades(materialId?: number | string) {
     return result
   }
 
-  const actualizar = async (unidad: Unidad) => {
+  const actualizar = async (unidad: Partial<Unidad> & { id: number }) => {
     if (!unidad.id) return { error: 'ID requerido' }
-    const res = await fetch(`/api/materiales/${id}/unidades/${unidad.id}`, {
+    const { id: uid, ...payload } = unidad
+    const res = await fetch(`/api/materiales/${id}/unidades/${uid}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ nombre: unidad.nombre }),
+      body: JSON.stringify(payload),
+
     })
     const result = await jsonOrNull(res)
     if (res.ok) {
