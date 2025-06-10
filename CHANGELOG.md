@@ -1,3 +1,6 @@
+## 0.2.150
+- Mostramos aviso al agregar unidades sin guardar el material.
+
 ## 0.2.148
 - Aceptamos cantidad al registrar movimientos de unidad.
 - Soportamos campos opcionales al crear o actualizar unidades.

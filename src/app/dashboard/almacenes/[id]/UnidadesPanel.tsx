@@ -25,6 +25,10 @@ export default function UnidadesPanel({
   const add = async () => {
     const v = value.trim();
     if (!v) return;
+    if (!material?.dbId) {
+      toast.show("Guarda el material primero", "error");
+      return;
+    }
     const res = await crear(v);
     if (res?.error) {
       toast.show(res.error, "error");
