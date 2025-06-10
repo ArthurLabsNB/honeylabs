@@ -1,3 +1,6 @@
+## 0.2.160
+- Eliminamos materiales y archivos relacionados antes de borrar un almacén.
+
 ## 0.2.157
 - Ajustamos el botón Agregar de Unidades para que permanezca alineado.
 
