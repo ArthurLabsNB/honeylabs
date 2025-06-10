@@ -56,6 +56,7 @@ export default function UserMenu({
 
   // Avatar image url (si existe)
   const [fotoPerfil, setFotoPerfil] = useState<string | null>(null);
+  const fotoPerfilRef = useRef<string | null>(null);
 
   useEffect(() => {
     async function cargarTema() {
@@ -133,21 +134,44 @@ export default function UserMenu({
 
   useEffect(() => {
     if (usuario?.imagen) {
+      if (fotoPerfilRef.current) {
+        URL.revokeObjectURL(fotoPerfilRef.current);
+        fotoPerfilRef.current = null;
+      }
       setFotoPerfil(usuario.imagen);
     } else if (usuario?.correo) {
       fetch(
         apiPath(`/api/perfil/foto?correo=${encodeURIComponent(usuario.correo)}`),
-        { cache: 'no-store', credentials: 'include' },
+        { cache: "no-store", credentials: "include" },
       )
         .then((r) => (r.ok ? r.blob() : null))
         .then((blob) => {
-          if (blob) setFotoPerfil(URL.createObjectURL(blob));
+          if (blob) {
+            if (fotoPerfilRef.current) {
+              URL.revokeObjectURL(fotoPerfilRef.current);
+            }
+            const url = URL.createObjectURL(blob);
+            fotoPerfilRef.current = url;
+            setFotoPerfil(url);
+          }
         })
         .catch(() => {});
     } else {
+      if (fotoPerfilRef.current) {
+        URL.revokeObjectURL(fotoPerfilRef.current);
+        fotoPerfilRef.current = null;
+      }
       setFotoPerfil(null);
     }
   }, [usuario]);
+
+  useEffect(() => {
+    return () => {
+      if (fotoPerfilRef.current) {
+        URL.revokeObjectURL(fotoPerfilRef.current);
+      }
+    };
+  }, []);
 
   const alternarTema = () => {
     setTemaOscuro((prev) => {

@@ -25,6 +25,7 @@ export default function Configuracion() {
   });
   const [foto, setFoto] = useState<File | null>(null);
   const [fotoPreview, setFotoPreview] = useState<string | null>(null);
+  const fotoPreviewRef = useRef<string | null>(null);
   const [cargando, setCargando] = useState(true);
   const [guardando, setGuardando] = useState(false);
   const [mensaje, setMensaje] = useState<{
@@ -50,6 +51,10 @@ export default function Configuracion() {
             nuevaContrasena: "",
           });
           if (data.usuario.fotoPerfilNombre) {
+            if (fotoPreviewRef.current) {
+              URL.revokeObjectURL(fotoPreviewRef.current);
+              fotoPreviewRef.current = null;
+            }
             setFotoPreview(
               apiPath(
                 `/api/perfil/foto?nombre=${encodeURIComponent(
@@ -77,10 +82,23 @@ export default function Configuracion() {
   function handleFotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      if (fotoPreviewRef.current) {
+        URL.revokeObjectURL(fotoPreviewRef.current);
+      }
+      const url = URL.createObjectURL(file);
+      fotoPreviewRef.current = url;
       setFoto(file);
-      setFotoPreview(URL.createObjectURL(file));
+      setFotoPreview(url);
     }
   }
+
+  useEffect(() => {
+    return () => {
+      if (fotoPreviewRef.current) {
+        URL.revokeObjectURL(fotoPreviewRef.current);
+      }
+    };
+  }, [fotoPreview]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
