@@ -7,7 +7,8 @@ export interface Unidad {
   codigoQR: string
 }
 
-const fetcher = (url: string) => fetch(url).then(jsonOrNull)
+const fetcher = (url: string) =>
+  fetch(url, { credentials: 'include' }).then(jsonOrNull)
 
 export default function useUnidades(materialId?: number | string) {
   const id = Number(materialId)
@@ -21,6 +22,7 @@ export default function useUnidades(materialId?: number | string) {
       await fetch(`/api/materiales/${id}/historial`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ descripcion, cantidad: 1 }),
       })
     } catch {}
@@ -31,6 +33,7 @@ export default function useUnidades(materialId?: number | string) {
     const res = await fetch(`/api/materiales/${id}/unidades`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ nombre }),
     })
     const result = await jsonOrNull(res)
@@ -46,6 +49,7 @@ export default function useUnidades(materialId?: number | string) {
     const res = await fetch(`/api/materiales/${id}/unidades/${unidad.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ nombre: unidad.nombre }),
     })
     const result = await jsonOrNull(res)
@@ -57,7 +61,10 @@ export default function useUnidades(materialId?: number | string) {
   }
 
   const eliminar = async (unidadId: number) => {
-    const res = await fetch(`/api/materiales/${id}/unidades/${unidadId}`, { method: 'DELETE' })
+    const res = await fetch(`/api/materiales/${id}/unidades/${unidadId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    })
     const result = await jsonOrNull(res)
     if (res.ok) {
       mutate()
