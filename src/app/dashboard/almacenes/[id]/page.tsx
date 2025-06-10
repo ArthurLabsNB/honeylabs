@@ -99,10 +99,11 @@ export default function AlmacenPage() {
       setPanel('material');
       return;
     }
-    const res = await actualizarUnidad({ id: unidadSel.id, nombre: unidadSel.nombreMaterial });
-    if (res?.error) toast.show(res.error, 'error');
-    else toast.show('Guardado', 'success');
-    setPanel('material');
+    const { id: uid, nombreMaterial, ...rest } = unidadSel
+    const res = await actualizarUnidad({ id: uid, nombre: nombreMaterial, ...rest })
+    if (res?.error) toast.show(res.error, 'error')
+    else toast.show('Guardado', 'success')
+    setPanel('material')
   };
 
   useEffect(() => {
@@ -310,7 +311,7 @@ export default function AlmacenPage() {
                 selectedId && actualizar(selectedId, campo, valor)
               }
               onSelect={(u) => {
-                setUnidadSel({ id: u.id, nombreMaterial: selectedMaterial?.nombre })
+                setUnidadSel({ id: u.id, nombreMaterial: u.nombre })
                 setPanel('unidad')
               }}
             />
