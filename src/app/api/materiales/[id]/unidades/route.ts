@@ -57,15 +57,26 @@ export async function POST(req: NextRequest) {
     }
     const body = await req.json()
     const nombre = String(body.nombre ?? '').trim()
+    let imagenBuffer: Buffer | null | undefined
+    if (body.imagen !== undefined) {
+      if (typeof body.imagen === 'string') {
+        try {
+          imagenBuffer = Buffer.from(body.imagen, 'base64')
+        } catch {
+          imagenBuffer = null
+        }
+      } else if (body.imagen === null) {
+        imagenBuffer = null
+      }
+    }
     if (!nombre) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 })
-    const creado = await prisma.materialUnidad.create({
-      data: {
-        nombre,
-        internoId: body.internoId ?? null,
-        serie: body.serie ?? null,
-        codigoBarra: body.codigoBarra ?? null,
-        lote: body.lote ?? null,
-        qrGenerado: body.qrGenerado ?? null,
+    const data: any = {
+      nombre,
+      internoId: body.internoId ?? null,
+      serie: body.serie ?? null,
+      codigoBarra: body.codigoBarra ?? null,
+      lote: body.lote ?? null,
+      qrGenerado: body.qrGenerado ?? null,
         unidadMedida: body.unidadMedida ?? null,
         peso: body.peso !== undefined ? Number(body.peso) : null,
         volumen: body.volumen !== undefined ? Number(body.volumen) : null,
@@ -89,11 +100,13 @@ export async function POST(req: NextRequest) {
         responsableIngreso: body.responsableIngreso ?? null,
         modificadoPor: body.modificadoPor ?? null,
         proyecto: body.proyecto ?? null,
-        observaciones: body.observaciones ?? null,
-        imagen: body.imagen ?? null,
-        imagenNombre: body.imagenNombre ?? null,
-        materialId,
-      },
+      observaciones: body.observaciones ?? null,
+      imagenNombre: body.imagenNombre ?? null,
+      materialId,
+    }
+    if (imagenBuffer !== undefined) data.imagen = imagenBuffer
+    const creado = await prisma.materialUnidad.create({
+      data,
       select: { id: true, nombre: true, codigoQR: true },
     })
     return NextResponse.json({ unidad: creado })

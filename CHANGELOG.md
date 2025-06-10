@@ -1,3 +1,7 @@
+## 0.2.156
+- Prevenimos errores al guardar una unidad con imagen adjunta.
+- Corregimos el envío de nombre desde el panel de edición.
+
 ## 0.2.155
 - Liberamos URLs de imagen en el menú de usuario y en la página de configuración.
 - Evitamos fugas al revocar los object URLs cuando cambian.
