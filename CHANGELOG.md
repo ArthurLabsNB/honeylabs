@@ -1,3 +1,6 @@
+## 0.2.145
+- Reordenamos la migración de unidad para prevenir errores.
+
 ## 0.2.143
 - Conectamos la vista de inventario con la API de materiales.
 
