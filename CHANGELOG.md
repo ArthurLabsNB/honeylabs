@@ -1,11 +1,14 @@
-## 0.2.148
-- Aceptamos cantidad al registrar movimientos de unidad.
-- Soportamos campos opcionales al crear o actualizar unidades.
+## 0.2.150
+- Guardamos correctamente los cambios de la unidad desde el panel de edición.
 
 ## 0.2.149
 - Corregimos el botón para agregar unidades.
 - Optimizamos filtrados con useMemo.
 - Conectamos todas las etiquetas con sus entradas mediante htmlFor.
+
+## 0.2.148
+- Aceptamos cantidad al registrar movimientos de unidad.
+- Soportamos campos opcionales al crear o actualizar unidades.
 
 ## 0.2.147
 - Permitimos enviar cookies en las peticiones de unidades para crear, modificar y eliminar.
