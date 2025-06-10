@@ -63,7 +63,7 @@ export default function UnidadesPanel({
           </button>
         )}
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 items-center">
         <input
           value={value}
           onChange={(e) => setValue(e.target.value)}
@@ -72,7 +72,7 @@ export default function UnidadesPanel({
         />
         <button
           onClick={add}
-          className="px-2 rounded-md bg-[var(--dashboard-accent)] text-black text-sm"
+          className="px-2 rounded-md bg-[var(--dashboard-accent)] text-black text-sm flex-shrink-0 whitespace-nowrap"
         >
           Agregar
         </button>
