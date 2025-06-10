@@ -1,3 +1,10 @@
+## 0.2.148
+- Aceptamos cantidad al registrar movimientos de unidad.
+- Soportamos campos opcionales al crear o actualizar unidades.
+
+## 0.2.147
+- Permitimos enviar cookies en las peticiones de unidades para crear, modificar y eliminar.
+
 ## 0.2.145
 - Reordenamos la migración de unidad para prevenir errores.
 
