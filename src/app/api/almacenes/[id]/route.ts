@@ -154,6 +154,9 @@ export async function DELETE(req: NextRequest) {
       prisma.incidencia.deleteMany({ where: { almacenId: id } }),
       prisma.notificacion.deleteMany({ where: { almacenId: id } }),
       prisma.alerta.deleteMany({ where: { almacenId: id } }),
+      prisma.materialUnidad.deleteMany({ where: { material: { almacenId: id } } }),
+      prisma.archivoMaterial.deleteMany({ where: { material: { almacenId: id } } }),
+      prisma.material.deleteMany({ where: { almacenId: id } }),
       prisma.almacen.delete({ where: { id } }),
     ]);
     return NextResponse.json({ success: true });
