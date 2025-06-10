@@ -1,3 +1,6 @@
+## 0.2.151
+- Eliminamos una migración vacía que interrumpía la generación.
+
 ## 0.2.150
 - Guardamos correctamente los cambios de la unidad desde el panel de edición.
 
