@@ -87,6 +87,7 @@ export async function POST(req: NextRequest) {
       codigoBarra: str(body.codigoBarra),
       lote: str(body.lote),
       qrGenerado: str(body.qrGenerado),
+      codigoQR: str(body.codigoQR) ?? undefined,
       unidadMedida: str(body.unidadMedida),
       peso: num(body.peso),
       volumen: num(body.volumen),
@@ -114,6 +115,7 @@ export async function POST(req: NextRequest) {
       imagenNombre: str(body.imagenNombre),
       materialId,
     }
+    if (data.codigoQR == null) delete data.codigoQR
     if (imagenBuffer !== undefined) data.imagen = imagenBuffer
     try {
       const creado = await prisma.materialUnidad.create({
