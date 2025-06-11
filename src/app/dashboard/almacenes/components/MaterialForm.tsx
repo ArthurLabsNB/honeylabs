@@ -6,6 +6,7 @@ const MAX_FILE_MB = 20;
 import type { Material } from "./MaterialRow";
 import MaterialCodes from "./MaterialCodes";
 import useUnidades from "@/hooks/useUnidades";
+import useArchivosMaterial from "@/hooks/useArchivosMaterial";
 
 interface Props {
   material: Material | null;
@@ -31,6 +32,14 @@ export default function MaterialForm({
     );
 
   const { unidades } = useUnidades(material.dbId);
+  const { archivos: archivosPrevios, eliminar, mutate } = useArchivosMaterial(
+    material.dbId,
+  );
+
+  const guardar = () => {
+    onGuardar();
+    mutate();
+  };
 
 
   const handle = (campo: keyof Material) => (
@@ -41,15 +50,18 @@ export default function MaterialForm({
     } else if (campo === 'miniatura') {
       onChange(campo, (e.target as HTMLInputElement).files?.[0] || null);
     } else if (campo === 'archivos') {
-      const files = Array.from((e.target as HTMLInputElement).files || []);
-      const valid = files.filter((f) => {
-        if (f.size > MAX_FILE_MB * 1024 * 1024) {
-          toast.show(`Archivo demasiado grande: ${f.name}`, 'error');
-          return false;
+      const idx = Number((e.target as HTMLInputElement).dataset.index);
+      const file = (e.target as HTMLInputElement).files?.[0] || null;
+      const arr = Array.from(material.archivos ?? []);
+      if (file) {
+        if (file.size > MAX_FILE_MB * 1024 * 1024) {
+          toast.show(`Archivo demasiado grande: ${file.name}`, 'error');
+          return;
         }
-        return true;
-      });
-      onChange(campo, valid);
+        if (idx >= arr.length) arr.push(file);
+        else arr[idx] = file;
+      }
+      onChange('archivos', arr);
     } else {
       onChange(campo, e.target.value);
     }
@@ -194,30 +206,51 @@ export default function MaterialForm({
       </div>
       <div>
         <label htmlFor="material-archivos" className="text-xs text-[var(--dashboard-muted)]">Archivos adjuntos</label>
-        <input
-          id="material-archivos"
-          type="file"
-          multiple
-          onChange={handle('archivos') as any}
-          className="dashboard-input w-full mt-1"
-        />
-        {material.archivos && material.archivos.length > 0 && (
+        <div className="space-y-2 max-h-40 overflow-y-auto">
+          {material.archivos?.map((f, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <input
+                type="file"
+                data-index={i}
+                onChange={handle('archivos') as any}
+                className="dashboard-input flex-1"
+              />
+              <span className="flex-1 truncate text-xs">{f.name}</span>
+              <button
+                type="button"
+                onClick={() =>
+                  onChange('archivos', material.archivos!.filter((_, idx) => idx !== i))
+                }
+                className="px-1 py-0.5 bg-red-600 text-white text-xs rounded"
+              >
+                Quitar
+              </button>
+            </div>
+          ))}
+          {(!material.archivos || material.archivos.length < 10) && (
+            <input
+              type="file"
+              data-index={material.archivos?.length || 0}
+              onChange={handle('archivos') as any}
+              className="dashboard-input w-full"
+            />
+          )}
+        </div>
+        {archivosPrevios.length > 0 && (
           <ul className="mt-2 space-y-1 text-sm">
-            {material.archivos.map((f, i) => (
-              <li key={i} className="flex items-center gap-2">
-                <span className="flex-1 truncate">{f.name}</span>
+            {archivosPrevios.map((a) => (
+              <li key={a.id} className="flex items-center gap-2">
+                <span className="flex-1 truncate">{a.nombre}</span>
                 <a
-                  href={URL.createObjectURL(f)}
-                  download={f.name}
+                  href={`/api/materiales/${material.dbId}/archivos/${a.id}`}
+                  download={a.nombre}
                   className="px-1 py-0.5 bg-blue-600 text-white text-xs rounded"
                 >
                   Descargar
                 </a>
                 <button
                   type="button"
-                  onClick={() =>
-                    onChange('archivos', material.archivos!.filter((_, idx) => idx !== i))
-                  }
+                  onClick={() => eliminar(a.id)}
                   className="px-1 py-0.5 bg-red-600 text-white text-xs rounded"
                 >
                   Quitar
@@ -230,7 +263,7 @@ export default function MaterialForm({
       <MaterialCodes value={material.nombre} />
       <div className="flex gap-2 pt-2">
         <button
-          onClick={onGuardar}
+          onClick={guardar}
           className="px-4 py-2 rounded-lg bg-[var(--dashboard-accent)] text-black text-sm hover:bg-[var(--dashboard-accent-hover)]"
         >
           Guardar

@@ -33,4 +33,6 @@ export interface UnidadDetalle {
   observaciones?: string;
   imagen?: File | null;
   archivos?: File[] | null;
+  imagenUrl?: string | null;
+  archivosPrevios?: { id: number; nombre: string; archivoNombre: string }[] | null;
 }
