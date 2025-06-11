@@ -1,3 +1,6 @@
+## 0.2.185
+- Conectamos las relaciones al crear materiales para evitar errores.
+
 ## 0.2.183
 - Mejoramos los filtros del inventario.
 - Permitimos espiar la generación de UUID en pruebas.
