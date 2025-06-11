@@ -1,6 +1,9 @@
 ## 0.2.164
 - Eliminamos el cliente Prisma del repo y generamos en postinstall para evitar errores de plataforma.
 
+## 0.2.165
+- Forzamos el remount de formularios al cambiar la selección de material o unidad para evitar errores en React.
+
 ## 0.2.162
 - Devolvemos 409 cuando la unidad ya existe al crearla o actualizarla.
 
