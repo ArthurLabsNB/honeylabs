@@ -3,7 +3,6 @@ import { ChangeEvent } from "react";
 import { useToast } from "@/components/Toast";
 
 const MAX_FILE_MB = 20;
-import { useToast } from "@/components/Toast";
 import type { Material } from "./MaterialRow";
 import MaterialCodes from "./MaterialCodes";
 import useUnidades from "@/hooks/useUnidades";
@@ -207,6 +206,13 @@ export default function MaterialForm({
             {material.archivos.map((f, i) => (
               <li key={i} className="flex items-center gap-2">
                 <span className="flex-1 truncate">{f.name}</span>
+                <a
+                  href={URL.createObjectURL(f)}
+                  download={f.name}
+                  className="px-1 py-0.5 bg-blue-600 text-white text-xs rounded"
+                >
+                  Descargar
+                </a>
                 <button
                   type="button"
                   onClick={() =>
