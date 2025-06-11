@@ -406,6 +406,13 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
               {unidad.archivos.map((f, i) => (
                 <li key={i} className="flex items-center gap-2">
                   <span className="flex-1 truncate">{f.name}</span>
+                  <a
+                    href={URL.createObjectURL(f)}
+                    download={f.name}
+                    className="px-1 py-0.5 bg-blue-600 text-white text-xs rounded"
+                  >
+                    Descargar
+                  </a>
                   <button
                     type="button"
                     onClick={() =>

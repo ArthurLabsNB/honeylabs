@@ -39,7 +39,23 @@ export default function useMateriales(almacenId?: number | string) {
     if (m.miniatura) form.append('miniatura', m.miniatura)
     const res = await fetch(`/api/almacenes/${id}/materiales`, { method: 'POST', body: form })
     const data = await jsonOrNull(res)
-    if (res.ok) mutate()
+    if (res.ok) {
+      const materialId = data?.material?.id
+      if (materialId && m.archivos && m.archivos.length) {
+        await Promise.all(
+          m.archivos.map(async (file) => {
+            const fd = new FormData()
+            fd.append('nombre', file.name)
+            fd.append('archivo', file)
+            await fetch(`/api/materiales/${materialId}/archivos`, {
+              method: 'POST',
+              body: fd,
+            })
+          }),
+        )
+      }
+      mutate()
+    }
     return data
   }
 
@@ -63,7 +79,22 @@ export default function useMateriales(almacenId?: number | string) {
     if (m.miniatura) form.append('miniatura', m.miniatura)
     const res = await fetch(`/api/materiales/${m.dbId}`, { method: 'PUT', body: form })
     const data = await jsonOrNull(res)
-    if (res.ok) mutate()
+    if (res.ok) {
+      if (m.archivos && m.archivos.length) {
+        await Promise.all(
+          m.archivos.map(async (file) => {
+            const fd = new FormData()
+            fd.append('nombre', file.name)
+            fd.append('archivo', file)
+            await fetch(`/api/materiales/${m.dbId}/archivos`, {
+              method: 'POST',
+              body: fd,
+            })
+          }),
+        )
+      }
+      mutate()
+    }
     return data
   }
 

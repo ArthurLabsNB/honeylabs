@@ -66,11 +66,17 @@ export default function useUnidades(materialId?: number | string) {
 
   const crear = async (datos: Partial<Unidad> & { nombre: string }) => {
     if (Number.isNaN(id) || id <= 0) return { error: 'ID inválido' }
+    const payload: any = { ...datos }
+    if (datos.imagen && datos.imagen instanceof File) {
+      const buffer = await datos.imagen.arrayBuffer()
+      payload.imagen = btoa(String.fromCharCode(...new Uint8Array(buffer)))
+      payload.imagenNombre = datos.imagen.name
+    }
     const res = await fetch(`/api/materiales/${id}/unidades`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify(datos),
+      body: JSON.stringify(payload),
 
     })
     const result = await jsonOrNull(res)
@@ -85,6 +91,11 @@ export default function useUnidades(materialId?: number | string) {
     if (!unidad.id) return { error: 'ID requerido' }
     const { id: uid, ...payload } = unidad
     if (Number.isNaN(id) || id <= 0) return { error: 'ID inválido' }
+    if (payload.imagen && payload.imagen instanceof File) {
+      const buffer = await payload.imagen.arrayBuffer()
+      ;(payload as any).imagen = btoa(String.fromCharCode(...new Uint8Array(buffer)))
+      ;(payload as any).imagenNombre = payload.imagen.name
+    }
     const res = await fetch(`/api/materiales/${id}/unidades/${uid}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
