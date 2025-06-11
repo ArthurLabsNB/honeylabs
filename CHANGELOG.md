@@ -1,6 +1,9 @@
 ## 0.2.173
 - Ajustamos la vista de unidades para usar imagenUrl y evitar el valor vacío en src.
 
+## 0.2.174
+- Evitamos desbordamiento de pila al convertir la imagen en el formulario de unidades.
+
 ## 0.2.172
 - Prevenimos errores al mostrar la imagen de la unidad.
 
