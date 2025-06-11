@@ -124,6 +124,7 @@ export async function PUT(req: NextRequest) {
         data,
         select: { id: true, nombre: true, codigoQR: true },
       })
+      await snapshot(actualizado.id, usuario.id, 'Modificación')
       return NextResponse.json({ unidad: actualizado })
     } catch (e) {
       if (
@@ -159,6 +160,7 @@ export async function DELETE(req: NextRequest) {
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
     }
+    await snapshot(unidadId, usuario.id, 'Eliminación')
     await prisma.materialUnidad.delete({ where: { id: unidadId } })
     return NextResponse.json({ success: true })
   } catch (err) {

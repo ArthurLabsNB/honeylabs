@@ -12,6 +12,7 @@ import MaterialList from "../components/MaterialList";
 import UnidadesPanel from "./UnidadesPanel";
 import UnidadForm from "../components/UnidadForm";
 import HistorialMovimientosPanel from "./HistorialMovimientosPanel";
+import ExportNavbar from "../components/ExportNavbar";
 import { generarUUID } from "@/lib/uuid";
 import type { UnidadDetalle } from "@/types/unidad-detalle";
 import useUnidades from "@/hooks/useUnidades";
@@ -259,18 +260,21 @@ export default function AlmacenPage() {
       <div className="flex flex-col md:flex-row gap-4 h-full">
         <section className="md:w-1/2 p-4 border-r border-white/10 overflow-y-auto">
           {panel === 'material' && (
-            <MaterialForm
-              key={historialBackup ? 'hist' : selectedId ?? 'new'}
-              material={selectedMaterial}
-              onChange={(campo, valor) =>
-                selectedId && actualizar(selectedId, campo, valor)
-              }
-              onGuardar={guardar}
-              onCancelar={cancelar}
-              onDuplicar={duplicar}
-              onEliminar={eliminar}
-              readOnly={Boolean(historialBackup)}
-            />
+            <>
+              {historialBackup && <ExportNavbar material={selectedMaterial} />}
+              <MaterialForm
+                key={historialBackup ? 'hist' : selectedId ?? 'new'}
+                material={selectedMaterial}
+                onChange={(campo, valor) =>
+                  selectedId && actualizar(selectedId, campo, valor)
+                }
+                onGuardar={guardar}
+                onCancelar={cancelar}
+                onDuplicar={duplicar}
+                onEliminar={eliminar}
+                readOnly={Boolean(historialBackup)}
+              />
+            </>
           )}
           {panel === 'unidad' && (
             <UnidadForm

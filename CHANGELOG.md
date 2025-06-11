@@ -1,3 +1,7 @@
+## 0.2.177
+- Agregamos exportaciones múltiples en la vista de historial.
+- Guardamos copias completas al crear, actualizar o borrar unidades.
+
 ## 0.2.176
 - Añadimos búsqueda y filtros al historial de movimientos.
 
