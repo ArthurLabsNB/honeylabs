@@ -1,6 +1,7 @@
 "use client";
 import { ChangeEvent } from "react";
 import type { UnidadDetalle } from "@/types/unidad-detalle";
+import useArchivosUnidad from "@/hooks/useArchivosUnidad";
 
 interface Props {
   unidad: UnidadDetalle | null;
@@ -16,6 +17,15 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
     );
 
   const nombreValido = Boolean(unidad.nombreMaterial && unidad.nombreMaterial.trim())
+  const { archivos: archivosPrevios, eliminar, mutate } = useArchivosUnidad(
+    unidad.materialId,
+    unidad.id,
+  )
+
+  const guardarLocal = () => {
+    onGuardar()
+    mutate()
+  }
 
   const numericFields: Array<keyof UnidadDetalle> = [
     "peso",
@@ -42,9 +52,20 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
   const handleFile = (campo: keyof UnidadDetalle) => (
     e: ChangeEvent<HTMLInputElement>,
   ) => {
-    const files = e.target.files
-    const val = campo === 'archivos' ? (files ? Array.from(files) : null) : files ? files[0] : null
-    onChange(campo, val)
+    if (campo === 'archivos') {
+      const idx = Number(e.target.dataset.index)
+      const file = e.target.files?.[0] || null
+      const arr = Array.from(unidad.archivos ?? [])
+      if (file) {
+        if (idx >= arr.length) arr.push(file)
+        else arr[idx] = file
+      }
+      onChange('archivos', arr)
+    } else {
+      const files = e.target.files
+      const val = files ? files[0] : null
+      onChange(campo, val)
+    }
   }
 
   return (
@@ -394,30 +415,51 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
         </div>
         <div>
           <label htmlFor="unidad-archivos" className="text-xs text-[var(--dashboard-muted)]">Archivos adjuntos</label>
-          <input
-            id="unidad-archivos"
-            type="file"
-            multiple
-            onChange={handleFile('archivos')}
-            className="dashboard-input w-full mt-1"
-          />
-          {unidad.archivos && unidad.archivos.length > 0 && (
+          <div className="space-y-2 max-h-40 overflow-y-auto">
+            {unidad.archivos?.map((f, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <input
+                  type="file"
+                  data-index={i}
+                  onChange={handleFile('archivos')}
+                  className="dashboard-input flex-1"
+                />
+                <span className="flex-1 truncate text-xs">{f.name}</span>
+                <button
+                  type="button"
+                  onClick={() =>
+                    onChange('archivos', unidad.archivos!.filter((_, idx) => idx !== i))
+                  }
+                  className="px-1 py-0.5 bg-red-600 text-white text-xs rounded"
+                >
+                  Quitar
+                </button>
+              </div>
+            ))}
+            {(!unidad.archivos || unidad.archivos.length < 10) && (
+              <input
+                type="file"
+                data-index={unidad.archivos?.length || 0}
+                onChange={handleFile('archivos')}
+                className="dashboard-input w-full"
+              />
+            )}
+          </div>
+          {archivosPrevios.length > 0 && (
             <ul className="mt-2 space-y-1 text-sm">
-              {unidad.archivos.map((f, i) => (
-                <li key={i} className="flex items-center gap-2">
-                  <span className="flex-1 truncate">{f.name}</span>
+              {archivosPrevios.map((a) => (
+                <li key={a.id} className="flex items-center gap-2">
+                  <span className="flex-1 truncate">{a.nombre}</span>
                   <a
-                    href={URL.createObjectURL(f)}
-                    download={f.name}
+                    href={`/api/materiales/${unidad.materialId}/unidades/${unidad.id}/archivos/${a.id}`}
+                    download={a.nombre}
                     className="px-1 py-0.5 bg-blue-600 text-white text-xs rounded"
                   >
                     Descargar
                   </a>
                   <button
                     type="button"
-                    onClick={() =>
-                      onChange('archivos', unidad.archivos!.filter((_, idx) => idx !== i))
-                    }
+                    onClick={() => eliminar(a.id)}
                     className="px-1 py-0.5 bg-red-600 text-white text-xs rounded"
                   >
                     Quitar
@@ -431,7 +473,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
 
       <div className="flex gap-2 pt-2">
         <button
-          onClick={onGuardar}
+          onClick={guardarLocal}
           disabled={!nombreValido}
           className="px-4 py-2 rounded-lg bg-[var(--dashboard-accent)] text-black text-sm hover:bg-[var(--dashboard-accent-hover)] disabled:opacity-50"
         >
