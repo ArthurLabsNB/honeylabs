@@ -161,8 +161,8 @@ export async function POST(req: NextRequest) {
         codigoQR,
         minimo,
         maximo,
-        almacenId,
-        usuarioId: usuario.id,
+        almacen: { connect: { id: almacenId } },
+        usuario: { connect: { id: usuario.id } },
       },
       select: {
         id: true,
