@@ -253,6 +253,7 @@ export default function AlmacenPage() {
         <section className="md:w-1/2 p-4 border-r border-white/10 overflow-y-auto">
           {panel === 'material' && (
             <MaterialForm
+              key={selectedId ?? 'new'}
               material={selectedMaterial}
               onChange={(campo, valor) =>
                 selectedId && actualizar(selectedId, campo, valor)
@@ -265,6 +266,7 @@ export default function AlmacenPage() {
           )}
           {panel === 'unidad' && (
             <UnidadForm
+              key={unidadSel?.id ?? 'unidad'}
               unidad={unidadSel}
               onChange={(campo, valor) =>
                 setUnidadSel((d) => (d ? { ...d, [campo]: valor } : d))
