@@ -396,9 +396,11 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
             <div className="mt-2 flex items-start gap-2">
               <img
                 src={
-                  typeof unidad.imagen === 'string'
-                    ? unidad.imagen
-                    : URL.createObjectURL(unidad.imagen)
+                  unidad.imagen instanceof File
+                    ? URL.createObjectURL(unidad.imagen)
+                    : typeof unidad.imagen === 'string'
+                      ? unidad.imagen
+                      : ''
                 }
                 alt="preview"
                 className="w-24 h-24 object-cover rounded"
