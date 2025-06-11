@@ -7,6 +7,8 @@ export interface MovimientoMaterial {
   cantidad: number
   fecha: string
   descripcion?: string | null
+  usuario?: { nombre: string }
+  material?: { nombre: string }
 }
 
 const fetcher = (url: string) => fetch(url).then(jsonOrNull)

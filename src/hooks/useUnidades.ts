@@ -92,12 +92,25 @@ export default function useUnidades(materialId?: number | string) {
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify(payload),
-
     })
     const result = await jsonOrNull(res)
     if (res.ok) {
+      const unidad = result?.unidad as Unidad | undefined
+      if (datos.archivos && unidad?.id) {
+        await Promise.all(
+          datos.archivos.map(async (f) => {
+            const fd = new FormData()
+            fd.append('nombre', f.name)
+            fd.append('archivo', f)
+            await fetch(`/api/materiales/${id}/unidades/${unidad.id}/archivos`, {
+              method: 'POST',
+              body: fd,
+            })
+          }),
+        )
+      }
       mutate()
-      registrar('Entrada de Unidad')
+      registrar(`Entrada - ${datos.nombre} (unidad ${unidad?.id ?? ''})`)
     }
     return result
   }
@@ -115,12 +128,24 @@ export default function useUnidades(materialId?: number | string) {
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify(payload),
-
     })
     const result = await jsonOrNull(res)
     if (res.ok) {
+      if (payload.archivos && payload.archivos.length) {
+        await Promise.all(
+          payload.archivos.map(async (f: File) => {
+            const fd = new FormData()
+            fd.append('nombre', f.name)
+            fd.append('archivo', f)
+            await fetch(`/api/materiales/${id}/unidades/${uid}/archivos`, {
+              method: 'POST',
+              body: fd,
+            })
+          }),
+        )
+      }
       mutate()
-      registrar('Modificacion de Unidad')
+      registrar(`Modificacion - ${payload.nombre ?? ''} (unidad ${uid})`)
     }
     return result
   }
@@ -136,7 +161,7 @@ export default function useUnidades(materialId?: number | string) {
     const result = await jsonOrNull(res)
     if (res.ok) {
       mutate()
-      registrar('Eliminacion de Unidad')
+      registrar(`Eliminacion - unidad ${unidadId}`)
     }
     return result
   }

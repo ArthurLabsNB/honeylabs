@@ -77,6 +77,8 @@ export async function GET(req: NextRequest) {
         cantidad: true,
         fecha: true,
         descripcion: true,
+        usuario: { select: { nombre: true } },
+        material: { select: { nombre: true } },
       },
     })
     return NextResponse.json({ movimientos })
