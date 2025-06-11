@@ -15,6 +15,7 @@ interface Props {
   onCancelar: () => void;
   onDuplicar: () => void;
   onEliminar: () => void;
+  readOnly?: boolean;
 }
 
 export default function MaterialForm({
@@ -24,6 +25,7 @@ export default function MaterialForm({
   onCancelar,
   onDuplicar,
   onEliminar,
+  readOnly = false,
 }: Props) {
   const toast = useToast();
   if (!material)
@@ -76,6 +78,7 @@ export default function MaterialForm({
           value={material.nombre ?? ""}
           onChange={handle("nombre")}
           className="dashboard-input w-full mt-1"
+          readOnly={readOnly}
         />
       </div>
       <div>
@@ -85,6 +88,7 @@ export default function MaterialForm({
           value={material.descripcion ?? ""}
           onChange={handle("descripcion")}
           className="dashboard-input w-full mt-1"
+          readOnly={readOnly}
         />
       </div>
       <div>
@@ -103,6 +107,7 @@ export default function MaterialForm({
           value={material.unidad ?? ""}
           onChange={handle("unidad")}
           className="dashboard-input w-full mt-1"
+          disabled={readOnly}
         >
           <option value="">-</option>
           <option value="pieza">pieza</option>
@@ -122,6 +127,7 @@ export default function MaterialForm({
           value={material.ubicacion ?? ""}
           onChange={handle("ubicacion")}
           className="dashboard-input w-full mt-1"
+          readOnly={readOnly}
         />
       </div>
       <div className="grid grid-cols-2 gap-2">
@@ -132,6 +138,7 @@ export default function MaterialForm({
             value={material.codigoBarra ?? ""}
             onChange={handle("codigoBarra")}
             className="dashboard-input w-full mt-1"
+            readOnly={readOnly}
           />
         </div>
         <div>
@@ -141,6 +148,7 @@ export default function MaterialForm({
             value={material.codigoQR ?? ""}
             onChange={handle("codigoQR")}
             className="dashboard-input w-full mt-1"
+            readOnly={readOnly}
           />
         </div>
       </div>
@@ -173,6 +181,7 @@ export default function MaterialForm({
           value={material.observaciones ?? ""}
           onChange={handle("observaciones")}
           className="dashboard-input w-full mt-1"
+          readOnly={readOnly}
         />
       </div>
       <div>
@@ -182,6 +191,7 @@ export default function MaterialForm({
           type="file"
           onChange={handle("miniatura") as any}
           className="dashboard-input w-full mt-1"
+          disabled={readOnly}
         />
         {(material.miniatura || material.miniaturaUrl) && (
           <div className="mt-2 flex items-start gap-2">
@@ -198,6 +208,7 @@ export default function MaterialForm({
               type="button"
               onClick={() => onChange('miniatura', null)}
               className="px-2 py-1 bg-red-600 text-white text-xs rounded"
+              disabled={readOnly}
             >
               Quitar
             </button>
@@ -221,6 +232,7 @@ export default function MaterialForm({
                 data-index={i}
                 onChange={handle('archivos') as any}
                 className="dashboard-input flex-1"
+                disabled={readOnly}
               />
               <span className="flex-1 truncate text-xs">{f.name}</span>
               <button
@@ -229,6 +241,7 @@ export default function MaterialForm({
                   onChange('archivos', material.archivos!.filter((_, idx) => idx !== i))
                 }
                 className="px-1 py-0.5 bg-red-600 text-white text-xs rounded"
+                disabled={readOnly}
               >
                 Quitar
               </button>
@@ -240,6 +253,7 @@ export default function MaterialForm({
               data-index={material.archivos?.length || 0}
               onChange={handle('archivos') as any}
               className="dashboard-input w-full"
+              disabled={readOnly}
             />
           )}
         </div>
@@ -266,6 +280,7 @@ export default function MaterialForm({
                   type="button"
                   onClick={() => eliminar(a.id)}
                   className="px-1 py-0.5 bg-red-600 text-white text-xs rounded"
+                  disabled={readOnly}
                 >
                   Quitar
                 </button>
@@ -276,30 +291,41 @@ export default function MaterialForm({
       </div>
       <MaterialCodes value={material.nombre} />
       <div className="flex gap-2 pt-2">
-        <button
-          onClick={guardar}
-          className="px-4 py-2 rounded-lg bg-[var(--dashboard-accent)] text-black text-sm hover:bg-[var(--dashboard-accent-hover)]"
-        >
-          Guardar
-        </button>
-        <button
-          onClick={onCancelar}
-          className="px-4 py-2 rounded-lg bg-white/10 text-white text-sm"
-        >
-          Cancelar
-        </button>
-        <button
-          onClick={onDuplicar}
-          className="px-4 py-2 rounded-lg bg-white/10 text-white text-sm"
-        >
-          Duplicar
-        </button>
-        <button
-          onClick={onEliminar}
-          className="px-4 py-2 rounded-lg bg-red-600 text-white text-sm"
-        >
-          Borrar
-        </button>
+        {readOnly ? (
+          <button
+            onClick={onCancelar}
+            className="px-4 py-2 rounded-lg bg-white/10 text-white text-sm"
+          >
+            Cerrar
+          </button>
+        ) : (
+          <>
+            <button
+              onClick={guardar}
+              className="px-4 py-2 rounded-lg bg-[var(--dashboard-accent)] text-black text-sm hover:bg-[var(--dashboard-accent-hover)]"
+            >
+              Guardar
+            </button>
+            <button
+              onClick={onCancelar}
+              className="px-4 py-2 rounded-lg bg-white/10 text-white text-sm"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={onDuplicar}
+              className="px-4 py-2 rounded-lg bg-white/10 text-white text-sm"
+            >
+              Duplicar
+            </button>
+            <button
+              onClick={onEliminar}
+              className="px-4 py-2 rounded-lg bg-red-600 text-white text-sm"
+            >
+              Borrar
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
