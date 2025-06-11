@@ -23,15 +23,19 @@ export default function UnidadesPanel({
   const toast = useToast();
 
   const add = async () => {
-    const v = value.trim();
-    if (!v) return;
-    const res = await crear({ nombre: v });
-    if (res?.error) {
-      toast.show(res.error, "error");
-      return;
+    const v = value.trim()
+    if (!v) return
+    if (!material?.dbId) {
+      toast.show('Guarda el material antes de agregar unidades', 'error')
+      return
     }
-    setValue("");
-    onChange("unidad", v);
+    const res = await crear({ nombre: v })
+    if (res?.error) {
+      toast.show(res.error, 'error')
+      return
+    }
+    setValue('')
+    onChange('unidad', v)
   };
 
   const select = (u: UnidadAPI) => {
@@ -72,7 +76,8 @@ export default function UnidadesPanel({
         />
         <button
           onClick={add}
-          className="px-2 rounded-md bg-[var(--dashboard-accent)] text-black text-sm flex-shrink-0 whitespace-nowrap"
+          disabled={!material?.dbId}
+          className="px-2 rounded-md bg-[var(--dashboard-accent)] text-black text-sm flex-shrink-0 whitespace-nowrap disabled:opacity-50"
         >
           Agregar
         </button>
