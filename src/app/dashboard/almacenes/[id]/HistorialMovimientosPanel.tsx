@@ -2,7 +2,7 @@
 import type { Material } from "../components/MaterialRow";
 import useMovimientosMaterial from "@/hooks/useMovimientosMaterial";
 import useHistorialMaterial from "@/hooks/useHistorialMaterial";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 interface Props {
   material: Material | null;
@@ -21,6 +21,8 @@ export default function HistorialMovimientosPanel({ material }: Props) {
   const { movimientos } = useMovimientosMaterial(material?.dbId);
   const { historial } = useHistorialMaterial(material?.dbId);
   const [detalle, setDetalle] = useState<Registro | null>(null);
+  const [busqueda, setBusqueda] = useState('');
+  const [tipo, setTipo] = useState<'todos' | 'entrada' | 'salida' | 'modificacion' | 'eliminacion'>('todos');
 
   const registros: Registro[] = [
     ...historial.map((h) => ({
@@ -45,11 +47,42 @@ export default function HistorialMovimientosPanel({ material }: Props) {
     })),
   ].sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
 
+  const filtrados = useMemo(
+    () =>
+      registros.filter(
+        (r) =>
+          (tipo === 'todos' || r.tipo === tipo) &&
+          (busqueda === '' ||
+            r.descripcion?.toLowerCase().includes(busqueda.toLowerCase()) ||
+            r.usuario?.toLowerCase().includes(busqueda.toLowerCase())),
+      ),
+    [registros, busqueda, tipo],
+  );
+
   return (
     <div className="p-4 border rounded-md space-y-2">
       <h2 className="font-semibold">Historial / Movimientos</h2>
+      <div className="flex gap-2">
+        <input
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          placeholder="Buscar"
+          className="dashboard-input flex-1"
+        />
+        <select
+          value={tipo}
+          onChange={(e) => setTipo(e.target.value as any)}
+          className="dashboard-input"
+        >
+          <option value="todos">Todos</option>
+          <option value="entrada">Entradas</option>
+          <option value="salida">Salidas</option>
+          <option value="modificacion">Modificaciones</option>
+          <option value="eliminacion">Eliminaciones</option>
+        </select>
+      </div>
       <ul className="space-y-1 max-h-96 overflow-y-auto">
-        {registros.map((r) => (
+        {filtrados.map((r) => (
           <li
             key={r.id}
             className="p-1 rounded-md bg-white/5 cursor-pointer"
