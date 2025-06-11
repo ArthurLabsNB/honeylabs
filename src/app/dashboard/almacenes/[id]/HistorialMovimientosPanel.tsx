@@ -41,7 +41,7 @@ export default function HistorialMovimientosPanel({ material }: Props) {
   return (
     <div className="p-4 border rounded-md space-y-2">
       <h2 className="font-semibold">Historial / Movimientos</h2>
-      <ul className="space-y-1 max-h-72 overflow-y-auto">
+      <ul className="space-y-1 max-h-96 overflow-y-auto">
         {registros.map((r) => (
           <li
             key={r.id}

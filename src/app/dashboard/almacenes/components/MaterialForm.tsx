@@ -157,6 +157,17 @@ export default function MaterialForm({
           onChange={handle("miniatura") as any}
           className="dashboard-input w-full mt-1"
         />
+        {(material.miniatura || material.miniaturaUrl) && (
+          <img
+            src={
+              material.miniatura
+                ? URL.createObjectURL(material.miniatura)
+                : (material.miniaturaUrl as string)
+            }
+            alt="miniatura"
+            className="mt-2 w-24 h-24 object-cover rounded"
+          />
+        )}
       </div>
       <MaterialCodes value={material.nombre} />
       <div className="flex gap-2 pt-2">

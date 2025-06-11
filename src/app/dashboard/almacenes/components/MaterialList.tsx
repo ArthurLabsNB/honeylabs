@@ -53,14 +53,25 @@ export default function MaterialList({
           <option value="cantidad">Cantidad</option>
         </select>
       </div>
-      <ul className="space-y-1 overflow-y-auto max-h-[calc(100vh-16rem)]">
+      <ul className="space-y-1 overflow-y-auto max-h-[calc(100vh-12rem)]">
         {filtrados.map((m) => (
           <li key={m.id}>
             <button
               onClick={() => onSeleccion(m.id)}
-              className={`w-full text-left p-2 rounded-md transition ${m.id === selectedId ? 'bg-white/10' : 'hover:bg-white/5'}`}
+              className={`w-full text-left p-3 rounded-md flex items-center gap-3 transition ${m.id === selectedId ? 'bg-white/10' : 'hover:bg-white/5'}`}
             >
-              {m.nombre}
+              {(m.miniatura || m.miniaturaUrl) && (
+                <img
+                  src={
+                    m.miniatura
+                      ? URL.createObjectURL(m.miniatura)
+                      : (m.miniaturaUrl as string)
+                  }
+                  className="w-12 h-12 object-cover rounded"
+                  alt="miniatura"
+                />
+              )}
+              <span className="flex-1">{m.nombre}</span>
             </button>
           </li>
         ))}

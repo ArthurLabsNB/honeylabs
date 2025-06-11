@@ -1,3 +1,9 @@
+## 0.2.168
+- Mostramos las miniaturas e imágenes cargadas en los formularios.
+- Agrandamos las tarjetas del listado de materiales.
+- Extendimos la altura de los paneles de materiales y unidades.
+- Reubicamos el botón flotante de agregar.
+
 ## 0.2.167
 - Aumenté la altura de los paneles de unidades e historial para mostrar más contenido.
 

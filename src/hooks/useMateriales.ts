@@ -81,6 +81,9 @@ export default function useMateriales(almacenId?: number | string) {
         dbId: m.id,
         ...m,
         fechaCaducidad: m.fechaCaducidad?.slice(0, 10) ?? '',
+        miniaturaUrl: m.miniaturaNombre
+          ? `/api/materiales/archivo?nombre=${encodeURIComponent(m.miniaturaNombre)}`
+          : null,
       })) as Material[] | undefined,
     [data],
   )

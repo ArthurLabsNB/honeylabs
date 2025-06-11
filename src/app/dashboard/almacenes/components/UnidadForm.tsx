@@ -371,9 +371,13 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
             onChange={handleFile('imagen')}
             className="dashboard-input w-full mt-1"
           />
-          {unidad.imagen && typeof unidad.imagen !== 'string' && (
+          {unidad.imagen && (
             <img
-              src={URL.createObjectURL(unidad.imagen)}
+              src={
+                typeof unidad.imagen === 'string'
+                  ? unidad.imagen
+                  : URL.createObjectURL(unidad.imagen)
+              }
               alt="preview"
               className="mt-2 w-24 h-24 object-cover rounded"
             />
