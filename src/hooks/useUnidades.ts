@@ -1,6 +1,22 @@
 import useSWR from 'swr'
 import { jsonOrNull } from '@lib/http'
 
+const fileToBase64 = (file: File) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      const res = reader.result
+      if (typeof res === 'string') {
+        const comma = res.indexOf(',')
+        resolve(comma >= 0 ? res.slice(comma + 1) : res)
+      } else {
+        reject(new Error('error reading file'))
+      }
+    }
+    reader.onerror = () => reject(reader.error)
+    reader.readAsDataURL(file)
+  })
+
 export interface Unidad {
   id: number
   nombre: string
@@ -68,8 +84,7 @@ export default function useUnidades(materialId?: number | string) {
     if (Number.isNaN(id) || id <= 0) return { error: 'ID inválido' }
     const payload: any = { ...datos }
     if (datos.imagen && datos.imagen instanceof File) {
-      const buffer = await datos.imagen.arrayBuffer()
-      payload.imagen = btoa(String.fromCharCode(...new Uint8Array(buffer)))
+      payload.imagen = await fileToBase64(datos.imagen)
       payload.imagenNombre = datos.imagen.name
     }
     const res = await fetch(`/api/materiales/${id}/unidades`, {
@@ -92,8 +107,7 @@ export default function useUnidades(materialId?: number | string) {
     const { id: uid, ...payload } = unidad
     if (Number.isNaN(id) || id <= 0) return { error: 'ID inválido' }
     if (payload.imagen && payload.imagen instanceof File) {
-      const buffer = await payload.imagen.arrayBuffer()
-      ;(payload as any).imagen = btoa(String.fromCharCode(...new Uint8Array(buffer)))
+      ;(payload as any).imagen = await fileToBase64(payload.imagen)
       ;(payload as any).imagenNombre = payload.imagen.name
     }
     const res = await fetch(`/api/materiales/${id}/unidades/${uid}`, {
