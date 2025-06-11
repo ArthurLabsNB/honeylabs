@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
     let descripcion = ''
     let miniaturaNombre: string | null = null
     let miniaturaBuffer: Buffer | null = null
-    let unidad = ''
+    let unidad: string | null = null
     let cantidad = 0
     let lote: string | null = null
     let fechaCaducidad: Date | null = null
@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
       const formData = await req.formData()
       nombre = String(formData.get('nombre') ?? '').trim()
       descripcion = String(formData.get('descripcion') ?? '').trim()
-      unidad = String(formData.get('unidad') ?? '').trim()
+      unidad = String(formData.get('unidad') ?? '').trim() || null
       cantidad = Number(formData.get('cantidad') ?? '0')
       lote = String(formData.get('lote') ?? '').trim() || null
       fechaCaducidad = formData.get('fechaCaducidad') ? new Date(String(formData.get('fechaCaducidad'))) : null
@@ -126,7 +126,7 @@ export async function POST(req: NextRequest) {
       const body = await req.json()
       nombre = body.nombre
       descripcion = body.descripcion
-      unidad = body.unidad
+      unidad = body.unidad || null
       cantidad = Number(body.cantidad)
       lote = body.lote || null
       fechaCaducidad = body.fechaCaducidad ? new Date(body.fechaCaducidad) : null
@@ -142,7 +142,6 @@ export async function POST(req: NextRequest) {
     }
 
     if (!nombre) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 })
-    if (!unidad) return NextResponse.json({ error: 'Unidad requerida' }, { status: 400 })
 
     const material = await prisma.material.create({
       data: {
