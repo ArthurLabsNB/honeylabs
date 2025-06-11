@@ -3,6 +3,12 @@ import type { Material } from "../components/MaterialRow";
 import useMovimientosMaterial from "@/hooks/useMovimientosMaterial";
 import useHistorialMaterial from "@/hooks/useHistorialMaterial";
 import { useState, useMemo } from "react";
+import {
+  PlusIcon,
+  MinusIcon,
+  PencilSquareIcon,
+  TrashIcon,
+} from "@heroicons/react/24/solid";
 import ExportNavbar from "../components/ExportNavbar";
 import MaterialCodes from "../components/MaterialCodes";
 
@@ -53,6 +59,15 @@ export default function HistorialMovimientosPanel({ material, onSelectHistorial 
     })),
   ].sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
 
+  const buscarEstado = (fecha: string, descripcion?: string) => {
+    const target = historial.find(
+      (h) =>
+        Math.abs(new Date(h.fecha).getTime() - new Date(fecha).getTime()) < 5000 &&
+        (h.descripcion ?? '') === (descripcion ?? '')
+    );
+    return target?.estado;
+  };
+
   const filtrados = useMemo(
     () =>
       registros.filter(
@@ -94,17 +109,20 @@ export default function HistorialMovimientosPanel({ material, onSelectHistorial 
             className="p-1 rounded-md bg-white/5 cursor-pointer"
             onClick={() => {
               setDetalle(r);
-              if (r.estado && onSelectHistorial) onSelectHistorial(r.estado);
+              const estado = r.estado ?? buscarEstado(r.fecha, r.descripcion);
+              if (estado && onSelectHistorial) onSelectHistorial(estado);
             }}
           >
-            <span className="mr-2">
-              {r.tipo === 'entrada'
-                ? '➕'
-                : r.tipo === 'salida'
-                  ? '➖'
-                  : r.tipo === 'eliminacion'
-                    ? '🗑'
-                    : '✏'}
+            <span className="mr-2 inline-block w-4 h-4">
+              {r.tipo === 'entrada' ? (
+                <PlusIcon className="w-4 h-4" />
+              ) : r.tipo === 'salida' ? (
+                <MinusIcon className="w-4 h-4" />
+              ) : r.tipo === 'eliminacion' ? (
+                <TrashIcon className="w-4 h-4" />
+              ) : (
+                <PencilSquareIcon className="w-4 h-4" />
+              )}
             </span>
             <span className="font-medium mr-2">{material?.nombre}</span>
             <span className="mr-2">{r.descripcion}</span>
