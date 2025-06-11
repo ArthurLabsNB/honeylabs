@@ -1,3 +1,6 @@
+## 0.2.167
+- Aumenté la altura de los paneles de unidades e historial para mostrar más contenido.
+
 ## 0.2.166
 - Deshabilitamos "Agregar" hasta guardar el material.
 - Mostramos mensaje al descartar un material sin guardar.
