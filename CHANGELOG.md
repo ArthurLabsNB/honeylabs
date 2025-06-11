@@ -1,3 +1,6 @@
+## 0.2.181
+- Corregimos la relación entre HistorialUnidad y MaterialUnidad en Prisma.
+
 ## 0.2.177
 - Agregamos exportaciones múltiples en la vista de historial.
 - Guardamos copias completas al crear, actualizar o borrar unidades.

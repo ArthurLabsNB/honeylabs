@@ -537,7 +537,7 @@ model MaterialUnidad {
   material   Material @relation(fields: [materialId], references: [id])
 
   archivos   ArchivoUnidad[]
-  historiales HistorialUnidad[]
+  historiales HistorialUnidad[] @relation("HistorialUnidadMaterial")
 
   @@unique([materialId, nombre])
 }
@@ -564,7 +564,7 @@ model HistorialUnidad {
   fecha       DateTime        @default(now())
   usuarioId   Int?
   usuario     Usuario?        @relation(fields: [usuarioId], references: [id])
-  unidad      MaterialUnidad  @relation(fields: [unidadId], references: [id])
+  unidad      MaterialUnidad  @relation("HistorialUnidadMaterial", fields: [unidadId], references: [id])
 
   @@index([unidadId])
 }
