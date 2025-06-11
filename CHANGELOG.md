@@ -1,3 +1,6 @@
+## 0.2.182
+- Añadimos la lista de historial de unidades en el modelo `Usuario` para evitar errores en Prisma.
+
 ## 0.2.181
 - Corregimos la relación entre HistorialUnidad y MaterialUnidad en Prisma.
 

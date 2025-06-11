@@ -123,6 +123,7 @@ model Usuario {
   materiales          Material[]
   archivosMaterial    ArchivoMaterial[]
   archivosUnidad      ArchivoUnidad[]
+  historialUnidades   HistorialUnidad[]
   historialLotes      HistorialLote[]
   movimientosMaterial MovimientoMaterial[]
 }
