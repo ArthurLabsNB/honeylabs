@@ -1,11 +1,14 @@
-## 0.2.170
-- Subimos imágenes y archivos a la base de datos.
-- Botón para descargar archivos en los formularios.
+## 0.2.172
+- Prevenimos errores al mostrar la imagen de la unidad.
 
 ## 0.2.171
 - Mostramos los archivos guardados en materiales y unidades.
 - Creamos un nuevo campo al subir cada archivo con un máximo de diez.
 - Habilitamos desplazamiento para revisar los adjuntos.
+
+## 0.2.170
+- Subimos imágenes y archivos a la base de datos.
+- Botón para descargar archivos en los formularios.
 
 ## 0.2.169
 - Agregamos opción para quitar imágenes y archivos en los formularios.
