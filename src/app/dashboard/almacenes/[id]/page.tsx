@@ -59,9 +59,11 @@ export default function AlmacenPage() {
     ? ({
         id: 'backup',
         ...historialBackup,
+        miniatura: null,
         miniaturaUrl: historialBackup.miniatura
           ? `data:image/*;base64,${historialBackup.miniatura}`
           : null,
+        archivos: historialBackup.archivos ?? [],
       } as Material)
     : selectedId
       ? materiales.find((m) => m.id === selectedId) ?? null
