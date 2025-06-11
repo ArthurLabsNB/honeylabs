@@ -1,3 +1,8 @@
+## 0.2.189
+- Ajustamos el historial para abrir respaldos completos.
+- Hicimos más grandes las tarjetas del inventario.
+- Implementamos vista ampliada de imágenes.
+
 ## 0.2.188
 - Guardamos cada sesión en la base de datos.
 - Verificamos la validez de la sesión en `getUsuarioFromSession`.

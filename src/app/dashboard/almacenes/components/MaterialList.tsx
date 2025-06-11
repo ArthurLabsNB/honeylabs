@@ -1,5 +1,6 @@
 "use client";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import ImageModal from "@/components/ImageModal";
 import type { Material } from "./MaterialRow";
 
 interface Props {
@@ -35,6 +36,8 @@ export default function MaterialList({
     [materiales, busqueda, orden],
   );
 
+  const [preview, setPreview] = useState<string | null>(null);
+
   return (
     <div className="space-y-4">
       <div className="flex gap-2">
@@ -58,7 +61,7 @@ export default function MaterialList({
           <li key={m.id}>
             <button
               onClick={() => onSeleccion(m.id)}
-              className={`w-full text-left p-4 rounded-md flex items-center gap-4 transition ${m.id === selectedId ? 'bg-white/10' : 'hover:bg-white/5'}`}
+              className={`w-full text-left p-6 rounded-md flex items-center gap-4 transition ${m.id === selectedId ? 'bg-white/10' : 'hover:bg-white/5'}`}
             >
               {(m.miniatura || m.miniaturaUrl) && (
                 <img
@@ -67,8 +70,16 @@ export default function MaterialList({
                       ? URL.createObjectURL(m.miniatura)
                       : (m.miniaturaUrl as string)
                   }
-                  className="w-20 h-20 object-cover rounded"
+                  className="w-32 h-32 object-cover rounded cursor-pointer"
                   alt="miniatura"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPreview(
+                      m.miniatura
+                        ? URL.createObjectURL(m.miniatura)
+                        : (m.miniaturaUrl as string)
+                    );
+                  }}
                 />
               )}
               <span className="flex-1">{m.nombre}</span>
@@ -91,6 +102,9 @@ export default function MaterialList({
           Duplicar
         </button>
       </div>
+      {preview && (
+        <ImageModal src={preview} onClose={() => setPreview(null)} />
+      )}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
 import { useToast } from "@/components/Toast";
+import ImageModal from "@/components/ImageModal";
 
 const MAX_FILE_MB = 20;
 import type { Material } from "./MaterialRow";
@@ -29,6 +30,7 @@ export default function MaterialForm({
   readOnly = false,
 }: Props) {
   const toast = useToast();
+  const [preview, setPreview] = useState<string | null>(null);
   if (!material)
     return (
       <p className="text-sm text-[var(--dashboard-muted)]">Selecciona o crea un material.</p>
@@ -210,7 +212,16 @@ export default function MaterialForm({
                     : (material.miniaturaUrl as string)
               }
               alt="miniatura"
-              className="w-24 h-24 object-cover rounded"
+              className="w-32 h-32 object-cover rounded cursor-pointer"
+              onClick={() =>
+                setPreview(
+                  material.miniatura instanceof File
+                    ? URL.createObjectURL(material.miniatura)
+                    : typeof material.miniatura === 'string'
+                      ? material.miniatura
+                      : (material.miniaturaUrl as string)
+                )
+              }
             />
             <button
               type="button"
@@ -232,7 +243,8 @@ export default function MaterialForm({
                 <img
                   src={URL.createObjectURL(f)}
                   alt="preview"
-                  className="w-12 h-12 object-cover rounded"
+                  className="w-12 h-12 object-cover rounded cursor-pointer"
+                  onClick={() => setPreview(URL.createObjectURL(f))}
                 />
               )}
               <input
@@ -273,14 +285,22 @@ export default function MaterialForm({
                     <img
                       src={`data:image/*;base64,${(a as any).archivo}`}
                       alt={a.nombre}
-                      className="w-12 h-12 object-cover rounded"
+                      className="w-12 h-12 object-cover rounded cursor-pointer"
+                      onClick={() =>
+                        setPreview(`data:image/*;base64,${(a as any).archivo}`)
+                      }
                     />
                   )
                 ) : a.archivoNombre.match(/\.(png|jpe?g|gif|webp)$/i) ? (
                   <img
                     src={`/api/materiales/${material.dbId}/archivos/${a.id}`}
                     alt={a.nombre}
-                    className="w-12 h-12 object-cover rounded"
+                    className="w-12 h-12 object-cover rounded cursor-pointer"
+                    onClick={() =>
+                      setPreview(
+                        `/api/materiales/${material.dbId}/archivos/${a.id}`
+                      )
+                    }
                   />
                 ) : null}
                 <span className="flex-1 truncate">{a.nombre}</span>
@@ -351,5 +371,6 @@ export default function MaterialForm({
         )}
       </div>
     </div>
+    {preview && <ImageModal src={preview} onClose={() => setPreview(null)} />}
   );
 }
