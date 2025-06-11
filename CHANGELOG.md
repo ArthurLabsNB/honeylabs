@@ -1,3 +1,10 @@
+## 0.2.188
+- Guardamos cada sesión en la base de datos.
+- Verificamos la validez de la sesión en `getUsuarioFromSession`.
+- Creamos `/api/logout-all` para cerrar todas las sesiones.
+- Ajustamos el login para registrar y anular sesiones.
+- Manejamos cookies de forma asíncrona.
+
 ## 0.2.186
 - Mostramos respaldos completos al abrir movimientos.
 - Corregimos ruta de unidades para registrar el historial.
