@@ -14,6 +14,7 @@ interface Registro {
   cantidad?: number | null;
   fecha: string;
   descripcion?: string | null;
+  usuario?: string;
 }
 
 export default function HistorialMovimientosPanel({ material }: Props) {
@@ -24,10 +25,15 @@ export default function HistorialMovimientosPanel({ material }: Props) {
   const registros: Registro[] = [
     ...historial.map((h) => ({
       id: `h-${h.id}`,
-      tipo: "historial",
+      tipo: h.descripcion?.startsWith('Entrada')
+        ? 'entrada'
+        : h.descripcion?.startsWith('Eliminacion')
+          ? 'eliminacion'
+          : 'modificacion',
       cantidad: h.cantidad,
       fecha: h.fecha,
       descripcion: h.descripcion ?? undefined,
+      usuario: h.usuario?.nombre,
     })),
     ...movimientos.map((m) => ({
       id: `m-${m.id}`,
@@ -35,6 +41,7 @@ export default function HistorialMovimientosPanel({ material }: Props) {
       cantidad: m.cantidad,
       fecha: m.fecha,
       descripcion: m.descripcion ?? undefined,
+      usuario: m.usuario?.nombre,
     })),
   ].sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
 
@@ -48,9 +55,20 @@ export default function HistorialMovimientosPanel({ material }: Props) {
             className="p-1 rounded-md bg-white/5 cursor-pointer"
             onClick={() => setDetalle(r)}
           >
-            <span className="font-medium">{r.tipo}</span>
-            {r.cantidad != null && ` - ${r.cantidad}`}{" "}-
-            {new Date(r.fecha).toLocaleDateString()}
+            <span className="mr-2">
+              {r.tipo === 'entrada'
+                ? '➕'
+                : r.tipo === 'salida'
+                  ? '➖'
+                  : r.tipo === 'eliminacion'
+                    ? '🗑'
+                    : '✏'}
+            </span>
+            <span className="font-medium mr-2">{material?.nombre}</span>
+            <span className="mr-2">{r.descripcion}</span>
+            {r.cantidad != null && <span className="mr-2">{r.cantidad}</span>}
+            <span className="mr-2">{new Date(r.fecha).toLocaleDateString()}</span>
+            {r.usuario && <span className="text-xs">{r.usuario}</span>}
           </li>
         ))}
       </ul>

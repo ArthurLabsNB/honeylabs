@@ -420,6 +420,13 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           <div className="space-y-2 max-h-40 overflow-y-auto">
             {unidad.archivos?.map((f, i) => (
               <div key={i} className="flex items-center gap-2">
+                {f.type.startsWith('image/') && (
+                  <img
+                    src={URL.createObjectURL(f)}
+                    alt="preview"
+                    className="w-12 h-12 object-cover rounded"
+                  />
+                )}
                 <input
                   type="file"
                   data-index={i}
@@ -449,8 +456,15 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           </div>
           {archivosPrevios.length > 0 && (
             <ul className="mt-2 space-y-1 text-sm">
-              {archivosPrevios.map((a) => (
+            {archivosPrevios.map((a) => (
                 <li key={a.id} className="flex items-center gap-2">
+                  {a.archivoNombre.match(/\.(png|jpe?g|gif|webp)$/i) && (
+                    <img
+                      src={`/api/materiales/${unidad.materialId}/unidades/${unidad.id}/archivos/${a.id}`}
+                      alt={a.nombre}
+                      className="w-12 h-12 object-cover rounded"
+                    />
+                  )}
                   <span className="flex-1 truncate">{a.nombre}</span>
                   <a
                     href={`/api/materiales/${unidad.materialId}/unidades/${unidad.id}/archivos/${a.id}`}
