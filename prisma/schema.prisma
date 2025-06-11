@@ -537,6 +537,7 @@ model MaterialUnidad {
   material   Material @relation(fields: [materialId], references: [id])
 
   archivos   ArchivoUnidad[]
+  historiales HistorialUnidad[]
 
   @@unique([materialId, nombre])
 }
