@@ -553,3 +553,15 @@ model MovimientoMaterial {
   usuarioId   Int?
   usuario     Usuario?  @relation(fields: [usuarioId], references: [id])
 }
+model HistorialUnidad {
+  id          Int             @id @default(autoincrement())
+  unidadId    Int
+  descripcion String?
+  estado      Json?
+  fecha       DateTime        @default(now())
+  usuarioId   Int?
+  usuario     Usuario?        @relation(fields: [usuarioId], references: [id])
+  unidad      MaterialUnidad  @relation(fields: [unidadId], references: [id])
+
+  @@index([unidadId])
+}
