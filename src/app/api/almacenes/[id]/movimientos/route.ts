@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
     }
-    const { tipo, cantidad, descripcion } = await req.json();
+    const { tipo, cantidad, descripcion, contexto } = await req.json();
     if (tipo !== 'entrada' && tipo !== 'salida') {
       return NextResponse.json({ error: 'Tipo inválido' }, { status: 400 });
     }
@@ -44,6 +44,7 @@ export async function POST(req: NextRequest) {
         tipo,
         cantidad: n,
         descripcion: descripcion || undefined,
+        contexto: contexto ?? undefined,
         almacenId: id,
         usuarioId: usuario.id,
       },

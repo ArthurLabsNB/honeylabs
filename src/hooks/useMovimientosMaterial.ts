@@ -7,6 +7,7 @@ export interface MovimientoMaterial {
   cantidad: number
   fecha: string
   descripcion?: string | null
+  contexto?: any
   usuario?: { nombre: string }
   material?: { nombre: string }
 }

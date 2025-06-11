@@ -242,6 +242,7 @@ model Movimiento {
   cantidad    Int
   fecha       DateTime  @default(now())
   descripcion String?
+  contexto    Json?
 
   almacenId   Int
   almacen     Almacen   @relation(fields: [almacenId], references: [id], onDelete: Cascade)
@@ -549,6 +550,7 @@ model MovimientoMaterial {
   cantidad    Float
   fecha       DateTime  @default(now())
   descripcion String?
+  contexto    Json?
 
   materialId  Int
   material    Material  @relation(fields: [materialId], references: [id], onDelete: Cascade)

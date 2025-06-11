@@ -1,5 +1,7 @@
 "use client";
 import { ChangeEvent } from "react";
+import MaterialCodes from "./MaterialCodes";
+import { generarUUID } from "@/lib/uuid";
 import type { UnidadDetalle } from "@/types/unidad-detalle";
 import useArchivosUnidad from "@/hooks/useArchivosUnidad";
 
@@ -115,14 +117,18 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
             />
           </div>
           <div>
-            <label htmlFor="unidad-codigoQR" className="text-xs text-[var(--dashboard-muted)]">Código QR</label>
-            <input
-              id="unidad-codigoQR"
-              value={unidad.codigoQR ?? ""}
-              onChange={handle("codigoQR")}
-              className="dashboard-input w-full mt-1"
-            />
-          </div>
+          <label htmlFor="unidad-codigoQR" className="text-xs text-[var(--dashboard-muted)]">Código QR</label>
+          <input
+            id="unidad-codigoQR"
+            value={unidad.codigoQR ?? ""}
+            onChange={handle("codigoQR")}
+            className="dashboard-input w-full mt-1"
+          />
+          <MaterialCodes
+            value={unidad.codigoQR || ''}
+            onRegenerate={() => onChange('codigoQR', generarUUID())}
+          />
+        </div>
         </div>
         <div>
         <label htmlFor="unidad-lote" className="text-xs text-[var(--dashboard-muted)]">Lote</label>

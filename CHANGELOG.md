@@ -2,6 +2,11 @@
 - Incorporamos barra de exportación para el historial.
 - Registramos snapshots completos en materiales y unidades.
 
+## 0.2.178
+- Guardamos el contexto adicional en cada movimiento.
+- Mostramos el QR con opción de regenerarlo en formularios y historial.
+- Iniciamos módulo base para proveedores de almacenamiento en la nube.
+
 ## 0.2.176
 - Añadimos búsqueda y filtros al historial de movimientos.
 

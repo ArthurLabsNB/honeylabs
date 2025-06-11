@@ -4,6 +4,7 @@ import useMovimientosMaterial from "@/hooks/useMovimientosMaterial";
 import useHistorialMaterial from "@/hooks/useHistorialMaterial";
 import { useState, useMemo } from "react";
 import ExportNavbar from "../components/ExportNavbar";
+import MaterialCodes from "../components/MaterialCodes";
 
 interface Props {
   material: Material | null;
@@ -118,8 +119,11 @@ export default function HistorialMovimientosPanel({ material, onSelectHistorial 
         ))}
       </ul>
       {detalle && (
-        <div className="text-xs bg-white/5 p-2 rounded-md">
-          {detalle.descripcion || "Sin detalles"}
+        <div className="text-xs bg-white/5 p-2 rounded-md space-y-2">
+          {detalle.estado?.codigoQR && (
+            <MaterialCodes value={detalle.estado.codigoQR} />
+          )}
+          <div>{detalle.descripcion || "Sin detalles"}</div>
         </div>
       )}
     </div>
