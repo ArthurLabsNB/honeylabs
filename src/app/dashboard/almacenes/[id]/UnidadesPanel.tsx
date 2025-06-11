@@ -88,7 +88,7 @@ export default function UnidadesPanel({
         placeholder="Buscar"
         className="p-1 w-full rounded-md bg-white/5 focus:outline-none"
       />
-      <ul className="space-y-1 max-h-72 overflow-y-auto">
+      <ul className="space-y-1 max-h-96 overflow-y-auto">
         {filtrados.map((u) => (
           <li
             key={u.id}

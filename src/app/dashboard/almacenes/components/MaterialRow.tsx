@@ -21,6 +21,8 @@ export interface Material {
   minimo?: number;
   maximo?: number;
   miniatura?: File | null;
+  miniaturaNombre?: string | null;
+  miniaturaUrl?: string | null;
 }
 
 interface Props {
