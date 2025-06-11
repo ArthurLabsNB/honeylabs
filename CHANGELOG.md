@@ -1,3 +1,7 @@
+## 0.2.183
+- Mejoramos los filtros del inventario.
+- Permitimos espiar la generación de UUID en pruebas.
+
 ## 0.2.182
 - Añadimos la lista de historial de unidades en el modelo `Usuario` para evitar errores en Prisma.
 
