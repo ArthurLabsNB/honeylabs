@@ -1,10 +1,12 @@
 export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers'
 import prisma from '@lib/prisma';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { SESSION_COOKIE, sessionCookieOptions } from '@lib/constants';
+import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
 
 
@@ -101,6 +103,17 @@ export async function POST(req: NextRequest) {
         }
       : null;
 
+    const session = await prisma.sesionUsuario.create({
+      data: {
+        usuarioId: usuario.id,
+        userAgent: req.headers.get('user-agent') || null,
+        ip:
+          req.headers.get('x-real-ip') ||
+          req.headers.get('x-forwarded-for') ||
+          null,
+      },
+    })
+
     const payload = {
       id: usuario.id,
       nombre: usuario.nombre,
@@ -110,9 +123,11 @@ export async function POST(req: NextRequest) {
       entidad: usuario.entidad,
       roles,
       plan: suscripcionActiva,
-    };
+    }
 
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: COOKIE_EXPIRES });
+    const token = jwt.sign({ id: usuario.id, sid: session.id }, JWT_SECRET, {
+      expiresIn: COOKIE_EXPIRES,
+    })
 
     const res = NextResponse.json(
       { success: true, usuario: payload },
@@ -134,29 +149,41 @@ export async function POST(req: NextRequest) {
 // GET verificar sesión
 export async function GET(req: NextRequest) {
   try {
-    const token = req.cookies.get(SESSION_COOKIE)?.value;
-    if (!token) {
-      return NextResponse.json({ success: false, error: 'No autenticado.' }, { status: 401 });
+    const cookieStore = await cookies()
+    const usuario = await getUsuarioFromSession({ cookies: cookieStore })
+    if (!usuario) {
+      return NextResponse.json(
+        { success: false, error: 'No autenticado.' },
+        { status: 401 },
+      )
     }
-    try {
-      const decoded = jwt.verify(token, JWT_SECRET);
-      return NextResponse.json({ success: true, usuario: decoded }, { status: 200 });
-    } catch {
-      return NextResponse.json({ success: false, error: 'Sesión expirada.' }, { status: 401 });
-    }
+    return NextResponse.json({ success: true, usuario }, { status: 200 })
   } catch (error) {
-    logger.error('[ERROR_GET_SESSION]', error);
-    return NextResponse.json({ success: false, error: 'Error interno.' }, { status: 500 });
+    logger.error('[ERROR_GET_SESSION]', error)
+    return NextResponse.json({ success: false, error: 'Error interno.' }, { status: 500 })
   }
 }
 
 // DELETE Logout
 export async function DELETE(req: NextRequest) {
-  const res = NextResponse.json({ success: true }, { status: 200 });
+  const cookieStore = await cookies()
+  const token = cookieStore.get(SESSION_COOKIE)?.value
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET) as { sid?: number }
+      if (decoded.sid) {
+        await prisma.sesionUsuario.update({
+          where: { id: decoded.sid },
+          data: { activa: false, fechaUltima: new Date() },
+        })
+      }
+    } catch {}
+  }
+  const res = NextResponse.json({ success: true }, { status: 200 })
   res.cookies.set(SESSION_COOKIE, '', {
     ...sessionCookieOptions,
     expires: new Date(0),
     maxAge: 0,
-  });
-  return res;
+  })
+  return res
 }
