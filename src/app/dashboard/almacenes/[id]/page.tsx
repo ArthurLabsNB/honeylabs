@@ -56,7 +56,13 @@ export default function AlmacenPage() {
 
   const routerNav = useNextRouter();
   const selectedMaterial = historialBackup
-    ? ({ id: 'backup', ...historialBackup } as Material)
+    ? ({
+        id: 'backup',
+        ...historialBackup,
+        miniaturaUrl: historialBackup.miniatura
+          ? `data:image/*;base64,${historialBackup.miniatura}`
+          : null,
+      } as Material)
     : selectedId
       ? materiales.find((m) => m.id === selectedId) ?? null
       : null;

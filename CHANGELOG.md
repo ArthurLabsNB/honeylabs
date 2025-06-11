@@ -1,3 +1,7 @@
+## 0.2.186
+- Mostramos respaldos completos al abrir movimientos.
+- Corregimos ruta de unidades para registrar el historial.
+
 ## 0.2.185
 - Conectamos las relaciones al crear materiales para evitar errores.
 

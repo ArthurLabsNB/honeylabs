@@ -35,9 +35,14 @@ export default function MaterialForm({
     );
 
   const { unidades } = useUnidades(material.dbId);
-  const { archivos: archivosPrevios, eliminar, mutate } = useArchivosMaterial(
-    material.dbId,
-  );
+  const {
+    archivos: archivosPreviosHook,
+    eliminar,
+    mutate,
+  } = useArchivosMaterial(material.dbId);
+  const archivosPrevios = readOnly && Array.isArray(material.archivos)
+    ? (material.archivos as any[]).map((a, i) => ({ ...a, id: i }))
+    : archivosPreviosHook;
 
   const guardar = () => {
     onGuardar();
@@ -198,9 +203,11 @@ export default function MaterialForm({
           <div className="mt-2 flex items-start gap-2">
             <img
               src={
-                material.miniatura
+                material.miniatura instanceof File
                   ? URL.createObjectURL(material.miniatura)
-                  : (material.miniaturaUrl as string)
+                  : typeof material.miniatura === 'string'
+                    ? material.miniatura
+                    : (material.miniaturaUrl as string)
               }
               alt="miniatura"
               className="w-24 h-24 object-cover rounded"
@@ -248,13 +255,12 @@ export default function MaterialForm({
               </button>
             </div>
           ))}
-          {(!material.archivos || material.archivos.length < 10) && (
+          {!readOnly && (!material.archivos || material.archivos.length < 10) && (
             <input
               type="file"
               data-index={material.archivos?.length || 0}
               onChange={handle('archivos') as any}
               className="dashboard-input w-full"
-              disabled={readOnly}
             />
           )}
         </div>
@@ -262,29 +268,42 @@ export default function MaterialForm({
           <ul className="mt-2 space-y-1 text-sm">
             {archivosPrevios.map((a) => (
               <li key={a.id} className="flex items-center gap-2">
-                {a.archivoNombre.match(/\.(png|jpe?g|gif|webp)$/i) && (
+                {readOnly && (a as any).archivo ? (
+                  (a as any).archivoNombre.match(/\.(png|jpe?g|gif|webp)$/i) && (
+                    <img
+                      src={`data:image/*;base64,${(a as any).archivo}`}
+                      alt={a.nombre}
+                      className="w-12 h-12 object-cover rounded"
+                    />
+                  )
+                ) : a.archivoNombre.match(/\.(png|jpe?g|gif|webp)$/i) ? (
                   <img
                     src={`/api/materiales/${material.dbId}/archivos/${a.id}`}
                     alt={a.nombre}
                     className="w-12 h-12 object-cover rounded"
                   />
-                )}
+                ) : null}
                 <span className="flex-1 truncate">{a.nombre}</span>
                 <a
-                  href={`/api/materiales/${material.dbId}/archivos/${a.id}`}
+                  href={
+                    readOnly && (a as any).archivo
+                      ? `data:application/octet-stream;base64,${(a as any).archivo}`
+                      : `/api/materiales/${material.dbId}/archivos/${a.id}`
+                  }
                   download={a.nombre}
                   className="px-1 py-0.5 bg-blue-600 text-white text-xs rounded"
                 >
                   Descargar
                 </a>
-                <button
-                  type="button"
-                  onClick={() => eliminar(a.id)}
-                  className="px-1 py-0.5 bg-red-600 text-white text-xs rounded"
-                  disabled={readOnly}
-                >
-                  Quitar
-                </button>
+                {!readOnly && (
+                  <button
+                    type="button"
+                    onClick={() => eliminar(a.id)}
+                    className="px-1 py-0.5 bg-red-600 text-white text-xs rounded"
+                  >
+                    Quitar
+                  </button>
+                )}
               </li>
             ))}
           </ul>
