@@ -5,6 +5,10 @@
 ## 0.2.176
 - Añadimos búsqueda y filtros al historial de movimientos.
 
+## 0.1.0
+- Registramos el estado completo de cada movimiento.
+- Permitimos visualizar el respaldo en modo solo lectura.
+
 ## 0.2.174
 - Evitamos desbordamiento de pila al convertir la imagen en el formulario de unidades.
 

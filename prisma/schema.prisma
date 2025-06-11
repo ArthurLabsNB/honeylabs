@@ -489,6 +489,7 @@ model HistorialLote {
   materialId  Int
   lote        String?
   descripcion String?
+  estado      Json?
   ubicacion   String?
   cantidad    Float?
   fecha       DateTime @default(now())

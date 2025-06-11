@@ -31,6 +31,7 @@ export async function GET(req: NextRequest) {
         ubicacion: true,
         cantidad: true,
         lote: true,
+        estado: true,
         fecha: true,
         usuario: { select: { nombre: true } },
       },
@@ -58,7 +59,47 @@ export async function POST(req: NextRequest) {
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
     }
-  const entry = await prisma.historialLote.create({
+    // Obtener el estado completo del material en el momento
+    const materialActual = await prisma.material.findUnique({
+      where: { id },
+      select: {
+        nombre: true,
+        descripcion: true,
+        miniatura: true,
+        miniaturaNombre: true,
+        cantidad: true,
+        unidad: true,
+        lote: true,
+        fechaCaducidad: true,
+        ubicacion: true,
+        proveedor: true,
+        estado: true,
+        observaciones: true,
+        codigoBarra: true,
+        codigoQR: true,
+        minimo: true,
+        maximo: true,
+        archivos: {
+          select: { nombre: true, archivoNombre: true, archivo: true },
+        },
+      },
+    });
+    const estado = materialActual
+      ? {
+          ...materialActual,
+          miniatura: materialActual.miniatura
+            ? Buffer.from(materialActual.miniatura as Buffer).toString('base64')
+            : null,
+          archivos: materialActual.archivos.map((a) => ({
+            nombre: a.nombre,
+            archivoNombre: a.archivoNombre,
+            archivo: a.archivo
+              ? Buffer.from(a.archivo as Buffer).toString('base64')
+              : null,
+          })),
+        }
+      : null;
+    const entry = await prisma.historialLote.create({
       data: {
         materialId: id,
         lote: body.lote || null,
@@ -66,10 +107,10 @@ export async function POST(req: NextRequest) {
         ubicacion: body.ubicacion || null,
         cantidad: body.cantidad ?? null,
         usuarioId: usuario.id,
+        estado,
       },
       select: { id: true },
     });
-    await createMaterialSnapshot(id, usuario.id);
     return NextResponse.json({ entry });
   } catch (err) {
     logger.error('POST /api/materiales/[id]/historial', err);

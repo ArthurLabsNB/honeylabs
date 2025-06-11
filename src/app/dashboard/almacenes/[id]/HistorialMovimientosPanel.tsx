@@ -7,6 +7,7 @@ import ExportNavbar from "../components/ExportNavbar";
 
 interface Props {
   material: Material | null;
+  onSelectHistorial?: (estado: any) => void;
 }
 
 interface Registro {
@@ -16,9 +17,10 @@ interface Registro {
   fecha: string;
   descripcion?: string | null;
   usuario?: string;
+  estado?: any;
 }
 
-export default function HistorialMovimientosPanel({ material }: Props) {
+export default function HistorialMovimientosPanel({ material, onSelectHistorial }: Props) {
   const { movimientos } = useMovimientosMaterial(material?.dbId);
   const { historial } = useHistorialMaterial(material?.dbId);
   const [detalle, setDetalle] = useState<Registro | null>(null);
@@ -40,6 +42,7 @@ export default function HistorialMovimientosPanel({ material }: Props) {
       cantidad: h.cantidad,
       fecha: h.fecha,
       descripcion: h.descripcion ?? undefined,
+      estado: h.estado,
       usuario: h.usuario?.nombre,
     })),
     ...movimientos.map((m) => ({
@@ -92,7 +95,10 @@ export default function HistorialMovimientosPanel({ material }: Props) {
           <li
             key={r.id}
             className="p-1 rounded-md bg-white/5 cursor-pointer"
-            onClick={() => setDetalle(r)}
+            onClick={() => {
+              setDetalle(r);
+              if (r.estado && onSelectHistorial) onSelectHistorial(r.estado);
+            }}
           >
             <span className="mr-2">
               {r.tipo === 'entrada'

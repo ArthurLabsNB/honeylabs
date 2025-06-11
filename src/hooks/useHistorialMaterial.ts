@@ -8,6 +8,7 @@ export interface HistorialEntry {
   cantidad?: number | null
   lote?: string | null
   fecha: string
+  estado?: any
 }
 
 const fetcher = (url: string) => fetch(url).then(jsonOrNull)
