@@ -180,6 +180,8 @@ export default function AlmacenPage() {
         return
       }
       toast.show('Eliminado', 'success')
+    } else {
+      toast.show('Descartado', 'success')
     }
     mutate()
     setSelectedId(null)
