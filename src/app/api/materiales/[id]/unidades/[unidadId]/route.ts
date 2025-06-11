@@ -6,6 +6,7 @@ import { Prisma } from '@prisma/client'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import * as logger from '@lib/logger'
+import { createUnidadSnapshot } from '@lib/snapshot'
 
 function getIds(req: NextRequest): { materialId: number | null; unidadId: number | null } {
   const parts = req.nextUrl.pathname.split('/')
@@ -124,6 +125,7 @@ export async function PUT(req: NextRequest) {
         data,
         select: { id: true, nombre: true, codigoQR: true },
       })
+      await createUnidadSnapshot(unidadId, usuario.id)
       return NextResponse.json({ unidad: actualizado })
     } catch (e) {
       if (

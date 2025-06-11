@@ -6,6 +6,7 @@ import { Prisma } from '@prisma/client'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import * as logger from '@lib/logger'
+import { createUnidadSnapshot } from '@lib/snapshot'
 
 function getMaterialId(req: NextRequest): number | null {
   const parts = req.nextUrl.pathname.split('/')
@@ -122,6 +123,7 @@ export async function POST(req: NextRequest) {
         data,
         select: { id: true, nombre: true, codigoQR: true },
       })
+      await createUnidadSnapshot(creado.id, usuario.id)
       return NextResponse.json({ unidad: creado })
     } catch (e) {
       if (

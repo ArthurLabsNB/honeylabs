@@ -1,3 +1,7 @@
+## 0.2.177
+- Incorporamos barra de exportación para el historial.
+- Registramos snapshots completos en materiales y unidades.
+
 ## 0.2.176
 - Añadimos búsqueda y filtros al historial de movimientos.
 

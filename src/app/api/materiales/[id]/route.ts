@@ -6,6 +6,7 @@ import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import crypto from 'node:crypto'
 import * as logger from '@lib/logger'
+import { createMaterialSnapshot } from '@lib/snapshot'
 
 function getMaterialId(req: NextRequest): number | null {
   const parts = req.nextUrl.pathname.split('/');
@@ -107,6 +108,7 @@ export async function PUT(req: NextRequest) {
       data: datos,
       select: { id: true },
     })
+    await createMaterialSnapshot(id, usuario.id)
     return NextResponse.json({ material: actualizado })
   } catch (err) {
     logger.error('PUT /api/materiales/[id]', err)
