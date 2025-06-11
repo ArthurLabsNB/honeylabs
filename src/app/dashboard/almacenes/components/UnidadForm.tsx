@@ -392,7 +392,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
             onChange={handleFile('imagen')}
             className="dashboard-input w-full mt-1"
           />
-          {unidad.imagen && (
+          {(unidad.imagen || unidad.imagenUrl) && (
             <div className="mt-2 flex items-start gap-2">
               <img
                 src={
@@ -400,7 +400,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
                     ? URL.createObjectURL(unidad.imagen)
                     : typeof unidad.imagen === 'string'
                       ? unidad.imagen
-                      : ''
+                      : unidad.imagenUrl ?? undefined
                 }
                 alt="preview"
                 className="w-24 h-24 object-cover rounded"
