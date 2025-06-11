@@ -8,7 +8,7 @@ const fetcher = (url: string) => fetch(url).then(jsonOrNull)
 
 const EMPTY_MATERIALS: Material[] = []
 
-const genId = generarUUID
+const genId = () => generarUUID()
 
 export default function useMateriales(almacenId?: number | string) {
   const id = Number(almacenId)

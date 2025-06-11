@@ -44,6 +44,22 @@ export default function InventarioPage() {
           </option>
         ))}
       </select>
+      <div className="flex gap-2">
+        <input
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          placeholder="Buscar"
+          className="flex-1 p-2 border rounded-md"
+        />
+        <select
+          value={orden}
+          onChange={(e) => setOrden(e.target.value as any)}
+          className="p-2 border rounded-md"
+        >
+          <option value="nombre">Nombre</option>
+          <option value="cantidad">Cantidad</option>
+        </select>
+      </div>
       {loadingMateriales ? (
         <p>Cargando...</p>
       ) : (
