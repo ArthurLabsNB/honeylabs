@@ -7,6 +7,9 @@
 - Mostramos el QR con opción de regenerarlo en formularios y historial.
 - Iniciamos módulo base para proveedores de almacenamiento en la nube.
 
+## 0.2.180
+- Ajusté la conexión de Prisma para usar el proxy solo cuando se indique.
+
 ## 0.2.176
 - Añadimos búsqueda y filtros al historial de movimientos.
 

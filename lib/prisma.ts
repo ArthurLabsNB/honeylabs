@@ -5,7 +5,8 @@ const globalForPrisma = global as unknown as { prisma: PrismaClient }
 function resolveDatabaseUrl() {
   let url = process.env.DATABASE_URL
   if (!url) return undefined
-  if (!url.startsWith('prisma://') && !url.startsWith('prisma+')) {
+  const useProxy = process.env.PRISMA_DATA_PROXY?.toLowerCase() === 'true'
+  if (useProxy && !url.startsWith('prisma://') && !url.startsWith('prisma+')) {
     if (url.startsWith('postgres://') || url.startsWith('postgresql://')) {
       url = `prisma+${url}`
     }
