@@ -302,6 +302,7 @@ export default function AlmacenPage() {
                   minimo: 0,
                   maximo: 0,
                   miniatura: null,
+                  archivos: [],
                 },
               ])
               setSelectedId(nuevoId)

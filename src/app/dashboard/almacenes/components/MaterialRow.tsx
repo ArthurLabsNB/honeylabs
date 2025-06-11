@@ -23,6 +23,7 @@ export interface Material {
   miniatura?: File | null;
   miniaturaNombre?: string | null;
   miniaturaUrl?: string | null;
+  archivos?: File[];
 }
 
 interface Props {

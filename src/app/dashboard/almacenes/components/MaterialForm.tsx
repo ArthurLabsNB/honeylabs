@@ -1,5 +1,9 @@
 "use client";
 import { ChangeEvent } from "react";
+import { useToast } from "@/components/Toast";
+
+const MAX_FILE_MB = 20;
+import { useToast } from "@/components/Toast";
 import type { Material } from "./MaterialRow";
 import MaterialCodes from "./MaterialCodes";
 import useUnidades from "@/hooks/useUnidades";
@@ -21,6 +25,7 @@ export default function MaterialForm({
   onDuplicar,
   onEliminar,
 }: Props) {
+  const toast = useToast();
   if (!material)
     return (
       <p className="text-sm text-[var(--dashboard-muted)]">Selecciona o crea un material.</p>
@@ -36,6 +41,16 @@ export default function MaterialForm({
       onChange(campo, Number(e.target.value));
     } else if (campo === 'miniatura') {
       onChange(campo, (e.target as HTMLInputElement).files?.[0] || null);
+    } else if (campo === 'archivos') {
+      const files = Array.from((e.target as HTMLInputElement).files || []);
+      const valid = files.filter((f) => {
+        if (f.size > MAX_FILE_MB * 1024 * 1024) {
+          toast.show(`Archivo demasiado grande: ${f.name}`, 'error');
+          return false;
+        }
+        return true;
+      });
+      onChange(campo, valid);
     } else {
       onChange(campo, e.target.value);
     }
@@ -158,15 +173,52 @@ export default function MaterialForm({
           className="dashboard-input w-full mt-1"
         />
         {(material.miniatura || material.miniaturaUrl) && (
-          <img
-            src={
-              material.miniatura
-                ? URL.createObjectURL(material.miniatura)
-                : (material.miniaturaUrl as string)
-            }
-            alt="miniatura"
-            className="mt-2 w-24 h-24 object-cover rounded"
-          />
+          <div className="mt-2 flex items-start gap-2">
+            <img
+              src={
+                material.miniatura
+                  ? URL.createObjectURL(material.miniatura)
+                  : (material.miniaturaUrl as string)
+              }
+              alt="miniatura"
+              className="w-24 h-24 object-cover rounded"
+            />
+            <button
+              type="button"
+              onClick={() => onChange('miniatura', null)}
+              className="px-2 py-1 bg-red-600 text-white text-xs rounded"
+            >
+              Quitar
+            </button>
+          </div>
+        )}
+      </div>
+      <div>
+        <label htmlFor="material-archivos" className="text-xs text-[var(--dashboard-muted)]">Archivos adjuntos</label>
+        <input
+          id="material-archivos"
+          type="file"
+          multiple
+          onChange={handle('archivos') as any}
+          className="dashboard-input w-full mt-1"
+        />
+        {material.archivos && material.archivos.length > 0 && (
+          <ul className="mt-2 space-y-1 text-sm">
+            {material.archivos.map((f, i) => (
+              <li key={i} className="flex items-center gap-2">
+                <span className="flex-1 truncate">{f.name}</span>
+                <button
+                  type="button"
+                  onClick={() =>
+                    onChange('archivos', material.archivos!.filter((_, idx) => idx !== i))
+                  }
+                  className="px-1 py-0.5 bg-red-600 text-white text-xs rounded"
+                >
+                  Quitar
+                </button>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
       <MaterialCodes value={material.nombre} />
