@@ -125,7 +125,6 @@ model Usuario {
   archivosUnidad      ArchivoUnidad[]
   historialLotes      HistorialLote[]
   movimientosMaterial MovimientoMaterial[]
-  snapshots          SnapshotMaterial[]
 }
 
 // ================================
@@ -539,8 +538,6 @@ model MaterialUnidad {
 
   archivos   ArchivoUnidad[]
 
-  snapshots  SnapshotUnidad[]
-
   @@unique([materialId, nombre])
 }
 
@@ -558,25 +555,15 @@ model MovimientoMaterial {
   usuarioId   Int?
   usuario     Usuario?  @relation(fields: [usuarioId], references: [id])
 }
+model HistorialUnidad {
+  id          Int             @id @default(autoincrement())
+  unidadId    Int
+  descripcion String?
+  estado      Json?
+  fecha       DateTime        @default(now())
+  usuarioId   Int?
+  usuario     Usuario?        @relation(fields: [usuarioId], references: [id])
+  unidad      MaterialUnidad  @relation(fields: [unidadId], references: [id])
 
-model SnapshotMaterial {
-  id         Int      @id @default(autoincrement())
-  fecha      DateTime @default(now())
-  materialId Int
-  usuarioId  Int?
-  data       Json
-
-  material   Material @relation(fields: [materialId], references: [id])
-  usuario    Usuario? @relation(fields: [usuarioId], references: [id])
-}
-
-model SnapshotUnidad {
-  id       Int      @id @default(autoincrement())
-  fecha    DateTime @default(now())
-  unidadId Int
-  usuarioId Int?
-  data     Json
-
-  unidad   MaterialUnidad @relation(fields: [unidadId], references: [id])
-  usuario  Usuario?       @relation(fields: [usuarioId], references: [id])
+  @@index([unidadId])
 }

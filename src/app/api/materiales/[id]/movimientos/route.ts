@@ -5,7 +5,6 @@ import prisma from '@lib/prisma'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import * as logger from '@lib/logger'
-import { createMaterialSnapshot } from '@lib/snapshot'
 
 function getMaterialId(req: NextRequest): number | null {
   const parts = req.nextUrl.pathname.split('/')
@@ -47,7 +46,6 @@ export async function POST(req: NextRequest) {
         usuarioId: usuario.id,
       },
     })
-    await createMaterialSnapshot(id, usuario.id)
     return NextResponse.json({ success: true })
   } catch (err) {
     logger.error('POST /api/materiales/[id]/movimientos', err)

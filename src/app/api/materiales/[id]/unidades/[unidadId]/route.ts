@@ -6,7 +6,6 @@ import { Prisma } from '@prisma/client'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import * as logger from '@lib/logger'
-import { createUnidadSnapshot } from '@lib/snapshot'
 
 function getIds(req: NextRequest): { materialId: number | null; unidadId: number | null } {
   const parts = req.nextUrl.pathname.split('/')
@@ -125,7 +124,7 @@ export async function PUT(req: NextRequest) {
         data,
         select: { id: true, nombre: true, codigoQR: true },
       })
-      await createUnidadSnapshot(unidadId, usuario.id)
+      await snapshot(actualizado.id, usuario.id, 'Modificación')
       return NextResponse.json({ unidad: actualizado })
     } catch (e) {
       if (
@@ -161,6 +160,7 @@ export async function DELETE(req: NextRequest) {
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
     }
+    await snapshot(unidadId, usuario.id, 'Eliminación')
     await prisma.materialUnidad.delete({ where: { id: unidadId } })
     return NextResponse.json({ success: true })
   } catch (err) {

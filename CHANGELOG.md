@@ -1,6 +1,6 @@
 ## 0.2.177
-- Incorporamos barra de exportación para el historial.
-- Registramos snapshots completos en materiales y unidades.
+- Agregamos exportaciones múltiples en la vista de historial.
+- Guardamos copias completas al crear, actualizar o borrar unidades.
 
 ## 0.2.178
 - Guardamos el contexto adicional en cada movimiento.

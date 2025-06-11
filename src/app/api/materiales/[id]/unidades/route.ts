@@ -6,7 +6,28 @@ import { Prisma } from '@prisma/client'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import * as logger from '@lib/logger'
-import { createUnidadSnapshot } from '@lib/snapshot'
+
+async function snapshot(unidadId: number, usuarioId: number, descripcion: string) {
+  const unidad = await prisma.materialUnidad.findUnique({
+    where: { id: unidadId },
+    include: { archivos: { select: { nombre: true, archivoNombre: true, archivo: true } } },
+  })
+  const estado = unidad
+    ? {
+        ...unidad,
+        imagen: unidad.imagen ? Buffer.from(unidad.imagen as Buffer).toString('base64') : null,
+        archivos: unidad.archivos.map(a => ({
+          nombre: a.nombre,
+          archivoNombre: a.archivoNombre,
+          archivo: a.archivo ? Buffer.from(a.archivo as Buffer).toString('base64') : null,
+        })),
+      }
+    : null
+  // @ts-ignore
+  await prisma.historialUnidad.create({
+    data: { unidadId, usuarioId, descripcion, estado },
+  })
+}
 
 function getMaterialId(req: NextRequest): number | null {
   const parts = req.nextUrl.pathname.split('/')
@@ -123,7 +144,7 @@ export async function POST(req: NextRequest) {
         data,
         select: { id: true, nombre: true, codigoQR: true },
       })
-      await createUnidadSnapshot(creado.id, usuario.id)
+      await snapshot(creado.id, usuario.id, 'Creación')
       return NextResponse.json({ unidad: creado })
     } catch (e) {
       if (
