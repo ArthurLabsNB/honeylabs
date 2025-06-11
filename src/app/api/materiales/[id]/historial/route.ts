@@ -5,6 +5,7 @@ import prisma from '@lib/prisma';
 import { getUsuarioFromSession } from '@lib/auth';
 import { hasManagePerms } from '@lib/permisos';
 import * as logger from '@lib/logger';
+import { createMaterialSnapshot } from '@lib/snapshot';
 
 function getMaterialIdFromRequest(req: NextRequest): number | null {
   const parts = req.nextUrl.pathname.split('/');
@@ -57,7 +58,7 @@ export async function POST(req: NextRequest) {
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
     }
-    const entry = await prisma.historialLote.create({
+  const entry = await prisma.historialLote.create({
       data: {
         materialId: id,
         lote: body.lote || null,
@@ -68,6 +69,7 @@ export async function POST(req: NextRequest) {
       },
       select: { id: true },
     });
+    await createMaterialSnapshot(id, usuario.id);
     return NextResponse.json({ entry });
   } catch (err) {
     logger.error('POST /api/materiales/[id]/historial', err);

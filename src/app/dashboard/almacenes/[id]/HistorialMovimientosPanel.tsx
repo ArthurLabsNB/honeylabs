@@ -3,6 +3,7 @@ import type { Material } from "../components/MaterialRow";
 import useMovimientosMaterial from "@/hooks/useMovimientosMaterial";
 import useHistorialMaterial from "@/hooks/useHistorialMaterial";
 import { useState, useMemo } from "react";
+import ExportNavbar from "../components/ExportNavbar";
 
 interface Props {
   material: Material | null;
@@ -23,6 +24,10 @@ export default function HistorialMovimientosPanel({ material }: Props) {
   const [detalle, setDetalle] = useState<Registro | null>(null);
   const [busqueda, setBusqueda] = useState('');
   const [tipo, setTipo] = useState<'todos' | 'entrada' | 'salida' | 'modificacion' | 'eliminacion'>('todos');
+  const handleExport = (f: string) => {
+    if (!material?.dbId) return;
+    window.open(`/api/materiales/${material.dbId}/export?format=${f}`);
+  };
 
   const registros: Registro[] = [
     ...historial.map((h) => ({
@@ -61,6 +66,7 @@ export default function HistorialMovimientosPanel({ material }: Props) {
 
   return (
     <div className="p-4 border rounded-md space-y-2">
+      <ExportNavbar onExport={handleExport} />
       <h2 className="font-semibold">Historial / Movimientos</h2>
       <div className="flex gap-2">
         <input
