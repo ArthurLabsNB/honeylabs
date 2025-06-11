@@ -436,7 +436,7 @@ model Material {
   miniatura         Bytes?
   miniaturaNombre   String?
   cantidad          Float
-  unidad            String
+  unidad            String?
   lote              String?
   fechaCaducidad    DateTime?
   ubicacion         String?
