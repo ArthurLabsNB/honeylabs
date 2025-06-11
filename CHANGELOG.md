@@ -4,6 +4,10 @@
 - Extendimos la altura de los paneles de materiales y unidades.
 - Reubicamos el botón flotante de agregar.
 
+## 0.2.169
+- Agregamos opción para quitar imágenes y archivos en los formularios.
+- Permitimos subir múltiples archivos al material con límite de 20MB.
+
 ## 0.2.167
 - Aumenté la altura de los paneles de unidades e historial para mostrar más contenido.
 

@@ -98,6 +98,25 @@ export default function EditarAlmacenPage() {
           className="border p-2 rounded w-full"
           onChange={(e) => setImagen(e.target.files?.[0] || null)}
         />
+        {(imagen || imagenUrl) && (
+          <div className="mt-2 flex items-start gap-2">
+            <img
+              src={imagen ? URL.createObjectURL(imagen) : imagenUrl}
+              alt="preview"
+              className="w-24 h-24 object-cover rounded"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                setImagen(null);
+                setImagenUrl('');
+              }}
+              className="px-2 py-1 bg-red-600 text-white text-xs rounded"
+            >
+              Quitar
+            </button>
+          </div>
+        )}
 
         <button
           onClick={guardar}

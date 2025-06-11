@@ -372,15 +372,24 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
             className="dashboard-input w-full mt-1"
           />
           {unidad.imagen && (
-            <img
-              src={
-                typeof unidad.imagen === 'string'
-                  ? unidad.imagen
-                  : URL.createObjectURL(unidad.imagen)
-              }
-              alt="preview"
-              className="mt-2 w-24 h-24 object-cover rounded"
-            />
+            <div className="mt-2 flex items-start gap-2">
+              <img
+                src={
+                  typeof unidad.imagen === 'string'
+                    ? unidad.imagen
+                    : URL.createObjectURL(unidad.imagen)
+                }
+                alt="preview"
+                className="w-24 h-24 object-cover rounded"
+              />
+              <button
+                type="button"
+                onClick={() => onChange('imagen', null)}
+                className="px-2 py-1 bg-red-600 text-white text-xs rounded"
+              >
+                Quitar
+              </button>
+            </div>
           )}
         </div>
         <div>
@@ -392,6 +401,24 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
             onChange={handleFile('archivos')}
             className="dashboard-input w-full mt-1"
           />
+          {unidad.archivos && unidad.archivos.length > 0 && (
+            <ul className="mt-2 space-y-1 text-sm">
+              {unidad.archivos.map((f, i) => (
+                <li key={i} className="flex items-center gap-2">
+                  <span className="flex-1 truncate">{f.name}</span>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onChange('archivos', unidad.archivos!.filter((_, idx) => idx !== i))
+                    }
+                    className="px-1 py-0.5 bg-red-600 text-white text-xs rounded"
+                  >
+                    Quitar
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </section>
 

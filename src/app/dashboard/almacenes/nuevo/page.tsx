@@ -82,6 +82,22 @@ export default function NuevoAlmacenPage() {
           className="border p-2 rounded w-full"
           onChange={(e) => setImagen(e.target.files?.[0] || null)}
         />
+        {imagen && (
+          <div className="mt-2 flex items-start gap-2">
+            <img
+              src={URL.createObjectURL(imagen)}
+              alt="preview"
+              className="w-24 h-24 object-cover rounded"
+            />
+            <button
+              type="button"
+              onClick={() => setImagen(null)}
+              className="px-2 py-1 bg-red-600 text-white text-xs rounded"
+            >
+              Quitar
+            </button>
+          </div>
+        )}
 
         <button
           onClick={crear}
