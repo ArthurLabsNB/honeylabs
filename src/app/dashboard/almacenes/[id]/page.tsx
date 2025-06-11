@@ -51,10 +51,14 @@ export default function AlmacenPage() {
   const [dirty, setDirty] = useState(false);
   const [panel, setPanel] = useState<'material' | 'unidad'>('material');
   const [unidadSel, setUnidadSel] = useState<UnidadDetalle | null>(null);
+  const [historialBackup, setHistorialBackup] = useState<any | null>(null);
 
   const routerNav = useNextRouter();
-  const selectedMaterial =
-    selectedId ? materiales.find((m) => m.id === selectedId) ?? null : null;
+  const selectedMaterial = historialBackup
+    ? ({ id: 'backup', ...historialBackup } as Material)
+    : selectedId
+      ? materiales.find((m) => m.id === selectedId) ?? null
+      : null;
   const { actualizar: actualizarUnidad, obtener } = useUnidades(selectedMaterial?.dbId);
 
   useEffect(() => {
@@ -89,9 +93,10 @@ export default function AlmacenPage() {
   };
 
   const cancelar = () => {
-    mutate()
-    setSelectedId(null)
-    setDirty(false)
+    mutate();
+    setSelectedId(null);
+    setHistorialBackup(null);
+    setDirty(false);
   };
 
   const guardarUnidad = async () => {
@@ -255,7 +260,7 @@ export default function AlmacenPage() {
         <section className="md:w-1/2 p-4 border-r border-white/10 overflow-y-auto">
           {panel === 'material' && (
             <MaterialForm
-              key={selectedId ?? 'new'}
+              key={historialBackup ? 'hist' : selectedId ?? 'new'}
               material={selectedMaterial}
               onChange={(campo, valor) =>
                 selectedId && actualizar(selectedId, campo, valor)
@@ -264,6 +269,7 @@ export default function AlmacenPage() {
               onCancelar={cancelar}
               onDuplicar={duplicar}
               onEliminar={eliminar}
+              readOnly={Boolean(historialBackup)}
             />
           )}
           {panel === 'unidad' && (
@@ -282,7 +288,10 @@ export default function AlmacenPage() {
           <MaterialList
             materiales={materiales}
             selectedId={selectedId}
-            onSeleccion={setSelectedId}
+            onSeleccion={(idSel) => {
+              setHistorialBackup(null);
+              setSelectedId(idSel);
+            }}
             busqueda={busqueda}
             setBusqueda={setBusqueda}
             orden={orden}
@@ -324,7 +333,13 @@ export default function AlmacenPage() {
                 }
               }}
             />
-            <HistorialMovimientosPanel material={selectedMaterial} />
+            <HistorialMovimientosPanel
+              material={selectedMaterial}
+              onSelectHistorial={(estado) => {
+                setHistorialBackup(estado);
+                setSelectedId(null);
+              }}
+            />
           </div>
         </aside>
       </div>
