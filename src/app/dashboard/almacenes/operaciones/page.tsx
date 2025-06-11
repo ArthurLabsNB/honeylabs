@@ -30,7 +30,7 @@ export default function OperacionesPage() {
     const res = await fetch(`/api/almacenes/${almacenId}/movimientos`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ tipo, cantidad }),
+      body: JSON.stringify({ tipo, cantidad, contexto: { modulo: 'stock' } }),
     });
     const data = await jsonOrNull(res);
     setLoading(false);

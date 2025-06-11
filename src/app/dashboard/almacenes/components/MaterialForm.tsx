@@ -5,6 +5,7 @@ import { useToast } from "@/components/Toast";
 const MAX_FILE_MB = 20;
 import type { Material } from "./MaterialRow";
 import MaterialCodes from "./MaterialCodes";
+import { generarUUID } from "@/lib/uuid";
 import useUnidades from "@/hooks/useUnidades";
 import useArchivosMaterial from "@/hooks/useArchivosMaterial";
 
@@ -289,7 +290,10 @@ export default function MaterialForm({
           </ul>
         )}
       </div>
-      <MaterialCodes value={material.nombre} />
+      <MaterialCodes
+        value={material.codigoQR || ''}
+        onRegenerate={() => onChange('codigoQR', generarUUID())}
+      />
       <div className="flex gap-2 pt-2">
         {readOnly ? (
           <button
