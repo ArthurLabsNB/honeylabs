@@ -15,8 +15,11 @@ export default function ChatPage() {
   const { usuario } = useSession();
   const [canalId, setCanalId] = useState<number | null>(null);
   const { data: canales } = useSWR<{
-    canales: CanalChat[];
+    canales?: CanalChat[];
+    error?: string;
   }>("/api/chat/canales", fetcher);
+
+  const listaCanales = Array.isArray(canales?.canales) ? canales.canales : [];
 
   const [q, setQ] = useState("");
   const [desde, setDesde] = useState("");
@@ -72,10 +75,10 @@ export default function ChatPage() {
   }
 
   useEffect(() => {
-    if (!canalId && canales?.canales?.length) {
-      setCanalId(canales.canales[0].id);
+    if (!canalId && listaCanales.length) {
+      setCanalId(listaCanales[0].id);
     }
-  }, [canales, canalId]);
+  }, [listaCanales, canalId]);
 
   async function enviar() {
     if (canalId === null || !usuario) return;
@@ -104,12 +107,17 @@ export default function ChatPage() {
       </div>
     );
 
+  if (!Array.isArray(canales.canales))
+    return (
+      <div className="p-4 text-red-600">Error al cargar canales</div>
+    );
+
   return (
     <div className="flex h-full" data-oid="chat-page">
       <aside className="w-64 border-r p-4 overflow-y-auto">
         <h2 className="font-bold mb-2">Canales</h2>
         <ul>
-          {canales.canales.map((c) => (
+          {listaCanales.map((c) => (
             <li
               key={c.id}
               className={`cursor-pointer mb-1 ${c.id === canalId ? "font-semibold" : ""}`}

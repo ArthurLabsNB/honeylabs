@@ -1,3 +1,6 @@
+## 0.2.204
+- Prevenimos fallos si la API devuelve un formato inesperado en la lista de canales.
+
 ## 0.2.203
 - Solucionamos la carga infinita del chat ajustando el fetch en la vista.
 
