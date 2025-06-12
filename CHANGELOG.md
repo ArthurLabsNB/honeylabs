@@ -4,6 +4,11 @@
 ## 0.2.193
 - Reescribí la gestión de archivos con utilidades desglosadas.
 
+## 0.2.194
+- Añadí paneles para previsualización y mapeo de columnas.
+- Soporte a XML, YAML y TXT en la importación.
+- Exportación ahora permite descargar archivos ZIP.
+
 ## 0.2.191
 - Cerré el contenedor principal en `MaterialForm` para evitar errores de compilación.
 - Eliminé una función sin uso.
