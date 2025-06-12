@@ -1,3 +1,7 @@
+## 0.2.201
+- Corregimos el orden de las variables en la página de chat.
+- Optimización al generar la consulta con useMemo.
+
 ## 0.2.199
 - Añadí vista de archivos en el chat y notificación unificada para integraciones.
 
