@@ -1,3 +1,6 @@
+## 0.2.192
+- Creamos el gestor avanzado de archivos con importación y exportación.
+
 ## 0.2.191
 - Cerré el contenedor principal en `MaterialForm` para evitar errores de compilación.
 - Eliminé una función sin uso.
