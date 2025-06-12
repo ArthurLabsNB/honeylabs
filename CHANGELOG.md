@@ -1,3 +1,6 @@
+## 0.2.205
+- Creamos la migración inicial para los modelos de chat.
+
 ## 0.2.204
 - Prevenimos fallos si la API devuelve un formato inesperado en la lista de canales.
 
