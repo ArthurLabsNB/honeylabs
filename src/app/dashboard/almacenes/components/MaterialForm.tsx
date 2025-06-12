@@ -1,9 +1,10 @@
 "use client";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useCallback, useState } from "react";
 import { useToast } from "@/components/Toast";
 import ImageModal from "@/components/ImageModal";
 
 const MAX_FILE_MB = 20;
+const isImageFile = (f: File) => f.type.startsWith('image/');
 import type { Material } from "./MaterialRow";
 import MaterialCodes from "./MaterialCodes";
 import { generarUUID } from "@/lib/uuid";
@@ -46,39 +47,47 @@ export default function MaterialForm({
     ? (material.archivos as any[]).map((a, i) => ({ ...a, id: i }))
     : archivosPreviosHook;
 
-  const guardar = () => {
+  const guardar = useCallback(() => {
     onGuardar();
     mutate();
-  };
+  }, [onGuardar, mutate]);
 
 
-  const handle = (campo: keyof Material) => (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
-  ) => {
-    if (campo === 'cantidad') {
-      onChange(campo, Number(e.target.value));
-    } else if (campo === 'miniatura') {
-      onChange(campo, (e.target as HTMLInputElement).files?.[0] || null);
-    } else if (campo === 'archivos') {
-      const idx = Number((e.target as HTMLInputElement).dataset.index);
-      const file = (e.target as HTMLInputElement).files?.[0] || null;
-      const arr = Array.from(material.archivos ?? []);
-      if (file) {
-        if (file.size > MAX_FILE_MB * 1024 * 1024) {
-          toast.show(`Archivo demasiado grande: ${file.name}`, 'error');
-          return;
-        }
-        if (idx >= arr.length) arr.push(file);
-        else arr[idx] = file;
+  const handle = useCallback(
+    (campo: keyof Material) => (
+      e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+    ) => {
+      if (campo === 'cantidad') {
+        onChange(campo, Number(e.target.value));
+        return;
       }
-      onChange('archivos', arr);
-    } else {
+      if (campo === 'miniatura') {
+        onChange(campo, (e.target as HTMLInputElement).files?.[0] || null);
+        return;
+      }
+      if (campo === 'archivos') {
+        const idx = Number((e.target as HTMLInputElement).dataset.index);
+        const file = (e.target as HTMLInputElement).files?.[0] || null;
+        const arr = Array.from(material.archivos ?? []);
+        if (file) {
+          if (file.size > MAX_FILE_MB * 1024 * 1024) {
+            toast.show(`Archivo demasiado grande: ${file.name}`, 'error');
+            return;
+          }
+          if (idx >= arr.length) arr.push(file);
+          else arr[idx] = file;
+        }
+        onChange('archivos', arr);
+        return;
+      }
       onChange(campo, e.target.value);
-    }
-  };
+    },
+    [material.archivos, onChange, toast],
+  );
 
   return (
-    <div className="space-y-3">
+    <>
+      <div className="space-y-3">
       <div>
         <label htmlFor="material-nombre" className="text-xs text-[var(--dashboard-muted)]">Nombre</label>
         <input
@@ -370,7 +379,9 @@ export default function MaterialForm({
           </>
         )}
       </div>
-    </div>
-    {preview && <ImageModal src={preview} onClose={() => setPreview(null)} />}
+      {preview && (
+        <ImageModal src={preview} onClose={() => setPreview(null)} />
+      )}
+    </>
   );
 }
