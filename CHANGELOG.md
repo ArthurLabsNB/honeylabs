@@ -3,6 +3,10 @@
 - Hicimos más grandes las tarjetas del inventario.
 - Implementamos vista ampliada de imágenes.
 
+## 0.2.190
+- Corregí el formulario de materiales que impedía compilar.
+- Mejoré la gestión de archivos adjuntos y vistas previas.
+
 ## 0.2.188
 - Guardamos cada sesión en la base de datos.
 - Verificamos la validez de la sesión en `getUsuarioFromSession`.
