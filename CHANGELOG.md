@@ -1,3 +1,6 @@
+## 0.2.203
+- Solucionamos la carga infinita del chat ajustando el fetch en la vista.
+
 ## 0.2.201
 - Corregimos el orden de las variables en la página de chat.
 - Optimización al generar la consulta con useMemo.

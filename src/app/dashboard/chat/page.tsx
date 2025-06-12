@@ -9,12 +9,14 @@ import type { CanalChat, MensajeChat } from "@/types/chat";
 import Spinner from "@/components/Spinner";
 import Attachment from "@/components/Attachment";
 
+const fetcher = (url: string) => apiFetch(url).then(jsonOrNull);
+
 export default function ChatPage() {
   const { usuario } = useSession();
   const [canalId, setCanalId] = useState<number | null>(null);
   const { data: canales } = useSWR<{
     canales: CanalChat[];
-  }>("/api/chat/canales", jsonOrNull);
+  }>("/api/chat/canales", fetcher);
 
   const [q, setQ] = useState("");
   const [desde, setDesde] = useState("");
@@ -36,7 +38,7 @@ export default function ChatPage() {
     canalId !== null
       ? `/api/chat?canalId=${canalId}&${query}`
       : null,
-    jsonOrNull,
+    fetcher,
   );
 
   const [showInfo, setShowInfo] = useState(false);
