@@ -1,5 +1,5 @@
 "use client"
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import {
   getFileExt,
@@ -8,6 +8,9 @@ import {
   parseCSV,
   parseSpreadsheet,
   parseJSONData,
+  parseXML,
+  parseYAML,
+  parseTXT,
   parseZIP,
   detectColumns,
   createHistoryEntry,
@@ -27,6 +30,11 @@ export default function ArchivosPage() {
   const [history, setHistory] = useState<Row[][]>([])
   const [historyIdx, setHistoryIdx] = useState(0)
   const [log, setLog] = useState<string[]>([])
+  const [mapping, setMapping] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    setMapping(Object.fromEntries(columns.map(c => [c, c])))
+  }, [columns])
 
   const onDrop = useCallback(
     async (files: File[]) => {
@@ -39,11 +47,15 @@ export default function ArchivosPage() {
         else if (ext === 'tsv') data = parseCSV(await readFileAsText(file), '\t')
         else if (['xlsx', 'xls', 'ods'].includes(ext)) data = parseSpreadsheet(await readFileAsArrayBuffer(file))
         else if (ext === 'json') data = parseJSONData(await readFileAsText(file))
+        else if (ext === 'xml') data = parseXML(await readFileAsText(file))
+        else if (ext === 'yaml' || ext === 'yml') data = parseYAML(await readFileAsText(file))
+        else if (ext === 'txt') data = parseTXT(await readFileAsText(file))
         else if (ext === 'zip') data = await parseZIP(await readFileAsArrayBuffer(file))
 
         const cols = detectColumns(data)
         setRows(data)
         setColumns(cols)
+        setMapping(Object.fromEntries(cols.map(c => [c, c])))
         setHistory(createHistoryEntry([], data))
         setHistoryIdx(0)
         setLog((l) => [...l, `Cargado ${data.length} filas.`])
@@ -78,7 +90,14 @@ export default function ArchivosPage() {
   }
 
   const enviar = async () => {
-    await postImport('material', rows)
+    const mapeado = rows.map(r => {
+      const obj: Record<string, any> = {}
+      for (const [col, field] of Object.entries(mapping)) {
+        obj[field] = r[col]
+      }
+      return obj
+    })
+    await postImport('material', mapeado)
     setLog((l) => [...l, 'Datos enviados al servidor.'])
   }
 
@@ -92,28 +111,41 @@ export default function ArchivosPage() {
   }
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Gestión de Archivos</h1>
-      <div
-        {...getRootProps()}
-        className="border-dashed border rounded p-6 mb-4 text-center cursor-pointer"
-      >
-        <input {...getInputProps()} />
-        {isDragActive ? 'Suelta el archivo...' : 'Arrastra o haz clic para seleccionar un archivo'}
-      </div>
-      {columns.length > 0 && (
-        <div className="overflow-auto">
+    <div className="p-4 grid gap-4 grid-cols-[220px_1fr_240px]">
+      <aside className="space-y-4">
+        <h1 className="text-xl font-bold">Gestión de Archivos</h1>
+        <div
+          {...getRootProps()}
+          className="border-dashed border rounded p-6 text-center cursor-pointer"
+        >
+          <input {...getInputProps()} />
+          {isDragActive ? 'Suelta el archivo...' : 'Arrastra o haz clic para seleccionar un archivo'}
+        </div>
+        <div className="flex gap-2">
+          <button onClick={undo} className="px-3 py-1 border rounded w-full">Deshacer</button>
+          <button onClick={redo} className="px-3 py-1 border rounded w-full">Rehacer</button>
+        </div>
+        <div className="flex flex-col gap-2">
+          <button onClick={() => exportar('csv')} className="px-3 py-1 border rounded">Exportar CSV</button>
+          <button onClick={() => exportar('json')} className="px-3 py-1 border rounded">Exportar JSON</button>
+          <button onClick={() => exportar('zip')} className="px-3 py-1 border rounded">Exportar ZIP</button>
+        </div>
+        <div>
+          <h2 className="font-bold mb-1">Historial</h2>
+          <ul className="list-disc pl-5 text-sm space-y-1">
+            {log.map((l, i) => (
+              <li key={i}>{l}</li>
+            ))}
+          </ul>
+        </div>
+      </aside>
+      <main className="overflow-auto">
+        {columns.length > 0 && (
           <table className="min-w-full text-sm">
             <thead>
               <tr>
                 {columns.map(c => (
-                  <th key={c} className="border px-2 py-1">
-                    <select className="bg-transparent" defaultValue={c}>
-                      {[c, ...campos.filter(f => f !== c)].map(v => (
-                        <option key={v}>{v}</option>
-                      ))}
-                    </select>
-                  </th>
+                  <th key={c} className="border px-2 py-1 text-left">{c}</th>
                 ))}
               </tr>
             </thead>
@@ -133,36 +165,31 @@ export default function ArchivosPage() {
               ))}
             </tbody>
           </table>
-        </div>
-      )}
-      <div className="mt-4 flex gap-2">
-        <button onClick={undo} className="px-3 py-1 border rounded">
-          Deshacer
-        </button>
-        <button onClick={redo} className="px-3 py-1 border rounded">
-          Rehacer
-        </button>
+        )}
+      </main>
+      <aside className="space-y-4">
+        <h2 className="font-bold">Asignar columnas</h2>
+        {columns.map(c => (
+          <div key={c}>
+            <label className="text-xs block mb-1">{c}</label>
+            <select
+              className="border px-2 py-1 w-full"
+              value={mapping[c] ?? ''}
+              onChange={e => setMapping({ ...mapping, [c]: e.target.value })}
+            >
+              {campos.map(f => (
+                <option key={f}>{f}</option>
+              ))}
+            </select>
+          </div>
+        ))}
         <button
           onClick={enviar}
-          className="px-3 py-1 border rounded bg-blue-500 text-white"
+          className="px-3 py-1 border rounded bg-blue-500 text-white w-full"
         >
           Importar
         </button>
-        <button onClick={() => exportar('csv')} className="px-3 py-1 border rounded">
-          Exportar CSV
-        </button>
-        <button onClick={() => exportar('json')} className="px-3 py-1 border rounded">
-          Exportar JSON
-        </button>
-      </div>
-      <div className="mt-4">
-        <h2 className="font-bold mb-2">Historial</h2>
-        <ul className="list-disc pl-5 text-sm space-y-1">
-          {log.map((l, i) => (
-            <li key={i}>{l}</li>
-          ))}
-        </ul>
-      </div>
+      </aside>
     </div>
   )
 }
