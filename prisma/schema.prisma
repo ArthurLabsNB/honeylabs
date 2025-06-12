@@ -569,3 +569,28 @@ model HistorialUnidad {
 
   @@index([unidadId])
 }
+
+// ================================
+// Chat y mensajería
+// ================================
+model ChatCanal {
+  id          Int           @id @default(autoincrement())
+  nombre      String
+  fechaCreado DateTime      @default(now())
+
+  mensajes    ChatMensaje[]
+}
+
+model ChatMensaje {
+  id        Int        @id @default(autoincrement())
+  canalId   Int
+  usuarioId Int
+  texto     String?
+  archivo   String?
+  fecha     DateTime   @default(now())
+
+  canal     ChatCanal  @relation(fields: [canalId], references: [id])
+  usuario   Usuario    @relation(fields: [usuarioId], references: [id])
+
+  @@index([canalId])
+}
