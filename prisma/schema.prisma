@@ -587,6 +587,8 @@ model ChatMensaje {
   usuarioId Int
   texto     String?
   archivo   String?
+  archivoNombre String?
+  archivoTipo   String?
   anclado   Boolean    @default(false)
   fecha     DateTime   @default(now())
 

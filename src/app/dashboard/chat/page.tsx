@@ -7,6 +7,7 @@ import { jsonOrNull } from "@lib/http";
 import useSession from "@/hooks/useSession";
 import type { CanalChat, MensajeChat } from "@/types/chat";
 import Spinner from "@/components/Spinner";
+import Attachment from "@/components/Attachment";
 
 export default function ChatPage() {
   const { usuario } = useSession();
@@ -152,10 +153,10 @@ export default function ChatPage() {
               <div className="text-sm font-semibold">{m.usuario.nombre}</div>
               {m.texto && <p className="text-sm">{m.texto}</p>}
               {m.archivo && (
-                <img
-                  src={`data:image/*;base64,${m.archivo}`}
-                  alt="archivo"
-                  className="mt-2 max-h-48"
+                <Attachment
+                  data={m.archivo}
+                  tipo={m.archivoTipo}
+                  nombre={m.archivoNombre}
                 />
               )}
               <div className="text-xs text-gray-500">
