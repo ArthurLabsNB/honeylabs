@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@lib/prisma";
 import { getUsuarioFromSession } from "@lib/auth";
 import * as logger from "@lib/logger";
-import { sendSlackMessage } from "@lib/slack";
+import { broadcastChatMessage } from "@lib/chatIntegration";
 import type { Prisma } from "@prisma/client";
 
 export async function GET(req: NextRequest) {
@@ -49,6 +49,8 @@ export async function GET(req: NextRequest) {
         id: true,
         texto: true,
         archivo: true,
+        archivoNombre: true,
+        archivoTipo: true,
         anclado: true,
         fecha: true,
         usuario: { select: { id: true, nombre: true } },
@@ -75,10 +77,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Falta canalId" }, { status: 400 });
 
     let archivoBase64: string | null = null;
+    let archivoNombre: string | null = null;
+    let archivoTipo: string | null = null;
     const archivo = form.get("archivo") as File | null;
     if (archivo) {
       const buffer = Buffer.from(await archivo.arrayBuffer());
       archivoBase64 = buffer.toString("base64");
+      archivoNombre = archivo.name;
+      archivoTipo = archivo.type;
     }
 
     const mensaje = await prisma.chatMensaje.create({
@@ -87,17 +93,21 @@ export async function POST(req: NextRequest) {
         usuarioId: usuario.id,
         texto,
         archivo: archivoBase64,
+        archivoNombre,
+        archivoTipo,
       },
       select: {
         id: true,
         texto: true,
         archivo: true,
+        archivoNombre: true,
+        archivoTipo: true,
         fecha: true,
         usuario: { select: { id: true, nombre: true } },
       },
     });
 
-    sendSlackMessage(`${usuario.nombre}: ${texto || "(archivo)"}`);
+    broadcastChatMessage(`${usuario.nombre}: ${texto || "(archivo)"}`);
 
     return NextResponse.json({ mensaje });
   } catch (err) {

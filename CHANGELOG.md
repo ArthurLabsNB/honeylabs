@@ -1,3 +1,6 @@
+## 0.2.199
+- Añadí vista de archivos en el chat y notificación unificada para integraciones.
+
 ## 0.2.197
 - Añadí filtros avanzados de búsqueda en el chat y soporte para notificar a Slack.
 
