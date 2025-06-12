@@ -6,7 +6,6 @@ export interface CanalChat {
 export interface MensajeChat {
   id: number;
   texto: string | null;
-  archivo: string | null;
   archivoNombre: string | null;
   archivoTipo: string | null;
   anclado: boolean;
@@ -15,4 +14,5 @@ export interface MensajeChat {
     id: number;
     nombre?: string | null;
   };
+  archivo?: string | null;
 }
