@@ -1,3 +1,7 @@
+## 0.2.196
+- Implementé el sistema inicial de chat con canales y mensajes.
+- Añadí API y modelos en Prisma.
+
 ## 0.2.195
 - Reemplacé el sidebar de herramientas por un menú en el navbar.
 - Ordenamos los accesos y añadimos Chat.
