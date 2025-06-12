@@ -1,6 +1,9 @@
 ## 0.2.199
 - Añadí vista de archivos en el chat y notificación unificada para integraciones.
 
+## 0.2.200
+- Agregué el campo `chatMensajes` en `Usuario` para la relación inversa con `ChatMensaje` y evitar errores de Prisma.
+
 ## 0.2.197
 - Añadí filtros avanzados de búsqueda en el chat y soporte para notificar a Slack.
 
