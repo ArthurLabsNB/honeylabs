@@ -1,3 +1,6 @@
+## 0.2.197
+- Añadí filtros avanzados de búsqueda en el chat y soporte para notificar a Slack.
+
 ## 0.2.196
 - Implementé el sistema inicial de chat con canales y mensajes.
 - Añadí API y modelos en Prisma.
