@@ -48,7 +48,6 @@ export async function GET(req: NextRequest) {
       select: {
         id: true,
         texto: true,
-        archivo: true,
         archivoNombre: true,
         archivoTipo: true,
         anclado: true,

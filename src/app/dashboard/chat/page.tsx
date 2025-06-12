@@ -44,6 +44,21 @@ export default function ChatPage() {
   const [texto, setTexto] = useState("");
   const [archivo, setArchivo] = useState<File | null>(null);
   const [enviando, setEnviando] = useState(false);
+  const [archivos, setArchivos] = useState<Record<number, string>>({});
+  const [cargandoArchivo, setCargandoArchivo] = useState<number | null>(null);
+
+  async function cargarArchivo(id: number) {
+    setCargandoArchivo(id);
+    try {
+      const res = await apiFetch(`/api/chat/mensajes/${id}`);
+      const data = await jsonOrNull(res);
+      if (data?.mensaje?.archivo) {
+        setArchivos((prev) => ({ ...prev, [id]: data.mensaje.archivo }));
+      }
+    } finally {
+      setCargandoArchivo(null);
+    }
+  }
 
   async function togglePin(id: number, actual: boolean) {
     await apiFetch(`/api/chat/mensajes/${id}`, {
@@ -155,12 +170,22 @@ export default function ChatPage() {
               </button>
               <div className="text-sm font-semibold">{m.usuario.nombre}</div>
               {m.texto && <p className="text-sm">{m.texto}</p>}
-              {m.archivo && (
-                <Attachment
-                  data={m.archivo}
-                  tipo={m.archivoTipo}
-                  nombre={m.archivoNombre}
-                />
+              {m.archivoNombre && (
+                archivos[m.id] ? (
+                  <Attachment
+                    data={archivos[m.id]}
+                    tipo={m.archivoTipo}
+                    nombre={m.archivoNombre}
+                  />
+                ) : (
+                  <button
+                    className="text-blue-600 underline mt-2"
+                    onClick={() => cargarArchivo(m.id)}
+                    disabled={cargandoArchivo === m.id}
+                  >
+                    {cargandoArchivo === m.id ? "Cargando..." : "Ver archivo"}
+                  </button>
+                )
               )}
               <div className="text-xs text-gray-500">
                 {new Date(m.fecha).toLocaleString()}

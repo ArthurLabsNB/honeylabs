@@ -2,6 +2,9 @@
 - Corregimos el orden de las variables en la página de chat.
 - Optimización al generar la consulta con useMemo.
 
+## 0.2.202
+- Dejamos de enviar los archivos base64 en la lista de mensajes y los cargamos bajo demanda.
+
 ## 0.2.199
 - Añadí vista de archivos en el chat y notificación unificada para integraciones.
 
