@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@lib/prisma'
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
+import { sendSlackMessage } from '@lib/slack'
+import type { Prisma } from '@prisma/client'
 
 export async function GET(req: NextRequest) {
   try {
@@ -11,13 +13,36 @@ export async function GET(req: NextRequest) {
     if (!canalId) {
       const canales = await prisma.chatCanal.findMany({
         orderBy: { nombre: 'asc' },
-        select: { id: true, nombre: true }
+        select: { id: true, nombre: true },
       })
       return NextResponse.json({ canales })
     }
 
+    const q = req.nextUrl.searchParams.get('q') || undefined
+    const usuarioId = req.nextUrl.searchParams.get('usuarioId') || undefined
+    const desde = req.nextUrl.searchParams.get('desde') || undefined
+    const hasta = req.nextUrl.searchParams.get('hasta') || undefined
+    const tipo = req.nextUrl.searchParams.get('tipo') || undefined
+
+    const where: Prisma.ChatMensajeWhereInput = {
+      canalId: Number(canalId),
+    }
+
+    if (q) {
+      where.OR = [
+        { texto: { contains: q, mode: 'insensitive' } },
+        { archivo: { contains: q, mode: 'insensitive' } },
+      ]
+    }
+    if (usuarioId) where.usuarioId = Number(usuarioId)
+    if (desde || hasta) where.fecha = {}
+    if (desde) (where.fecha as any).gte = new Date(desde)
+    if (hasta) (where.fecha as any).lte = new Date(hasta)
+    if (tipo === 'texto') where.archivo = null
+    if (tipo === 'archivo') where.archivo = { not: null }
+
     const mensajes = await prisma.chatMensaje.findMany({
-      where: { canalId: Number(canalId) },
+      where,
       orderBy: { fecha: 'asc' },
       take: 100,
       select: {
@@ -25,8 +50,8 @@ export async function GET(req: NextRequest) {
         texto: true,
         archivo: true,
         fecha: true,
-        usuario: { select: { id: true, nombre: true } }
-      }
+        usuario: { select: { id: true, nombre: true } },
+      },
     })
 
     return NextResponse.json({ mensajes })
@@ -68,6 +93,8 @@ export async function POST(req: NextRequest) {
         usuario: { select: { id: true, nombre: true } }
       }
     })
+
+    sendSlackMessage(`${usuario.nombre}: ${texto || '(archivo)'}`)
 
     return NextResponse.json({ mensaje })
   } catch (err) {
