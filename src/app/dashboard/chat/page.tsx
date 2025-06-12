@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Star } from "lucide-react";
 import useSWR from "swr";
 import { apiFetch } from "@lib/api";
@@ -16,25 +16,28 @@ export default function ChatPage() {
     canales: CanalChat[];
   }>("/api/chat/canales", jsonOrNull);
 
-  const query = new URLSearchParams();
-  if (q) query.set("q", q);
-  if (desde) query.set("desde", desde);
-  if (hasta) query.set("hasta", hasta);
-  if (tipo !== "todos") query.set("tipo", tipo);
+  const [q, setQ] = useState("");
+  const [desde, setDesde] = useState("");
+  const [hasta, setHasta] = useState("");
+  const [tipo, setTipo] = useState("todos");
+
+  const query = useMemo(() => {
+    const params = new URLSearchParams();
+    if (q) params.set("q", q);
+    if (desde) params.set("desde", desde);
+    if (hasta) params.set("hasta", hasta);
+    if (tipo !== "todos") params.set("tipo", tipo);
+    return params.toString();
+  }, [q, desde, hasta, tipo]);
 
   const { data: mensajes, mutate } = useSWR<{
     mensajes: MensajeChat[];
   }>(
     canalId !== null
-      ? `/api/chat?canalId=${canalId}&${query.toString()}`
+      ? `/api/chat?canalId=${canalId}&${query}`
       : null,
     jsonOrNull,
   );
-
-  const [q, setQ] = useState("");
-  const [desde, setDesde] = useState("");
-  const [hasta, setHasta] = useState("");
-  const [tipo, setTipo] = useState("todos");
 
   const [showInfo, setShowInfo] = useState(false);
 
