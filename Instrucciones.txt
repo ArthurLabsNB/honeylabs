@@ -8,7 +8,7 @@ Debes obtener el ID desde la URL así:
 ts
 Copiar
 Editar
-// Para /api/almacenes/[id]/materiales
+// Para /api/almacenes/[id]/materiale
 const idParam = req.nextUrl.pathname.split("/").reverse()[2]; // obtiene el id dinámico antes de "materiales"
 const almacenId = Number(idParam);
 Otra forma: puedes parsear con regex si tu path tiene variaciones, pero esto es directo y robusto para la estructura /api/almacenes/[id]/materiales.
