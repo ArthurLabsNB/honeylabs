@@ -9,8 +9,6 @@ interface UIState {
   sidebarGlobalCollapsed: boolean;
   toggleSidebarVisible: (v?: boolean) => void;
   toggleSidebarCollapsed: () => void;
-  toolsSidebarVisible: boolean;
-  toggleToolsSidebar: (v?: boolean) => void;
 }
 
 const DashboardUIContext = createContext<UIState>({
@@ -21,8 +19,7 @@ const DashboardUIContext = createContext<UIState>({
   sidebarGlobalCollapsed: false,
   toggleSidebarVisible: () => {},
   toggleSidebarCollapsed: () => {},
-  toolsSidebarVisible: false,
-  toggleToolsSidebar: () => {},
+
 });
 
 export function DashboardUIProvider({
@@ -33,7 +30,6 @@ export function DashboardUIProvider({
   const [fullscreen, setFullscreen] = useState(false);
   const [sidebarGlobalCollapsed, setSidebarGlobalCollapsed] = useState(false);
   const [sidebarGlobalVisible, setSidebarGlobalVisible] = useState(true);
-  const [toolsSidebarVisible, setToolsSidebarVisible] = useState(false);
 
   useEffect(() => {
     const update = () => {
@@ -59,8 +55,6 @@ export function DashboardUIProvider({
   const toggleSidebarCollapsed = () => setSidebarGlobalCollapsed((c) => !c);
   const toggleSidebarVisible = (v?: boolean) =>
     setSidebarGlobalVisible((c) => (typeof v === "boolean" ? v : !c));
-  const toggleToolsSidebar = (v?: boolean) =>
-    setToolsSidebarVisible((c) => (typeof v === "boolean" ? v : !c));
 
   return (
     <DashboardUIContext.Provider
@@ -72,8 +66,6 @@ export function DashboardUIProvider({
         sidebarGlobalCollapsed,
         toggleSidebarVisible,
         toggleSidebarCollapsed,
-        toolsSidebarVisible,
-        toggleToolsSidebar,
       }}
       data-oid="juman50"
     >

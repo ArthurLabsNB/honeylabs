@@ -1,25 +1,23 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { useDashboardUI } from "../ui";
-import type { Usuario } from "@/types/usuario";
 import {
   Bell,
-  AppWindow,
   Network,
-  FileStack,
+  AppWindow,
   Receipt,
   Home,
   Box,
   History,
   FileText,
   Folder,
-  Plus,
   Settings,
   BookOpen,
-  Search as SearchIcon,
+  MessageSquare,
+  Wrench,
 } from "lucide-react";
+import type { Usuario } from "@/types/usuario";
 import { getMainRole, normalizeTipoCuenta, hasManagePerms } from "@lib/permisos";
 
 const toolsMenu = [
@@ -28,13 +26,6 @@ const toolsMenu = [
     label: "Alertas",
     icon: <Bell className="dashboard-sidebar-icon" />,
     path: "/dashboard/alertas",
-    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
-  },
-  {
-    key: "plantillas",
-    label: "Plantillas",
-    icon: <FileStack className="dashboard-sidebar-icon" />,
-    path: "/dashboard/plantillas",
     allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
   },
   {
@@ -58,7 +49,6 @@ const toolsMenu = [
     path: "/dashboard/billing",
     allowed: ["admin", "administrador", "institucional"],
   },
-  // --- opciones de Almacenes ---
   {
     key: "almacen-inicio",
     label: "Inicio",
@@ -95,14 +85,6 @@ const toolsMenu = [
     allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
   },
   {
-    key: "nuevo-almacen",
-    label: "Nuevo",
-    icon: <Plus className="dashboard-sidebar-icon" />,
-    path: "/dashboard/almacenes/nuevo",
-    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
-    requiresManage: true,
-  },
-  {
     key: "configuracion-almacen",
     label: "Configuración",
     icon: <Settings className="dashboard-sidebar-icon" />,
@@ -116,24 +98,34 @@ const toolsMenu = [
     path: "/dashboard/almacenes/ayuda",
     allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
   },
+  {
+    key: "chat",
+    label: "Chat",
+    icon: <MessageSquare className="dashboard-sidebar-icon" />,
+    path: "/dashboard/chat",
+    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
+  },
 ];
 
-export default function ToolsSidebar({ usuario }: { usuario: Usuario }) {
-  const { toggleToolsSidebar } = useDashboardUI();
-  const pathname = usePathname();
-  const router = useRouter();
-  const [query, setQuery] = useState("");
+export default function ToolsMenu({ usuario }: { usuario: Usuario }) {
+  const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
-        toggleToolsSidebar(false);
+        setOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
-  }, [toggleToolsSidebar]);
+  }, []);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   const mainRole = getMainRole(usuario)?.toLowerCase();
   const tipo = normalizeTipoCuenta(
@@ -143,57 +135,37 @@ export default function ToolsSidebar({ usuario }: { usuario: Usuario }) {
 
   const filtered = toolsMenu.filter(
     (i) =>
-      i.allowed.includes(tipo) &&
-      (!i.requiresManage || allowCreate) &&
-      i.label.toLowerCase().includes(query.toLowerCase()),
+      i.allowed.includes(tipo) && (!i.requiresManage || allowCreate),
   );
 
   return (
-    <aside
-      ref={ref}
-      className="tools-sidebar flex flex-col h-full"
-      data-oid="tools"
-    >
-      <div className="px-4 pt-0 pb-4 border-b border-[var(--dashboard-border)] flex items-center gap-2">
-        <SearchIcon className="w-4 h-4 text-[var(--dashboard-accent)]" />
-        <input
-          autoFocus
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Buscar..."
-          className="flex-1 bg-transparent focus:outline-none text-sm"
-        />
-        <button
-          onClick={() => toggleToolsSidebar(false)}
-          className="text-xs text-[var(--dashboard-accent)] hover:underline"
+    <div className="relative" ref={ref}>
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
+        aria-label="Herramientas"
+      >
+        <Wrench className="w-6 h-6 text-[var(--dashboard-accent)]" />
+      </button>
+      {open && (
+        <nav
+          className="absolute right-0 mt-2 w-72 p-4 grid grid-cols-3 gap-3 rounded-xl border border-[var(--dashboard-border)] bg-[var(--dashboard-navbar)] shadow-xl backdrop-blur-md"
         >
-          Cerrar
-        </button>
-      </div>
-      <nav className="flex-1 overflow-y-auto py-6 flex flex-col items-center gap-4">
-        {filtered.map((item) => {
-          const active =
-            pathname === item.path || pathname.startsWith(`${item.path}/`);
-          return (
+          {filtered.map((item) => (
             <button
               key={item.key}
               onClick={() => {
                 router.push(item.path);
-                toggleToolsSidebar(false);
+                setOpen(false);
               }}
-              className={`tool-item ${active ? "active" : ""}`}
+              className="tool-item"
             >
-              <div className="tool-icon flex items-center justify-center">
-                {item.icon}
-              </div>
+              <div className="tool-icon">{item.icon}</div>
               <span className="text-xs">{item.label}</span>
             </button>
-          );
-        })}
-        {filtered.length === 0 && (
-          <span className="px-4 py-2 text-sm text-[var(--dashboard-muted)]">No hay resultados</span>
-        )}
-      </nav>
-    </aside>
+          ))}
+        </nav>
+      )}
+    </div>
   );
 }
