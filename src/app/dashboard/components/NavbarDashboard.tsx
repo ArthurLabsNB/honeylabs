@@ -3,13 +3,8 @@
 import { useRef } from "react";
 import { apiFetch } from "@lib/api";
 import Link from "next/link";
-import {
-  Home,
-  AppWindow,
-  MessageSquare,
-  Bell,
-  Menu,
-} from "lucide-react";
+import { Home, Bell, Menu } from "lucide-react";
+import ToolsMenu from "./ToolsMenu";
 import UserMenu from "@/components/UserMenu";
 import { useDashboardUI } from "../ui";
 import type { Usuario } from "@/types/usuario";
@@ -65,18 +60,7 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
       </div>
 
       <div className="flex items-center gap-3" data-oid="x5cdysc">
-        <button
-          className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
-          data-oid="tz:4t05"
-        >
-          <AppWindow data-oid="ddchwni" />
-        </button>
-        <button
-          className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
-          data-oid="6fmtljz"
-        >
-          <MessageSquare data-oid="1lkz_g4" />
-        </button>
+        <ToolsMenu usuario={usuario} />
         <button
           className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
           data-oid=".-_1wyk"

@@ -1,3 +1,7 @@
+## 0.2.195
+- Reemplacé el sidebar de herramientas por un menú en el navbar.
+- Ordenamos los accesos y añadimos Chat.
+
 ## 0.2.192
 - Creamos el gestor avanzado de archivos con importación y exportación.
 

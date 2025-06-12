@@ -10,7 +10,6 @@ import {
   Home,
   Boxes,
   Bell,
-  AppWindow,
   Network,
   FileText,
   FileStack,
@@ -42,13 +41,6 @@ const sidebarMenu = [
     allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
   },
   {
-    key: "tools",
-    label: "Herramientas",
-    icon: <AppWindow className="dashboard-sidebar-icon" />,
-    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
-    action: true,
-  },
-  {
     key: "reportes",
     label: "Reportes",
     icon: <FileText className="dashboard-sidebar-icon" data-oid="wzewnea" />,
@@ -68,8 +60,6 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
   const {
     sidebarGlobalCollapsed: collapsed,
     toggleSidebarCollapsed,
-    toggleToolsSidebar,
-    toolsSidebarVisible,
   } = useDashboardUI();
   const pathname = usePathname();
 
@@ -148,11 +138,7 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
               ? pathname === "/dashboard"
               : pathname === item.path || pathname.startsWith(`${item.path}/`)
             : false;
-          const handleClick = () => {
-            if (item.action) {
-              toggleToolsSidebar(toolsSidebarVisible ? false : true);
-            }
-          };
+          const handleClick = () => {};
           const classes = `${menuItemStyle} ${
             active
               ? "bg-[var(--dashboard-accent)]/20 text-white font-semibold"
@@ -179,9 +165,9 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
               )}
             </>
           );
-          return item.path && !item.action ? (
+          return (
             <Link
-              href={item.path}
+              href={item.path as string}
               key={item.key}
               className={classes}
               title={collapsed ? item.label : ""}
@@ -190,17 +176,6 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
             >
               {content}
             </Link>
-          ) : (
-            <button
-              key={item.key}
-              onClick={handleClick}
-              className={classes}
-              title={collapsed ? item.label : ""}
-              tabIndex={0}
-              data-oid="ggwglbz"
-            >
-              {content}
-            </button>
           );
         })}
       </nav>
