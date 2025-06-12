@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { Star } from "lucide-react";
 import useSWR from "swr";
 import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
@@ -15,15 +16,17 @@ export default function ChatPage() {
   }>("/api/chat/canales", jsonOrNull);
 
   const query = new URLSearchParams();
-  if (q) query.set('q', q);
-  if (desde) query.set('desde', desde);
-  if (hasta) query.set('hasta', hasta);
-  if (tipo !== 'todos') query.set('tipo', tipo);
+  if (q) query.set("q", q);
+  if (desde) query.set("desde", desde);
+  if (hasta) query.set("hasta", hasta);
+  if (tipo !== "todos") query.set("tipo", tipo);
 
   const { data: mensajes, mutate } = useSWR<{
     mensajes: MensajeChat[];
   }>(
-    canalId !== null ? `/api/chat?canalId=${canalId}&${query.toString()}` : null,
+    canalId !== null
+      ? `/api/chat?canalId=${canalId}&${query.toString()}`
+      : null,
     jsonOrNull,
   );
 
@@ -37,6 +40,15 @@ export default function ChatPage() {
   const [texto, setTexto] = useState("");
   const [archivo, setArchivo] = useState<File | null>(null);
   const [enviando, setEnviando] = useState(false);
+
+  async function togglePin(id: number, actual: boolean) {
+    await apiFetch(`/api/chat/mensajes/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ anclado: !actual }),
+    });
+    mutate();
+  }
 
   useEffect(() => {
     if (!canalId && canales?.canales?.length) {
@@ -64,9 +76,12 @@ export default function ChatPage() {
     }
   }
 
-  if (!canales) return (
-    <div className="p-4"><Spinner /></div>
-  );
+  if (!canales)
+    return (
+      <div className="p-4">
+        <Spinner />
+      </div>
+    );
 
   return (
     <div className="flex h-full" data-oid="chat-page">
@@ -123,13 +138,29 @@ export default function ChatPage() {
         </div>
         <div className="flex-1 p-4 overflow-y-auto space-y-2">
           {mensajes?.mensajes?.map((m) => (
-            <div key={m.id} className="border rounded p-2">
+            <div key={m.id} className="border rounded p-2 relative">
+              <button
+                className="absolute top-1 right-1 text-yellow-500"
+                onClick={() => togglePin(m.id, m.anclado)}
+                title={m.anclado ? "Desanclar" : "Anclar"}
+              >
+                <Star
+                  className="w-4 h-4"
+                  fill={m.anclado ? "currentColor" : "none"}
+                />
+              </button>
               <div className="text-sm font-semibold">{m.usuario.nombre}</div>
               {m.texto && <p className="text-sm">{m.texto}</p>}
               {m.archivo && (
-                <img src={`data:image/*;base64,${m.archivo}`} alt="archivo" className="mt-2 max-h-48" />
+                <img
+                  src={`data:image/*;base64,${m.archivo}`}
+                  alt="archivo"
+                  className="mt-2 max-h-48"
+                />
               )}
-              <div className="text-xs text-gray-500">{new Date(m.fecha).toLocaleString()}</div>
+              <div className="text-xs text-gray-500">
+                {new Date(m.fecha).toLocaleString()}
+              </div>
             </div>
           ))}
         </div>
@@ -160,7 +191,10 @@ export default function ChatPage() {
               className="flex-1 border rounded p-2"
               placeholder="Escribe un mensaje"
             />
-            <input type="file" onChange={(e) => setArchivo(e.target.files?.[0] || null)} />
+            <input
+              type="file"
+              onChange={(e) => setArchivo(e.target.files?.[0] || null)}
+            />
             <button
               type="submit"
               disabled={enviando}
