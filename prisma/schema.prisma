@@ -587,6 +587,7 @@ model ChatMensaje {
   usuarioId Int
   texto     String?
   archivo   String?
+  anclado   Boolean    @default(false)
   fecha     DateTime   @default(now())
 
   canal     ChatCanal  @relation(fields: [canalId], references: [id])
