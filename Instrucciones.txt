@@ -16,7 +16,7 @@ Otra forma: puedes parsear con regex si tu path tiene variaciones, pero esto es 
 Tu archivo corregido
 Reemplaza la definición de tus handlers así:
 
-ts
+
 Copiar
 Editar
 export const runtime = 'nodejs'
