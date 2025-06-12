@@ -3,6 +3,8 @@
 import Papa, { unparse } from 'papaparse'
 import * as XLSX from 'xlsx'
 import JSZip from 'jszip'
+import { XMLParser } from 'fast-xml-parser'
+import YAML from 'yaml'
 
 export type Row = Record<string, any>
 
@@ -34,6 +36,24 @@ export const parseSpreadsheet = (ab: ArrayBuffer): Row[] => {
 }
 
 export const parseJSONData = (text: string): Row[] => JSON.parse(text)
+
+export const parseXML = (text: string): Row[] => {
+  const parser = new XMLParser()
+  const obj = parser.parse(text)
+  const root = Object.values(obj)[0] as any
+  if (Array.isArray(root)) return root
+  if (Array.isArray(root?.record)) return root.record
+  if (Array.isArray(root?.row)) return root.row
+  return []
+}
+
+export const parseYAML = (text: string): Row[] => {
+  const data = YAML.parse(text)
+  return Array.isArray(data) ? data : []
+}
+
+export const parseTXT = (text: string): Row[] =>
+  text.split(/\r?\n/).map(v => ({ valor: v }))
 
 export const parseZIP = async (ab: ArrayBuffer): Promise<Row[]> => {
   const zip = await JSZip.loadAsync(ab)

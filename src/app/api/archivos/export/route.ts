@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@lib/prisma'
 import * as logger from '@lib/logger'
 import { unparse } from 'papaparse'
+import JSZip from 'jszip'
 
 export async function GET(req: NextRequest) {
   try {
@@ -24,6 +25,18 @@ export async function GET(req: NextRequest) {
         headers: {
           'Content-Type': 'text/csv',
           'Content-Disposition': `attachment; filename=${tipo}.${formato}`,
+        },
+      })
+    }
+    if (formato === 'zip') {
+      const zip = new JSZip()
+      zip.file(`${tipo}.json`, JSON.stringify(data, null, 2))
+      const buffer = await zip.generateAsync({ type: 'nodebuffer' })
+      return new NextResponse(buffer, {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/zip',
+          'Content-Disposition': `attachment; filename=${tipo}.zip`,
         },
       })
     }

@@ -24,7 +24,11 @@ export async function POST(req: NextRequest) {
     if (!ok) {
       return NextResponse.json({ error: 'DB offline' }, { status: 500 })
     }
-    logger.info('Importando', tipo, registros.length)
+    const validos = registros.filter((r: any) => r.nombre && r.cantidad)
+    if (validos.length === 0) {
+      return NextResponse.json({ error: 'Sin registros válidos' }, { status: 400 })
+    }
+    logger.info('Importando', tipo, validos.length)
     return NextResponse.json({ ok: true })
   } catch (err) {
     logger.error('POST /api/archivos/import', err)
