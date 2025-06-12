@@ -4,7 +4,6 @@ import { useToast } from "@/components/Toast";
 import ImageModal from "@/components/ImageModal";
 
 const MAX_FILE_MB = 20;
-const isImageFile = (f: File) => f.type.startsWith('image/');
 import type { Material } from "./MaterialRow";
 import MaterialCodes from "./MaterialCodes";
 import { generarUUID } from "@/lib/uuid";
@@ -382,6 +381,7 @@ export default function MaterialForm({
       {preview && (
         <ImageModal src={preview} onClose={() => setPreview(null)} />
       )}
+      </div>
     </>
   );
 }

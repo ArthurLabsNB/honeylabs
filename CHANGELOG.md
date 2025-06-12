@@ -1,3 +1,7 @@
+## 0.2.191
+- Cerré el contenedor principal en `MaterialForm` para evitar errores de compilación.
+- Eliminé una función sin uso.
+
 ## 0.2.189
 - Ajustamos el historial para abrir respaldos completos.
 - Hicimos más grandes las tarjetas del inventario.
