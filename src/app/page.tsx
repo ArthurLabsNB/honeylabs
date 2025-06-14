@@ -1,108 +1,125 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 
-// =============== HERO SECTION SIN FONDO EXTRA ===============
-function useTypewriter(text: string, speed = 60): string {
+// =========== EFECTO STAR WARS TYPEWRITER CRAWL ===========
+
+function useTypewriterLoop(text: string, speed = 35, onFinish?: () => void) {
   const [displayed, setDisplayed] = useState("");
   useEffect(() => {
     setDisplayed("");
     let i = 0;
     const id = setInterval(() => {
       setDisplayed(text.slice(0, ++i));
-      if (i === text.length) clearInterval(id);
+      if (i === text.length) {
+        clearInterval(id);
+        if (onFinish) setTimeout(onFinish, 200);
+      }
     }, speed);
     return () => clearInterval(id);
-  }, [text, speed]);
+    // eslint-disable-next-line
+  }, [text, onFinish]);
   return displayed;
 }
 
-function HeroSection() {
-  const titulo = "La gestión inteligente de inventarios para el mundo real";
-  const desc =
-    "HoneyLabs revoluciona el control y digitalización de materiales con dashboards, control total y acceso desde cualquier lugar. Solución perfecta para laboratorios, empresas y organizaciones.";
+// TEXTO PROFESIONAL
+const STARWARS_TEXT = `
+La gestión inteligente de inventarios para el mundo real.
 
-  const textoTyped = useTypewriter(titulo, 54);
-  const [showDesc, setShowDesc] = useState(false);
+HoneyLabs impulsa la transformación digital en la administración de materiales, ofreciendo tecnología avanzada con una experiencia intuitiva y eficiente.
+
+Supervisa, controla y optimiza tus inventarios desde cualquier lugar, con dashboards modernos y acceso seguro en todo momento.
+
+Diseñado para laboratorios, empresas e instituciones que buscan excelencia operativa y transparencia total en sus procesos.
+
+La nueva era en gestión de inventarios ya es una realidad.
+Bienvenido a HoneyLabs.
+`;
+
+function StarWarsTypewriterCrawl({
+  text = STARWARS_TEXT,
+  duration = 9500,
+  speed = 35,
+}: {
+  text?: string;
+  duration?: number;
+  speed?: number;
+}) {
+  const [cycle, setCycle] = useState(0);
+  const [isCrawling, setIsCrawling] = useState(true);
 
   useEffect(() => {
-    setShowDesc(false);
-    if (textoTyped.length === titulo.length) {
-      const timer = setTimeout(() => setShowDesc(true), 300);
-      return () => clearTimeout(timer);
-    }
-  }, [textoTyped, titulo.length]);
+    setIsCrawling(true);
+  }, [cycle]);
+
+  function handleTypewriterFinish() {
+    setTimeout(() => setIsCrawling(false), duration - 400);
+    setTimeout(() => setCycle((c) => c + 1), duration);
+  }
+
+  const displayed = useTypewriterLoop(text, speed, handleTypewriterFinish);
 
   return (
-    <section className="relative w-full min-h-[85vh] flex flex-col md:flex-row items-center justify-between px-4 md:px-16 py-16 md:py-24 overflow-hidden gap-10">
-      <div className="flex-1 z-10 flex flex-col items-center md:items-start text-center md:text-left space-y-7">
-        <h1 className="text-4xl md:text-6xl font-black tracking-tight text-[var(--foreground)] drop-shadow-xl transition-all animate-typewriter leading-tight">
-          {textoTyped}
-          <span className="ml-1 animate-blink text-amber-400">|</span>
-        </h1>
-        <p
-          className={clsx(
-            "max-w-2xl text-xl md:text-2xl font-medium text-[var(--dashboard-muted)] transition-opacity",
-            showDesc ? "opacity-100 animate-fade-in" : "opacity-0"
-          )}
-        >
-          {showDesc && desc}
-        </p>
-        <div className="flex gap-4 mt-6">
-          <a
-            href="#demo"
-            className="bg-amber-400 hover:bg-amber-500 text-black font-bold px-7 py-3 rounded-xl shadow-lg animate-ripple transition focus:outline-none focus:ring-2 focus:ring-amber-200"
-          >
-            Ver demo en video
-          </a>
-          <a
-            href="#features"
-            className="bg-white/20 hover:bg-amber-400/70 text-amber-900 dark:text-amber-200 border border-amber-300 px-7 py-3 rounded-xl shadow-lg transition font-bold"
-          >
-            Explorar características
-          </a>
-        </div>
+    <div
+      className="relative flex items-center justify-center h-[340px] md:h-[410px] w-full overflow-hidden select-none"
+      style={{
+        background: "black",
+        color: "#ffe066",
+        fontFamily: "'Pathway Gothic One', 'Arial Narrow', Arial, sans-serif",
+        letterSpacing: "1.2px",
+        perspective: "700px",
+        borderRadius: "2rem",
+        marginBottom: "2rem",
+      }}
+    >
+      <div
+        className={clsx(
+          "starwars-crawl-text absolute left-0 w-full text-center text-xl md:text-2xl font-bold",
+          isCrawling ? "animate-starwars-crawl" : ""
+        )}
+        style={{
+          transform: "rotateX(24deg) translateY(65%)",
+          textShadow: "0 2px 8px #000a",
+          pointerEvents: "none",
+          whiteSpace: "pre-line",
+        }}
+        key={cycle}
+      >
+        {displayed}
+        <span className="animate-blink ml-1">|</span>
       </div>
-      <div className="flex-1 flex items-center justify-center relative z-10">
-        <div className="relative w-full max-w-[440px] aspect-[4/3] drop-shadow-2xl animate-3dpop">
-          <Image
-            src="/hero-warehouse-ui-mockup.png"
-            alt="Mockup HoneyLabs dashboard"
-            fill
-            className="rounded-3xl object-cover border-4 border-amber-200 shadow-2xl"
-            priority
-            draggable={false}
-          />
-          {/* Gif flotando */}
-          <div className="absolute -bottom-8 -left-10 w-36 h-24 z-20 animate-float-card">
-            <Image
-              src="/gif/demo-movimientos.gif"
-              alt="Demostración animada movimientos"
-              fill
-              className="rounded-xl object-cover shadow-lg border-2 border-white"
-              draggable={false}
-            />
-          </div>
-        </div>
-      </div>
-      {/* Video demo flotando, solo en desktop */}
-      <div className="hidden md:block absolute right-24 top-28 w-[360px] aspect-video z-0 opacity-80 rounded-3xl overflow-hidden shadow-2xl border-4 border-amber-300">
-        <video
-          src="/videos/demo-dashboard.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="w-full h-full object-cover"
-        />
-      </div>
-    </section>
+
+      <style jsx>{`
+        @keyframes starwars-crawl {
+          from {
+            transform: rotateX(24deg) translateY(65%);
+            opacity: 1;
+          }
+          to {
+            transform: rotateX(24deg) translateY(-120%);
+            opacity: 0.4;
+          }
+        }
+        .animate-starwars-crawl {
+          animation: starwars-crawl ${duration}ms linear forwards;
+        }
+        .animate-blink {
+          animation: blink 1.05s steps(1) infinite;
+        }
+        @keyframes blink {
+          50% {
+            opacity: 0;
+          }
+        }
+      `}</style>
+    </div>
   );
 }
 
-// =============== FEATURES CARDS SIN FONDO EXTRA ===============
+// =============== RESTO DE SECCIONES ===============
+
 const FEATURES = [
   {
     icon: "/icons/real-time.svg",
@@ -167,7 +184,6 @@ function FeaturesSection() {
   );
 }
 
-// =============== DEMO SECTION (SIN FONDO EXTRA) ===============
 function DemoSection() {
   return (
     <section id="demo" className="py-24 px-4">
@@ -339,7 +355,6 @@ function SuccessCasesSection() {
   );
 }
 
-// =============== PARTNERS SECTION (SIN FONDO) ===============
 const PARTNERS = [
   {
     nombre: "Tecnológico Nacional de México - ITQ",
@@ -394,11 +409,13 @@ function PartnersSection() {
   );
 }
 
-// =============== EXPORT DE LA PAGINA PRINCIPAL ===============
+// =============== EXPORT PRINCIPAL ===============
 export default function Page() {
   return (
     <main className="relative min-h-screen w-full font-sans overflow-x-hidden">
-      <HeroSection />
+      {/* Hero reemplazado por efecto StarWarsTypewriterCrawl */}
+      <StarWarsTypewriterCrawl />
+      {/* Secciones iguales */}
       <FeaturesSection />
       <DemoSection />
       <KpiSection />
