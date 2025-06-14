@@ -17,75 +17,75 @@ const accesos = [
   {
     nombre: "Acerca",
     ruta: "/acerca",
-    icono: <Info size={32} className="text-amber-600" />,
+    icono: <Info size={32} className="text-[var(--dashboard-accent)]" />,
     descripcion: "Información general sobre la plataforma.",
   },
   {
     nombre: "Ayuda",
     ruta: "/ayuda",
-    icono: <HelpCircle size={32} className="text-amber-600" />,
+    icono: <HelpCircle size={32} className="text-[var(--dashboard-accent)]" />,
     descripcion: "Centro de asistencia y preguntas frecuentes.",
   },
   {
     nombre: "Contacto",
     ruta: "/contacto",
-    icono: <Phone size={32} className="text-amber-600" />,
+    icono: <Phone size={32} className="text-[var(--dashboard-accent)]" />,
     descripcion: "Comunícate con nuestro equipo.",
   },
   {
     nombre: "Documentación",
     ruta: "/docs",
-    icono: <FileText size={32} className="text-amber-600" />,
+    icono: <FileText size={32} className="text-[var(--dashboard-accent)]" />,
     descripcion: "Guías y manuales técnicos del sistema.",
   },
   {
     nombre: "Estado",
     ruta: "/estado",
-    icono: <BarChart2 size={32} className="text-amber-600" />,
+    icono: <BarChart2 size={32} className="text-[var(--dashboard-accent)]" />,
     descripcion: "Estado actual de la plataforma en tiempo real.",
   },
   {
     nombre: "Legal",
     ruta: "/legal",
-    icono: <ShieldCheck size={32} className="text-amber-600" />,
+    icono: <ShieldCheck size={32} className="text-[var(--dashboard-accent)]" />,
     descripcion: "Términos, condiciones y políticas legales.",
   },
   {
     nombre: "Servicios",
     ruta: "/servicios",
-    icono: <Wrench size={32} className="text-amber-600" />,
+    icono: <Wrench size={32} className="text-[var(--dashboard-accent)]" />,
     descripcion: "Servicios y funciones adicionales.",
   },
   {
     nombre: "Wiki",
     ruta: "/wiki",
-    icono: <BookOpen size={32} className="text-amber-600" />,
+    icono: <BookOpen size={32} className="text-[var(--dashboard-accent)]" />,
     descripcion: "Base de conocimientos colaborativa.",
   },
 ];
 
-export default function Acerca() {
+export default function acerca() {
   return (
     <motion.div
-      className="bg-white dark:bg-black text-gray-800 dark:text-gray-100 px-4 py-10 sm:px-8 lg:px-20 max-w-7xl mx-auto space-y-20"
+      className="bg-[var(--background)] text-[var(--foreground)] px-4 py-10 sm:px-8 lg:px-20 max-w-7xl mx-auto space-y-20"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
     >
-      {/* Hero con video */}
+      {/* Hero visual tipo E-commerce */}
       <section className="text-center space-y-6">
         <motion.h1
-          className="text-4xl md:text-5xl font-extrabold text-amber-700"
+          className="text-4xl md:text-5xl font-extrabold text-[var(--dashboard-accent)]"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          Bienvenido a HoneyLabs
+          Conoce HoneyLabs
         </motion.h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-          La plataforma moderna para gestión de inventarios en instituciones educativas, científicas y empresariales.
+        <p className="text-lg text-[var(--dashboard-muted)] max-w-3xl mx-auto">
+          Plataforma integral de inventarios adaptada a las necesidades educativas, empresariales y científicas.
         </p>
-        <div className="mt-6 rounded-2xl overflow-hidden shadow-lg aspect-video max-w-4xl mx-auto">
+        <div className="mt-6 rounded-2xl overflow-hidden shadow-xl aspect-video max-w-5xl mx-auto">
           <video className="w-full h-full object-cover" autoPlay muted loop>
             <source src="/demo-video.mp4" type="video/mp4" />
             Tu navegador no soporta video.
@@ -93,58 +93,77 @@ export default function Acerca() {
         </div>
       </section>
 
-      {/* Preguntas clave */}
-      <section className="space-y-12">
-        <div>
-          <h2 className="text-2xl font-bold mb-2">¿Qué es HoneyLabs?</h2>
+      {/* Sección de presentación comercial */}
+      <section className="grid md:grid-cols-2 gap-12 items-start">
+        <div className="space-y-5">
+          <h2 className="text-3xl font-bold text-[var(--dashboard-accent)]">¿Qué es HoneyLabs?</h2>
           <p>
-            HoneyLabs es un sistema inteligente para digitalizar y centralizar la gestión de almacenes, materiales
-            y unidades, permitiendo control total de inventarios desde cualquier dispositivo, de forma clara,
-            segura y moderna.
+            Es una solución digital diseñada para transformar completamente la forma en que se gestionan los inventarios. Desde laboratorios escolares hasta cadenas logísticas institucionales, HoneyLabs se adapta a tus flujos reales, permitiendo seguimiento detallado, trazabilidad completa y análisis inmediato.
+          </p>
+          <p>
+            Olvídate del caos de las hojas de cálculo. Con HoneyLabs puedes registrar, consultar, exportar y controlar tu inventario desde cualquier dispositivo, con una interfaz moderna, segura y pensada para cualquier usuario.
           </p>
         </div>
         <div>
-          <h2 className="text-2xl font-bold mb-2">¿Para qué sirve realmente?</h2>
-          <p>
-            Sirve para registrar cada material o unidad con detalle (peso, estado, ubicación, archivos), organizarlos
-            por almacenes, aplicar filtros, visualizar historial de movimientos y exportar en múltiples formatos (PDF,
-            Excel, XML).
-          </p>
+          <img src="/img/inventario-preview.png" alt="Panel de ejemplo" className="rounded-xl shadow-lg border border-[var(--dashboard-border)]" />
         </div>
-        <div>
-          <h2 className="text-2xl font-bold mb-2">¿Qué lo hace especial o único?</h2>
-          <p>
-            Su enfoque modular, experiencia de usuario limpia, generación automática de QR y escalabilidad lo
-            convierten en una solución potente que no depende de licencias costosas ni infraestructuras complejas.
-          </p>
+      </section>
+
+      {/* Beneficios como sección de e-commerce */}
+      <section className="text-center">
+        <h2 className="text-3xl font-bold mb-10">¿Por qué elegir HoneyLabs?</h2>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[{
+            icon: "📦",
+            title: "Control por unidad",
+            desc: "Cada material se registra por unidad específica con detalles como peso, volumen o ubicación."
+          }, {
+            icon: "🔒",
+            title: "Seguridad de acceso",
+            desc: "Cada usuario ve solo lo que necesita. Sistema de roles y permisos completo."
+          }, {
+            icon: "📈",
+            title: "Visualización avanzada",
+            desc: "Dashboards, filtros inteligentes y exportaciones para tomar decisiones más rápido."
+          }, {
+            icon: "📤",
+            title: "Exportación profesional",
+            desc: "PDF, Excel, XML, JSON, todo desde un clic. Ideal para auditorías o reportes."
+          }, {
+            icon: "📸",
+            title: "Multimedia integrada",
+            desc: "Carga imágenes, planos, archivos y vincúlalos directamente a materiales o unidades."
+          }, {
+            icon: "🧠",
+            title: "Preparado para IA",
+            desc: "Estamos listos para integrar flujos automatizados, asistentes inteligentes y predicciones."
+          }].map(({ icon, title, desc }, i) => (
+            <motion.div
+              key={title}
+              className="bg-[var(--dashboard-card)] border border-[var(--dashboard-border)] rounded-xl p-6 shadow hover:shadow-md transition text-left"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+            >
+              <div className="text-4xl mb-3">{icon}</div>
+              <h3 className="font-semibold text-lg mb-1">{title}</h3>
+              <p className="text-[var(--dashboard-muted)] text-sm">{desc}</p>
+            </motion.div>
+          ))}
         </div>
-        <div>
-          <h2 className="text-2xl font-bold mb-2">¿Qué funciones y beneficios ofrece?</h2>
-          <ul className="list-disc list-inside ml-4 space-y-1">
-            <li>Gestión de materiales y unidades por almacén</li>
-            <li>Historial de movimientos con respaldo</li>
-            <li>Carga de documentos e imágenes por unidad</li>
-            <li>Roles y permisos personalizados por usuario</li>
-            <li>Exportación en múltiples formatos</li>
-            <li>Visualización rápida y responsiva</li>
-            <li>Interfaz amigable para cualquier tipo de usuario</li>
-          </ul>
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold mb-2">¿A quién le puede servir?</h2>
-          <p>
-            Está pensado para laboratorios escolares, universidades, departamentos de materiales, instituciones
-            gubernamentales, PYMEs logísticas, técnicos de campo y centros de innovación.
-          </p>
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold mb-2">¿Por qué confiar en este sistema?</h2>
-          <p>
-            Porque ha sido diseñado desde necesidades reales, optimizado para uso cotidiano, construido con tecnologías
-            modernas (Next.js, PostgreSQL, Tailwind), y proyectado a futuro con módulos de inteligencia artificial y
-            automatización.
-          </p>
-        </div>
+      </section>
+
+      {/* CTA final tipo ecommerce */}
+      <section className="text-center mt-20">
+        <h2 className="text-3xl font-bold mb-4">¿Listo para mejorar tu gestión?</h2>
+        <p className="text-[var(--dashboard-muted)] mb-6 max-w-xl mx-auto">
+          Descubre cómo HoneyLabs puede ayudarte a ahorrar tiempo, evitar errores y tener el control total de tus inventarios.
+        </p>
+        <Link href="/contacto">
+          <a className="inline-block px-6 py-3 bg-[var(--dashboard-accent)] text-black font-semibold rounded-lg shadow hover:bg-[var(--dashboard-accent-hover)] transition">
+            Solicita una demo personalizada
+          </a>
+        </Link>
       </section>
 
       {/* Accesos rápidos */}
@@ -154,14 +173,14 @@ export default function Acerca() {
         whileInView={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
       >
-        <h2 className="text-2xl font-bold text-center text-amber-700 mb-6">
+        <h2 className="text-2xl font-bold text-center text-[var(--dashboard-accent)] mb-6">
           Accesos rápidos
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {accesos.map(({ nombre, ruta, icono, descripcion }, i) => (
             <Link key={ruta} href={ruta}>
               <motion.div
-                className="bg-white dark:bg-gray-900 shadow-md hover:shadow-xl transition-all rounded-xl p-6 text-center border border-gray-100 dark:border-gray-800 hover:border-amber-400 focus-visible:ring-2 focus-visible:ring-amber-400 cursor-pointer"
+                className="bg-[var(--dashboard-card)] shadow-md hover:shadow-xl transition-all rounded-xl p-6 text-center border border-[var(--dashboard-border)] hover:border-[var(--dashboard-accent)] focus-visible:ring-2 focus-visible:ring-[var(--dashboard-accent)] cursor-pointer"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.97 }}
                 initial={{ opacity: 0, y: 20 }}
@@ -170,10 +189,10 @@ export default function Acerca() {
                 tabIndex={0}
               >
                 <div className="mb-3 flex justify-center">{icono}</div>
-                <p className="font-semibold text-gray-800 dark:text-gray-100">
+                <p className="font-semibold text-[var(--dashboard-text)]">
                   {nombre}
                 </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-[var(--dashboard-muted)]">
                   {descripcion}
                 </p>
               </motion.div>
