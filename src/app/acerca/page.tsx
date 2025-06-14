@@ -64,7 +64,7 @@ const accesos = [
   },
 ];
 
-export default function AcercaHoneyLabs() {
+export default function Acerca() {
   return (
     <motion.div
       className="bg-white dark:bg-black text-gray-800 dark:text-gray-100 px-4 py-10 sm:px-8 lg:px-20 max-w-7xl mx-auto space-y-20"
