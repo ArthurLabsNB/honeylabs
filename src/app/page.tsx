@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 
-// =============== HERO SECTION CON VIDEO Y GIF ===============
+// =============== HERO SECTION SIN FONDO EXTRA ===============
 function useTypewriter(text: string, speed = 60): string {
   const [displayed, setDisplayed] = useState("");
   useEffect(() => {
@@ -36,15 +36,15 @@ function HeroSection() {
   }, [textoTyped, titulo.length]);
 
   return (
-    <section className="relative w-full bg-gradient-to-br from-amber-300/40 via-zinc-800/90 to-zinc-950 min-h-[85vh] flex flex-col md:flex-row items-center justify-between px-4 md:px-16 py-16 md:py-24 overflow-hidden gap-10">
+    <section className="relative w-full min-h-[85vh] flex flex-col md:flex-row items-center justify-between px-4 md:px-16 py-16 md:py-24 overflow-hidden gap-10">
       <div className="flex-1 z-10 flex flex-col items-center md:items-start text-center md:text-left space-y-7">
-        <h1 className="text-4xl md:text-6xl font-black tracking-tight text-zinc-900 dark:text-amber-100 drop-shadow-xl transition-all animate-typewriter leading-tight">
+        <h1 className="text-4xl md:text-6xl font-black tracking-tight text-[var(--foreground)] drop-shadow-xl transition-all animate-typewriter leading-tight">
           {textoTyped}
           <span className="ml-1 animate-blink text-amber-400">|</span>
         </h1>
         <p
           className={clsx(
-            "max-w-2xl text-xl md:text-2xl font-medium text-zinc-700 dark:text-zinc-200 transition-opacity",
+            "max-w-2xl text-xl md:text-2xl font-medium text-[var(--dashboard-muted)] transition-opacity",
             showDesc ? "opacity-100 animate-fade-in" : "opacity-0"
           )}
         >
@@ -65,7 +65,6 @@ function HeroSection() {
           </a>
         </div>
       </div>
-      {/* Hero imagen y gif */}
       <div className="flex-1 flex items-center justify-center relative z-10">
         <div className="relative w-full max-w-[440px] aspect-[4/3] drop-shadow-2xl animate-3dpop">
           <Image
@@ -103,7 +102,7 @@ function HeroSection() {
   );
 }
 
-// =============== FEATURES CARDS ===============
+// =============== FEATURES CARDS SIN FONDO EXTRA ===============
 const FEATURES = [
   {
     icon: "/icons/real-time.svg",
@@ -133,9 +132,9 @@ const FEATURES = [
 
 function FeaturesSection() {
   return (
-    <section id="features" className="bg-gradient-to-b from-zinc-100 via-white dark:from-zinc-950 dark:via-zinc-900 to-transparent py-24 px-4">
+    <section id="features" className="py-24 px-4">
       <div className="max-w-7xl mx-auto flex flex-col gap-16">
-        <h2 className="text-3xl md:text-4xl font-extrabold text-center text-zinc-800 dark:text-amber-200 mb-8">
+        <h2 className="text-3xl md:text-4xl font-extrabold text-center text-[var(--foreground)] mb-8">
           ¿Por qué HoneyLabs?
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-10">
@@ -147,10 +146,10 @@ function FeaturesSection() {
               <div className="w-16 h-16 rounded-xl flex items-center justify-center bg-amber-100 mb-5 shadow-md">
                 <Image src={f.icon} alt={f.title} width={42} height={42} />
               </div>
-              <h3 className="text-xl font-bold text-zinc-800 dark:text-amber-200 mb-2 text-center">
+              <h3 className="text-xl font-bold text-[var(--foreground)] mb-2 text-center">
                 {f.title}
               </h3>
-              <p className="text-zinc-700 dark:text-zinc-200 text-center mb-4">{f.desc}</p>
+              <p className="text-[var(--dashboard-muted)] text-center mb-4">{f.desc}</p>
               <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow border">
                 <Image
                   src={f.image}
@@ -168,20 +167,20 @@ function FeaturesSection() {
   );
 }
 
-// =============== VIDEO DEMO Y TESTIMONIOS ===============
+// =============== DEMO SECTION (SIN FONDO EXTRA) ===============
 function DemoSection() {
   return (
-    <section id="demo" className="bg-zinc-900/95 py-24 px-4">
+    <section id="demo" className="py-24 px-4">
       <div className="max-w-5xl mx-auto flex flex-col md:flex-row gap-12 items-center">
         <div className="flex-1 flex flex-col gap-6 items-center md:items-start text-center md:text-left">
-          <h2 className="text-3xl md:text-4xl font-bold text-amber-300 mb-1">Mira HoneyLabs en acción</h2>
-          <p className="text-zinc-200 text-lg md:text-xl">
+          <h2 className="text-3xl md:text-4xl font-bold text-amber-400 mb-1">Mira HoneyLabs en acción</h2>
+          <p className="text-[var(--dashboard-muted)] text-lg md:text-xl">
             Descubre cómo es la experiencia de gestionar tu almacén, importar/exportar, visualizar movimientos y controlar todo con facilidad.  
-            <span className="block mt-1 text-amber-200 font-semibold">
+            <span className="block mt-1 text-amber-500 font-semibold">
               Rápido, visual, seguro y 100% digital.
             </span>
           </p>
-          <ul className="mt-4 flex flex-col gap-2 text-zinc-400 text-base">
+          <ul className="mt-4 flex flex-col gap-2 text-[var(--dashboard-muted)] text-base">
             <li>✔️ Edición visual de materiales y unidades</li>
             <li>✔️ Exportación a PDF/Excel y reportes avanzados</li>
             <li>✔️ Manejo de fotos, códigos QR y escaneo rápido</li>
@@ -203,7 +202,7 @@ function DemoSection() {
   );
 }
 
-// =============== KPI SECTION (MODERNO) ===============
+// =============== KPI SECTION (MODERNO, SIN FONDO) ===============
 type Metrics = {
   entradas: number;
   salidas: number;
@@ -272,7 +271,7 @@ function KpiCard({ title, value, color, loading }: { title: string, value: numbe
   );
 }
 
-// =============== CASOS DE ÉXITO / TESTIMONIOS / CLIENTES ===============
+// =============== CASOS DE ÉXITO ===============
 const CASES = [
   {
     name: "Laboratorio de Eléctrica ITQ",
@@ -296,9 +295,9 @@ const CASES = [
 
 function SuccessCasesSection() {
   return (
-    <section className="bg-gradient-to-b from-white dark:from-zinc-900 to-zinc-100 dark:to-zinc-950 py-24 px-4">
+    <section className="py-24 px-4">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-extrabold text-center text-zinc-800 dark:text-amber-200 mb-14">
+        <h2 className="text-3xl md:text-4xl font-extrabold text-center text-[var(--foreground)] mb-14">
           Casos de éxito y testimonios
         </h2>
         <div className="grid md:grid-cols-2 gap-12">
@@ -326,7 +325,7 @@ function SuccessCasesSection() {
                 </div>
               </div>
               <div className="flex-1 flex flex-col gap-2 items-center md:items-start text-center md:text-left">
-                <p className="text-lg text-zinc-700 dark:text-zinc-200 font-medium">
+                <p className="text-lg text-[var(--dashboard-muted)] font-medium">
                   “{c.testimonial}”
                 </p>
                 <span className="text-amber-500 font-bold mt-2">{c.person}</span>
@@ -340,7 +339,7 @@ function SuccessCasesSection() {
   );
 }
 
-// =============== PARTNERS SECTION ===============
+// =============== PARTNERS SECTION (SIN FONDO) ===============
 const PARTNERS = [
   {
     nombre: "Tecnológico Nacional de México - ITQ",
@@ -360,9 +359,9 @@ const PARTNERS = [
 ];
 function PartnersSection() {
   return (
-    <section className="py-24 px-4 bg-white dark:bg-zinc-900">
+    <section className="py-24 px-4">
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-2xl md:text-3xl font-bold text-amber-300 mb-9 text-center">
+        <h2 className="text-2xl md:text-3xl font-bold text-amber-400 mb-9 text-center">
           Colaboradores y aliados
         </h2>
         <div className="flex flex-wrap justify-center items-center gap-8">
@@ -398,7 +397,7 @@ function PartnersSection() {
 // =============== EXPORT DE LA PAGINA PRINCIPAL ===============
 export default function Page() {
   return (
-    <main className="relative min-h-screen w-full font-sans overflow-x-hidden bg-gradient-to-b from-amber-50/80 to-zinc-100 dark:from-zinc-900 dark:to-zinc-950">
+    <main className="relative min-h-screen w-full font-sans overflow-x-hidden">
       <HeroSection />
       <FeaturesSection />
       <DemoSection />
