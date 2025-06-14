@@ -1,14 +1,10 @@
 "use client";
 
-import { useState, useEffect, ReactNode, useRef } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { jsonOrNull } from "@lib/http";
-import { apiFetch } from "@lib/api";
 import clsx from "clsx";
 
-// ========================
-// HERO SECTION
-// ========================
+// =============== HERO SECTION CON VIDEO Y GIF ===============
 function useTypewriter(text: string, speed = 60): string {
   const [displayed, setDisplayed] = useState("");
   useEffect(() => {
@@ -24,142 +20,200 @@ function useTypewriter(text: string, speed = 60): string {
 }
 
 function HeroSection() {
-  const titulo = "Gestión de materiales eficiente";
-  const descripcion =
-    "Gestiona, registra y visualiza materiales en almacenes, adaptándose a cada tipo de usuario. Accede desde cualquier lugar con dashboards personalizados para un control completo y fácil.";
-  const textoTyped = useTypewriter(titulo, 60);
+  const titulo = "La gestión inteligente de inventarios para el mundo real";
+  const desc =
+    "HoneyLabs revoluciona el control y digitalización de materiales con dashboards, control total y acceso desde cualquier lugar. Solución perfecta para laboratorios, empresas y organizaciones.";
+
+  const textoTyped = useTypewriter(titulo, 54);
   const [showDesc, setShowDesc] = useState(false);
+
   useEffect(() => {
     setShowDesc(false);
     if (textoTyped.length === titulo.length) {
-      const timer = setTimeout(() => setShowDesc(true), 400);
+      const timer = setTimeout(() => setShowDesc(true), 300);
       return () => clearTimeout(timer);
     }
   }, [textoTyped, titulo.length]);
+
   return (
-    <section
-      className="flex flex-col items-center justify-center min-h-[75vh] py-32 md:py-44 px-4 text-center select-none space-y-8"
-      data-oid="0lbge2l"
-    >
-      <h1
-        className={clsx(
-          "text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-amber-200 drop-shadow-xl transition-all animate-typewriter",
-        )}
-        style={{ fontFamily: `'Nunito', 'Inter', Arial, sans-serif` }}
-        data-oid="n:9ixz:"
-      >
-        {textoTyped}
-        <span
-          className="ml-1 animate-blink text-amber-300 rounded-none"
-          data-oid="chm65rv"
+    <section className="relative w-full bg-gradient-to-br from-amber-300/40 via-zinc-800/90 to-zinc-950 min-h-[85vh] flex flex-col md:flex-row items-center justify-between px-4 md:px-16 py-16 md:py-24 overflow-hidden gap-10">
+      <div className="flex-1 z-10 flex flex-col items-center md:items-start text-center md:text-left space-y-7">
+        <h1 className="text-4xl md:text-6xl font-black tracking-tight text-zinc-900 dark:text-amber-100 drop-shadow-xl transition-all animate-typewriter leading-tight">
+          {textoTyped}
+          <span className="ml-1 animate-blink text-amber-400">|</span>
+        </h1>
+        <p
+          className={clsx(
+            "max-w-2xl text-xl md:text-2xl font-medium text-zinc-700 dark:text-zinc-200 transition-opacity",
+            showDesc ? "opacity-100 animate-fade-in" : "opacity-0"
+          )}
         >
-          |
-        </span>
-      </h1>
-      <div
-        className={clsx(
-          "max-w-2xl text-lg md:text-xl text-zinc-200 font-normal transition-opacity duration-600",
-          showDesc
-            ? "opacity-100 animate-fade-in animate-float-text"
-            : "opacity-0",
-        )}
-        data-oid="24f6q6r"
-      >
-        {showDesc && descripcion}
+          {showDesc && desc}
+        </p>
+        <div className="flex gap-4 mt-6">
+          <a
+            href="#demo"
+            className="bg-amber-400 hover:bg-amber-500 text-black font-bold px-7 py-3 rounded-xl shadow-lg animate-ripple transition focus:outline-none focus:ring-2 focus:ring-amber-200"
+          >
+            Ver demo en video
+          </a>
+          <a
+            href="#features"
+            className="bg-white/20 hover:bg-amber-400/70 text-amber-900 dark:text-amber-200 border border-amber-300 px-7 py-3 rounded-xl shadow-lg transition font-bold"
+          >
+            Explorar características
+          </a>
+        </div>
       </div>
-      <a
-        href="#acerca"
-        className="bg-amber-400 hover:bg-amber-500 text-black font-semibold px-8 py-3 rounded-lg shadow-lg mt-3 animate-ripple transition focus:outline-none focus:ring-2 focus:ring-amber-200"
-        aria-label="Explorar HoneyLabs"
-        data-oid="16t5dra"
-      >
-        Explorar HoneyLabs
-      </a>
+      {/* Hero imagen y gif */}
+      <div className="flex-1 flex items-center justify-center relative z-10">
+        <div className="relative w-full max-w-[440px] aspect-[4/3] drop-shadow-2xl animate-3dpop">
+          <Image
+            src="/hero-warehouse-ui-mockup.png"
+            alt="Mockup HoneyLabs dashboard"
+            fill
+            className="rounded-3xl object-cover border-4 border-amber-200 shadow-2xl"
+            priority
+            draggable={false}
+          />
+          {/* Gif flotando */}
+          <div className="absolute -bottom-8 -left-10 w-36 h-24 z-20 animate-float-card">
+            <Image
+              src="/gif/demo-movimientos.gif"
+              alt="Demostración animada movimientos"
+              fill
+              className="rounded-xl object-cover shadow-lg border-2 border-white"
+              draggable={false}
+            />
+          </div>
+        </div>
+      </div>
+      {/* Video demo flotando, solo en desktop */}
+      <div className="hidden md:block absolute right-24 top-28 w-[360px] aspect-video z-0 opacity-80 rounded-3xl overflow-hidden shadow-2xl border-4 border-amber-300">
+        <video
+          src="/videos/demo-dashboard.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="w-full h-full object-cover"
+        />
+      </div>
     </section>
   );
 }
 
-// ========================
-// ABOUT SECTION
-// ========================
-function AboutSection() {
+// =============== FEATURES CARDS ===============
+const FEATURES = [
+  {
+    icon: "/icons/real-time.svg",
+    title: "Inventario en tiempo real",
+    desc: "Consulta y actualiza el estado de los materiales al instante, con historial y trazabilidad total.",
+    image: "/feature-inventario.png",
+  },
+  {
+    icon: "/icons/user-roles.svg",
+    title: "Roles y permisos personalizados",
+    desc: "Gestiona acceso y acciones según el tipo de usuario, asegurando la seguridad y organización.",
+    image: "/feature-users.gif",
+  },
+  {
+    icon: "/icons/cloud-access.svg",
+    title: "Acceso desde cualquier lugar",
+    desc: "Plataforma 100% web, disponible 24/7 desde cualquier dispositivo, con backups automáticos.",
+    image: "/feature-web-devices.png",
+  },
+  {
+    icon: "/icons/integrations.svg",
+    title: "Integraciones y reportes",
+    desc: "Exporta a Excel, PDF, conecta con APIs y obtén reportes visuales de movimientos y uso.",
+    image: "/feature-integrations.gif",
+  },
+];
+
+function FeaturesSection() {
   return (
-    <section
-      id="acerca"
-      className="relative max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-14 py-28 md:py-40 px-4"
-      data-oid="ynjvksg"
-    >
-      <div
-        className="flex-1 flex flex-col justify-center md:items-start items-center text-center md:text-left animate-fade-in-left"
-        data-oid="xvx4mn3"
-      >
-        <h2
-          className="text-3xl md:text-4xl font-semibold text-amber-300 mb-4 tracking-tight"
-          data-oid="v2mcg2a"
-        >
-          Acerca de HoneyLabs
+    <section id="features" className="bg-gradient-to-b from-zinc-100 via-white dark:from-zinc-950 dark:via-zinc-900 to-transparent py-24 px-4">
+      <div className="max-w-7xl mx-auto flex flex-col gap-16">
+        <h2 className="text-3xl md:text-4xl font-extrabold text-center text-zinc-800 dark:text-amber-200 mb-8">
+          ¿Por qué HoneyLabs?
         </h2>
-        <p
-          className="text-zinc-200 mb-6 max-w-lg text-lg md:text-xl font-normal"
-          data-oid="cr02dd9"
-        >
-          HoneyLabs es la solución moderna para la gestión logística y
-          digitalización de inventarios en laboratorios, empresas e
-          instituciones. Optimiza el registro, la organización y la consulta de
-          materiales, facilitando procesos y colaboración en cualquier entorno.
-        </p>
-        <a
-          href="/acerca"
-          className="inline-block bg-amber-400 hover:bg-amber-500 text-black font-medium px-6 py-2 rounded-lg shadow transition animate-ripple"
-          aria-label="Saber más sobre HoneyLabs"
-          data-oid="e4.4d2g"
-        >
-          Saber más
-        </a>
-      </div>
-      <div
-        className="flex-1 flex justify-center items-center animate-3dpop"
-        data-oid="e-.zefp"
-      >
-        <div
-          className="relative group transition-transform duration-700 will-change-transform"
-          tabIndex={0}
-          style={{ perspective: "1000px", outline: "none" }}
-          data-oid=":w3kew."
-        >
-          <Image
-            src="/ilustracion-almacen-3d.svg"
-            alt="Ilustración Almacén"
-            width={320}
-            height={320}
-            sizes="(max-width: 768px) 320px, 416px"
-            className="w-80 h-80 md:w-[26rem] md:h-[26rem] object-cover rounded-2xl shadow-2xl border-2 border-amber-100 group-hover:scale-105 group-hover:rotate-2 group-hover:shadow-3xl transition-transform duration-500"
-            draggable={false}
-            loading="lazy"
-            data-oid="y7q:njp"
-          />
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-10">
+          {FEATURES.map((f) => (
+            <div
+              key={f.title}
+              className="bg-white/80 dark:bg-zinc-900 rounded-3xl shadow-xl hover:shadow-2xl border border-amber-200 p-7 flex flex-col items-center transition-all group"
+            >
+              <div className="w-16 h-16 rounded-xl flex items-center justify-center bg-amber-100 mb-5 shadow-md">
+                <Image src={f.icon} alt={f.title} width={42} height={42} />
+              </div>
+              <h3 className="text-xl font-bold text-zinc-800 dark:text-amber-200 mb-2 text-center">
+                {f.title}
+              </h3>
+              <p className="text-zinc-700 dark:text-zinc-200 text-center mb-4">{f.desc}</p>
+              <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow border">
+                <Image
+                  src={f.image}
+                  alt={`Demostración de ${f.title}`}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform"
+                  draggable={false}
+                />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
-// ========================
-// KPI SECTION
-// ========================
+// =============== VIDEO DEMO Y TESTIMONIOS ===============
+function DemoSection() {
+  return (
+    <section id="demo" className="bg-zinc-900/95 py-24 px-4">
+      <div className="max-w-5xl mx-auto flex flex-col md:flex-row gap-12 items-center">
+        <div className="flex-1 flex flex-col gap-6 items-center md:items-start text-center md:text-left">
+          <h2 className="text-3xl md:text-4xl font-bold text-amber-300 mb-1">Mira HoneyLabs en acción</h2>
+          <p className="text-zinc-200 text-lg md:text-xl">
+            Descubre cómo es la experiencia de gestionar tu almacén, importar/exportar, visualizar movimientos y controlar todo con facilidad.  
+            <span className="block mt-1 text-amber-200 font-semibold">
+              Rápido, visual, seguro y 100% digital.
+            </span>
+          </p>
+          <ul className="mt-4 flex flex-col gap-2 text-zinc-400 text-base">
+            <li>✔️ Edición visual de materiales y unidades</li>
+            <li>✔️ Exportación a PDF/Excel y reportes avanzados</li>
+            <li>✔️ Manejo de fotos, códigos QR y escaneo rápido</li>
+            <li>✔️ Dashboards personalizables</li>
+          </ul>
+        </div>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="rounded-3xl overflow-hidden shadow-2xl border-4 border-amber-300 aspect-video w-full max-w-[480px]">
+            <video
+              src="/videos/demo-dashboard.mp4"
+              controls
+              poster="/feature-inventario.png"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// =============== KPI SECTION (MODERNO) ===============
 type Metrics = {
   entradas: number;
   salidas: number;
   usuarios: number;
   almacenes: number;
 };
-
 function useCountUp(to: number, duration = 1100): number {
   const [count, setCount] = useState(0);
   useEffect(() => {
-    let start = 0,
-      raf: number,
-      startTime: number;
+    let start = 0, raf: number, startTime: number;
     function animate(ts: number) {
       if (!startTime) startTime = ts;
       const progress = Math.min((ts - startTime) / duration, 1);
@@ -172,309 +226,185 @@ function useCountUp(to: number, duration = 1100): number {
   }, [to, duration]);
   return count;
 }
-
 function KpiSection() {
   const [data, setData] = useState<Metrics | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
-    apiFetch("/api/metrics")
-      .then(jsonOrNull)
-      .then((d) => setData(d || null))
+    fetch("/api/metrics")
+      .then(r => r.json())
+      .then(d => setData(d || null))
       .catch(() =>
         setData({ entradas: 0, salidas: 0, usuarios: 0, almacenes: 0 }),
       )
       .finally(() => setLoading(false));
   }, []);
 
-  const entradas = useCountUp(data?.entradas ?? 0, 900);
-  const salidas = useCountUp(data?.salidas ?? 0, 900);
-  const usuarios = useCountUp(data?.usuarios ?? 0, 800);
-  const almacenes = useCountUp(data?.almacenes ?? 0, 800);
+  const entradas = useCountUp(data?.entradas ?? 0, 800);
+  const salidas = useCountUp(data?.salidas ?? 0, 800);
+  const usuarios = useCountUp(data?.usuarios ?? 0, 700);
+  const almacenes = useCountUp(data?.almacenes ?? 0, 700);
 
   return (
-    <section
-      className="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-12 py-24 px-4"
-      data-oid="0rnyvxj"
-    >
-      <KpiCard className="animate-float-card" data-oid="z5.spuq">
-        {loading ? (
-          <LoaderKPI data-oid="s6u.8r4" />
-        ) : (
-          <>
-            <div className="flex gap-7 mb-1" data-oid="zknii5n">
-              <div className="flex flex-col items-center" data-oid="arc.fwm">
-                <span
-                  className="inline-block h-6 w-6 rounded-full bg-green-400/40 flex items-center justify-center"
-                  data-oid="n1:7w8f"
-                >
-                  <span className="text-green-500" data-oid="tvwmb8v">
-                    ↓
-                  </span>
-                </span>
-                <span
-                  className="text-2xl font-semibold text-green-300"
-                  data-oid="9hh.p87"
-                >
-                  {entradas.toLocaleString()}
-                </span>
-                <span className="text-xs text-zinc-100/70" data-oid="qsas9t2">
-                  Entradas
-                </span>
+    <section className="max-w-7xl mx-auto py-24 px-4 grid grid-cols-2 md:grid-cols-4 gap-7">
+      <KpiCard title="Entradas" value={entradas} color="green" loading={loading} />
+      <KpiCard title="Salidas" value={salidas} color="rose" loading={loading} />
+      <KpiCard title="Usuarios" value={usuarios} color="sky" loading={loading} />
+      <KpiCard title="Almacenes" value={almacenes} color="amber" loading={loading} />
+    </section>
+  );
+}
+function KpiCard({ title, value, color, loading }: { title: string, value: number, color: string, loading: boolean }) {
+  const colorMap: any = {
+    green: "bg-green-100 text-green-700 border-green-300",
+    rose: "bg-rose-100 text-rose-700 border-rose-300",
+    sky: "bg-sky-100 text-sky-700 border-sky-300",
+    amber: "bg-amber-100 text-amber-700 border-amber-300",
+  };
+  return (
+    <div className={clsx(
+      "rounded-2xl shadow-lg p-7 bg-white/80 border-2 flex flex-col items-center min-h-[140px] animate-fade-in",
+      colorMap[color]
+    )}>
+      <span className="text-4xl md:text-5xl font-extrabold">{loading ? "…" : value.toLocaleString()}</span>
+      <span className="text-lg font-medium mt-2">{title}</span>
+    </div>
+  );
+}
+
+// =============== CASOS DE ÉXITO / TESTIMONIOS / CLIENTES ===============
+const CASES = [
+  {
+    name: "Laboratorio de Eléctrica ITQ",
+    image: "/clientes/itq-lab.jpg",
+    logo: "/aliados/itq.png",
+    testimonial:
+      "Antes de HoneyLabs, el control era manual y lento. Ahora tenemos trazabilidad completa y acceso instantáneo desde cualquier dispositivo. ¡Recomiendo la plataforma para cualquier laboratorio o empresa!",
+    person: "Ing. Alejandra Ramírez",
+    role: "Coordinadora Lab. Eléctrica",
+  },
+  {
+    name: "HoneyLabs Open Community",
+    image: "/clientes/comunidad.jpg",
+    logo: "/aliados/comunidad.png",
+    testimonial:
+      "Como comunidad, valoramos la facilidad de uso y la capacidad de proponer mejoras. La integración y los reportes han optimizado nuestro tiempo y recursos.",
+    person: "Carlos R. - Desarrollador",
+    role: "Miembro comunidad",
+  },
+];
+
+function SuccessCasesSection() {
+  return (
+    <section className="bg-gradient-to-b from-white dark:from-zinc-900 to-zinc-100 dark:to-zinc-950 py-24 px-4">
+      <div className="max-w-6xl mx-auto">
+        <h2 className="text-3xl md:text-4xl font-extrabold text-center text-zinc-800 dark:text-amber-200 mb-14">
+          Casos de éxito y testimonios
+        </h2>
+        <div className="grid md:grid-cols-2 gap-12">
+          {CASES.map((c) => (
+            <div
+              key={c.name}
+              className="rounded-3xl bg-white dark:bg-zinc-900 shadow-xl p-8 flex flex-col md:flex-row gap-7 items-center border-2 border-amber-100 dark:border-amber-300 animate-float-card"
+            >
+              <div className="relative w-40 h-40 rounded-2xl overflow-hidden border-2 border-amber-200 shadow-xl">
+                <Image
+                  src={c.image}
+                  alt={`Foto ${c.name}`}
+                  fill
+                  className="object-cover"
+                  draggable={false}
+                />
+                <div className="absolute bottom-2 right-2 w-12 h-12 rounded-full border-2 border-white bg-white dark:bg-zinc-900 flex items-center justify-center">
+                  <Image
+                    src={c.logo}
+                    alt="Logo"
+                    width={40}
+                    height={40}
+                    className="rounded-full"
+                  />
+                </div>
               </div>
-              <div className="flex flex-col items-center" data-oid="7r7_-cf">
-                <span
-                  className="inline-block h-6 w-6 rounded-full bg-rose-400/40 flex items-center justify-center"
-                  data-oid="gpc7d-l"
-                >
-                  <span className="text-rose-400" data-oid="wf9j2p7">
-                    ↑
-                  </span>
-                </span>
-                <span
-                  className="text-2xl font-semibold text-rose-300"
-                  data-oid="e57nd1z"
-                >
-                  {salidas.toLocaleString()}
-                </span>
-                <span className="text-xs text-zinc-100/70" data-oid="pqucaa2">
-                  Salidas
-                </span>
+              <div className="flex-1 flex flex-col gap-2 items-center md:items-start text-center md:text-left">
+                <p className="text-lg text-zinc-700 dark:text-zinc-200 font-medium">
+                  “{c.testimonial}”
+                </p>
+                <span className="text-amber-500 font-bold mt-2">{c.person}</span>
+                <span className="text-sm text-zinc-500">{c.role}</span>
               </div>
             </div>
-            <span className="text-sm text-zinc-400" data-oid="7ydvlb8">
-              Movimientos registrados
-            </span>
-          </>
-        )}
-      </KpiCard>
-      <KpiCard className="animate-float-card-delayed" data-oid="s7iiu5p">
-        {loading ? (
-          <LoaderKPI data-oid="wukgici" />
-        ) : (
-          <>
-            <span
-              className="inline-block h-7 w-7 bg-sky-400/40 rounded-full mb-1"
-              data-oid="brwgba0"
-            />
-
-            <span
-              className="text-3xl font-bold text-sky-100"
-              data-oid="lluoxil"
-            >
-              {usuarios.toLocaleString()}
-            </span>
-            <span
-              className="text-base text-zinc-200/90 mt-1"
-              data-oid="8e29gqa"
-            >
-              Usuarios registrados
-            </span>
-          </>
-        )}
-      </KpiCard>
-      <KpiCard className="animate-float-card-delaymore" data-oid="e63:sb5">
-        {loading ? (
-          <LoaderKPI data-oid="9-4g9kv" />
-        ) : (
-          <>
-            <span
-              className="inline-block h-7 w-7 bg-amber-400/50 rounded-full mb-1"
-              data-oid="noke38g"
-            />
-
-            <span
-              className="text-3xl font-bold text-amber-100"
-              data-oid="i34sl1n"
-            >
-              {almacenes.toLocaleString()}
-            </span>
-            <span
-              className="text-base text-zinc-200/90 mt-1"
-              data-oid="vfrmaej"
-            >
-              Almacenes creados
-            </span>
-          </>
-        )}
-      </KpiCard>
-    </section>
-  );
-}
-function KpiCard({
-  children,
-  className = "",
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <div
-      className={`rounded-2xl bg-zinc-900/85 shadow-xl p-8 border border-amber-400/10 flex flex-col items-center transition-transform hover:scale-105 min-h-[10.625rem] ${className}`}
-      data-oid="6wqw87x"
-    >
-      {children}
-    </div>
-  );
-}
-function LoaderKPI() {
-  return (
-    <div
-      className="flex flex-col items-center justify-center gap-2 min-h-[5rem]"
-      data-oid="-vf79ds"
-    >
-      <span
-        className="inline-block h-7 w-7 border-2 border-amber-300 border-t-transparent rounded-full animate-spin"
-        data-oid="nlekgq9"
-      ></span>
-      <span className="text-xs text-zinc-400" data-oid="_sennwg">
-        Cargando…
-      </span>
-    </div>
-  );
-}
-
-// ========================
-// FEATURES BANNER SECTION
-// ========================
-
-// ========================
-// PARTNERS/ALIADOS SECTION (Acordeón Multimedia)
-// ========================
-interface Aliado {
-  nombre: string;
-  img: string;
-  url: string;
-  desc: string;
-  principal?: boolean;
-}
-function PartnersSection() {
-  const aliados: Aliado[] = [
-    {
-      nombre: "Tecnológico Nacional de México - ITQ",
-      img: "/aliados/itq.png",
-      url: "https://www.queretaro.tecnm.mx/",
-      desc: "Principal aliado institucional, promotor de la digitalización de laboratorios y prácticas profesionales en logística.",
-      principal: true,
-    },
-    {
-      nombre: "HoneyLabs Open Community",
-      img: "/aliados/comunidad.png",
-      url: "https://github.com/honeylabs",
-      desc: "Red de desarrolladores y usuarios que contribuyen con ideas, soporte y feedback para la mejora continua.",
-    },
-    {
-      nombre: "Otro Aliado",
-      img: "/aliados/aliado-ejemplo.png",
-      url: "#",
-      desc: "Ejemplo de empresa aliada en digitalización logística.",
-    },
-  ];
-
-  const [open, setOpen] = useState(0);
-  return (
-    <section className="max-w-5xl mx-auto py-36 px-4" data-oid=".qhy:55">
-      <h2
-        className="text-2xl md:text-3xl font-bold text-amber-300 mb-9 text-center"
-        data-oid="s84ug9e"
-      >
-        Colaboradores y aliados
-      </h2>
-      <div className="flex flex-col gap-6" data-oid="88hiutj">
-        {aliados.map((a, i) => (
-          <div
-            key={a.nombre}
-            className={clsx(
-              "rounded-2xl bg-zinc-900/80 border border-amber-300/15 shadow-xl transition-all",
-              open === i
-                ? "scale-100 shadow-2xl border-amber-300/30"
-                : "scale-95 opacity-70",
-            )}
-            data-oid="i2l1nw4"
-          >
-            <button
-              className="flex items-center w-full p-5 gap-6 focus:outline-none"
-              onClick={() => setOpen(i)}
-              aria-expanded={open === i}
-              data-oid="t4atnu5"
-            >
-              <Image
-                src={a.img}
-                alt={a.nombre}
-                width={a.principal ? 96 : 80}
-                height={a.principal ? 96 : 80}
-                sizes={a.principal ? '96px' : '80px'}
-                className={clsx(
-                  "rounded-2xl shadow border-2 object-cover transition",
-                  a.principal
-                    ? "w-24 h-24 border-amber-300"
-                    : "w-20 h-20 border-amber-200",
-                )}
-                loading="lazy"
-                data-oid="gx_hbkt"
-              />
-
-              <div className="flex flex-col items-start" data-oid="v1cf7e3">
-                <span
-                  className={clsx(
-                    "font-bold text-lg",
-                    a.principal ? "text-amber-200" : "text-amber-100",
-                  )}
-                  data-oid="d8yw6bn"
-                >
-                  {a.nombre}
-                </span>
-                <span className="text-zinc-200 text-sm" data-oid=":8l2.w7">
-                  {a.desc}
-                </span>
-                <a
-                  href={a.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-amber-300 mt-2 hover:underline"
-                  data-oid="0:.b:74"
-                >
-                  Visitar sitio
-                </a>
-              </div>
-              <div className="ml-auto" data-oid="lp62o08">
-                {open === i ? (
-                  <span className="text-amber-300" data-oid=".m3nea5">
-                    ▲
-                  </span>
-                ) : (
-                  <span className="text-amber-300" data-oid="gn:shbo">
-                    ▼
-                  </span>
-                )}
-              </div>
-            </button>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );
 }
 
-// ========================
-// MAIN PAGE (EXPORT)
-// ========================
+// =============== PARTNERS SECTION ===============
+const PARTNERS = [
+  {
+    nombre: "Tecnológico Nacional de México - ITQ",
+    img: "/aliados/itq.png",
+    url: "https://www.queretaro.tecnm.mx/",
+  },
+  {
+    nombre: "HoneyLabs Open Community",
+    img: "/aliados/comunidad.png",
+    url: "https://github.com/honeylabs",
+  },
+  {
+    nombre: "Empresa Digital S.A.",
+    img: "/aliados/aliado-ejemplo.png",
+    url: "#",
+  },
+];
+function PartnersSection() {
+  return (
+    <section className="py-24 px-4 bg-white dark:bg-zinc-900">
+      <div className="max-w-5xl mx-auto">
+        <h2 className="text-2xl md:text-3xl font-bold text-amber-300 mb-9 text-center">
+          Colaboradores y aliados
+        </h2>
+        <div className="flex flex-wrap justify-center items-center gap-8">
+          {PARTNERS.map((a) => (
+            <a
+              key={a.nombre}
+              href={a.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center gap-2 group transition hover:scale-105"
+            >
+              <div className="bg-white dark:bg-zinc-900 p-4 rounded-2xl shadow-lg border-2 border-amber-200 w-32 h-32 flex items-center justify-center">
+                <Image
+                  src={a.img}
+                  alt={a.nombre}
+                  width={82}
+                  height={82}
+                  className="object-contain"
+                  draggable={false}
+                />
+              </div>
+              <span className="text-amber-600 dark:text-amber-300 font-semibold text-center text-sm">
+                {a.nombre}
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// =============== EXPORT DE LA PAGINA PRINCIPAL ===============
 export default function Page() {
   return (
-    <main
-      className="relative min-h-screen w-full font-sans overflow-x-hidden"
-      data-oid="3fwxplg"
-    >
-      <div
-        className="relative z-10 flex flex-col min-h-screen"
-        data-oid="t17-:9s"
-      >
-        <HeroSection data-oid="obvdxpr" />
-        <AboutSection data-oid="x4h0vfw" />
-        <KpiSection data-oid="5izdndn" />
-        <PartnersSection data-oid="1-2.6t3" />
-      </div>
+    <main className="relative min-h-screen w-full font-sans overflow-x-hidden bg-gradient-to-b from-amber-50/80 to-zinc-100 dark:from-zinc-900 dark:to-zinc-950">
+      <HeroSection />
+      <FeaturesSection />
+      <DemoSection />
+      <KpiSection />
+      <SuccessCasesSection />
+      <PartnersSection />
     </main>
   );
 }
