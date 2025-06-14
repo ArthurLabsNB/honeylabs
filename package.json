@@ -49,6 +49,7 @@
     "react-hook-form": "^7.56.4",
     "react-konva": "^19.0.4",
     "react-resizable": "^3.0.5",
+    "react-star-wars-crawl": "^2.0.0",
     "react-zxing": "^2.1.0",
     "styled-jsx": "^5.1.7",
     "swr": "^2.3.3",
