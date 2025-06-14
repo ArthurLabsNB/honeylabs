@@ -1,132 +1,108 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 
-// Importa el componente dinámicamente para evitar errores SSR
-const StarWarsCrawl = dynamic(
-  () => import("react-star-wars-crawl").then((mod) => mod.StarWarsCrawl),
-  { ssr: false }
-);
-
-// --- TEXTOS ---
-const TITLE = "La gestión inteligente de inventarios para el mundo real";
-const STARWARS_CRAWL = [
-  {
-    title: "",
-    text: [
-      "HoneyLabs impulsa la transformación digital en la administración de materiales, ofreciendo tecnología avanzada con una experiencia intuitiva y eficiente.",
-      "Supervisa, controla y optimiza tus inventarios desde cualquier lugar, con dashboards modernos y acceso seguro en todo momento.",
-      "Diseñado para laboratorios, empresas e instituciones que buscan excelencia operativa y transparencia total en sus procesos.",
-      "La nueva era en gestión de inventarios ya es una realidad.",
-      "Bienvenido a HoneyLabs.",
-    ],
-  },
-];
-
-// --- CUSTOM HOOK TYPEWRITER ---
-function useTypewriter(text: string, speed = 32, callback?: () => void) {
+// =============== HERO SECTION SIN FONDO EXTRA ===============
+function useTypewriter(text: string, speed = 60): string {
   const [displayed, setDisplayed] = useState("");
   useEffect(() => {
     setDisplayed("");
     let i = 0;
     const id = setInterval(() => {
       setDisplayed(text.slice(0, ++i));
-      if (i === text.length) {
-        clearInterval(id);
-        callback && setTimeout(callback, 800); // un pequeño delay antes de iniciar el crawl
-      }
+      if (i === text.length) clearInterval(id);
     }, speed);
     return () => clearInterval(id);
-    // eslint-disable-next-line
-  }, [text]);
+  }, [text, speed]);
   return displayed;
 }
 
-// --- STAR WARS HERO EFFECT ---
-function StarWarsTypewriterCrawl({ loop = true, crawlTime = 16500 }: { loop?: boolean; crawlTime?: number }) {
-  const [step, setStep] = useState<"type" | "crawl">("type");
-  const [cycle, setCycle] = useState(0);
+function HeroSection() {
+  const titulo = "La gestión inteligente de inventarios para el mundo real";
+  const desc =
+    "HoneyLabs revoluciona el control y digitalización de materiales con dashboards, control total y acceso desde cualquier lugar. Solución perfecta para laboratorios, empresas y organizaciones.";
 
-  // Callback: cuando termina typewriter, inicia crawl
-  const handleTypewriterFinish = () => {
-    setStep("crawl");
-    // Después de que termina el crawl, volver a empezar
-    setTimeout(() => {
-      if (loop) {
-        setCycle((c) => c + 1);
-        setStep("type");
-      }
-    }, crawlTime);
-  };
+  const textoTyped = useTypewriter(titulo, 54);
+  const [showDesc, setShowDesc] = useState(false);
 
-  const typedTitle = useTypewriter(
-    TITLE,
-    32,
-    step === "type" ? handleTypewriterFinish : undefined
-  );
+  useEffect(() => {
+    setShowDesc(false);
+    if (textoTyped.length === titulo.length) {
+      const timer = setTimeout(() => setShowDesc(true), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [textoTyped, titulo.length]);
 
   return (
-    <section
-      className="relative flex items-center justify-center min-h-[340px] md:min-h-[460px] w-full py-8"
-      style={{
-        background: "transparent",
-        borderRadius: "2rem",
-        marginBottom: "2.5rem",
-        // No toca fondo, toma el de global.css
-        boxShadow: "none",
-      }}
-    >
-      <div className="absolute w-full top-14 flex justify-center z-20 pointer-events-none">
-        {/* TYPEWRITER TITLE */}
-        {step === "type" && (
-          <h1
-            className="text-2xl md:text-4xl font-black tracking-wide text-center drop-shadow-xl text-[var(--foreground)]"
-            style={{
-              fontFamily: "'Pathway Gothic One', 'Arial Narrow', Arial, sans-serif",
-            }}
-          >
-            {typedTitle}
-            <span className="ml-1 animate-blink text-amber-400">|</span>
-          </h1>
-        )}
-      </div>
-      {/* STAR WARS CRAWL ANIMATION */}
-      {step === "crawl" && (
-        <div
-          key={cycle}
-          className="w-full max-w-3xl flex items-center justify-center mx-auto pointer-events-none"
+    <section className="relative w-full min-h-[85vh] flex flex-col md:flex-row items-center justify-between px-4 md:px-16 py-16 md:py-24 overflow-hidden gap-10">
+      <div className="flex-1 z-10 flex flex-col items-center md:items-start text-center md:text-left space-y-7">
+        <h1 className="text-4xl md:text-6xl font-black tracking-tight text-[var(--foreground)] drop-shadow-xl transition-all animate-typewriter leading-tight">
+          {textoTyped}
+          <span className="ml-1 animate-blink text-amber-400">|</span>
+        </h1>
+        <p
+          className={clsx(
+            "max-w-2xl text-xl md:text-2xl font-medium text-[var(--dashboard-muted)] transition-opacity",
+            showDesc ? "opacity-100 animate-fade-in" : "opacity-0"
+          )}
         >
-          <StarWarsCrawl
-            crawlSpeed={0.18} // default: 0.12, más alto = más lento
-            textColor="#ffe066"
-            backgroundColor="transparent"
-            fontFamily="'Pathway Gothic One', 'Arial Narrow', Arial, sans-serif"
-            style={{
-              width: "100%",
-              fontWeight: 700,
-              letterSpacing: "1.15px",
-              fontSize: "1.09rem",
-              lineHeight: 1.8,
-            }}
+          {showDesc && desc}
+        </p>
+        <div className="flex gap-4 mt-6">
+          <a
+            href="#demo"
+            className="bg-amber-400 hover:bg-amber-500 text-black font-bold px-7 py-3 rounded-xl shadow-lg animate-ripple transition focus:outline-none focus:ring-2 focus:ring-amber-200"
           >
-            {STARWARS_CRAWL}
-          </StarWarsCrawl>
+            Ver demo en video
+          </a>
+          <a
+            href="#features"
+            className="bg-white/20 hover:bg-amber-400/70 text-amber-900 dark:text-amber-200 border border-amber-300 px-7 py-3 rounded-xl shadow-lg transition font-bold"
+          >
+            Explorar características
+          </a>
         </div>
-      )}
-      <style jsx>{`
-        @keyframes blink {
-          50% { opacity: 0; }
-        }
-        .animate-blink { animation: blink 1.05s steps(1) infinite; }
-      `}</style>
+      </div>
+      <div className="flex-1 flex items-center justify-center relative z-10">
+        <div className="relative w-full max-w-[440px] aspect-[4/3] drop-shadow-2xl animate-3dpop">
+          <Image
+            src="/hero-warehouse-ui-mockup.png"
+            alt="Mockup HoneyLabs dashboard"
+            fill
+            className="rounded-3xl object-cover border-4 border-amber-200 shadow-2xl"
+            priority
+            draggable={false}
+          />
+          {/* Gif flotando */}
+          <div className="absolute -bottom-8 -left-10 w-36 h-24 z-20 animate-float-card">
+            <Image
+              src="/gif/demo-movimientos.gif"
+              alt="Demostración animada movimientos"
+              fill
+              className="rounded-xl object-cover shadow-lg border-2 border-white"
+              draggable={false}
+            />
+          </div>
+        </div>
+      </div>
+      {/* Video demo flotando, solo en desktop */}
+      <div className="hidden md:block absolute right-24 top-28 w-[360px] aspect-video z-0 opacity-80 rounded-3xl overflow-hidden shadow-2xl border-4 border-amber-300">
+        <video
+          src="/videos/demo-dashboard.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="w-full h-full object-cover"
+        />
+      </div>
     </section>
   );
 }
 
-// =================== FEATURES SECTION ===================
+// =============== FEATURES CARDS SIN FONDO EXTRA ===============
 const FEATURES = [
   {
     icon: "/icons/real-time.svg",
@@ -191,7 +167,7 @@ function FeaturesSection() {
   );
 }
 
-// =============== DEMO SECTION ===============
+// =============== DEMO SECTION (SIN FONDO EXTRA) ===============
 function DemoSection() {
   return (
     <section id="demo" className="py-24 px-4">
@@ -226,7 +202,7 @@ function DemoSection() {
   );
 }
 
-// =============== KPI SECTION ===============
+// =============== KPI SECTION (MODERNO, SIN FONDO) ===============
 type Metrics = {
   entradas: number;
   salidas: number;
@@ -363,7 +339,7 @@ function SuccessCasesSection() {
   );
 }
 
-// =============== PARTNERS SECTION ===============
+// =============== PARTNERS SECTION (SIN FONDO) ===============
 const PARTNERS = [
   {
     nombre: "Tecnológico Nacional de México - ITQ",
@@ -418,11 +394,11 @@ function PartnersSection() {
   );
 }
 
-// =============== EXPORT PRINCIPAL ===============
+// =============== EXPORT DE LA PAGINA PRINCIPAL ===============
 export default function Page() {
   return (
     <main className="relative min-h-screen w-full font-sans overflow-x-hidden">
-      <StarWarsTypewriterCrawl />
+      <HeroSection />
       <FeaturesSection />
       <DemoSection />
       <KpiSection />
