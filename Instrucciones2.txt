@@ -1,3 +1,5 @@
+ No usar ningun comando Npx o comandos prisma, estos se haran manualmente, solo dejar en forma de texto en este domcumentos que comandos deben ejeucartarse de forma manual por el usuario.
+
 ✅ FASE 0 — Objetivo general
 Reemplazar completamente el sistema anterior de minijuegos y construir uno nuevo que permita:
 
