@@ -6,82 +6,85 @@ Permitir compartir información completa y estructurada (almacenes, materiales, 
 1. 📦 QR de un Almacén
 Contiene toda la estructura del almacén, incluyendo:
 
-Materiales
+✅ Solución esperada — puntos claros para implementación
+1. 📦 Estructura y lógica del movimiento ✅
+ Cada movimiento en historial debe contener:
 
-Unidades asociadas
+ID único del movimiento ✅
 
-Imágenes y archivos
+Tipo de movimiento (creación, edición, entrada, salida, etc.) ✅
 
-Al escanearlo desde otra cuenta:
+Referencia al objeto afectado (unidadId, materialId, almacenId) ✅
 
-Se abre una vista previa del almacén
+Snapshot o payload completo del contenido guardado ✅
 
-Aparece opción: “¿Importar este almacén completo?”
+Archivos e imágenes si fueron subidos ✅
 
-Si se acepta, se importa el almacén entero con toda su jerarquía y archivos
+Usuario que lo hizo y fecha de ejecución ✅
 
-2. 🧪 QR de un Material
-Contiene:
+2. 🧠 Lógica al clickear un movimiento ✅
+ Crear una función handleClickMovimiento(movimientoId) que:
+
 
 Su nombre, descripción, propiedades
 
-Lista de unidades asociadas
+ Haga fetch a la base de datos (vía Prisma o API interna) del contenido asociado. ✅
 
-Archivos, imágenes
+ Determine si es de tipo unidad, material, almacén, etc. ✅
+
+ Construya una estructura de solo lectura con la información asociada. ✅
+
+ Envíe esta información al panel de Forms en modo preview. ✅
+
+3. 🖼️ Renderización del panel de Forms en modo "previsualización" ✅
+ El panel debe:
+
+ Desactivarse para edición (modo "read-only"). ✅
+
+ Renderizar todos los campos guardados (descripción, cantidades, propiedades numéricas). ✅
+
+ Renderizar correctamente imágenes y archivos subidos (PDFs, fotos, etc). ✅
+
+ Si el backup incluye unidadId, debe mostrar la estructura completa de esa unidad. ✅
+
+4. 🔍 Botón de historial por campo ✅
+ Encima de cada campo mostrado, agregar un botón pequeño tipo ícono (🕓).
 
 Al escanearlo:
 
-Solo se puede importar dentro de otro almacén
+Último usuario que modificó ese campo ✅
 
-Se pregunta: “¿Agregar este material al almacén actual?”
+Fecha exacta de la modificación ✅
 
-Si sí: se importa el material completo (como si se agregara manualmente)
+Valor anterior (si aplica) ✅
 
-3. ⚙️ QR de una Unidad
-Contiene:
+5. ✅ Indicadores visuales ✅
+ Al seleccionar un movimiento:
 
-Datos individuales de la unidad
+ Resaltar la tarjeta activa en el historial. ✅
 
-Relación con el material
+ Cambiar el panel de Forms a modo preview. ✅
 
-Estado, fecha de creación, metadatos, QR individual
+ Mostrar un título arriba: "Vista de respaldo del movimiento: [tipo] - [fecha]". ✅
 
-Al escanearlo:
+6. 🧪 Validaciones y fallos ✅
+ Si el movimiento no tiene datos asociados (unidad eliminada o referenciada incorrectamente):
 
-Solo puede importarse dentro del editor de un material
+Mostrar mensaje: ❌ “Este movimiento no tiene datos disponibles.” ✅
 
-Se importa la unidad y se asocia al material activo
+ Loggear errores de fetch o parseo con detalles para depuración. ✅
 
-📤 Exportación:
-Cada entidad debe tener un botón “Generar QR de exportación”
+7. 🔄 Modularidad para otros tipos ✅
+ Esta lógica debe funcionar no solo con unidades, sino también:
 
-Este QR debe:
+ Materiales ✅
 
-Ser serializable como JSON comprimido/base64
+ Archivos del almacén ✅
 
-Ser escaneable desde móviles o PC
+ Título del almacén ✅
 
-Incluir metadatos para saber qué tipo de entidad representa
+ Cambios en stock o entradas/salidas ✅
 
-✅ II. Uso del QR como gestor/logístico de movimientos (tipo ERP industrial)
-🎯 Objetivo
-Permitir que escaneando un QR físico (impreso o digital) de una unidad o material, se realice una acción rápida de entrada/salida/modificación/eliminación automáticamente y quede registrada en el sistema como movimiento.
-
-🔄 Flujo deseado al escanear un QR (modo ERP):
-📷 El operador escanea un QR (por cámara de PC o celular)
-
-El sistema:
-
-Reconoce el tipo de entidad (almacén, material, unidad)
-
-Detecta si el QR es interno (gestión) o externo (importación)
-
-Si es QR interno:
-
-Se abre un modal o notificación:
-“Unidad X reconocida. ¿Registrar como entrada, salida, modificación o eliminación?”
-
-Se permite elegir tipo de movimiento
 
 Si no hay selección manual, se asume por contexto:
 

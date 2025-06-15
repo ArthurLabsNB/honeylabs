@@ -9,13 +9,14 @@ import {
   PencilSquareIcon,
   TrashIcon,
 } from "@heroicons/react/24/solid";
+import { useToast } from "@/components/Toast";
 import ExportNavbar from "../components/ExportNavbar";
 import MaterialCodes from "../components/MaterialCodes";
 
 
 interface Props {
   material: Material | null;
-  onSelectHistorial?: (estado: any) => void;
+  onSelectHistorial?: (entry: any) => void;
 }
 
 interface Registro {
@@ -31,7 +32,9 @@ interface Registro {
 export default function HistorialMovimientosPanel({ material, onSelectHistorial }: Props) {
   const { movimientos } = useMovimientosMaterial(material?.dbId);
   const { historial } = useHistorialMaterial(material?.dbId);
-  const [detalle, setDetalle] = useState<Registro | null>(null);
+  const [detalle, setDetalle] = useState<any | null>(null);
+  const [activo, setActivo] = useState<string | null>(null);
+  const toast = useToast();
   const [busqueda, setBusqueda] = useState('');
   const [tipo, setTipo] = useState<'todos' | 'entrada' | 'salida' | 'modificacion' | 'eliminacion'>('todos');
 
@@ -80,6 +83,26 @@ export default function HistorialMovimientosPanel({ material, onSelectHistorial 
     [registros, busqueda, tipo],
   );
 
+  const handleClickMovimiento = async (id: string) => {
+    setActivo(id);
+    const [pref, real] = id.split('-');
+    if (pref === 'h') {
+      try {
+        const res = await fetch(`/api/historial/material/${real}`);
+        const data = await res.json();
+        if (data.entry?.estado) {
+          setDetalle({ ...data.entry, id });
+          onSelectHistorial && onSelectHistorial(data.entry);
+        } else {
+          toast.show('Este movimiento no tiene datos disponibles.', 'error');
+        }
+      } catch (err) {
+        console.error(err);
+        toast.show('Error al obtener movimiento.', 'error');
+      }
+    }
+  };
+
   return (
     <div className="p-4 border rounded-md space-y-2">
       <h2 className="font-semibold">Historial / Movimientos</h2>
@@ -106,12 +129,8 @@ export default function HistorialMovimientosPanel({ material, onSelectHistorial 
         {filtrados.map((r) => (
           <li
             key={r.id}
-            className="p-1 rounded-md bg-white/5 cursor-pointer"
-            onClick={() => {
-              setDetalle(r);
-              const estado = r.estado ?? buscarEstado(r.fecha, r.descripcion);
-              if (estado && onSelectHistorial) onSelectHistorial(estado);
-            }}
+            className={`p-1 rounded-md cursor-pointer ${activo === r.id ? 'bg-white/10' : 'bg-white/5 hover:bg-white/10'}`}
+            onClick={() => handleClickMovimiento(r.id)}
           >
             <span className="mr-2 inline-block w-4 h-4">
               {r.tipo === 'entrada' ? (
