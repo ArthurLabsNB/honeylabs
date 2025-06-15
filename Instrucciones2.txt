@@ -1,118 +1,189 @@
-✅ I. Importación/Exportación por QR (Intercambio entre cuentas o dispositivos)
-🎯 Objetivo
-Permitir compartir información completa y estructurada (almacenes, materiales, unidades) entre cuentas o dispositivos usando códigos QR, tanto en PC como en móvil.
+✅ FASE 0 — Objetivo general
+Reemplazar completamente el sistema anterior de minijuegos y construir uno nuevo que permita:
 
-🧩 Qué debe hacer cada QR (según entidad):
-1. 📦 QR de un Almacén
-Contiene toda la estructura del almacén, incluyendo:
+Subir archivos ROM (.gba, .nes)
 
-✅ Solución esperada — puntos claros para implementación
-1. 📦 Estructura y lógica del movimiento ✅
- Cada movimiento en historial debe contener:
+Guardarlos en base de datos
 
-ID único del movimiento ✅
+Jugar desde el navegador con emulación funcional
 
-Tipo de movimiento (creación, edición, entrada, salida, etc.) ✅
+Todo embebido y oculto dentro de la página /docs, accesible solo mediante un botón especial.
 
-Referencia al objeto afectado (unidadId, materialId, almacenId) ✅
+🚮 FASE 1 — Eliminación del sistema anterior
+🔧 Archivos a eliminar
+src/app/docs/minijuegos/ → eliminar carpeta completa si contiene código viejo.
 
-Snapshot o payload completo del contenido guardado ✅
+src/app/docs/MinijuegoLoader.tsx → eliminar archivo, será reemplazado.
 
-Archivos e imágenes si fueron subidos ✅
+Eliminar cualquier lógica antigua de minijuegos de page.tsx.
 
-Usuario que lo hizo y fecha de ejecución ✅
+🗃️ Base de datos
+Si existe una tabla anterior llamada Minijuego, Juego, etc., con estructura obsoleta:
 
-2. 🧠 Lógica al clickear un movimiento ✅
- Crear una función handleClickMovimiento(movimientoId) que:
+Eliminarla de schema.prisma
 
+Ejecutar:
 
-Su nombre, descripción, propiedades
+bash
+Copiar
+Editar
+npx prisma migrate dev --name remove_old_minijuego
+🏗️ FASE 2 — Preparación de carpetas y base
+📁 Crear nueva estructura
+src/app/docs/minijuegos/
 
- Haga fetch a la base de datos (vía Prisma o API interna) del contenido asociado. ✅
+PanelMinijuegos.tsx
 
- Determine si es de tipo unidad, material, almacén, etc. ✅
+SubirRomForm.tsx
 
- Construya una estructura de solo lectura con la información asociada. ✅
+ListaJuegos.tsx
 
- Envíe esta información al panel de Forms en modo preview. ✅
+EmuladorGBA.tsx
 
-3. 🖼️ Renderización del panel de Forms en modo "previsualización" ✅
- El panel debe:
+EmuladorNES.tsx
 
- Desactivarse para edición (modo "read-only"). ✅
+src/app/api/minijuegos/
 
- Renderizar todos los campos guardados (descripción, cantidades, propiedades numéricas). ✅
+upload.ts
 
- Renderizar correctamente imágenes y archivos subidos (PDFs, fotos, etc). ✅
+index.ts
 
- Si el backup incluye unidadId, debe mostrar la estructura completa de esa unidad. ✅
+[id].ts
 
-4. 🔍 Botón de historial por campo ✅
- Encima de cada campo mostrado, agregar un botón pequeño tipo ícono (🕓).
+public/emuladores/
 
-Al escanearlo:
+Ejecutar:
 
-Último usuario que modificó ese campo ✅
+bash
+Copiar
+Editar
+mkdir -p public/emuladores
+git clone https://github.com/endrift/gbajs.git public/emuladores/gbajs
+public/roms/ para almacenar los ROMs subidos.
 
-Fecha exacta de la modificación ✅
+🧬 FASE 3 — Creación del nuevo modelo en Prisma
+En schema.prisma:
+prisma
+Copiar
+Editar
+model Minijuego {
+  id           Int      @id @default(autoincrement())
+  nombre       String
+  descripcion  String?
+  archivoUrl   String
+  plataforma   String   // 'GBA' | 'NES'
+  fechaSubida  DateTime @default(now())
+  usuarioId    Int
+  thumbnail    String?
+  estado       String   @default("activo")
+  usuario      Usuario  @relation(fields: [usuarioId], references: [id])
+}
+Comando:
+bash
+Copiar
+Editar
+npx prisma migrate dev --name minijuegos_emulador
+🧩 FASE 4 — Componente oculto en /docs
+En src/app/docs/page.tsx:
+Importar y usar el botón oculto:
 
-Valor anterior (si aplica) ✅
+tsx
+Copiar
+Editar
+'use client';
+import { useState } from 'react';
+import PanelMinijuegos from './minijuegos/PanelMinijuegos';
 
-5. ✅ Indicadores visuales ✅
- Al seleccionar un movimiento:
+export default function DocumentosPage() {
+  const [mostrarJuegos, setMostrarJuegos] = useState(false);
 
- Resaltar la tarjeta activa en el historial. ✅
+  return (
+    <main>
+      {/* Resto del contenido de documentos */}
+      <button
+        className="text-sm text-gray-400 hover:text-white"
+        onClick={() => setMostrarJuegos(prev => !prev)}
+      >
+        🎮 Minijuegos (secreto)
+      </button>
 
- Cambiar el panel de Forms a modo preview. ✅
+      {mostrarJuegos && <PanelMinijuegos />}
+    </main>
+  );
+}
+🧱 FASE 5 — Desarrollo del nuevo sistema
+1. PanelMinijuegos.tsx
+Contenedor general que incluye SubirRomForm y ListaJuegos.
 
- Mostrar un título arriba: "Vista de respaldo del movimiento: [tipo] - [fecha]". ✅
+2. SubirRomForm.tsx
+Formulario para subir ROMs (.gba, .nes) con campos:
 
-6. 🧪 Validaciones y fallos ✅
- Si el movimiento no tiene datos asociados (unidad eliminada o referenciada incorrectamente):
+Nombre
 
-Mostrar mensaje: ❌ “Este movimiento no tiene datos disponibles.” ✅
+Plataforma
 
- Loggear errores de fetch o parseo con detalles para depuración. ✅
+Archivo
 
-7. 🔄 Modularidad para otros tipos ✅
- Esta lógica debe funcionar no solo con unidades, sino también:
+Botón “Subir”
 
- Materiales ✅
+→ Llama a /api/minijuegos/upload.
 
- Archivos del almacén ✅
+3. ListaJuegos.tsx
+Lista de juegos subidos, cada uno con:
 
- Título del almacén ✅
+Nombre
 
- Cambios en stock o entradas/salidas ✅
+Plataforma
 
+Botón “Jugar”
 
-Si no hay selección manual, se asume por contexto:
+Botón “Eliminar”
 
-Si estás en pantalla de salida → se registra como salida
+4. EmuladorGBA.tsx
+Carga emulador GBA desde iframe apuntando a /emuladores/gbajs/index.html?rom=....
 
-Si estás en entrada → como entrada, etc.
+5. EmuladorNES.tsx
+Canvas que usa jsnes para renderizar ROM cargado desde /public/roms.
 
-✅ Una vez confirmada:
+🌐 FASE 6 — API funcional
+1. /api/minijuegos/upload.ts
+Recibe archivo ROM
 
-Se genera automáticamente un registro en historial de movimientos, incluyendo:
+Guarda en /public/roms/
 
-Usuario
+Inserta registro en base de datos
 
-Fecha/hora
+Requiere usar formidable o next-formidable para multipart.
 
-Tipo de movimiento
+2. /api/minijuegos/index.ts
+GET: Retorna todos los juegos del usuario
 
-Unidad o material afectado
+3. /api/minijuegos/[id].ts
+GET: Info individual
 
-Observaciones (si aplica)
+DELETE: Eliminar archivo y registro
 
-💡 Alternativa de funcionamiento automático
-Para flujos más rápidos:
+🔌 FASE 7 — Dependencias necesarias
+bash
+Copiar
+Editar
+npm install jsnes file-saver uuid
+npm install --save-dev @types/file-saver
+Opcional si usas UI:
 
- Permitir activar modo “automático”
+bash
+Copiar
+Editar
+npm install zustand react-hotkeys-hook react-modal framer-motion
+🎯 FASE 8 — Extras recomendados
+✅ Validación de archivos (.gba, .nes únicamente)
 
-En ese modo:
+✅ Limitar tamaño máximo de ROM
 
-Cada escaneo de unidad → se registra automáticamente como entrada o salida, sin confirmación
+🧠 Guardar progreso con localStorage o IndexedDB
 
-Se muestra una breve notificación: “✅ Movimiento registrado: Entrada de unidad X”
+🕹️ Soporte para teclado + gamepad
+
+📸 Generar portada o thumbnail (a futuro)
+
+🔐 Permitir que sólo el usuario vea sus propios juegos
