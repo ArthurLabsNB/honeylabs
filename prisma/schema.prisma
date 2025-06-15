@@ -119,6 +119,7 @@ model Usuario {
   historialAlmacenes  HistorialAlmacen[]
   movimientosMaterial MovimientoMaterial[]
   chatMensajes        ChatMensaje[]
+  minijuegos          Minijuego[]
 }
 
 // ================================
