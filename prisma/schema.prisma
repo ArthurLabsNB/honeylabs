@@ -125,6 +125,7 @@ model Usuario {
   archivosUnidad      ArchivoUnidad[]
   historialUnidades   HistorialUnidad[]
   historialLotes      HistorialLote[]
+  historialAlmacenes  HistorialAlmacen[]
   movimientosMaterial MovimientoMaterial[]
   chatMensajes        ChatMensaje[]
 }
