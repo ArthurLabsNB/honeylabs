@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import { Star } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { cn } from "@/lib/utils";
 import type { Almacen } from "@/hooks/useAlmacenes";
 
@@ -83,6 +84,9 @@ export default function AlmacenesGrid({
                 </span>
               )}
             </div>
+          </div>
+          <div className="hidden sm:block ml-auto">
+            <QRCodeSVG value={a.codigoUnico ?? ''} size={56} />
           </div>
         </div>
       ))}

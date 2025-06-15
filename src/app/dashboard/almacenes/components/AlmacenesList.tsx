@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import { Pencil, Trash, ChevronUp, ChevronDown, Star } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { motion } from "framer-motion";
 import { memo, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -153,6 +154,9 @@ const SortableAlmacen = memo(function SortableAlmacen({
         </div>
       </div>
       <div className="flex flex-col items-end ml-2">
+        <div className="mb-2">
+          <QRCodeSVG value={almacen.codigoUnico ?? ''} size={48} />
+        </div>
         <button
           onClick={onToggleFavorito}
           className={cn(

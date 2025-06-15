@@ -1,3 +1,6 @@
+## 0.2.206
+- Mostramos el código QR de cada almacén en sus tarjetas.
+
 ## 0.2.205
 - Creamos la migración inicial para los modelos de chat.
 

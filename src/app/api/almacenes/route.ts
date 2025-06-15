@@ -35,6 +35,7 @@ export async function GET(req: NextRequest) {
         descripcion: true,
         imagenUrl: true,
         imagenNombre: true,
+        codigoUnico: true,
         usuarios: {
           take: 1,
           select: {
@@ -100,6 +101,7 @@ export async function GET(req: NextRequest) {
       nombre: a.nombre,
       descripcion: a.descripcion,
       imagenUrl: a.imagenNombre ? `/api/almacenes/foto?nombre=${encodeURIComponent(a.imagenNombre)}` : a.imagenUrl,
+      codigoUnico: a.codigoUnico,
       encargado: a.usuarios[0]?.usuario.nombre ?? null,
       correo: a.usuarios[0]?.usuario.correo ?? null,
       ultimaActualizacion: a.movimientos[0]?.fecha ?? null,
@@ -214,7 +216,7 @@ export async function POST(req: NextRequest) {
           create: { usuarioId: usuario.id, rolEnAlmacen: 'propietario' },
         },
       },
-      select: { id: true, nombre: true, descripcion: true, imagenNombre: true },
+      select: { id: true, nombre: true, descripcion: true, imagenNombre: true, codigoUnico: true },
     });
 
     const resp = {
