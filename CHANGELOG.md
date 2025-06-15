@@ -1,9 +1,12 @@
-## 0.2.207
-- Agregamos menú desplegable en "Almacenes" con opciones extra.
+## 0.2.209
+- Agregamos botón para escanear códigos QR desde la vista del almacén.
 
 ## 0.2.208
 - Integramos vista rápida, búsqueda y vaciado en la barra de cada almacén.
 - Añadimos control global de cambios y limpieza masiva de materiales.
+
+## 0.2.207
+- Agregamos menú desplegable en "Almacenes" con opciones extra.
 
 ## 0.2.206
 - Mostramos el código QR de cada almacén en sus tarjetas.
