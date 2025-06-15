@@ -357,6 +357,18 @@ html, body {
   border-color: var(--dashboard-accent);
 }
 
+/* --------- TARJETAS --------- */
+.dashboard-card {
+  @apply p-4 rounded-md border transition shadow-sm;
+  background: var(--dashboard-card);
+  border-color: var(--dashboard-border);
+  box-shadow: var(--dashboard-shadow);
+}
+.dashboard-card:hover {
+  border-color: var(--dashboard-accent);
+  box-shadow: 0 6px 24px #ffe06628, 0 2px 18px #0007;
+}
+
 /* --------- RESPONSIVE --------- */
 @media (max-width: 480px) {
   :root {

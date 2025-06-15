@@ -140,7 +140,11 @@ export default function HistorialMovimientosPanel({ material, onSelectHistorial 
         {filtrados.map((r) => (
           <li
             key={r.id}
-            className={`p-1 rounded-md cursor-pointer ${activo === r.id ? 'bg-white/10' : 'bg-white/5 hover:bg-white/10'}`}
+            className={`dashboard-card cursor-pointer ${
+              activo === r.id
+                ? 'border-[var(--dashboard-accent)]'
+                : 'hover:border-[var(--dashboard-accent)]'
+            }`}
             onClick={() => handleClickMovimiento(r.id)}
           >
             <span className="mr-2 inline-block w-4 h-4">
@@ -163,7 +167,7 @@ export default function HistorialMovimientosPanel({ material, onSelectHistorial 
         ))}
       </ul>
       {detalle && (
-        <div className="text-xs bg-white/5 p-2 rounded-md space-y-2">
+        <div className="text-xs dashboard-card space-y-2">
           {detalle.estado?.codigoQR && (
             <MaterialCodes value={detalle.estado.codigoQR} />
           )}

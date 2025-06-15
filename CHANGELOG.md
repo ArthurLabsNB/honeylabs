@@ -1,6 +1,10 @@
 ## 0.2.218
 - Ocultamos los paneles al previsualizar un movimiento y añadimos botón para volver.
 
+## 0.2.219
+- Mejoramos la apariencia de materiales, unidades y movimientos.
+- Eliminamos paneles duplicados de historial.
+
 ## 0.2.217
 - Añadimos un botón "Comenzar" para ejecutar la ROM tras cargarla.
 
