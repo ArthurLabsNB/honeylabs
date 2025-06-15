@@ -1,3 +1,6 @@
+## 0.2.211
+- Agregué la relación inversa `historialAlmacenes` en `Usuario` para evitar el error de Prisma.
+
 ## 0.2.210
 - Registramos cambios de almacenes en historial y mostramos detalles.
 
