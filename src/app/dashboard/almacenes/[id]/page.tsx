@@ -16,6 +16,7 @@ import ExportNavbar from "../components/ExportNavbar";
 import { generarUUID } from "@/lib/uuid";
 import type { UnidadDetalle } from "@/types/unidad-detalle";
 import useUnidades from "@/hooks/useUnidades";
+import QuickInventoryModal from "./QuickInventoryModal";
 
 interface Almacen {
   id: number;
@@ -50,9 +51,14 @@ export default function AlmacenPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [dirty, setDirty] = useState(false);
+  const updateDirty = (v: boolean) => {
+    setDirty(v);
+    window.dispatchEvent(new CustomEvent('almacen-dirty', { detail: v }));
+  };
   const [panel, setPanel] = useState<'material' | 'unidad'>('material');
   const [unidadSel, setUnidadSel] = useState<UnidadDetalle | null>(null);
   const [historialBackup, setHistorialBackup] = useState<any | null>(null);
+  const [showQuick, setShowQuick] = useState(false);
 
   const routerNav = useNextRouter();
   const selectedMaterial = historialBackup
@@ -85,7 +91,7 @@ export default function AlmacenPage() {
   useEffect(() => {
     setMateriales(fetchedMateriales)
     if (fetchedMateriales.length === 0) setSelectedId(null)
-    setDirty(false)
+    updateDirty(false)
   }, [fetchedMateriales])
 
   const guardar = async () => {
@@ -98,14 +104,14 @@ export default function AlmacenPage() {
       return
     }
     toast.show('Guardado', 'success')
-    setDirty(false)
+    updateDirty(false)
   };
 
   const cancelar = () => {
     mutate();
     setSelectedId(null);
     setHistorialBackup(null);
-    setDirty(false);
+    updateDirty(false);
   };
 
   const guardarUnidad = async () => {
@@ -153,6 +159,31 @@ export default function AlmacenPage() {
     }
   }, [dirty, toast, routerNav, guardar, cancelar])
 
+  useEffect(() => {
+    const handleSave = () => guardar()
+    const handleQuick = () => setShowQuick(true)
+    const handleVaciar = async () => {
+      const ok = await toast.confirm('¿Vaciar todos los materiales?')
+      if (!ok) return
+      const res = await fetch(`/api/almacenes/${id}/materiales`, { method: 'DELETE' })
+      const data = await jsonOrNull(res)
+      if (res.ok) {
+        mutate()
+        toast.show('Almacén vaciado', 'success')
+      } else {
+        toast.show(data?.error || 'Error', 'error')
+      }
+    }
+    window.addEventListener('almacen-save', handleSave)
+    window.addEventListener('quick-inventory', handleQuick)
+    window.addEventListener('vaciar-materiales', handleVaciar)
+    return () => {
+      window.removeEventListener('almacen-save', handleSave)
+      window.removeEventListener('quick-inventory', handleQuick)
+      window.removeEventListener('vaciar-materiales', handleVaciar)
+    }
+  }, [guardar, mutate, toast, id])
+
   const filtrados = useMemo(
     () =>
       materiales
@@ -181,7 +212,7 @@ export default function AlmacenPage() {
       }
       return [...arr.slice(0, idx), actualizado, ...arr.slice(idx + 1)]
     })
-    setDirty(true)
+    updateDirty(true)
   }
 
   const eliminar = async () => {
@@ -199,7 +230,7 @@ export default function AlmacenPage() {
     }
     mutate()
     setSelectedId(null)
-    setDirty(false)
+    updateDirty(false)
   };
   const duplicar = () => {
     if (!selectedId) return
@@ -214,7 +245,7 @@ export default function AlmacenPage() {
       }
       setMateriales((ms) => [...ms, copia])
       setSelectedId(copia.id)
-      setDirty(true)
+      updateDirty(true)
     }
   };
 
@@ -327,7 +358,7 @@ export default function AlmacenPage() {
                 },
               ])
               setSelectedId(nuevoId)
-              setDirty(true)
+              updateDirty(true)
             }}
             onDuplicar={duplicar}
           />
@@ -355,6 +386,16 @@ export default function AlmacenPage() {
           </div>
         </aside>
       </div>
+      {showQuick && almacen && (
+        <QuickInventoryModal
+          data={{
+            entradas: almacen.entradas ?? 0,
+            salidas: almacen.salidas ?? 0,
+            inventario: almacen.inventario ?? 0,
+          }}
+          onClose={() => setShowQuick(false)}
+        />
+      )}
     </div>
   );
 }

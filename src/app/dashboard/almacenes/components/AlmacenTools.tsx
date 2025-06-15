@@ -1,5 +1,5 @@
 "use client";
-import { Menu, Settings, Download } from "lucide-react";
+import { Menu, Settings, Download, FileText, Lock, RefreshCcw } from "lucide-react";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 
@@ -31,6 +31,15 @@ export default function AlmacenTools({ id }: { id: string | number }) {
           >
             <Settings className="w-4 h-4 inline mr-2" /> Configuración
           </Link>
+          <button className="w-full text-left px-3 py-2 text-sm hover:bg-white/5" onClick={() => window.open(`/api/reportes?id=${id}`, '_blank')}>
+            <FileText className="w-4 h-4 inline mr-2" /> Generar reporte
+          </button>
+          <button className="w-full text-left px-3 py-2 text-sm hover:bg-white/5" onClick={() => window.dispatchEvent(new Event('gestionar-permisos'))}>
+            <Lock className="w-4 h-4 inline mr-2" /> Gestionar permisos
+          </button>
+          <button className="w-full text-left px-3 py-2 text-sm hover:bg-white/5" onClick={() => window.dispatchEvent(new Event('sincronizar-almacen'))}>
+            <RefreshCcw className="w-4 h-4 inline mr-2" /> Sincronizar
+          </button>
           <button className="w-full text-left px-3 py-2 text-sm hover:bg-white/5">
             <Download className="w-4 h-4 inline mr-2" /> Exportar
           </button>

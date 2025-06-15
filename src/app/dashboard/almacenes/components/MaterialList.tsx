@@ -42,6 +42,7 @@ export default function MaterialList({
     <div className="space-y-4">
       <div className="flex gap-2">
         <input
+          id="busqueda-materiales"
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
           placeholder="Buscar"

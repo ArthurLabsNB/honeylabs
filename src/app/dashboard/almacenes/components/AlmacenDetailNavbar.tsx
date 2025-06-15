@@ -1,5 +1,5 @@
 "use client";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft, Save, Search, ClipboardList, Trash2 } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -20,6 +20,15 @@ export default function AlmacenDetailNavbar() {
   const [nombre, setNombre] = useState("");
   const [original, setOriginal] = useState("");
   const [guardando, setGuardando] = useState(false);
+  const [dirty, setDirty] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      setDirty((e as CustomEvent<boolean>).detail);
+    };
+    window.addEventListener('almacen-dirty', handler as EventListener);
+    return () => window.removeEventListener('almacen-dirty', handler as EventListener);
+  }, []);
 
   useEffect(() => {
     fetch(`/api/almacenes/${id}`)
@@ -33,7 +42,7 @@ export default function AlmacenDetailNavbar() {
       .catch(() => {});
   }, [id]);
 
-  const cambios = nombre !== original;
+  const cambios = nombre !== original || dirty;
 
   const guardar = async () => {
     if (!cambios) return;
@@ -46,6 +55,7 @@ export default function AlmacenDetailNavbar() {
     if (res.ok) {
       setOriginal(nombre);
       toast.show("Almacén actualizado", "success");
+      window.dispatchEvent(new Event('almacen-save'));
     } else {
       toast.show("Error al guardar", "error");
     }
@@ -81,6 +91,30 @@ export default function AlmacenDetailNavbar() {
         className="bg-transparent text-center flex-1 mx-4 text-white text-lg font-semibold focus:outline-none"
       />
       <div className="flex items-center gap-2">
+        <button
+          onClick={() => window.dispatchEvent(new Event('quick-inventory'))}
+          className="p-2 hover:bg-white/10 rounded-lg"
+          title="Vista rápida"
+        >
+          <ClipboardList className="w-5 h-5" />
+        </button>
+        <button
+          onClick={() => {
+            const el = document.getElementById('busqueda-materiales') as HTMLInputElement | null
+            el?.focus()
+          }}
+          className="p-2 hover:bg-white/10 rounded-lg"
+          title="Buscar"
+        >
+          <Search className="w-5 h-5" />
+        </button>
+        <button
+          onClick={() => window.dispatchEvent(new Event('vaciar-materiales'))}
+          className="p-2 hover:bg-white/10 rounded-lg"
+          title="Vaciar"
+        >
+          <Trash2 className="w-5 h-5" />
+        </button>
         <AlmacenTools id={id as string} />
         <button
           onClick={guardar}
