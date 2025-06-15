@@ -92,10 +92,10 @@ export default function UnidadesPanel({
         {filtrados.map((u) => (
           <li
             key={u.id}
-            className={`p-1 rounded-md cursor-pointer flex justify-between ${
+            className={`dashboard-card cursor-pointer flex justify-between items-center ${
               material?.unidad === u.nombre
-                ? 'bg-[var(--dashboard-accent)] text-black'
-                : 'bg-white/5'
+                ? 'border-[var(--dashboard-accent)]'
+                : 'hover:border-[var(--dashboard-accent)]'
             }`}
           >
             <span onClick={() => select(u)}>{u.nombre}</span>

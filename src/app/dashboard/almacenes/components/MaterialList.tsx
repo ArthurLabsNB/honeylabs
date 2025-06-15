@@ -62,7 +62,7 @@ export default function MaterialList({
           <li key={m.id}>
             <button
               onClick={() => onSeleccion(m.id)}
-              className={`w-full text-left p-6 rounded-md flex items-center gap-4 transition ${m.id === selectedId ? 'bg-white/10' : 'hover:bg-white/5'}`}
+              className={`dashboard-card w-full text-left flex items-center gap-4 ${m.id === selectedId ? 'border-[var(--dashboard-accent)]' : 'hover:border-[var(--dashboard-accent)]'}`}
             >
               {(m.miniatura || m.miniaturaUrl) && (
                 <img
