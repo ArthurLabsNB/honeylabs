@@ -180,3 +180,26 @@ export async function POST(req: NextRequest) {
   }
 }
 
+export async function DELETE(req: NextRequest) {
+  try {
+    const usuario = await getUsuarioFromSession(req)
+    if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
+    const almacenId = getAlmacenIdFromRequest(req)
+    if (!almacenId) return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
+    const pertenece = await prisma.usuarioAlmacen.findFirst({
+      where: { usuarioId: usuario.id, almacenId },
+      select: { id: true },
+    })
+    if (!pertenece && !hasManagePerms(usuario)) {
+      return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
+    }
+    await prisma.materialUnidad.deleteMany({ where: { material: { almacenId } } })
+    await prisma.archivoMaterial.deleteMany({ where: { material: { almacenId } } })
+    await prisma.material.deleteMany({ where: { almacenId } })
+    return NextResponse.json({ success: true })
+  } catch (err) {
+    logger.error('DELETE /api/almacenes/[id]/materiales', err)
+    return NextResponse.json({ error: 'Error al vaciar' }, { status: 500 })
+  }
+}
+
