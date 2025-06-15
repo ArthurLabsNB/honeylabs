@@ -297,8 +297,16 @@ export default function AlmacenPage() {
         </p>
       )}
 
-      <div className="flex flex-col md:flex-row gap-4 h-full">
-        <section className="md:w-1/2 p-4 border-r border-white/10 overflow-y-auto">
+      <div
+        className={`flex flex-col${
+          historialBackup ? ' space-y-4' : ' md:flex-row gap-4'
+        } h-full`}
+      >
+        <section
+          className={`p-4 border-white/10 overflow-y-auto${
+            historialBackup ? ' w-full border' : ' md:w-1/2 border-r'
+          }`}
+        >
           {panel === 'material' && (
             <>
               {historialBackup && (
@@ -308,6 +316,13 @@ export default function AlmacenPage() {
                     Vista de respaldo del movimiento: {historialBackup.descripcion ?? ''} -{' '}
                     {new Date(historialBackup.fecha).toLocaleString()}
                   </p>
+                  <button
+                    type="button"
+                    onClick={cancelar}
+                    className="mb-2 px-2 py-1 rounded bg-white/10 text-sm"
+                  >
+                    Volver
+                  </button>
                 </>
               )}
               <MaterialForm
@@ -337,7 +352,18 @@ export default function AlmacenPage() {
             />
           )}
         </section>
-        <aside className="md:w-1/2 p-4 space-y-4 overflow-y-auto">
+        {historialBackup ? (
+          <section className="p-4 space-y-4 overflow-y-auto w-full">
+            <HistorialMovimientosPanel
+              material={selectedMaterial}
+              onSelectHistorial={(entry) => {
+                setHistorialBackup(entry);
+                setSelectedId(null);
+              }}
+            />
+          </section>
+        ) : (
+          <aside className="md:w-1/2 p-4 space-y-4 overflow-y-auto">
           <MaterialList
             materiales={materiales}
             selectedId={selectedId}
@@ -395,7 +421,8 @@ export default function AlmacenPage() {
             />
             <HistorialAlmacenPanel almacenId={Number(id)} />
           </div>
-        </aside>
+          </aside>
+        )}
       </div>
       {showQuick && almacen && (
         <QuickInventoryModal
