@@ -114,12 +114,14 @@ model Usuario {
   materiales          Material[]
   archivosMaterial    ArchivoMaterial[]
   archivosUnidad      ArchivoUnidad[]
+  archivosReporte     ArchivoReporte[]
   historialUnidades   HistorialUnidad[]
   historialLotes      HistorialLote[]
   historialAlmacenes  HistorialAlmacen[]
   movimientosMaterial MovimientoMaterial[]
   chatMensajes        ChatMensaje[]
   minijuegos          Minijuego[]
+  reportes           Reporte[]
 }
 
 // ================================
@@ -192,6 +194,7 @@ model Almacen {
   notificaciones  Notificacion[]
   alertas                 Alerta[]
   materiales    Material[]
+  reportes      Reporte[]
 }
 
 // ================================
@@ -392,6 +395,7 @@ model Material {
   historialLotes HistorialLote[]
   unidades   MaterialUnidad[]
   movimientosMaterial MovimientoMaterial[]
+  reportes   Reporte[]
 }
 
 model ArchivoMaterial {
@@ -472,6 +476,7 @@ model MaterialUnidad {
 
   archivos   ArchivoUnidad[]
   historiales HistorialUnidad[] @relation("HistorialUnidadMaterial")
+  reportes   Reporte[]
 
   @@unique([materialId, nombre])
 }
