@@ -1,112 +1,87 @@
-✅ 1. Sistema de Progreso Dinámico (Check automático de tareas cumplidas)
-Cada que completes uno de estos puntos y funcionen, coloca una palomita y pasa con el siguiente.
- Seguir procesando los puntos no completados hasta finalizar la lista.
+🔍 Problema actual
+ Al hacer clic en un ítem del historial de movimientos, no se muestra nada, o no se abre la previsualización esperada en el panel de Forms.
 
-✅ 2. Conexión y lógica global con base de datos
-✅ Validar que todas las funciones relacionadas a almacenes, materiales y unidades estén correctamente conectadas mediante Prisma.
+ No se carga información ni archivos del movimiento (unidad, material, imágenes, campos editados).
 
-✅ Crear relaciones en la base de datos (si no existen) para almacenar movimientos, historial, backups, imágenes, archivos y responsables.
+✅ Solución esperada — puntos claros para implementación
+1. 📦 Estructura y lógica del movimiento
+ Cada movimiento en historial debe contener:
 
-✅ Garantizar consistencia de datos con validación y manejo de errores en cada operación (guardar, editar, eliminar).
+ID único del movimiento
 
-✅ 3. Botón "+" dinámico en la vista de todos los almacenes
-Al entrar a la página general de almacenes:
+Tipo de movimiento (creación, edición, entrada, salida, etc.)
 
-✅ Convertir el botón “+” en un menú desplegable con las siguientes opciones:
+Referencia al objeto afectado (unidadId, materialId, almacenId)
 
-✅ ➕ Agregar Almacén (abre el formulario actual).
+Snapshot o payload completo del contenido guardado
 
-✅ 📷 Escanear Código QR (abre la cámara directamente con permisos).
+Archivos e imágenes si fueron subidos
 
-✅ 📁 Importar desde archivo (CSV, XLSX, JSON; usar file input).
+Usuario que lo hizo y fecha de ejecución
 
-✅ 🧩 Duplicar Almacén Existente (muestra lista de almacenes disponibles para clonar su estructura).
+2. 🧠 Lógica al clickear un movimiento
+ Crear una función handleClickMovimiento(movimientoId) que:
 
-✅ 4. Navbar interno al entrar a un almacén
-Organización y contenido del navbar superior:
+ Reciba el ID del movimiento clickeado.
 
-✅ Mostrar el nombre del almacén como título editable.
+ Haga fetch a la base de datos (vía Prisma o API interna) del contenido asociado.
 
-✅ Incluir botón Escáner QR funcional.
+ Determine si es de tipo unidad, material, almacén, etc.
 
-✅ Agregar estos 3 botones sugeridos:
+ Construya una estructura de solo lectura con la información asociada.
 
-✅🧭 Vista rápida del inventario global (modal con resumen).
+ Envíe esta información al panel de Forms en modo preview.
 
-✅🔍 Buscar dentro del almacén (barra de búsqueda avanzada).
+3. 🖼️ Renderización del panel de Forms en modo "previsualización"
+ El panel debe:
 
-✅🗑️ Vaciar materiales del almacén (acción peligrosa, confirmar).
+ Desactivarse para edición (modo "read-only").
 
-✅ Mejorar el menú desplegable existente ("Configuración", "Exportar"):
+ Renderizar todos los campos guardados (descripción, cantidades, propiedades numéricas).
 
-✅ Agregar botón: 📄 Generar reporte PDF/XLSX del estado actual.
+ Renderizar correctamente imágenes y archivos subidos (PDFs, fotos, etc).
 
-✅ Agregar botón: 🔐 Gestionar permisos de acceso al almacén.
+ Si el backup incluye unidadId, debe mostrar la estructura completa de esa unidad.
 
-✅ Agregar botón: 🔄 Sincronizar con respaldo externo o nube.
+4. 🔍 Botón de historial por campo
+ Encima de cada campo mostrado, agregar un botón pequeño tipo ícono (🕓).
 
-✅ El botón “Guardar” global debe:
+ Al pulsarlo debe mostrar:
 
-✅ Detectar si cualquier cambio ha ocurrido (material, unidad, almacén).
+Último usuario que modificó ese campo
 
-✅ Activarse visualmente solo cuando hay cambios pendientes.
+Fecha exacta de la modificación
 
-✅ Ejecutar guardado global sincronizado (transaccional con Prisma).
+Valor anterior (si aplica)
 
-✅ Mostrar mensaje: ✅ “Guardado correctamente” o ❌ “No se pudo guardar: [motivo]”.
+5. ✅ Indicadores visuales
+ Al seleccionar un movimiento:
 
-✅ 5. Historial de movimientos y sistema de Backups
-Cada operación de guardado:
+ Resaltar la tarjeta activa en el historial.
 
-✅ Debe crear un movimiento (backup) en la base de datos como historial.
+ Cambiar el panel de Forms a modo preview.
 
-✅ Categorizar el tipo: creación, modificación, entrada, salida, eliminación.
+ Mostrar un título arriba: "Vista de respaldo del movimiento: [tipo] - [fecha]".
 
-✅ Mostrar en el panel de historial de movimientos con:
+6. 🧪 Validaciones y fallos
+ Si el movimiento no tiene datos asociados (unidad eliminada o referenciada incorrectamente):
 
-✅🕒 Fecha y hora
+Mostrar mensaje: ❌ “Este movimiento no tiene datos disponibles.”
 
-✅🧑 Usuario responsable
+ Loggear errores de fetch o parseo con detalles para depuración.
 
-✅🏷️ Tipo de operación
+7. 🔄 Modularidad para otros tipos
+ Esta lógica debe funcionar no solo con unidades, sino también:
 
-✅ Al clic en un movimiento, debe abrir un panel tipo formulario en modo solo lectura que muestre:
+ Materiales
 
-✅Todos los campos llenados o editados
+ Archivos del almacén
 
-✅Archivos subidos
+ Título del almacén
 
-✅Imágenes agregadas
+ Cambios en stock o entradas/salidas
 
-✅Identificadores únicos de unidad/material
+🧩 Extras sugeridos
+ Permitir exportar cualquier previsualización como PDF con botón 📄 Exportar Respaldo.
 
-✅ Cada campo mostrado debe tener encima un botón con historial de cambios, al pulsarlo debe mostrar:
-
-✅Última persona que lo modificó o eliminó
-
-✅Fecha y hora de cada modificación
-
-✅ 6. Optimización UX e inspiración profesional
- Analizar e inspirarse en software ERP como SAP, Odoo, Zoho Inventory o NetSuite para:
-
-Flujo de backups
-
-Diseño de formularios y botones
-
-Seguridad de cambios y auditoría
-
- Adaptar mejoras coherentes al estilo y contexto de HoneyLabs.
-
-✅ 7. Exclusiones
- El avatar del usuario en navbar no debe tocarse (ya es funcional).
-
- Mantener compatibilidad y modularidad con el diseño actual de HoneyLabs.
-
-📌 Notas técnicas
-Framework base: Next.js + React
-
-ORM: Prisma
-
-Base de datos: PostgreSQL
-
-Dependencias extra sugeridas: zod, react-hook-form, qrcode.react, jsPDF, xlsx, react-camera-pro, dayjs para fechas
+ Opción para comparar el cambio vs. estado actual con botón 🧮 Comparar con actual.
