@@ -543,3 +543,37 @@ model Minijuego {
   usuarioId  Int
   usuario    Usuario  @relation(fields: [usuarioId], references: [id])
 }
+
+// ================================
+// Reportes generados por escaneos
+// ================================
+model Reporte {
+  id            Int      @id @default(autoincrement())
+  tipo          String   // 'almacen', 'material', 'unidad'
+  almacenId     Int?
+  materialId    Int?
+  unidadId      Int?
+  observaciones String?
+  categoria     String?
+  fecha         DateTime @default(now())
+  usuarioId     Int?
+
+  usuario   Usuario?        @relation(fields: [usuarioId], references: [id])
+  almacen   Almacen?        @relation(fields: [almacenId], references: [id])
+  material  Material?       @relation(fields: [materialId], references: [id])
+  unidad    MaterialUnidad? @relation(fields: [unidadId], references: [id])
+
+  archivos  ArchivoReporte[]
+}
+
+model ArchivoReporte {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  archivo       Bytes?
+  archivoNombre String?
+  fecha         DateTime @default(now())
+  reporteId     Int
+  reporte       Reporte  @relation(fields: [reporteId], references: [id])
+  subidoPorId   Int?
+  subidoPor     Usuario? @relation(fields: [subidoPorId], references: [id])
+}

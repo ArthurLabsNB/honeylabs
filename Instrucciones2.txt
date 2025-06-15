@@ -4,116 +4,116 @@ Funcionalidad General:
 
 Al activar el modo escaneo desde un almacén:
 
-Se detecta automáticamente si el QR corresponde a un almacén, material o unidad.
+Se detecta automáticamente si el QR corresponde a un almacén, material o unidad. (completado)
 
-Se abre una vista dividida con dos paneles principales:
+Se abre una vista dividida con dos paneles principales: (completado)
 
-🔎 Panel de Previsualización: muestra toda la información registrada (detalles, archivos, imágenes, etc.).
+🔎 Panel de Previsualización: muestra toda la información registrada (detalles, archivos, imágenes, etc.). (completado)
 
-📝 Panel de Reporte/Edición: permite modificar campos, añadir observaciones, subir archivos e imágenes.
+📝 Panel de Reporte/Edición: permite modificar campos, añadir observaciones, subir archivos e imágenes. (completado)
 
 Acciones del usuario:
 
-✅ Opción para solo guardar el reporte como movimiento.
+✅ Opción para solo guardar el reporte como movimiento. (completado)
 
-🔄 Opción para guardar + actualizar directamente el objeto escaneado.
+🔄 Opción para guardar + actualizar directamente el objeto escaneado. (pendiente)
 
 Al guardar:
 
-Se registra en la nueva sección de Auditorías.
+Se registra en la nueva sección de Auditorías. (pendiente)
 
-El sistema marca el escaneo como verificado.
+El sistema marca el escaneo como verificado. (pendiente)
 
-El reporte queda vinculado al objeto escaneado y visible en la sección de Reportes del dashboard.
+El reporte queda vinculado al objeto escaneado y visible en la sección de Reportes del dashboard. (completado)
 
 🧪 2. REPORTES ASOCIADOS A ESCANEOS
 Características del Reporte:
 
 Formulario editable con:
 
-📌 Observaciones.
+📌 Observaciones. (completado)
 
-📷 Imagenes adjuntas.
+📷 Imagenes adjuntas. (pendiente)
 
-📁 Archivos adjuntos.
+📁 Archivos adjuntos. (pendiente)
 
-🧾 Categoría del reporte (ej. verificación, incidencia, observación general, etc.).
+🧾 Categoría del reporte (ej. verificación, incidencia, observación general, etc.). (completado)
 
 El reporte:
 
-Se guarda en la DB vinculado al objeto.
+Se guarda en la DB vinculado al objeto. (completado)
 
-Puede visualizarse desde la sección general de Reportes.
+Puede visualizarse desde la sección general de Reportes. (completado)
 
-Puede compartirse/exportarse (PDF, Excel, XML).
+Puede compartirse/exportarse (PDF, Excel, XML). (pendiente)
 
 📑 3. NUEVA SECCIÓN DE AUDITORÍAS (Renombrar Historial/Movimientos)
-Renombrar sección actual "Historial/Movimientos" a "Auditorías".
+Renombrar sección actual "Historial/Movimientos" a "Auditorías". (pendiente)
 
 Mostrar:
 
-🕒 Fecha del escaneo.
+🕒 Fecha del escaneo. (pendiente)
 
-🧾 Tipo de objeto (Almacén / Material / Unidad).
+🧾 Tipo de objeto (Almacén / Material / Unidad). (pendiente)
 
-🔁 Tipo de acción (Guardado, Actualización).
+🔁 Tipo de acción (Guardado, Actualización). (pendiente)
 
-🗂 Enlace al reporte generado.
+🗂 Enlace al reporte generado. (pendiente)
 
-👤 Usuario que lo hizo.
+👤 Usuario que lo hizo. (pendiente)
 
-🛠 Enlace rápido a editar objeto auditado.
+🛠 Enlace rápido a editar objeto auditado. (pendiente)
 
 ⚠️ 4. LOG DE DISCREPANCIAS (Registro Automático)
 Activado si:
 
-Se detecta que los datos escaneados no coinciden con los registrados.
+Se detecta que los datos escaneados no coinciden con los registrados. (pendiente)
 Qué hace:
 
-Se genera una entrada automática en el "Log de Discrepancias".
+Se genera una entrada automática en el "Log de Discrepancias". (pendiente)
 
-Incluye:
+Incluye: (pendiente)
 
-Campo(s) en conflicto.
+Campo(s) en conflicto. (pendiente)
 
-Valor actual vs. valor escaneado.
+Valor actual vs. valor escaneado. (pendiente)
 
-Opción de revisar/aceptar correcciones.
+Opción de revisar/aceptar correcciones. (pendiente)
 
 📦 5. FUNCIONES INTELIGENTES DE INVENTARIO POST-ESCANEO
 Estas funciones se activan como acciones adicionales opcionales tras el escaneo:
 
-✅ Ajustar existencias automáticamente
-Si el escaneo confirma un nuevo conteo, permite ajustar stock real al nuevo valor verificado.
+✅ Ajustar existencias automáticamente (pendiente)
+Si el escaneo confirma un nuevo conteo, permite ajustar stock real al nuevo valor verificado. (pendiente)
 
-Se guarda en Auditorías con marca de "Ajuste".
+Se guarda en Auditorías con marca de "Ajuste". (pendiente)
 
-🚨 Activar alertas por rotura de stock
-Si la verificación muestra que la unidad/material está en 0:
+🚨 Activar alertas por rotura de stock (pendiente)
+Si la verificación muestra que la unidad/material está en 0: (pendiente)
 
-Se genera automáticamente una alerta de rotura de stock.
+Se genera automáticamente una alerta de rotura de stock. (pendiente)
 
-Puede verse en el dashboard o en la sección de alertas.
+Puede verse en el dashboard o en la sección de alertas. (pendiente)
 
-📥 Registrar entradas/salidas pendientes
-Si el escaneo pertenece a una unidad en tránsito, o marcada como pendiente:
+📥 Registrar entradas/salidas pendientes (pendiente)
+Si el escaneo pertenece a una unidad en tránsito, o marcada como pendiente: (pendiente)
 
-El sistema permite registrarla como entrada/salida completando el flujo logístico.
+El sistema permite registrarla como entrada/salida completando el flujo logístico. (pendiente)
 
-Al hacerlo, se mueve del estado "pendiente" a "confirmado" en el sistema.
+Al hacerlo, se mueve del estado "pendiente" a "confirmado" en el sistema. (pendiente)
 
 🔧 TAREAS TÉCNICAS PARA IMPLEMENTAR
-Reestructurar la lógica de QR para identificar tipo de objeto escaneado.
+Reestructurar la lógica de QR para identificar tipo de objeto escaneado. (completado)
 
-Crear modal tipo split-view (previsualización / reporte editable).
+Crear modal tipo split-view (previsualización / reporte editable). (completado)
 
-Generar modelo de Reporte en DB con vínculo por ID a unidad, material o almacén.
+Generar modelo de Reporte en DB con vínculo por ID a unidad, material o almacén. (completado)
 
-Hacer migración para renombrar "Historial" a "Auditorías".
+Hacer migración para renombrar "Historial" a "Auditorías". (pendiente)
 
-Implementar lógica para ajuste automático de stock y discrepancias.
+Implementar lógica para ajuste automático de stock y discrepancias. (pendiente)
 
-Añadir manejo de archivos/imágenes dentro del formulario de reporte.
+Añadir manejo de archivos/imágenes dentro del formulario de reporte. (pendiente)
 
-Mostrar cada reporte desde la sección "Reportes" con filtros por tipo y origen.
+Mostrar cada reporte desde la sección "Reportes" con filtros por tipo y origen. (completado)
 

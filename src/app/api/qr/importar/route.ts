@@ -15,18 +15,32 @@ export async function POST(req: NextRequest) {
 
     const unidad = await prisma.materialUnidad.findUnique({
       where: { codigoQR: codigo },
-      include: { material: true, archivos: { select: { nombre: true, archivoNombre: true } } },
+      include: {
+        material: true,
+        archivos: { select: { nombre: true, archivoNombre: true } },
+      },
     })
     if (unidad) return NextResponse.json({ tipo: 'unidad', unidad })
 
     const material = await prisma.material.findFirst({
       where: { codigoQR: codigo },
       include: {
-        unidades: { include: { archivos: { select: { nombre: true, archivoNombre: true } } } },
+        unidades: {
+          include: { archivos: { select: { nombre: true, archivoNombre: true } } },
+        },
         archivos: { select: { nombre: true, archivoNombre: true } },
       },
     })
     if (material) return NextResponse.json({ tipo: 'material', material })
+
+    const almacen = await prisma.almacen.findFirst({
+      where: { codigoUnico: codigo },
+      include: {
+        documentos: { select: { nombre: true, url: true } },
+        materiales: { select: { id: true, nombre: true } },
+      },
+    })
+    if (almacen) return NextResponse.json({ tipo: 'almacen', almacen })
 
     return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
   } catch (err) {
