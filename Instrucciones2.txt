@@ -1,161 +1,119 @@
- No usar ningun comando Npx o comandos prisma, estos se haran manualmente, solo dejar en forma de texto en este domcumentos que comandos deben ejeucartarse de forma manual por el usuario.
 
-✅ FASE 0 — Objetivo general
-Reemplazar completamente el sistema anterior de minijuegos y construir uno nuevo que permita:
+🧭 1. ESCANEO DENTRO DE UN ALMACÉN
+Funcionalidad General:
 
-Subir archivos ROM (.gba, .nes)
+Al activar el modo escaneo desde un almacén:
 
-Guardarlos en base de datos
+Se detecta automáticamente si el QR corresponde a un almacén, material o unidad.
 
-Jugar desde el navegador con emulación funcional
+Se abre una vista dividida con dos paneles principales:
 
-Todo embebido y oculto dentro de la página /docs, accesible solo mediante un botón especial.
+🔎 Panel de Previsualización: muestra toda la información registrada (detalles, archivos, imágenes, etc.).
 
-🚮 FASE 1 — Eliminación del sistema anterior
-🔧 Archivos a eliminar
-src/app/docs/minijuegos/ → eliminar carpeta completa si contiene código viejo. [completado]
+📝 Panel de Reporte/Edición: permite modificar campos, añadir observaciones, subir archivos e imágenes.
 
-src/app/docs/MinijuegoLoader.tsx → eliminar archivo, será reemplazado. [completado]
+Acciones del usuario:
 
-Eliminar cualquier lógica antigua de minijuegos de page.tsx. [completado]
+✅ Opción para solo guardar el reporte como movimiento.
 
-🗃️ Base de datos
-Si existe una tabla anterior llamada Minijuego, Juego, etc., con estructura obsoleta:
+🔄 Opción para guardar + actualizar directamente el objeto escaneado.
 
-Eliminarla de schema.prisma [completado]
+Al guardar:
 
-Ejecutar:
+Se registra en la nueva sección de Auditorías.
 
-bash
-Copiar
-Editar
-🏗️ FASE 2 — Preparación de carpetas y base
-📁 Crear nueva estructura
-src/app/docs/minijuegos/
+El sistema marca el escaneo como verificado.
 
-PanelMinijuegos.tsx [completado]
+El reporte queda vinculado al objeto escaneado y visible en la sección de Reportes del dashboard.
 
-SubirRomForm.tsx [completado]
+🧪 2. REPORTES ASOCIADOS A ESCANEOS
+Características del Reporte:
 
-ListaJuegos.tsx [completado]
+Formulario editable con:
 
-EmuladorGBA.tsx [completado]
+📌 Observaciones.
 
-EmuladorNES.tsx [completado]
+📷 Imagenes adjuntas.
 
-src/app/api/minijuegos/
+📁 Archivos adjuntos.
 
-upload.ts [completado]
+🧾 Categoría del reporte (ej. verificación, incidencia, observación general, etc.).
 
-index.ts [completado]
+El reporte:
 
-[id].ts [completado]
+Se guarda en la DB vinculado al objeto.
 
-public/emuladores/
+Puede visualizarse desde la sección general de Reportes.
 
-Ejecutar:
+Puede compartirse/exportarse (PDF, Excel, XML).
 
-bash
-Copiar
-Editar
-mkdir -p public/emuladores
-git clone https://github.com/endrift/gbajs.git public/emuladores/gbajs
-public/roms/ para almacenar los ROMs subidos.
+📑 3. NUEVA SECCIÓN DE AUDITORÍAS (Renombrar Historial/Movimientos)
+Renombrar sección actual "Historial/Movimientos" a "Auditorías".
 
-🧬 FASE 3 — Creación del nuevo modelo en Prisma
+Mostrar:
 
-[completado]
-🧩 FASE 4 — Componente oculto en /docs
-En src/app/docs/page.tsx:
-Importar y usar el botón oculto:
+🕒 Fecha del escaneo.
 
-tsx
-Copiar
-Editar
-'use client';
-import { useState } from 'react';
-import PanelMinijuegos from './minijuegos/PanelMinijuegos';
+🧾 Tipo de objeto (Almacén / Material / Unidad).
 
-export default function DocumentosPage() {
-  const [mostrarJuegos, setMostrarJuegos] = useState(false);
+🔁 Tipo de acción (Guardado, Actualización).
 
-  return (
-    <main>
-      {/* Resto del contenido de documentos */}
-      <button
-        className="text-sm text-gray-400 hover:text-white"
-        onClick={() => setMostrarJuegos(prev => !prev)}
-      >
-        🎮 Minijuegos (secreto)
-      </button>
+🗂 Enlace al reporte generado.
 
-      {mostrarJuegos && <PanelMinijuegos />}
-    </main>
-  );
-}
-[completado]
-🧱 FASE 5 — Desarrollo del nuevo sistema
-1. PanelMinijuegos.tsx
-Contenedor general que incluye SubirRomForm y ListaJuegos.
+👤 Usuario que lo hizo.
 
-2. SubirRomForm.tsx
-Formulario para subir ROMs (.gba, .nes) con campos:
+🛠 Enlace rápido a editar objeto auditado.
 
-Nombre
+⚠️ 4. LOG DE DISCREPANCIAS (Registro Automático)
+Activado si:
 
-Plataforma
+Se detecta que los datos escaneados no coinciden con los registrados.
+Qué hace:
 
-Archivo
+Se genera una entrada automática en el "Log de Discrepancias".
 
-Botón “Subir”
+Incluye:
 
-→ Llama a /api/minijuegos/upload.
+Campo(s) en conflicto.
 
-3. ListaJuegos.tsx
-Lista de juegos subidos, cada uno con:
+Valor actual vs. valor escaneado.
 
-Nombre
+Opción de revisar/aceptar correcciones.
 
-Plataforma
+📦 5. FUNCIONES INTELIGENTES DE INVENTARIO POST-ESCANEO
+Estas funciones se activan como acciones adicionales opcionales tras el escaneo:
 
-Botón “Jugar”
+✅ Ajustar existencias automáticamente
+Si el escaneo confirma un nuevo conteo, permite ajustar stock real al nuevo valor verificado.
 
-Botón “Eliminar”
+Se guarda en Auditorías con marca de "Ajuste".
 
-4. EmuladorGBA.tsx
-Carga emulador GBA desde iframe apuntando a /emuladores/gbajs/index.html?rom=....
+🚨 Activar alertas por rotura de stock
+Si la verificación muestra que la unidad/material está en 0:
 
-5. EmuladorNES.tsx
-Canvas que usa jsnes para renderizar ROM cargado desde /public/roms.
+Se genera automáticamente una alerta de rotura de stock.
 
-🌐 FASE 6 — API funcional
-1. /api/minijuegos/upload.ts
-Recibe archivo ROM
+Puede verse en el dashboard o en la sección de alertas.
 
-Guarda en /public/roms/
+📥 Registrar entradas/salidas pendientes
+Si el escaneo pertenece a una unidad en tránsito, o marcada como pendiente:
 
-Inserta registro en base de datos
+El sistema permite registrarla como entrada/salida completando el flujo logístico.
 
-Requiere usar formidable o next-formidable para multipart.
+Al hacerlo, se mueve del estado "pendiente" a "confirmado" en el sistema.
 
-2. /api/minijuegos/index.ts
-GET: Retorna todos los juegos del usuario
+🔧 TAREAS TÉCNICAS PARA IMPLEMENTAR
+Reestructurar la lógica de QR para identificar tipo de objeto escaneado.
 
-3. /api/minijuegos/[id].ts
-GET: Info individual
+Crear modal tipo split-view (previsualización / reporte editable).
 
-DELETE: Eliminar archivo y registro
-[completado]
+Generar modelo de Reporte en DB con vínculo por ID a unidad, material o almacén.
 
-🎯 FASE 8 — Extras recomendados
-✅ Validación de archivos (.gba, .nes únicamente)
+Hacer migración para renombrar "Historial" a "Auditorías".
 
-✅ Limitar tamaño máximo de ROM
+Implementar lógica para ajuste automático de stock y discrepancias.
 
-🧠 Guardar progreso con localStorage o IndexedDB
+Añadir manejo de archivos/imágenes dentro del formulario de reporte.
 
-🕹️ Soporte para teclado + gamepad
+Mostrar cada reporte desde la sección "Reportes" con filtros por tipo y origen.
 
-📸 Generar portada o thumbnail (a futuro)
-
-🔐 Permitir que sólo el usuario vea sus propios juegos
