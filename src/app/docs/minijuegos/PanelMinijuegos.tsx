@@ -14,6 +14,7 @@ export type Juego = {
 
 export default function PanelMinijuegos() {
   const [juegoActual, setJuegoActual] = useState<Juego | null>(null);
+  const [iniciado, setIniciado] = useState(false);
 
   useEffect(() => {
     if (!juegoActual) return;
@@ -21,6 +22,10 @@ export default function PanelMinijuegos() {
     return () => {
       document.body.style.overflow = "";
     };
+  }, [juegoActual]);
+
+  useEffect(() => {
+    setIniciado(false);
   }, [juegoActual]);
 
   return (
@@ -33,7 +38,17 @@ export default function PanelMinijuegos() {
           >
             &larr; Volver
           </button>
-          {juegoActual.plataforma === "gba" ? (
+          {!iniciado ? (
+            <div className="flex flex-col items-center gap-2">
+              <p className="font-semibold">{juegoActual.nombre}</p>
+              <button
+                onClick={() => setIniciado(true)}
+                className="px-3 py-1 bg-miel text-[#22223b] rounded"
+              >
+                Comenzar
+              </button>
+            </div>
+          ) : juegoActual.plataforma === "gba" ? (
             <EmuladorGBA rom={juegoActual.archivo} />
           ) : (
             <EmuladorNES rom={juegoActual.archivo} />
