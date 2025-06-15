@@ -29,7 +29,6 @@ Ejecutar:
 bash
 Copiar
 Editar
-npx prisma migrate dev --name remove_old_minijuego
 🏗️ FASE 2 — Preparación de carpetas y base
 📁 Crear nueva estructura
 src/app/docs/minijuegos/
@@ -65,8 +64,6 @@ public/roms/ para almacenar los ROMs subidos.
 
 🧬 FASE 3 — Creación del nuevo modelo en Prisma
 
-Comando manual sugerido:
-`npx prisma migrate dev --name create_minijuego`
 [completado]
 🧩 FASE 4 — Componente oculto en /docs
 En src/app/docs/page.tsx:
