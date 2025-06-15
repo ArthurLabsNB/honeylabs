@@ -62,27 +62,11 @@ git clone https://github.com/endrift/gbajs.git public/emuladores/gbajs
 public/roms/ para almacenar los ROMs subidos.
 
 🧬 FASE 3 — Creación del nuevo modelo en Prisma
-En schema.prisma:
-prisma
-Copiar
-Editar
-model Minijuego {
-  id           Int      @id @default(autoincrement())
-  nombre       String
-  descripcion  String?
-  archivoUrl   String
-  plataforma   String   // 'GBA' | 'NES'
-  fechaSubida  DateTime @default(now())
-  usuarioId    Int
-  thumbnail    String?
-  estado       String   @default("activo")
-  usuario      Usuario  @relation(fields: [usuarioId], references: [id])
-}
+
 Comando:
 bash
 Copiar
 Editar
-npx prisma migrate dev --name minijuegos_emulador
 🧩 FASE 4 — Componente oculto en /docs
 En src/app/docs/page.tsx:
 Importar y usar el botón oculto:
@@ -163,18 +147,6 @@ GET: Info individual
 
 DELETE: Eliminar archivo y registro
 
-🔌 FASE 7 — Dependencias necesarias
-bash
-Copiar
-Editar
-npm install jsnes file-saver uuid
-npm install --save-dev @types/file-saver
-Opcional si usas UI:
-
-bash
-Copiar
-Editar
-npm install zustand react-hotkeys-hook react-modal framer-motion
 🎯 FASE 8 — Extras recomendados
 ✅ Validación de archivos (.gba, .nes únicamente)
 
