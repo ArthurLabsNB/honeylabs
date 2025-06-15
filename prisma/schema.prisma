@@ -190,6 +190,7 @@ model Almacen {
   codigos     CodigoAlmacen[]
   usuarios    UsuarioAlmacen[]
   movimientos Movimiento[]
+  historial   HistorialAlmacen[]
 
   eventos         EventoAlmacen[]
   novedades       NovedadAlmacen[]
@@ -239,8 +240,8 @@ model CodigoAlmacen {
 // ================================
 model Movimiento {
   id          Int       @id @default(autoincrement())
-  tipo        String    // 'entrada' o 'salida'
-  cantidad    Int
+  tipo        String    // 'entrada', 'salida', 'creacion', 'modificacion', 'eliminacion'
+  cantidad    Int?
   fecha       DateTime  @default(now())
   descripcion String?
   contexto    Json?
@@ -250,6 +251,17 @@ model Movimiento {
 
   usuarioId   Int?
   usuario     Usuario?  @relation(fields: [usuarioId], references: [id])
+}
+
+model HistorialAlmacen {
+  id          Int      @id @default(autoincrement())
+  almacenId   Int
+  descripcion String?
+  estado      Json?
+  fecha       DateTime @default(now())
+  usuarioId   Int?
+  usuario     Usuario? @relation(fields: [usuarioId], references: [id])
+  almacen     Almacen  @relation(fields: [almacenId], references: [id], onDelete: Cascade)
 }
 
 // ================================

@@ -18,6 +18,31 @@ const IMAGE_TYPES = [
   'image/gif',
 ];
 
+async function snapshot(almacenId: number, usuarioId: number, descripcion: string) {
+  const almacen = await prisma.almacen.findUnique({
+    where: { id: almacenId },
+    select: {
+      nombre: true,
+      descripcion: true,
+      imagen: true,
+      imagenNombre: true,
+      imagenUrl: true,
+      codigoUnico: true,
+    },
+  })
+  const estado = almacen
+    ? {
+        ...almacen,
+        imagen: almacen.imagen
+          ? Buffer.from(almacen.imagen as Buffer).toString('base64')
+          : null,
+      }
+    : null
+  await prisma.historialAlmacen.create({
+    data: { almacenId, usuarioId, descripcion, estado },
+  })
+}
+
 export async function GET(req: NextRequest) {
   try {
     const usuarioId = req.nextUrl.searchParams.get("usuarioId");
@@ -201,7 +226,7 @@ export async function POST(req: NextRequest) {
 
     const codigoUnico = crypto.randomUUID().split('-')[0];
 
-    const almacen = await prisma.almacen.create({
+  const almacen = await prisma.almacen.create({
       data: {
         nombre,
         descripcion,
@@ -217,13 +242,14 @@ export async function POST(req: NextRequest) {
         },
       },
       select: { id: true, nombre: true, descripcion: true, imagenNombre: true, codigoUnico: true },
-    });
+  });
 
-    const resp = {
-      ...almacen,
-      imagenUrl: imagenNombre ? `/api/almacenes/foto?nombre=${encodeURIComponent(imagenNombre)}` : null,
-    };
-    return NextResponse.json({ almacen: resp });
+  const resp = {
+    ...almacen,
+    imagenUrl: imagenNombre ? `/api/almacenes/foto?nombre=${encodeURIComponent(imagenNombre)}` : null,
+  };
+  await snapshot(almacen.id, usuario.id, 'Creación')
+  return NextResponse.json({ almacen: resp });
   } catch (err) {
     logger.error('POST /api/almacenes', err);
     return NextResponse.json(

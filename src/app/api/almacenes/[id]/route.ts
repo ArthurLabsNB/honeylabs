@@ -24,6 +24,31 @@ const IMAGE_TYPES = [
   'image/gif',
 ];
 
+async function snapshot(almacenId: number, usuarioId: number, descripcion: string) {
+  const almacen = await prisma.almacen.findUnique({
+    where: { id: almacenId },
+    select: {
+      nombre: true,
+      descripcion: true,
+      imagen: true,
+      imagenNombre: true,
+      imagenUrl: true,
+      codigoUnico: true,
+    },
+  })
+  const estado = almacen
+    ? {
+        ...almacen,
+        imagen: almacen.imagen
+          ? Buffer.from(almacen.imagen as Buffer).toString('base64')
+          : null,
+      }
+    : null
+  await prisma.historialAlmacen.create({
+    data: { almacenId, usuarioId, descripcion, estado },
+  })
+}
+
 export async function GET(req: NextRequest) {
   logger.debug(req, 'GET /api/almacenes/[id]')
   try {
@@ -141,9 +166,10 @@ export async function DELETE(req: NextRequest) {
       where: { usuarioId: usuario.id, almacenId: id },
       select: { id: true },
     });
-    if (!pertenece && !hasManagePerms(usuario)) {
+  if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
     }
+    await snapshot(id, usuario.id, 'Eliminación')
     await prisma.$transaction([
       prisma.usuarioAlmacen.deleteMany({ where: { almacenId: id } }),
       prisma.codigoAlmacen.deleteMany({ where: { almacenId: id } }),
@@ -216,17 +242,18 @@ export async function PUT(req: NextRequest) {
       imagenNombre = body.imagenNombre ?? null;
     }
 
-    const almacen = await prisma.almacen.update({
+  const almacen = await prisma.almacen.update({
       where: { id },
       data: { nombre, descripcion, imagenUrl, imagenNombre, imagen: imagenBuffer as any },
       select: { id: true, nombre: true, descripcion: true, imagenNombre: true },
     });
 
-    const resp = {
-      ...almacen,
-      imagenUrl: almacen.imagenNombre ? `/api/almacenes/foto?nombre=${encodeURIComponent(almacen.imagenNombre)}` : null,
-    };
-    return NextResponse.json({ almacen: resp });
+  const resp = {
+    ...almacen,
+    imagenUrl: almacen.imagenNombre ? `/api/almacenes/foto?nombre=${encodeURIComponent(almacen.imagenNombre)}` : null,
+  };
+  await snapshot(id, usuario.id, 'Modificación')
+  return NextResponse.json({ almacen: resp });
   } catch (err) {
     logger.error('PUT /api/almacenes/[id]', err);
     return NextResponse.json({ error: 'Error al actualizar' }, { status: 500 });

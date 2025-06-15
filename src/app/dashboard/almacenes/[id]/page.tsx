@@ -12,6 +12,7 @@ import MaterialList from "../components/MaterialList";
 import UnidadesPanel from "./UnidadesPanel";
 import UnidadForm from "../components/UnidadForm";
 import HistorialMovimientosPanel from "./HistorialMovimientosPanel";
+import HistorialAlmacenPanel from "./HistorialAlmacenPanel";
 import ExportNavbar from "../components/ExportNavbar";
 import { generarUUID } from "@/lib/uuid";
 import type { UnidadDetalle } from "@/types/unidad-detalle";
@@ -383,6 +384,7 @@ export default function AlmacenPage() {
                 setSelectedId(null);
               }}
             />
+            <HistorialAlmacenPanel almacenId={Number(id)} />
           </div>
         </aside>
       </div>
