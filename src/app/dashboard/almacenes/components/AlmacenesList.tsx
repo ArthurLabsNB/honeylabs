@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Pencil, Trash, ChevronUp, ChevronDown, Star } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { motion } from "framer-motion";
+import dayjs from "dayjs";
 import { memo, useState } from "react";
 import { cn } from "@/lib/utils";
 import type { Almacen } from "@/hooks/useAlmacenes";
@@ -149,7 +150,7 @@ const SortableAlmacen = memo(function SortableAlmacen({
             {almacen.correo ? ` - ${almacen.correo}` : ''}
           </span>
           {almacen.ultimaActualizacion && (
-            <span>{new Date(almacen.ultimaActualizacion).toLocaleDateString()}</span>
+            <span>{dayjs(almacen.ultimaActualizacion).format('DD/MM/YYYY')}</span>
           )}
         </div>
       </div>
