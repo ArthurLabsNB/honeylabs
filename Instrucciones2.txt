@@ -1,0 +1,112 @@
+🟡 1. Sistema de Progreso Dinámico (Check automático de tareas cumplidas)
+Cada que completes uno de estos puntos y funcionen, coloca una palomita y pasa con el siguiente.
+ Seguir procesando los puntos no completados hasta finalizar la lista.
+
+🟡 2. Conexión y lógica global con base de datos
+ Validar que todas las funciones relacionadas a almacenes, materiales y unidades estén correctamente conectadas mediante Prisma.
+
+ Crear relaciones en la base de datos (si no existen) para almacenar movimientos, historial, backups, imágenes, archivos y responsables.
+
+ Garantizar consistencia de datos con validación y manejo de errores en cada operación (guardar, editar, eliminar).
+
+🟡 3. Botón "+" dinámico en la vista de todos los almacenes
+Al entrar a la página general de almacenes:
+
+ Convertir el botón “+” en un menú desplegable con las siguientes opciones:
+
+ ➕ Agregar Almacén (abre el formulario actual).
+
+ 📷 Escanear Código QR (abre la cámara directamente con permisos).
+
+ 📁 Importar desde archivo (CSV, XLSX, JSON; usar file input).
+
+ 🧩 Duplicar Almacén Existente (muestra lista de almacenes disponibles para clonar su estructura).
+
+🟡 4. Navbar interno al entrar a un almacén
+Organización y contenido del navbar superior:
+
+ Mostrar el nombre del almacén como título editable.
+
+ Incluir botón Escáner QR funcional.
+
+ Agregar estos 3 botones sugeridos:
+
+🧭 Vista rápida del inventario global (modal con resumen).
+
+🔍 Buscar dentro del almacén (barra de búsqueda avanzada).
+
+🗑️ Vaciar materiales del almacén (acción peligrosa, confirmar).
+
+ Mejorar el menú desplegable existente ("Configuración", "Exportar"):
+
+ Agregar botón: 📄 Generar reporte PDF/XLSX del estado actual.
+
+ Agregar botón: 🔐 Gestionar permisos de acceso al almacén.
+
+ Agregar botón: 🔄 Sincronizar con respaldo externo o nube.
+
+ El botón “Guardar” global debe:
+
+ Detectar si cualquier cambio ha ocurrido (material, unidad, almacén).
+
+ Activarse visualmente solo cuando hay cambios pendientes.
+
+ Ejecutar guardado global sincronizado (transaccional con Prisma).
+
+ Mostrar mensaje: ✅ “Guardado correctamente” o ❌ “No se pudo guardar: [motivo]”.
+
+🟡 5. Historial de movimientos y sistema de Backups
+Cada operación de guardado:
+
+ Debe crear un movimiento (backup) en la base de datos como historial.
+
+ Categorizar el tipo: creación, modificación, entrada, salida, eliminación.
+
+ Mostrar en el panel de historial de movimientos con:
+
+🕒 Fecha y hora
+
+🧑 Usuario responsable
+
+🏷️ Tipo de operación
+
+ Al clic en un movimiento, debe abrir un panel tipo formulario en modo solo lectura que muestre:
+
+Todos los campos llenados o editados
+
+Archivos subidos
+
+Imágenes agregadas
+
+Identificadores únicos de unidad/material
+
+ Cada campo mostrado debe tener encima un botón con historial de cambios, al pulsarlo debe mostrar:
+
+Última persona que lo modificó o eliminó
+
+Fecha y hora de cada modificación
+
+🟡 6. Optimización UX e inspiración profesional
+ Analizar e inspirarse en software ERP como SAP, Odoo, Zoho Inventory o NetSuite para:
+
+Flujo de backups
+
+Diseño de formularios y botones
+
+Seguridad de cambios y auditoría
+
+ Adaptar mejoras coherentes al estilo y contexto de HoneyLabs.
+
+✅ 7. Exclusiones
+ El avatar del usuario en navbar no debe tocarse (ya es funcional).
+
+ Mantener compatibilidad y modularidad con el diseño actual de HoneyLabs.
+
+📌 Notas técnicas
+Framework base: Next.js + React
+
+ORM: Prisma
+
+Base de datos: PostgreSQL
+
+Dependencias extra sugeridas: zod, react-hook-form, qrcode.react, jsPDF, xlsx, react-camera-pro, dayjs para fechas
