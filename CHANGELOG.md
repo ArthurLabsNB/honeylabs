@@ -1,3 +1,6 @@
+## 0.2.207
+- Agregamos menú desplegable en "Almacenes" con opciones extra.
+
 ## 0.2.206
 - Mostramos el código QR de cada almacén en sus tarjetas.
 

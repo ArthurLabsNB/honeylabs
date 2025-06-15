@@ -6,7 +6,7 @@ import Spinner from "@/components/Spinner";
 import EmptyState from "@/components/EmptyState";
 import useAlmacenesLogic from "@/hooks/useAlmacenesLogic";
 import type { Almacen } from "@/hooks/useAlmacenes";
-import FloatingAdd from "./components/FloatingAdd";
+import FloatingAddMenu from "./components/FloatingAddMenu";
 import AlmacenesList from "./components/AlmacenesList";
 import AlmacenesGrid from "./components/AlmacenesGrid";
 import AlmacenesTree from "./components/AlmacenesTree";
@@ -49,9 +49,7 @@ export default function AlmacenesPage() {
         {usuario && (
           <EmptyState allowCreate={hasManagePerms(usuario)} />
         )}
-        {usuario && hasManagePerms(usuario) && (
-          <FloatingAdd href="/dashboard/almacenes/nuevo" />
-        )}
+        {usuario && hasManagePerms(usuario) && <FloatingAddMenu />}
       </div>
     );
 
@@ -83,9 +81,7 @@ export default function AlmacenesPage() {
           onOpen={(id) => router.push(`/dashboard/almacenes/${id}`)}
         />
       )}
-      {usuario && hasManagePerms(usuario) && (
-        <FloatingAdd href="/dashboard/almacenes/nuevo" />
-      )}
+      {usuario && hasManagePerms(usuario) && <FloatingAddMenu />}
     </div>
   );
 }
