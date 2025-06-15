@@ -1,7 +1,10 @@
-🔍 Problema actual
- Al hacer clic en un ítem del historial de movimientos, no se muestra nada, o no se abre la previsualización esperada en el panel de Forms.
+✅ I. Importación/Exportación por QR (Intercambio entre cuentas o dispositivos)
+🎯 Objetivo
+Permitir compartir información completa y estructurada (almacenes, materiales, unidades) entre cuentas o dispositivos usando códigos QR, tanto en PC como en móvil.
 
- No se carga información ni archivos del movimiento (unidad, material, imágenes, campos editados).
+🧩 Qué debe hacer cada QR (según entidad):
+1. 📦 QR de un Almacén
+Contiene toda la estructura del almacén, incluyendo:
 
 ✅ Solución esperada — puntos claros para implementación
 1. 📦 Estructura y lógica del movimiento ✅
@@ -22,7 +25,8 @@ Usuario que lo hizo y fecha de ejecución ✅
 2. 🧠 Lógica al clickear un movimiento ✅
  Crear una función handleClickMovimiento(movimientoId) que:
 
- Reciba el ID del movimiento clickeado.
+
+Su nombre, descripción, propiedades
 
  Haga fetch a la base de datos (vía Prisma o API interna) del contenido asociado. ✅
 
@@ -46,7 +50,7 @@ Usuario que lo hizo y fecha de ejecución ✅
 4. 🔍 Botón de historial por campo ✅
  Encima de cada campo mostrado, agregar un botón pequeño tipo ícono (🕓).
 
- Al pulsarlo debe mostrar:
+Al escanearlo:
 
 Último usuario que modificó ese campo ✅
 
@@ -81,7 +85,34 @@ Mostrar mensaje: ❌ “Este movimiento no tiene datos disponibles.” ✅
 
  Cambios en stock o entradas/salidas ✅
 
-🧩 Extras sugeridos
- Permitir exportar cualquier previsualización como PDF con botón 📄 Exportar Respaldo.
 
- Opción para comparar el cambio vs. estado actual con botón 🧮 Comparar con actual.
+Si no hay selección manual, se asume por contexto:
+
+Si estás en pantalla de salida → se registra como salida
+
+Si estás en entrada → como entrada, etc.
+
+✅ Una vez confirmada:
+
+Se genera automáticamente un registro en historial de movimientos, incluyendo:
+
+Usuario
+
+Fecha/hora
+
+Tipo de movimiento
+
+Unidad o material afectado
+
+Observaciones (si aplica)
+
+💡 Alternativa de funcionamiento automático
+Para flujos más rápidos:
+
+ Permitir activar modo “automático”
+
+En ese modo:
+
+Cada escaneo de unidad → se registra automáticamente como entrada o salida, sin confirmación
+
+Se muestra una breve notificación: “✅ Movimiento registrado: Entrada de unidad X”
