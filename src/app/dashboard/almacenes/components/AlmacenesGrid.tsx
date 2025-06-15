@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { Star } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
+import dayjs from "dayjs";
 import { cn } from "@/lib/utils";
 import type { Almacen } from "@/hooks/useAlmacenes";
 
@@ -37,7 +38,7 @@ export default function AlmacenesGrid({
               <h3 className="font-semibold">{a.nombre}</h3>
               {a.ultimaActualizacion && (
                 <span className="text-xs text-[var(--dashboard-muted)]">
-                  {new Date(a.ultimaActualizacion).toLocaleDateString()}
+                  {dayjs(a.ultimaActualizacion).format('DD/MM/YYYY')}
                 </span>
               )}
               <button

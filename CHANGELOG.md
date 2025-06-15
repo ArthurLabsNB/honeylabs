@@ -6,6 +6,12 @@
 - Añadimos botones de historial por campo.
 - Resaltamos el movimiento activo y mostramos su fecha.
 
+## 0.2.213
+- Integramos html5-qrcode para escanear códigos en el navegador.
+- Comprimimos datos con lz-string antes de crear los QR.
+- Exportamos materiales a PDF y Excel desde el cliente.
+- Fechas de actualización ahora usan dayjs para formateo consistente.
+
 ## 0.2.210
 - Registramos cambios de almacenes en historial y mostramos detalles.
 

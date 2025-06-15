@@ -1,39 +1,32 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
-import { useZxing } from "react-zxing";
+import { useState, useEffect } from "react";
+import { Html5Qrcode } from "html5-qrcode";
 import { useRouter } from "next/navigation";
+import { decodeQR } from "@/lib/qr";
 
 export default function ScanPage() {
   const router = useRouter();
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [permiso, setPermiso] = useState(false);
   const [codigo, setCodigo] = useState<string | null>(null);
-  const [stream, setStream] = useState<MediaStream | null>(null);
 
   useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({ video: { facingMode: "environment" } })
-      .then((s) => {
-        setStream(s);
-        setPermiso(true);
-      })
-      .catch(() => setPermiso(false));
+    const qr = new Html5Qrcode("qr-reader-main");
+    qr
+      .start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        (txt) => setCodigo(txt)
+      )
+      .catch(() => {});
+    return () => {
+      qr.stop().catch(() => {});
+    };
   }, []);
 
   useEffect(() => {
-    return () => {
-      stream?.getTracks().forEach((t) => t.stop());
-    };
-  }, [stream]);
-
-  useZxing({
-    ref: videoRef,
-    onDecodeResult: (r) => setCodigo(r.getText()),
-    paused: !permiso,
-  });
-
-  useEffect(() => {
-    if (codigo) {
+    const data = codigo ? decodeQR(codigo) : null;
+    if (data && typeof data === "object" && data.id) {
+      router.push(`/dashboard/almacenes/${data.id}`);
+    } else if (codigo) {
       router.push(`/dashboard/almacenes/${codigo}`);
     }
   }, [codigo, router]);
@@ -41,8 +34,7 @@ export default function ScanPage() {
   return (
     <div className="p-4 space-y-4">
       <h1 className="text-2xl font-bold">Escanear código</h1>
-      <video ref={videoRef} className="w-full rounded-md bg-black" />
-      {codigo && <p className="text-sm">Código: {codigo}</p>}
+      <div id="qr-reader-main" className="w-full h-64 bg-black rounded-md" />
     </div>
   );
 }
