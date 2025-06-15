@@ -1,3 +1,6 @@
+## 0.2.217
+- Añadimos un botón "Comenzar" para ejecutar la ROM tras cargarla.
+
 ## 0.2.216
 - Agregamos la relación inversa `minijuegos` en `Usuario` para evitar el error de Prisma.
 
