@@ -1,6 +1,11 @@
 ## 0.2.211
 - Agregué la relación inversa `historialAlmacenes` en `Usuario` para evitar el error de Prisma.
 
+## 0.2.212
+- Mejoramos la vista previa de movimientos con historial completo.
+- Añadimos botones de historial por campo.
+- Resaltamos el movimiento activo y mostramos su fecha.
+
 ## 0.2.210
 - Registramos cambios de almacenes en historial y mostramos detalles.
 

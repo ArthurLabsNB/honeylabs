@@ -4,82 +4,82 @@
  No se carga información ni archivos del movimiento (unidad, material, imágenes, campos editados).
 
 ✅ Solución esperada — puntos claros para implementación
-1. 📦 Estructura y lógica del movimiento
+1. 📦 Estructura y lógica del movimiento ✅
  Cada movimiento en historial debe contener:
 
-ID único del movimiento
+ID único del movimiento ✅
 
-Tipo de movimiento (creación, edición, entrada, salida, etc.)
+Tipo de movimiento (creación, edición, entrada, salida, etc.) ✅
 
-Referencia al objeto afectado (unidadId, materialId, almacenId)
+Referencia al objeto afectado (unidadId, materialId, almacenId) ✅
 
-Snapshot o payload completo del contenido guardado
+Snapshot o payload completo del contenido guardado ✅
 
-Archivos e imágenes si fueron subidos
+Archivos e imágenes si fueron subidos ✅
 
-Usuario que lo hizo y fecha de ejecución
+Usuario que lo hizo y fecha de ejecución ✅
 
-2. 🧠 Lógica al clickear un movimiento
+2. 🧠 Lógica al clickear un movimiento ✅
  Crear una función handleClickMovimiento(movimientoId) que:
 
  Reciba el ID del movimiento clickeado.
 
- Haga fetch a la base de datos (vía Prisma o API interna) del contenido asociado.
+ Haga fetch a la base de datos (vía Prisma o API interna) del contenido asociado. ✅
 
- Determine si es de tipo unidad, material, almacén, etc.
+ Determine si es de tipo unidad, material, almacén, etc. ✅
 
- Construya una estructura de solo lectura con la información asociada.
+ Construya una estructura de solo lectura con la información asociada. ✅
 
- Envíe esta información al panel de Forms en modo preview.
+ Envíe esta información al panel de Forms en modo preview. ✅
 
-3. 🖼️ Renderización del panel de Forms en modo "previsualización"
+3. 🖼️ Renderización del panel de Forms en modo "previsualización" ✅
  El panel debe:
 
- Desactivarse para edición (modo "read-only").
+ Desactivarse para edición (modo "read-only"). ✅
 
- Renderizar todos los campos guardados (descripción, cantidades, propiedades numéricas).
+ Renderizar todos los campos guardados (descripción, cantidades, propiedades numéricas). ✅
 
- Renderizar correctamente imágenes y archivos subidos (PDFs, fotos, etc).
+ Renderizar correctamente imágenes y archivos subidos (PDFs, fotos, etc). ✅
 
- Si el backup incluye unidadId, debe mostrar la estructura completa de esa unidad.
+ Si el backup incluye unidadId, debe mostrar la estructura completa de esa unidad. ✅
 
-4. 🔍 Botón de historial por campo
+4. 🔍 Botón de historial por campo ✅
  Encima de cada campo mostrado, agregar un botón pequeño tipo ícono (🕓).
 
  Al pulsarlo debe mostrar:
 
-Último usuario que modificó ese campo
+Último usuario que modificó ese campo ✅
 
-Fecha exacta de la modificación
+Fecha exacta de la modificación ✅
 
-Valor anterior (si aplica)
+Valor anterior (si aplica) ✅
 
-5. ✅ Indicadores visuales
+5. ✅ Indicadores visuales ✅
  Al seleccionar un movimiento:
 
- Resaltar la tarjeta activa en el historial.
+ Resaltar la tarjeta activa en el historial. ✅
 
- Cambiar el panel de Forms a modo preview.
+ Cambiar el panel de Forms a modo preview. ✅
 
- Mostrar un título arriba: "Vista de respaldo del movimiento: [tipo] - [fecha]".
+ Mostrar un título arriba: "Vista de respaldo del movimiento: [tipo] - [fecha]". ✅
 
-6. 🧪 Validaciones y fallos
+6. 🧪 Validaciones y fallos ✅
  Si el movimiento no tiene datos asociados (unidad eliminada o referenciada incorrectamente):
 
-Mostrar mensaje: ❌ “Este movimiento no tiene datos disponibles.”
+Mostrar mensaje: ❌ “Este movimiento no tiene datos disponibles.” ✅
 
- Loggear errores de fetch o parseo con detalles para depuración.
+ Loggear errores de fetch o parseo con detalles para depuración. ✅
 
-7. 🔄 Modularidad para otros tipos
+7. 🔄 Modularidad para otros tipos ✅
  Esta lógica debe funcionar no solo con unidades, sino también:
 
- Materiales
+ Materiales ✅
 
- Archivos del almacén
+ Archivos del almacén ✅
 
- Título del almacén
+ Título del almacén ✅
 
- Cambios en stock o entradas/salidas
+ Cambios en stock o entradas/salidas ✅
 
 🧩 Extras sugeridos
  Permitir exportar cualquier previsualización como PDF con botón 📄 Exportar Respaldo.

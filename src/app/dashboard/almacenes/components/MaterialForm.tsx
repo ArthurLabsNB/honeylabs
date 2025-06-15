@@ -18,6 +18,7 @@ interface Props {
   onDuplicar: () => void;
   onEliminar: () => void;
   readOnly?: boolean;
+  historialInfo?: { fecha: string; usuario?: { nombre: string }; estado: any };
 }
 
 export default function MaterialForm({
@@ -28,6 +29,7 @@ export default function MaterialForm({
   onDuplicar,
   onEliminar,
   readOnly = false,
+  historialInfo,
 }: Props) {
   const toast = useToast();
   const [preview, setPreview] = useState<string | null>(null);
@@ -50,6 +52,14 @@ export default function MaterialForm({
     onGuardar();
     mutate();
   }, [onGuardar, mutate]);
+
+  const mostrarHistorial = (campo: keyof Material) => () => {
+    if (!historialInfo) return;
+    const valor = historialInfo.estado?.[campo as any];
+    const usuario = historialInfo.usuario?.nombre || 'desconocido';
+    const fecha = new Date(historialInfo.fecha).toLocaleString();
+    toast.show(`Último cambio por ${usuario} el ${fecha}${valor !== undefined ? `, valor: ${valor}` : ''}`);
+  };
 
 
   const handle = useCallback(
@@ -88,7 +98,12 @@ export default function MaterialForm({
     <>
       <div className="space-y-3">
       <div>
-        <label htmlFor="material-nombre" className="text-xs text-[var(--dashboard-muted)]">Nombre</label>
+        <label htmlFor="material-nombre" className="text-xs text-[var(--dashboard-muted)] flex items-center gap-1">
+          Nombre
+          {readOnly && historialInfo && (
+            <button type="button" onClick={mostrarHistorial('nombre')} className="text-[var(--dashboard-muted)]">🕓</button>
+          )}
+        </label>
         <input
           id="material-nombre"
           value={material.nombre ?? ""}
@@ -98,7 +113,12 @@ export default function MaterialForm({
         />
       </div>
       <div>
-        <label htmlFor="material-descripcion" className="text-xs text-[var(--dashboard-muted)]">Descripción</label>
+        <label htmlFor="material-descripcion" className="text-xs text-[var(--dashboard-muted)] flex items-center gap-1">
+          Descripción
+          {readOnly && historialInfo && (
+            <button type="button" onClick={mostrarHistorial('descripcion')} className="text-[var(--dashboard-muted)]">🕓</button>
+          )}
+        </label>
         <textarea
           id="material-descripcion"
           value={material.descripcion ?? ""}
@@ -137,7 +157,12 @@ export default function MaterialForm({
         </select>
       </div>
       <div>
-        <label htmlFor="material-ubicacion" className="text-xs text-[var(--dashboard-muted)]">Ubicación</label>
+        <label htmlFor="material-ubicacion" className="text-xs text-[var(--dashboard-muted)] flex items-center gap-1">
+          Ubicación
+          {readOnly && historialInfo && (
+            <button type="button" onClick={mostrarHistorial('ubicacion')} className="text-[var(--dashboard-muted)]">🕓</button>
+          )}
+        </label>
         <input
           id="material-ubicacion"
           value={material.ubicacion ?? ""}

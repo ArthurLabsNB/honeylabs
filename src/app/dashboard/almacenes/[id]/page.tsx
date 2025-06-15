@@ -65,12 +65,12 @@ export default function AlmacenPage() {
   const selectedMaterial = historialBackup
     ? ({
         id: 'backup',
-        ...historialBackup,
+        ...historialBackup.estado,
         miniatura: null,
-        miniaturaUrl: historialBackup.miniatura
-          ? `data:image/*;base64,${historialBackup.miniatura}`
+        miniaturaUrl: historialBackup.estado?.miniatura
+          ? `data:image/*;base64,${historialBackup.estado.miniatura}`
           : null,
-        archivos: historialBackup.archivos ?? [],
+        archivos: historialBackup.estado?.archivos ?? [],
       } as Material)
     : selectedId
       ? materiales.find((m) => m.id === selectedId) ?? null
@@ -301,7 +301,15 @@ export default function AlmacenPage() {
         <section className="md:w-1/2 p-4 border-r border-white/10 overflow-y-auto">
           {panel === 'material' && (
             <>
-              {historialBackup && <ExportNavbar material={selectedMaterial} />}
+              {historialBackup && (
+                <>
+                  <ExportNavbar material={selectedMaterial} />
+                  <p className="text-xs mb-2 text-[var(--dashboard-muted)]">
+                    Vista de respaldo del movimiento: {historialBackup.descripcion ?? ''} -{' '}
+                    {new Date(historialBackup.fecha).toLocaleString()}
+                  </p>
+                </>
+              )}
               <MaterialForm
                 key={historialBackup ? 'hist' : selectedId ?? 'new'}
                 material={selectedMaterial}
@@ -313,6 +321,7 @@ export default function AlmacenPage() {
                 onDuplicar={duplicar}
                 onEliminar={eliminar}
                 readOnly={Boolean(historialBackup)}
+                historialInfo={historialBackup ?? undefined}
               />
             </>
           )}
@@ -379,8 +388,8 @@ export default function AlmacenPage() {
             />
             <HistorialMovimientosPanel
               material={selectedMaterial}
-              onSelectHistorial={(estado) => {
-                setHistorialBackup(estado);
+              onSelectHistorial={(entry) => {
+                setHistorialBackup(entry);
                 setSelectedId(null);
               }}
             />
