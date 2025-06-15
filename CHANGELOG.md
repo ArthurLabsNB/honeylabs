@@ -1,3 +1,6 @@
+## 0.2.216
+- Agregamos la relación inversa `minijuegos` en `Usuario` para evitar el error de Prisma.
+
 ## 0.2.214
 - Corrijo la previsualización de movimientos con datos guardados.
 
