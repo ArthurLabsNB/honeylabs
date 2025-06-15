@@ -8,16 +8,20 @@ import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
 import Spinner from "@/components/Spinner";
 
 interface Reporte {
-  id: number;
-  titulo: string;
+  id: number
+  tipo: string
+  categoria?: string | null
+  observaciones?: string | null
+  fecha: string
 }
 
 export default function ReportesPage() {
   const allowed = ["admin", "administrador", "institucional", "empresarial"];
-  const { usuario, loading: loadingUsuario } = useSession();
-  const [reportes, setReportes] = useState<Reporte[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { usuario, loading: loadingUsuario } = useSession()
+  const [reportes, setReportes] = useState<Reporte[]>([])
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState("");
+  const [tipo, setTipo] = useState<string>("todos")
 
   useEffect(() => {
     if (loadingUsuario) return;
@@ -35,14 +39,15 @@ export default function ReportesPage() {
   }, [usuario, loadingUsuario]);
 
   useEffect(() => {
-    if (loadingUsuario || !usuario || error) return;
-    setLoading(true);
-    apiFetch("/api/reportes")
+    if (loadingUsuario || !usuario || error) return
+    setLoading(true)
+    const q = tipo !== "todos" ? `?tipo=${tipo}` : ""
+    apiFetch(`/api/reportes${q}`)
       .then(jsonOrNull)
       .then((d) => setReportes(d.reportes || []))
       .catch(() => setError("Error al cargar datos"))
-      .finally(() => setLoading(false));
-  }, [usuario, loadingUsuario, error]);
+      .finally(() => setLoading(false))
+  }, [usuario, loadingUsuario, error, tipo])
 
   if (error)
     return (
@@ -63,10 +68,27 @@ export default function ReportesPage() {
       <h1 className="text-2xl font-bold mb-4" data-oid="0w60ab2">
         Reportes
       </h1>
+      <div className="mb-4 flex gap-2">
+        <select
+          value={tipo}
+          onChange={(e) => setTipo(e.target.value)}
+          className="dashboard-input"
+        >
+          <option value="todos">Todos</option>
+          <option value="almacen">Almacenes</option>
+          <option value="material">Materiales</option>
+          <option value="unidad">Unidades</option>
+        </select>
+      </div>
       <ul className="list-disc pl-4" data-oid="cjii6yp">
         {reportes.map((r) => (
-          <li key={r.id} data-oid="dxe_-je">
-            {r.titulo}
+          <li key={r.id} className="mb-2" data-oid="dxe_-je">
+            <span className="font-semibold mr-2">{r.tipo}</span>
+            <span className="mr-2">{r.categoria}</span>
+            <span className="mr-2">{r.observaciones}</span>
+            <span className="text-xs text-gray-400">
+              {new Date(r.fecha).toLocaleString()}
+            </span>
           </li>
         ))}
       </ul>
