@@ -5,6 +5,9 @@
 - Mejoramos la apariencia de materiales, unidades y movimientos.
 - Eliminamos paneles duplicados de historial.
 
+## 0.2.220
+- Ajusté las relaciones inversas de `Reporte` y `ArchivoReporte` para evitar fallos de Prisma.
+
 ## 0.2.217
 - Añadimos un botón "Comenzar" para ejecutar la ROM tras cargarla.
 
