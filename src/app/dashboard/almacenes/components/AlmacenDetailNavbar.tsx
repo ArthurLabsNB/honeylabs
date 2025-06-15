@@ -1,5 +1,5 @@
 "use client";
-import { ArrowLeft, Save, Search, ClipboardList, Trash2 } from "lucide-react";
+import { ArrowLeft, Save, Search, ClipboardList, Trash2, QrCode } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -97,6 +97,13 @@ export default function AlmacenDetailNavbar() {
           title="Vista rápida"
         >
           <ClipboardList className="w-5 h-5" />
+        </button>
+        <button
+          onClick={() => router.push(`/dashboard/almacenes/${id}/scan`)}
+          className="p-2 hover:bg-white/10 rounded-lg"
+          title="Escanear"
+        >
+          <QrCode className="w-5 h-5" />
         </button>
         <button
           onClick={() => {

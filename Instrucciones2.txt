@@ -27,7 +27,7 @@ Organización y contenido del navbar superior:
 
  Mostrar el nombre del almacén como título editable.
 
- Incluir botón Escáner QR funcional.
+✅ Incluir botón Escáner QR funcional.
 
  Agregar estos 3 botones sugeridos:
 
