@@ -13,16 +13,16 @@ Todo embebido y oculto dentro de la página /docs, accesible solo mediante un bo
 
 🚮 FASE 1 — Eliminación del sistema anterior
 🔧 Archivos a eliminar
-src/app/docs/minijuegos/ → eliminar carpeta completa si contiene código viejo.
+src/app/docs/minijuegos/ → eliminar carpeta completa si contiene código viejo. [completado]
 
-src/app/docs/MinijuegoLoader.tsx → eliminar archivo, será reemplazado.
+src/app/docs/MinijuegoLoader.tsx → eliminar archivo, será reemplazado. [completado]
 
-Eliminar cualquier lógica antigua de minijuegos de page.tsx.
+Eliminar cualquier lógica antigua de minijuegos de page.tsx. [completado]
 
 🗃️ Base de datos
 Si existe una tabla anterior llamada Minijuego, Juego, etc., con estructura obsoleta:
 
-Eliminarla de schema.prisma
+Eliminarla de schema.prisma [completado]
 
 Ejecutar:
 
@@ -34,23 +34,23 @@ npx prisma migrate dev --name remove_old_minijuego
 📁 Crear nueva estructura
 src/app/docs/minijuegos/
 
-PanelMinijuegos.tsx
+PanelMinijuegos.tsx [completado]
 
-SubirRomForm.tsx
+SubirRomForm.tsx [completado]
 
-ListaJuegos.tsx
+ListaJuegos.tsx [completado]
 
-EmuladorGBA.tsx
+EmuladorGBA.tsx [completado]
 
-EmuladorNES.tsx
+EmuladorNES.tsx [completado]
 
 src/app/api/minijuegos/
 
-upload.ts
+upload.ts [completado]
 
-index.ts
+index.ts [completado]
 
-[id].ts
+[id].ts [completado]
 
 public/emuladores/
 
@@ -65,10 +65,9 @@ public/roms/ para almacenar los ROMs subidos.
 
 🧬 FASE 3 — Creación del nuevo modelo en Prisma
 
-Comando:
-bash
-Copiar
-Editar
+Comando manual sugerido:
+`npx prisma migrate dev --name create_minijuego`
+[completado]
 🧩 FASE 4 — Componente oculto en /docs
 En src/app/docs/page.tsx:
 Importar y usar el botón oculto:
@@ -97,6 +96,7 @@ export default function DocumentosPage() {
     </main>
   );
 }
+[completado]
 🧱 FASE 5 — Desarrollo del nuevo sistema
 1. PanelMinijuegos.tsx
 Contenedor general que incluye SubirRomForm y ListaJuegos.
@@ -148,6 +148,7 @@ GET: Retorna todos los juegos del usuario
 GET: Info individual
 
 DELETE: Eliminar archivo y registro
+[completado]
 
 🎯 FASE 8 — Extras recomendados
 ✅ Validación de archivos (.gba, .nes únicamente)

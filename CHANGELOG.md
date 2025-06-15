@@ -1,6 +1,10 @@
 ## 0.2.214
 - Corrijo la previsualización de movimientos con datos guardados.
 
+## 0.2.215
+- Reemplazamos el antiguo módulo de minijuegos por un cargador de ROMs.
+- Añadimos API y modelo Prisma para gestionar los juegos.
+
 ## 0.2.211
 - Agregué la relación inversa `historialAlmacenes` en `Usuario` para evitar el error de Prisma.
 
