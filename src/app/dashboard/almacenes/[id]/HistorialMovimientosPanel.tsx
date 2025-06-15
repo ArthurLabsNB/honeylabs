@@ -100,6 +100,17 @@ export default function HistorialMovimientosPanel({ material, onSelectHistorial 
         console.error(err);
         toast.show('Error al obtener movimiento.', 'error');
       }
+    } else if (pref === 'm') {
+      const registro = registros.find((r) => r.id === id);
+      if (!registro) return;
+      const estado = buscarEstado(registro.fecha, registro.descripcion);
+      if (estado) {
+        const entry = { ...registro, estado } as any;
+        setDetalle({ ...entry, id });
+        onSelectHistorial && onSelectHistorial(entry);
+      } else {
+        toast.show('Este movimiento no tiene datos disponibles.', 'error');
+      }
     }
   };
 
