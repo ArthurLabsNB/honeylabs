@@ -1,3 +1,6 @@
+## 0.2.210
+- Registramos cambios de almacenes en historial y mostramos detalles.
+
 ## 0.2.209
 - Agregamos botón para escanear códigos QR desde la vista del almacén.
 
