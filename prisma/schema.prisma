@@ -102,15 +102,6 @@ model Usuario {
   roles         Rol[]            @relation("RolToUsuario")
   movimientos   Movimiento[]
 
-  // Minijuegos
-  puntajesPacman       PuntajePacman[]
-  puntajesMario        PuntajeMario[]
-  puntajesSnake        PuntajeSnake[]
-  puntajesTetris       PuntajeTetris[]
-  puntajesPingPong     PuntajePingPong[]
-  puntajesBreakout     PuntajeBreakout[]
-  puntajesFlappyBee    PuntajeFlappyBee[]
-  puntajesSpaceShooter PuntajeSpaceShooter[]
 
   eventosCreados       EventoAlmacen[]      @relation("EventosCreados")
   novedadesCreadas     NovedadAlmacen[]     @relation("NovedadesCreadas")
@@ -345,79 +336,6 @@ model Incidencia {
   fechaResuelta DateTime?
 }
 
-// ================================
-// Minijuegos (sin cambios)
-// ================================
-model PuntajePacman {
-  id        Int      @id @default(autoincrement())
-  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
-  usuarioId Int
-  puntaje   Int
-  fecha     DateTime @default(now())
-}
-
-model PuntajeMario {
-  id        Int      @id @default(autoincrement())
-  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
-  usuarioId Int
-  nivel     Int
-  puntaje   Int
-  fecha     DateTime @default(now())
-}
-
-model PuntajeSnake {
-  id        Int      @id @default(autoincrement())
-  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
-  usuarioId Int
-  longitud  Int
-  puntaje   Int
-  fecha     DateTime @default(now())
-}
-
-model PuntajeTetris {
-  id        Int      @id @default(autoincrement())
-  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
-  usuarioId Int
-  lineas    Int
-  puntaje   Int
-  fecha     DateTime @default(now())
-}
-
-model PuntajePingPong {
-  id        Int      @id @default(autoincrement())
-  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
-  usuarioId Int
-  rondas    Int
-  puntaje   Int
-  fecha     DateTime @default(now())
-}
-
-model PuntajeBreakout {
-  id        Int      @id @default(autoincrement())
-  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
-  usuarioId Int
-  nivel     Int
-  puntaje   Int
-  fecha     DateTime @default(now())
-}
-
-model PuntajeFlappyBee {
-  id        Int      @id @default(autoincrement())
-  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
-  usuarioId Int
-  distancia Int
-  puntaje   Int
-  fecha     DateTime @default(now())
-}
-
-model PuntajeSpaceShooter {
-  id        Int      @id @default(autoincrement())
-  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
-  usuarioId Int
-  enemigos  Int
-  puntaje   Int
-  fecha     DateTime @default(now())
-}
 
 // ================================
 // Alertas por almacén (NUEVO)
@@ -610,4 +528,17 @@ model ChatMensaje {
   usuario   Usuario    @relation(fields: [usuarioId], references: [id])
 
   @@index([canalId])
+}
+
+// ================================
+// Minijuegos - ROMs subidos
+// ================================
+model Minijuego {
+  id         Int      @id @default(autoincrement())
+  nombre     String
+  plataforma String
+  archivo    String
+  fecha      DateTime @default(now())
+  usuarioId  Int
+  usuario    Usuario  @relation(fields: [usuarioId], references: [id])
 }
