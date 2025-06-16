@@ -44,7 +44,7 @@ Se guarda en la DB vinculado al objeto. [COMPLETADO]
 
 Puede visualizarse desde la sección general de Reportes. [COMPLETADO]
 
-Puede compartirse/exportarse (PDF, Excel, XML). [PENDIENTE]
+Puede compartirse/exportarse (PDF, Excel, XML). [COMPLETADO]
 
 
 ⚠️ 4. LOG DE DISCREPANCIAS (Registro Automático)
@@ -61,29 +61,29 @@ Campo(s) en conflicto. [COMPLETADO]
 
 Valor actual vs. valor escaneado. [COMPLETADO]
 
-Opción de revisar/aceptar correcciones. [PENDIENTE]
+Opción de revisar/aceptar correcciones. [COMPLETADO]
 
 📦 5. FUNCIONES INTELIGENTES DE INVENTARIO POST-ESCANEO
 Estas funciones se activan como acciones adicionales opcionales tras el escaneo:
 
 ✅ Ajustar existencias automáticamente
-Si el escaneo confirma un nuevo conteo, permite ajustar stock real al nuevo valor verificado. [PENDIENTE]
+Si el escaneo confirma un nuevo conteo, permite ajustar stock real al nuevo valor verificado. [COMPLETADO]
 
-Se guarda en Auditorías con marca de "Ajuste". [PENDIENTE]
+Se guarda en Auditorías con marca de "Ajuste". [COMPLETADO]
 
 🚨 Activar alertas por rotura de stock
 Si la verificación muestra que la unidad/material está en 0:
 
-Se genera automáticamente una alerta de rotura de stock. [PENDIENTE]
+Se genera automáticamente una alerta de rotura de stock. [COMPLETADO]
 
-Puede verse en el dashboard o en la sección de alertas. [PENDIENTE]
+Puede verse en el dashboard o en la sección de alertas. [COMPLETADO]
 
 📥 Registrar entradas/salidas pendientes
 Si el escaneo pertenece a una unidad en tránsito, o marcada como pendiente:
 
-El sistema permite registrarla como entrada/salida completando el flujo logístico. [PENDIENTE]
+El sistema permite registrarla como entrada/salida completando el flujo logístico. [COMPLETADO]
 
-Al hacerlo, se mueve del estado "pendiente" a "confirmado" en el sistema. [PENDIENTE]
+Al hacerlo, se mueve del estado "pendiente" a "confirmado" en el sistema. [COMPLETADO]
 
 Agrega esto tambien en el forms de Materiales y Unidades como campos de seleccion de estado. [COMPLETADO]
 
@@ -94,7 +94,7 @@ Crear modal tipo split-view (previsualización / reporte editable). [COMPLETADO]
 
 Generar modelo de Reporte en DB con vínculo por ID a unidad, material o almacén. [COMPLETADO]
 
-Implementar lógica para ajuste automático de stock y discrepancias. [PENDIENTE]
+Implementar lógica para ajuste automático de stock y discrepancias. [COMPLETADO]
 
 Añadir manejo de archivos/imágenes dentro del formulario de reporte. [COMPLETADO]
 
