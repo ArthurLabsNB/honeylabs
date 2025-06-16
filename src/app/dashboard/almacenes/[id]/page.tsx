@@ -64,6 +64,7 @@ export default function AlmacenPage() {
   const selectedMaterial = historialBackup
     ? ({
         id: 'backup',
+        dbId: historialBackup.estado?.id,
         ...historialBackup.estado,
         miniatura: null,
         miniaturaUrl: historialBackup.estado?.miniatura

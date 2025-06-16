@@ -340,8 +340,7 @@ html, body {
 
 /* --------- BUSCADOR Y INPUTS --------- */
 .dashboard-input {
-  @apply rounded-md px-4 py-2;
-  background: #1e1e26;
+  @apply rounded-md px-4 py-2 bg-white/5;
   color: var(--dashboard-text);
   border: 1.5px solid var(--dashboard-border);
   font-size: 1rem;
@@ -359,7 +358,7 @@ html, body {
 
 /* --------- TARJETAS --------- */
 .dashboard-card {
-  @apply p-4 rounded-md border transition shadow-sm;
+  @apply p-4 rounded-md border transition shadow-sm hover:bg-white/5;
   background: var(--dashboard-card);
   border-color: var(--dashboard-border);
   box-shadow: var(--dashboard-shadow);

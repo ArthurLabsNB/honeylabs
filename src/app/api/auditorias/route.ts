@@ -7,19 +7,24 @@ import * as logger from '@lib/logger'
 
 export async function GET(req: NextRequest) {
   try {
+    const tipo = req.nextUrl.searchParams.get('tipo') || undefined
+    const where: any = tipo && ['almacen','material','unidad'].includes(tipo)
+      ? { tipo }
+      : {}
     const auditorias = await prisma.reporte.findMany({
       take: 20,
       orderBy: { fecha: 'desc' },
+      where,
       select: {
         id: true,
         tipo: true,
         categoria: true,
         fecha: true,
         observaciones: true,
-        almacenId: true,
-        materialId: true,
-        unidadId: true,
         usuario: { select: { nombre: true } },
+        almacen: { select: { nombre: true } },
+        material: { select: { nombre: true } },
+        unidad: { select: { nombre: true } },
       },
     })
     return NextResponse.json({ auditorias })
