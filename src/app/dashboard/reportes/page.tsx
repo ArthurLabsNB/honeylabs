@@ -86,9 +86,27 @@ export default function ReportesPage() {
             <span className="font-semibold mr-2">{r.tipo}</span>
             <span className="mr-2">{r.categoria}</span>
             <span className="mr-2">{r.observaciones}</span>
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-gray-400 mr-2">
               {new Date(r.fecha).toLocaleString()}
             </span>
+            <a
+              href={`/api/reportes/${r.id}/export?format=pdf`}
+              className="underline mr-1"
+            >
+              PDF
+            </a>
+            <a
+              href={`/api/reportes/${r.id}/export?format=excel`}
+              className="underline mr-1"
+            >
+              Excel
+            </a>
+            <a
+              href={`/api/reportes/${r.id}/export?format=xml`}
+              className="underline"
+            >
+              XML
+            </a>
           </li>
         ))}
       </ul>

@@ -12,6 +12,7 @@ export default function ScanAlmacenPage() {
   const [mensaje, setMensaje] = useState('')
   const [data, setData] = useState<Record<string, any> | null>(null)
   const [archivos, setArchivos] = useState<File[]>([])
+  const [nuevoStock, setNuevoStock] = useState('')
 
   useEffect(() => {
     const qr = new Html5Qrcode('qr-reader')
@@ -130,6 +131,35 @@ export default function ScanAlmacenPage() {
     setMensaje('Reporte y objeto actualizados')
   }
 
+  const ajustarStock = async () => {
+    if (!info?.tipo || info.tipo !== 'material') return
+    const objetoId = info.material?.id
+    if (!objetoId) return
+    const res = await fetch(`/api/materiales/${objetoId}/ajuste`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cantidad: Number(nuevoStock) })
+    })
+    if (res.ok) {
+      setMensaje('Stock ajustado')
+    } else {
+      setMensaje('Error al ajustar')
+    }
+  }
+
+  const confirmarUnidad = async () => {
+    if (info?.tipo !== 'unidad') return
+    const uid = info.unidad?.id
+    const mid = info.material?.id
+    if (!uid || !mid) return
+    await fetch(`/api/materiales/${mid}/unidades/${uid}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ estado: 'confirmado' })
+    })
+    setMensaje('Unidad confirmada')
+  }
+
   return (
     <div className="p-4 space-y-4">
       <h1 className="text-2xl font-bold">Escanear código</h1>
@@ -168,6 +198,25 @@ export default function ScanAlmacenPage() {
               }
               className="dashboard-input"
             />
+            {info?.tipo === 'material' && (
+              <div className="flex gap-2">
+                <input
+                  value={nuevoStock}
+                  onChange={(e) => setNuevoStock(e.target.value)}
+                  className="dashboard-input flex-1"
+                  placeholder="Nuevo stock"
+                />
+                <button onClick={ajustarStock} className="dashboard-btn">
+                  Ajustar
+                </button>
+              </div>
+            )}
+            {info?.tipo === 'unidad' &&
+              (info.unidad?.estado === 'pendiente' || info.unidad?.estado === 'transito') && (
+                <button onClick={confirmarUnidad} className="dashboard-btn">
+                  Confirmar unidad
+                </button>
+              )}
             <button onClick={guardar} className="dashboard-btn">
               Guardar reporte
             </button>

@@ -594,4 +594,6 @@ model LogDiscrepancia {
   fecha         DateTime @default(now())
   usuarioId     Int?
   usuario       Usuario? @relation(fields: [usuarioId], references: [id])
+  revisado      Boolean  @default(false)
+  aceptado      Boolean  @default(false)
 }
