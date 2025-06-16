@@ -10,6 +10,8 @@ export default function AuditoriasPage() {
   const [categoria, setCategoria] = useState("todas");
   const [busqueda, setBusqueda] = useState("");
   const { auditorias, loading } = useAuditorias({ tipo, categoria, q: busqueda });
+  const [detalle, setDetalle] = useState<any | null>(null);
+  const [activo, setActivo] = useState<number | null>(null);
 
   const filtradas = auditorias.filter((a) => {
     if (!busqueda) return true;
@@ -74,7 +76,18 @@ export default function AuditoriasPage() {
       </div>
       <ul className="space-y-2">
         {filtradas.map((a) => (
-          <li key={a.id} className="dashboard-card space-y-1">
+          <li
+            key={a.id}
+            className={`dashboard-card space-y-1 ${activo === a.id ? 'border-[var(--dashboard-accent)]' : 'hover:border-[var(--dashboard-accent)]'}`}
+            onClick={async () => {
+              setActivo(a.id);
+              const res = await fetch(`/api/auditorias/${a.id}`);
+              if (res.ok) {
+                const d = await res.json();
+                setDetalle(d.auditoria);
+              }
+            }}
+          >
             <div className="flex justify-between items-center">
               <span className="font-semibold">
                 {a.almacen?.nombre || a.material?.nombre || a.unidad?.nombre}
@@ -91,6 +104,16 @@ export default function AuditoriasPage() {
           </li>
         ))}
       </ul>
+      {detalle && (
+        <div className="dashboard-card text-xs space-y-1">
+          <div>Tipo: {detalle.tipo}</div>
+          {detalle.unidad?.nombre && <div>Unidad: {detalle.unidad.nombre}</div>}
+          {detalle.material?.nombre && <div>Material: {detalle.material.nombre}</div>}
+          {detalle.almacen?.nombre && <div>Almacén: {detalle.almacen.nombre}</div>}
+          {detalle.observaciones && <div>{detalle.observaciones}</div>}
+          <div>{new Date(detalle.fecha).toLocaleString()}</div>
+        </div>
+      )}
     </div>
   );
 }

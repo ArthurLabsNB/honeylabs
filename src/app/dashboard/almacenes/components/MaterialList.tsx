@@ -86,7 +86,7 @@ export default function MaterialList({
               <div className="flex flex-col flex-1">
                 <span className="font-semibold">{m.nombre}</span>
                 <span className="text-xs">
-                  Stock: {m.cantidad} {m.unidad}
+                  Stock: {m.numUnidades ?? 0}
                 </span>
                 {m.lote && (
                   <span className="text-xs">Lote: {m.lote}</span>

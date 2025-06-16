@@ -25,6 +25,7 @@ export interface Material {
   miniaturaUrl?: string | null;
   archivos?: File[];
   archivosPrevios?: { id: number; nombre: string; archivoNombre: string }[];
+  numUnidades?: number;
 }
 
 interface Props {

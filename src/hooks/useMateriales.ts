@@ -111,6 +111,7 @@ export default function useMateriales(almacenId?: number | string) {
         id: String(m.id ?? genId()),
         dbId: m.id,
         ...m,
+        numUnidades: m._count?.unidades ?? 0,
         fechaCaducidad: m.fechaCaducidad?.slice(0, 10) ?? '',
         miniaturaUrl: m.miniaturaNombre
           ? `/api/materiales/archivo?nombre=${encodeURIComponent(m.miniaturaNombre)}`
