@@ -58,8 +58,9 @@ export async function POST(req: NextRequest) {
       include: { archivos: true }
     })
     if (!original) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
-    const { id, archivos, ...data } = original as any
-    const copia = await prisma.reporte.create({ data })
+  const { id, archivos, ...data } = original as any
+  data.fecha = new Date()
+  const copia = await prisma.reporte.create({ data })
     if (archivos && archivos.length) {
       await Promise.all(
         archivos.map(a =>

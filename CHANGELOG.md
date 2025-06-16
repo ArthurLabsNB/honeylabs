@@ -1,3 +1,6 @@
+## 0.2.227
+- Ajustamos permisos en menú y sidebar para mostrar Auditorías a todos.
+- Al crear una auditoría se registra la fecha actual.
 ## 0.2.225
 - Añadimos vista general de auditorías con filtros en tiempo real.
 - Unificamos nombres de objetos al listar auditorías.
