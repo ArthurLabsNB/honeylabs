@@ -52,7 +52,13 @@ const sidebarMenu = [
     label: "Auditorías",
     icon: <FileStack className="dashboard-sidebar-icon" data-oid="audits" />,
     path: "/dashboard/auditorias",
-    allowed: ["admin", "administrador", "institucional", "empresarial"],
+    allowed: [
+      "admin",
+      "administrador",
+      "institucional",
+      "empresarial",
+      "individual",
+    ],
   },
   {
     key: "admin",

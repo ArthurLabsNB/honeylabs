@@ -83,7 +83,13 @@ const toolsMenu = [
     label: "Auditorías",
     icon: <FileStack className="dashboard-sidebar-icon" />,
     path: "/dashboard/auditorias",
-    allowed: ["admin", "administrador", "institucional", "empresarial"],
+    allowed: [
+      "admin",
+      "administrador",
+      "institucional",
+      "empresarial",
+      "individual",
+    ],
   },
   {
     key: "almacen-archivos",
