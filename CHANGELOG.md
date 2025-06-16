@@ -1,3 +1,6 @@
+## 0.2.222
+- Agregamos la relación inversa `logDiscrepancias` en `Usuario` para evitar el error de Prisma.
+
 ## 0.2.218
 - Ocultamos los paneles al previsualizar un movimiento y añadimos botón para volver.
 
