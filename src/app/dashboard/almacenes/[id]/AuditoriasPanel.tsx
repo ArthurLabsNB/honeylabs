@@ -2,6 +2,8 @@
 import type { Material } from "../components/MaterialRow";
 import useMovimientosMaterial from "@/hooks/useMovimientosMaterial";
 import useHistorialMaterial from "@/hooks/useHistorialMaterial";
+import useMovimientos from "@/hooks/useMovimientos";
+import useHistorialAlmacen from "@/hooks/useHistorialAlmacen";
 import { useState, useMemo } from "react";
 import {
   PlusIcon,
@@ -16,6 +18,7 @@ import MaterialCodes from "../components/MaterialCodes";
 
 interface Props {
   material: Material | null;
+  almacenId?: number;
   onSelectHistorial?: (entry: any) => void;
 }
 
@@ -27,16 +30,19 @@ interface Registro {
   descripcion?: string | null;
   usuario?: string;
   estado?: any;
+  fuente: 'material' | 'almacen';
 }
 
-export default function HistorialMovimientosPanel({ material, onSelectHistorial }: Props) {
+export default function HistorialMovimientosPanel({ material, almacenId, onSelectHistorial }: Props) {
   const { movimientos } = useMovimientosMaterial(material?.dbId);
   const { historial } = useHistorialMaterial(material?.dbId);
+  const { movimientos: movimientosAlmacen } = useMovimientos(almacenId);
+  const { historial: historialAlmacen } = useHistorialAlmacen(almacenId);
   const [detalle, setDetalle] = useState<any | null>(null);
   const [activo, setActivo] = useState<string | null>(null);
   const toast = useToast();
   const [busqueda, setBusqueda] = useState('');
-  const [tipo, setTipo] = useState<'todos' | 'entrada' | 'salida' | 'modificacion' | 'eliminacion'>('todos');
+  const [tipo, setTipo] = useState<'todos' | 'entrada' | 'salida' | 'creacion' | 'modificacion' | 'eliminacion'>('todos');
 
   const registros: Registro[] = [
     ...historial.map((h) => ({
@@ -51,6 +57,7 @@ export default function HistorialMovimientosPanel({ material, onSelectHistorial 
       descripcion: h.descripcion ?? undefined,
       estado: h.estado,
       usuario: h.usuario?.nombre,
+      fuente: 'material',
     })),
     ...movimientos.map((m) => ({
       id: `m-${m.id}`,
@@ -59,11 +66,35 @@ export default function HistorialMovimientosPanel({ material, onSelectHistorial 
       fecha: m.fecha,
       descripcion: m.descripcion ?? undefined,
       usuario: m.usuario?.nombre,
+      fuente: 'material',
+    })),
+    ...historialAlmacen.map((h) => ({
+      id: `ha-${h.id}`,
+      tipo: 'modificacion',
+      fecha: h.fecha,
+      descripcion: h.descripcion ?? undefined,
+      estado: h.estado,
+      usuario: h.usuario?.nombre,
+      fuente: 'almacen',
+    })),
+    ...movimientosAlmacen.map((m) => ({
+      id: `ma-${m.id}`,
+      tipo: m.tipo,
+      cantidad: m.cantidad,
+      fecha: m.fecha,
+      descripcion: m.descripcion ?? undefined,
+      usuario: m.usuario?.nombre,
+      fuente: 'almacen',
     })),
   ].sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
 
-  const buscarEstado = (fecha: string, descripcion?: string) => {
-    const target = historial.find(
+  const buscarEstado = (
+    fuente: 'material' | 'almacen',
+    fecha: string,
+    descripcion?: string,
+  ) => {
+    const hist = fuente === 'material' ? historial : historialAlmacen;
+    const target = hist.find(
       (h) =>
         Math.abs(new Date(h.fecha).getTime() - new Date(fecha).getTime()) < 5000 &&
         (h.descripcion ?? '') === (descripcion ?? '')
@@ -103,7 +134,32 @@ export default function HistorialMovimientosPanel({ material, onSelectHistorial 
     } else if (pref === 'm') {
       const registro = registros.find((r) => r.id === id);
       if (!registro) return;
-      const estado = buscarEstado(registro.fecha, registro.descripcion);
+      const estado = buscarEstado('material', registro.fecha, registro.descripcion);
+      if (estado) {
+        const entry = { ...registro, estado } as any;
+        setDetalle({ ...entry, id });
+        onSelectHistorial && onSelectHistorial(entry);
+      } else {
+        toast.show('Este movimiento no tiene datos disponibles.', 'error');
+      }
+    } else if (pref === 'ha') {
+      try {
+        const res = await fetch(`/api/historial/almacen/${real}`);
+        const data = await res.json();
+        if (data.entry?.estado) {
+          setDetalle({ ...data.entry, id });
+          onSelectHistorial && onSelectHistorial(data.entry);
+        } else {
+          toast.show('Este movimiento no tiene datos disponibles.', 'error');
+        }
+      } catch (err) {
+        console.error(err);
+        toast.show('Error al obtener movimiento.', 'error');
+      }
+    } else if (pref === 'ma') {
+      const registro = registros.find((r) => r.id === id);
+      if (!registro) return;
+      const estado = buscarEstado('almacen', registro.fecha, registro.descripcion);
       if (estado) {
         const entry = { ...registro, estado } as any;
         setDetalle({ ...entry, id });
@@ -132,6 +188,7 @@ export default function HistorialMovimientosPanel({ material, onSelectHistorial 
           <option value="todos">Todos</option>
           <option value="entrada">Entradas</option>
           <option value="salida">Salidas</option>
+          <option value="creacion">Creaciones</option>
           <option value="modificacion">Modificaciones</option>
           <option value="eliminacion">Eliminaciones</option>
         </select>
@@ -158,7 +215,9 @@ export default function HistorialMovimientosPanel({ material, onSelectHistorial 
                 <PencilSquareIcon className="w-4 h-4" />
               )}
             </span>
-            <span className="font-medium mr-2">{material?.nombre}</span>
+            <span className="font-medium mr-2">
+              {r.fuente === 'material' ? material?.nombre : 'Almacén'}
+            </span>
             <span className="mr-2">{r.descripcion}</span>
             {r.cantidad != null && <span className="mr-2">{r.cantidad}</span>}
             <span className="mr-2">{new Date(r.fecha).toLocaleDateString()}</span>
@@ -168,7 +227,7 @@ export default function HistorialMovimientosPanel({ material, onSelectHistorial 
       </ul>
       {detalle && (
         <div className="text-xs dashboard-card space-y-2">
-          {detalle.estado?.codigoQR && (
+          {detalle.fuente === 'material' && detalle.estado?.codigoQR && (
             <MaterialCodes value={detalle.estado.codigoQR} />
           )}
           <div>{detalle.descripcion || "Sin detalles"}</div>
