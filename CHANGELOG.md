@@ -1,3 +1,8 @@
+## 0.2.225
+- Añadimos vista general de auditorías con filtros en tiempo real.
+- Unificamos nombres de objetos al listar auditorías.
+- Mejoramos el estilo de formularios y tarjetas.
+
 ## 0.2.224
 - Mostramos el historial de unidades en Auditorías.
 
