@@ -92,13 +92,19 @@ export default function UnidadesPanel({
         {filtrados.map((u) => (
           <li
             key={u.id}
-            className={`dashboard-card cursor-pointer flex justify-between items-center ${
+            className={`dashboard-card cursor-pointer flex justify-between items-center gap-2 ${
               material?.unidad === u.nombre
                 ? 'border-[var(--dashboard-accent)]'
                 : 'hover:border-[var(--dashboard-accent)]'
             }`}
           >
-            <span onClick={() => select(u)}>{u.nombre}</span>
+            <div onClick={() => select(u)} className="flex flex-col flex-1">
+              <span className="font-semibold">{u.nombre}</span>
+              <span className="text-xs">ID: {u.id}</span>
+              {u.codigoQR && (
+                <span className="text-xs break-all">QR: {u.codigoQR}</span>
+              )}
+            </div>
             <button onClick={() => remove(u.id)} className="ml-2 text-xs">
               ✕
             </button>

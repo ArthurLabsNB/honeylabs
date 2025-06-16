@@ -16,6 +16,9 @@ export async function GET(req: NextRequest) {
         categoria: true,
         fecha: true,
         observaciones: true,
+        almacenId: true,
+        materialId: true,
+        unidadId: true,
         usuario: { select: { nombre: true } },
       },
     })
