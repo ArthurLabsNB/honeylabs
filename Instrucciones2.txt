@@ -19,9 +19,9 @@ Acciones del usuario:
 
 Al guardar:
 
-Se registra en la nueva sección de Auditorías.
+Se registra en Auditorías.
 
-El sistema marca el escaneo como verificado.
+El sistema marca el escaneo como verificado en auditorias creando asi una nueva audtoria. 
 
 El reporte queda vinculado al objeto escaneado y visible en la sección de Reportes del dashboard.
 
@@ -46,22 +46,6 @@ Puede visualizarse desde la sección general de Reportes.
 
 Puede compartirse/exportarse (PDF, Excel, XML).
 
-📑 3. NUEVA SECCIÓN DE AUDITORÍAS (Renombrar Historial/Movimientos)
-Renombrar sección actual "Historial/Movimientos" a "Auditorías".
-
-Mostrar:
-
-🕒 Fecha del escaneo.
-
-🧾 Tipo de objeto (Almacén / Material / Unidad).
-
-🔁 Tipo de acción (Guardado, Actualización).
-
-🗂 Enlace al reporte generado.
-
-👤 Usuario que lo hizo.
-
-🛠 Enlace rápido a editar objeto auditado.
 
 ⚠️ 4. LOG DE DISCREPANCIAS (Registro Automático)
 Activado si:
@@ -69,7 +53,7 @@ Activado si:
 Se detecta que los datos escaneados no coinciden con los registrados.
 Qué hace:
 
-Se genera una entrada automática en el "Log de Discrepancias".
+Se genera una entrada automática en Auditorias.
 
 Incluye:
 
@@ -101,14 +85,14 @@ El sistema permite registrarla como entrada/salida completando el flujo logísti
 
 Al hacerlo, se mueve del estado "pendiente" a "confirmado" en el sistema.
 
+Agrega esto tambien en el forms de Materiales y Unidades como campos de seleccion de estado.
+
 🔧 TAREAS TÉCNICAS PARA IMPLEMENTAR
 Reestructurar la lógica de QR para identificar tipo de objeto escaneado.
 
 Crear modal tipo split-view (previsualización / reporte editable).
 
 Generar modelo de Reporte en DB con vínculo por ID a unidad, material o almacén.
-
-Hacer migración para renombrar "Historial" a "Auditorías".
 
 Implementar lógica para ajuste automático de stock y discrepancias.
 
