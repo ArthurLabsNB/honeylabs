@@ -12,6 +12,7 @@ import {
   History,
   FileText,
   Folder,
+  FileStack,
   Settings,
   BookOpen,
   MessageSquare,
@@ -76,6 +77,13 @@ const toolsMenu = [
     icon: <FileText className="dashboard-sidebar-icon" />,
     path: "/dashboard/almacenes/reportes",
     allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
+  },
+  {
+    key: "auditorias",
+    label: "Auditorías",
+    icon: <FileStack className="dashboard-sidebar-icon" />,
+    path: "/dashboard/auditorias",
+    allowed: ["admin", "administrador", "institucional", "empresarial"],
   },
   {
     key: "almacen-archivos",

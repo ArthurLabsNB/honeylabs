@@ -7,6 +7,7 @@ import * as logger from '@lib/logger'
 
 export async function GET(req: NextRequest) {
   try {
+    await prisma.$connect()
     const tipo = req.nextUrl.searchParams.get('tipo') || undefined
     const categoria = req.nextUrl.searchParams.get('categoria') || undefined
     const q = req.nextUrl.searchParams.get('q')?.toLowerCase() || undefined
@@ -47,12 +48,34 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    await prisma.$connect()
     const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const { reporteId } = await req.json()
     if (!reporteId) return NextResponse.json({ error: 'Datos incompletos' }, { status: 400 })
-    await prisma.reporte.update({ where: { id: Number(reporteId) }, data: {} })
-    return NextResponse.json({ success: true })
+    const original = await prisma.reporte.findUnique({
+      where: { id: Number(reporteId) },
+      include: { archivos: true }
+    })
+    if (!original) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
+    const { id, archivos, ...data } = original as any
+    const copia = await prisma.reporte.create({ data })
+    if (archivos && archivos.length) {
+      await Promise.all(
+        archivos.map(a =>
+          prisma.archivoReporte.create({
+            data: {
+              nombre: a.nombre,
+              archivo: a.archivo as any,
+              archivoNombre: a.archivoNombre,
+              reporteId: copia.id,
+              subidoPorId: a.subidoPorId ?? null,
+            },
+          })
+        )
+      )
+    }
+    return NextResponse.json({ auditoria: copia })
   } catch (err) {
     logger.error('POST /api/auditorias', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })

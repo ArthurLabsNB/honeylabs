@@ -53,6 +53,7 @@ export async function GET(req: NextRequest) {
         maximo: true,
         fechaRegistro: true,
         fechaActualizacion: true,
+        _count: { select: { unidades: true } },
       },
     })
 
