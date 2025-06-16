@@ -122,6 +122,7 @@ model Usuario {
   chatMensajes        ChatMensaje[]
   minijuegos          Minijuego[]
   reportes           Reporte[]
+  logDiscrepancias    LogDiscrepancia[]
 }
 
 // ================================
