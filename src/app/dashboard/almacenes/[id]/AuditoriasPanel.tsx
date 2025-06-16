@@ -6,6 +6,7 @@ import useMovimientos from "@/hooks/useMovimientos";
 import useHistorialAlmacen from "@/hooks/useHistorialAlmacen";
 import useHistorialUnidad from "@/hooks/useHistorialUnidad";
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import {
   PlusIcon,
   MinusIcon,
@@ -32,7 +33,7 @@ interface Registro {
   descripcion?: string | null;
   usuario?: string;
   estado?: any;
-  fuente: 'material' | 'almacen' | 'unidad';
+  fuente: 'material' | 'unidad';
 }
 
 export default function HistorialMovimientosPanel({ material, almacenId, unidadId, onSelectHistorial }: Props) {
@@ -48,20 +49,22 @@ export default function HistorialMovimientosPanel({ material, almacenId, unidadI
   const [tipo, setTipo] = useState<'todos' | 'entrada' | 'salida' | 'creacion' | 'modificacion' | 'eliminacion'>('todos');
 
   const registros: Registro[] = [
-    ...historial.map((h) => ({
-      id: `h-${h.id}`,
-      tipo: h.descripcion?.startsWith('Entrada')
-        ? 'entrada'
-        : h.descripcion?.startsWith('Eliminacion')
-          ? 'eliminacion'
-          : 'modificacion',
-      cantidad: h.cantidad,
-      fecha: h.fecha,
-      descripcion: h.descripcion ?? undefined,
-      estado: h.estado,
-      usuario: h.usuario?.nombre,
-      fuente: 'material',
-    })),
+    ...(!material
+      ? historial.map((h) => ({
+          id: `h-${h.id}`,
+          tipo: h.descripcion?.startsWith('Entrada')
+            ? 'entrada'
+            : h.descripcion?.startsWith('Eliminacion')
+              ? 'eliminacion'
+              : 'modificacion',
+          cantidad: h.cantidad,
+          fecha: h.fecha,
+          descripcion: h.descripcion ?? undefined,
+          estado: h.estado,
+          usuario: h.usuario?.nombre,
+          fuente: 'material',
+        }))
+      : []),
     ...historialUnidad.map((h) => ({
       id: `hu-${h.id}`,
       tipo: h.descripcion?.startsWith('Eliminacion')
@@ -75,46 +78,28 @@ export default function HistorialMovimientosPanel({ material, almacenId, unidadI
       usuario: h.usuario?.nombre,
       fuente: 'unidad',
     })),
-    ...movimientos.map((m) => ({
-      id: `m-${m.id}`,
-      tipo: m.tipo,
-      cantidad: m.cantidad,
-      fecha: m.fecha,
-      descripcion: m.descripcion ?? undefined,
-      usuario: m.usuario?.nombre,
-      fuente: 'material',
-    })),
-    ...historialAlmacen.map((h) => ({
-      id: `ha-${h.id}`,
-      tipo: 'modificacion',
-      fecha: h.fecha,
-      descripcion: h.descripcion ?? undefined,
-      estado: h.estado,
-      usuario: h.usuario?.nombre,
-      fuente: 'almacen',
-    })),
-    ...movimientosAlmacen.map((m) => ({
-      id: `ma-${m.id}`,
-      tipo: m.tipo,
-      cantidad: m.cantidad,
-      fecha: m.fecha,
-      descripcion: m.descripcion ?? undefined,
-      usuario: m.usuario?.nombre,
-      fuente: 'almacen',
-    })),
+    ...(!material
+      ? movimientos.map((m) => ({
+          id: `m-${m.id}`,
+          tipo: m.tipo,
+          cantidad: m.cantidad,
+          fecha: m.fecha,
+          descripcion: m.descripcion ?? undefined,
+          usuario: m.usuario?.nombre,
+          fuente: 'material',
+        }))
+      : []),
   ].sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
 
   const buscarEstado = (
-    fuente: 'material' | 'almacen' | 'unidad',
+    fuente: 'material' | 'unidad',
     fecha: string,
     descripcion?: string,
   ) => {
     const hist =
       fuente === 'material'
         ? historial
-        : fuente === 'almacen'
-          ? historialAlmacen
-          : historialUnidad;
+        : historialUnidad;
     const target = hist.find(
       (h) =>
         Math.abs(new Date(h.fecha).getTime() - new Date(fecha).getTime()) < 5000 &&
@@ -163,31 +148,6 @@ export default function HistorialMovimientosPanel({ material, almacenId, unidadI
       } else {
         toast.show('Este movimiento no tiene datos disponibles.', 'error');
       }
-    } else if (pref === 'ha') {
-      try {
-        const res = await fetch(`/api/historial/almacen/${real}`);
-        const data = await res.json();
-        if (data.entry?.estado) {
-          setDetalle({ ...data.entry, id });
-          onSelectHistorial && onSelectHistorial(data.entry);
-        } else {
-          toast.show('Este movimiento no tiene datos disponibles.', 'error');
-        }
-      } catch (err) {
-        console.error(err);
-        toast.show('Error al obtener movimiento.', 'error');
-      }
-    } else if (pref === 'ma') {
-      const registro = registros.find((r) => r.id === id);
-      if (!registro) return;
-      const estado = buscarEstado('almacen', registro.fecha, registro.descripcion);
-      if (estado) {
-        const entry = { ...registro, estado } as any;
-        setDetalle({ ...entry, id });
-        onSelectHistorial && onSelectHistorial(entry);
-      } else {
-        toast.show('Este movimiento no tiene datos disponibles.', 'error');
-      }
     } else if (pref === 'hu') {
       try {
         const res = await fetch(`/api/historial/unidad/${real}`);
@@ -207,7 +167,12 @@ export default function HistorialMovimientosPanel({ material, almacenId, unidadI
 
   return (
     <div className="p-4 border rounded-md space-y-2">
-      <h2 className="font-semibold">Auditorías</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="font-semibold">Auditorías</h2>
+        <Link href="/dashboard/auditorias" className="text-sm underline">
+          Ver todas
+        </Link>
+      </div>
       <div className="flex gap-2">
         <input
           value={busqueda}

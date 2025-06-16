@@ -1,12 +1,15 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Spinner from "@/components/Spinner";
 import useAuditorias from "@/hooks/useAuditorias";
 
 export default function AuditoriasPage() {
+  const router = useRouter();
   const [tipo, setTipo] = useState("todos");
+  const [categoria, setCategoria] = useState("todas");
   const [busqueda, setBusqueda] = useState("");
-  const { auditorias, loading } = useAuditorias({ tipo });
+  const { auditorias, loading } = useAuditorias({ tipo, categoria, q: busqueda });
 
   const filtradas = auditorias.filter((a) => {
     if (!busqueda) return true;
@@ -29,8 +32,13 @@ export default function AuditoriasPage() {
 
   return (
     <div className="p-4 space-y-4">
-      <h1 className="text-2xl font-bold">Auditorías</h1>
-      <div className="flex gap-2">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Auditorías</h1>
+        <button onClick={() => router.back()} className="underline text-sm">
+          Volver
+        </button>
+      </div>
+      <div className="flex gap-2 flex-wrap">
         <input
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
@@ -47,6 +55,22 @@ export default function AuditoriasPage() {
           <option value="material">Materiales</option>
           <option value="unidad">Unidades</option>
         </select>
+        <select
+          value={categoria}
+          onChange={(e) => setCategoria(e.target.value)}
+          className="dashboard-input"
+        >
+          <option value="todas">Todas</option>
+          <option value="entrada">Entradas</option>
+          <option value="salida">Salidas</option>
+          <option value="modificacion">Modificaciones</option>
+          <option value="eliminacion">Eliminaciones</option>
+          <option value="creacion">Creaciones</option>
+          <option value="exportacion">Exportaciones</option>
+          <option value="importacion">Importaciones</option>
+          <option value="actualizacion">Actualizaciones</option>
+          <option value="duplicacion">Duplicaciones</option>
+        </select>
       </div>
       <ul className="space-y-2">
         {filtradas.map((a) => (
@@ -60,10 +84,9 @@ export default function AuditoriasPage() {
               </span>
             </div>
             <div className="text-xs">
-              {a.tipo}
-              {a.categoria && <span className="ml-2">{a.categoria}</span>}
-              {a.observaciones && <span className="ml-2">{a.observaciones}</span>}
-              {a.usuario?.nombre && <span className="ml-2">{a.usuario.nombre}</span>}
+              <span className="font-semibold mr-2">{a.categoria || a.tipo}</span>
+              {a.observaciones && <span className="mr-2">{a.observaciones}</span>}
+              {a.usuario?.nombre && <span className="mr-2">{a.usuario.nombre}</span>}
             </div>
           </li>
         ))}

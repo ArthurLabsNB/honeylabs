@@ -8,11 +8,22 @@ import * as logger from '@lib/logger'
 export async function GET(req: NextRequest) {
   try {
     const tipo = req.nextUrl.searchParams.get('tipo') || undefined
-    const where: any = tipo && ['almacen','material','unidad'].includes(tipo)
-      ? { tipo }
-      : {}
+    const categoria = req.nextUrl.searchParams.get('categoria') || undefined
+    const q = req.nextUrl.searchParams.get('q')?.toLowerCase() || undefined
+    const where: any = {}
+    if (tipo && ['almacen','material','unidad'].includes(tipo)) where.tipo = tipo
+    if (categoria) where.categoria = categoria
+    if (q) {
+      where.OR = [
+        { observaciones: { contains: q, mode: 'insensitive' } },
+        { almacen: { nombre: { contains: q, mode: 'insensitive' } } },
+        { material: { nombre: { contains: q, mode: 'insensitive' } } },
+        { unidad: { nombre: { contains: q, mode: 'insensitive' } } },
+        { usuario: { nombre: { contains: q, mode: 'insensitive' } } },
+      ]
+    }
     const auditorias = await prisma.reporte.findMany({
-      take: 20,
+      take: 50,
       orderBy: { fecha: 'desc' },
       where,
       select: {

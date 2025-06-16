@@ -18,7 +18,7 @@ export default function useHistorialUnidad(materialId?: number | string, unidadI
     ? `/api/materiales/${mid}/unidades/${uid}/historial`
     : null
   const { data, error, isLoading, mutate } = useSWR(url, fetcher, {
-    refreshInterval: 10000,
+    refreshInterval: 3000,
     revalidateOnFocus: true,
   })
   return {
