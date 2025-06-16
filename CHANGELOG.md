@@ -3,6 +3,11 @@
 - Unificamos nombres de objetos al listar auditorías.
 - Mejoramos el estilo de formularios y tarjetas.
 
+## 0.2.226
+- Panel de auditorías actualizado con filtros avanzados y botón de retorno.
+- Actualizaciones en tiempo real más rápidas para movimientos y reportes.
+- Simplificamos la visualización de auditorías por contexto.
+
 ## 0.2.224
 - Mostramos el historial de unidades en Auditorías.
 

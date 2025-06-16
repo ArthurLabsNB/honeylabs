@@ -17,7 +17,7 @@ export default function useHistorialMaterial(materialId?: number | string) {
   const id = Number(materialId)
   const url = !Number.isNaN(id) ? `/api/materiales/${id}/historial` : null
   const { data, error, isLoading, mutate } = useSWR(url, fetcher, {
-    refreshInterval: 10000,
+    refreshInterval: 3000,
     revalidateOnFocus: true,
   })
 
