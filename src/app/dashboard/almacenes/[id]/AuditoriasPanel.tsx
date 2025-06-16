@@ -116,7 +116,7 @@ export default function HistorialMovimientosPanel({ material, onSelectHistorial 
 
   return (
     <div className="p-4 border rounded-md space-y-2">
-      <h2 className="font-semibold">Historial / Movimientos</h2>
+      <h2 className="font-semibold">Auditorías</h2>
       <div className="flex gap-2">
         <input
           value={busqueda}

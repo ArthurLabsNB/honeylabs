@@ -10,6 +10,8 @@ export default function ScanAlmacenPage() {
   const [info, setInfo] = useState<any>(null)
   const [observaciones, setObservaciones] = useState('')
   const [mensaje, setMensaje] = useState('')
+  const [data, setData] = useState<Record<string, any> | null>(null)
+  const [archivos, setArchivos] = useState<File[]>([])
 
   useEffect(() => {
     const qr = new Html5Qrcode('qr-reader')
@@ -40,21 +42,57 @@ export default function ScanAlmacenPage() {
       .catch(() => setInfo(null))
   }, [codigo])
 
+  useEffect(() => {
+    if (!info?.tipo) return
+    const original = decodeQR(codigo || '')
+    if (!original || typeof original !== 'object') return
+    const obj = info[info.tipo]
+    if (!obj) return
+    Object.entries(original).forEach(([k, v]) => {
+      if (k !== 'id' && obj[k] != null && obj[k] !== v) {
+        fetch('/api/discrepancias', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tipo: info.tipo,
+            objetoId: obj.id,
+            campo: k,
+            actual: obj[k],
+            escaneado: v,
+          }),
+        })
+      }
+    })
+  }, [info])
+
+  useEffect(() => {
+    if (!info?.tipo) return
+    const obj = info[info.tipo]
+    if (obj && typeof obj === 'object') {
+      const editable: Record<string, any> = {}
+      Object.entries(obj).forEach(([k, v]) => {
+        if (k !== 'id' && (typeof v === 'string' || typeof v === 'number'))
+          editable[k] = v as any
+      })
+      setData(editable)
+    }
+  }, [info])
+
   if (!id) return null
 
   const guardar = async () => {
     if (!info?.tipo) return
     const objetoId = info[info.tipo]?.id
     if (!objetoId) return
+    const form = new FormData()
+    form.append('tipo', info.tipo)
+    form.append('objetoId', String(objetoId))
+    form.append('observaciones', observaciones)
+    form.append('categoria', 'verificacion')
+    archivos.forEach(a => form.append('archivos', a))
     const res = await fetch('/api/reportes', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        tipo: info.tipo,
-        objetoId,
-        observaciones,
-        categoria: 'verificacion',
-      }),
+      body: form,
     })
     if (res.ok) {
       setMensaje('Reporte guardado')
@@ -62,6 +100,28 @@ export default function ScanAlmacenPage() {
     } else {
       setMensaje('Error al guardar')
     }
+  }
+
+  const guardarYActualizar = async () => {
+    if (!info?.tipo || !data) return
+    await guardar()
+    const objetoId = info[info.tipo]?.id
+    if (!objetoId) return
+    let url = ''
+    if (info.tipo === 'almacen') url = `/api/almacenes/${objetoId}`
+    if (info.tipo === 'material') url = `/api/materiales/${objetoId}`
+    if (info.tipo === 'unidad') {
+      const mid = info.material?.id
+      if (!mid) return
+      url = `/api/materiales/${mid}/unidades/${objetoId}`
+    }
+    if (!url) return
+    await fetch(url, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+    setMensaje('Reporte y objeto actualizados')
   }
 
   return (
@@ -76,14 +136,37 @@ export default function ScanAlmacenPage() {
             </pre>
           </div>
           <div className="border rounded p-2 space-y-2">
+            {data &&
+              Object.entries(data).map(([k, v]) => (
+                <input
+                  key={k}
+                  value={v as any}
+                  onChange={(e) =>
+                    setData((d) => (d ? { ...d, [k]: e.target.value } : d))
+                  }
+                  className="dashboard-input w-full"
+                  placeholder={k}
+                />
+              ))}
             <textarea
               className="dashboard-input w-full"
               placeholder="Observaciones"
               value={observaciones}
               onChange={(e) => setObservaciones(e.target.value)}
             />
+            <input
+              type="file"
+              multiple
+              onChange={(e) =>
+                setArchivos(Array.from(e.target.files || []))
+              }
+              className="dashboard-input"
+            />
             <button onClick={guardar} className="dashboard-btn">
               Guardar reporte
+            </button>
+            <button onClick={guardarYActualizar} className="dashboard-btn">
+              Guardar y actualizar
             </button>
             {mensaje && <div className="text-xs">{mensaje}</div>}
           </div>

@@ -11,8 +11,8 @@ import MaterialForm from "../components/MaterialForm";
 import MaterialList from "../components/MaterialList";
 import UnidadesPanel from "./UnidadesPanel";
 import UnidadForm from "../components/UnidadForm";
-import HistorialMovimientosPanel from "./HistorialMovimientosPanel";
-import HistorialAlmacenPanel from "./HistorialAlmacenPanel";
+import AuditoriasPanel from "./AuditoriasPanel";
+import AuditoriasAlmacenPanel from "./AuditoriasAlmacenPanel";
 import ExportNavbar from "../components/ExportNavbar";
 import { generarUUID } from "@/lib/uuid";
 import type { UnidadDetalle } from "@/types/unidad-detalle";
@@ -354,7 +354,7 @@ export default function AlmacenPage() {
         </section>
         {historialBackup ? (
           <section className="p-4 space-y-4 overflow-y-auto w-full">
-            <HistorialMovimientosPanel
+            <AuditoriasPanel
               material={selectedMaterial}
               onSelectHistorial={(entry) => {
                 setHistorialBackup(entry);
@@ -412,14 +412,14 @@ export default function AlmacenPage() {
                 }
               }}
             />
-            <HistorialMovimientosPanel
+            <AuditoriasPanel
               material={selectedMaterial}
               onSelectHistorial={(entry) => {
                 setHistorialBackup(entry);
                 setSelectedId(null);
               }}
             />
-            <HistorialAlmacenPanel almacenId={Number(id)} />
+            <AuditoriasAlmacenPanel almacenId={Number(id)} />
           </div>
           </aside>
         )}
