@@ -83,7 +83,15 @@ export default function MaterialList({
                   }}
                 />
               )}
-              <span className="flex-1">{m.nombre}</span>
+              <div className="flex flex-col flex-1">
+                <span className="font-semibold">{m.nombre}</span>
+                <span className="text-xs">
+                  Stock: {m.cantidad} {m.unidad}
+                </span>
+                {m.lote && (
+                  <span className="text-xs">Lote: {m.lote}</span>
+                )}
+              </div>
             </button>
           </li>
         ))}

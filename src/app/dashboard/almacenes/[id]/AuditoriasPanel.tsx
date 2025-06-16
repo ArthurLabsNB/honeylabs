@@ -228,39 +228,47 @@ export default function HistorialMovimientosPanel({ material, almacenId, unidadI
           <option value="eliminacion">Eliminaciones</option>
         </select>
       </div>
-      <ul className="space-y-1 max-h-96 overflow-y-auto">
+      <ul className="space-y-2 max-h-96 overflow-y-auto">
         {filtrados.map((r) => (
           <li
             key={r.id}
-            className={`dashboard-card cursor-pointer ${
+            className={`dashboard-card cursor-pointer space-y-1 ${
               activo === r.id
                 ? 'border-[var(--dashboard-accent)]'
                 : 'hover:border-[var(--dashboard-accent)]'
             }`}
             onClick={() => handleClickMovimiento(r.id)}
           >
-            <span className="mr-2 inline-block w-4 h-4">
-              {r.tipo === 'entrada' ? (
-                <PlusIcon className="w-4 h-4" />
-              ) : r.tipo === 'salida' ? (
-                <MinusIcon className="w-4 h-4" />
-              ) : r.tipo === 'eliminacion' ? (
-                <TrashIcon className="w-4 h-4" />
-              ) : (
-                <PencilSquareIcon className="w-4 h-4" />
-              )}
-            </span>
-            <span className="font-medium mr-2">
-              {r.fuente === 'material'
-                ? material?.nombre
-                : r.fuente === 'unidad'
-                  ? 'Unidad'
-                  : 'Almacén'}
-            </span>
-            <span className="mr-2">{r.descripcion}</span>
-            {r.cantidad != null && <span className="mr-2">{r.cantidad}</span>}
-            <span className="mr-2">{new Date(r.fecha).toLocaleDateString()}</span>
-            {r.usuario && <span className="text-xs">{r.usuario}</span>}
+            <div className="flex justify-between items-center">
+              <span className="flex items-center gap-2">
+                <span className="inline-block w-4 h-4">
+                  {r.tipo === 'entrada' ? (
+                    <PlusIcon className="w-4 h-4" />
+                  ) : r.tipo === 'salida' ? (
+                    <MinusIcon className="w-4 h-4" />
+                  ) : r.tipo === 'eliminacion' ? (
+                    <TrashIcon className="w-4 h-4" />
+                  ) : (
+                    <PencilSquareIcon className="w-4 h-4" />
+                  )}
+                </span>
+                <span className="font-medium">
+                  {r.fuente === 'material'
+                    ? material?.nombre
+                    : r.fuente === 'unidad'
+                      ? 'Unidad'
+                      : 'Almacén'}
+                </span>
+              </span>
+              <span className="text-xs">
+                {new Date(r.fecha).toLocaleString()}
+              </span>
+            </div>
+            <div className="text-xs">
+              <span>{r.descripcion}</span>
+              {r.cantidad != null && <span className="ml-2">Cant: {r.cantidad}</span>}
+              {r.usuario && <span className="ml-2">Por: {r.usuario}</span>}
+            </div>
           </li>
         ))}
       </ul>

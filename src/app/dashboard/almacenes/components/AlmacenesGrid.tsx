@@ -35,7 +35,10 @@ export default function AlmacenesGrid({
           </div>
           <div className="flex flex-col flex-1">
             <div className="flex justify-between items-start gap-2">
-              <h3 className="font-semibold">{a.nombre}</h3>
+              <div>
+                <h3 className="font-semibold">{a.nombre}</h3>
+                <span className="text-xs text-[var(--dashboard-muted)]">ID: {a.id}</span>
+              </div>
               {a.ultimaActualizacion && (
                 <span className="text-xs text-[var(--dashboard-muted)]">
                   {dayjs(a.ultimaActualizacion).format('DD/MM/YYYY')}

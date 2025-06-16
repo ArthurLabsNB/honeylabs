@@ -306,16 +306,8 @@ export default function AlmacenPage() {
         </p>
       )}
 
-      <div
-        className={`flex flex-col${
-          historialBackup ? ' space-y-4' : ' md:flex-row gap-4'
-        } h-full`}
-      >
-        <section
-          className={`p-4 border-white/10 overflow-y-auto${
-            historialBackup ? ' w-full border' : ' md:w-1/2 border-r'
-          }`}
-        >
+      <div className="flex flex-col md:flex-row gap-4 h-full">
+        <section className="p-4 border-white/10 overflow-y-auto md:w-1/2 border-r">
           {panel === 'material' && (
             <>
               {historialBackup && (
@@ -362,7 +354,7 @@ export default function AlmacenPage() {
           )}
         </section>
         {historialBackup ? (
-          <section className="p-4 space-y-4 overflow-y-auto w-full">
+          <section className="p-4 space-y-4 overflow-y-auto md:w-1/2">
             <AuditoriasPanel
               material={selectedMaterial}
               almacenId={Number(id)}
