@@ -3,99 +3,99 @@ Funcionalidad General:
 
 Al activar el modo escaneo desde un almacén:
 
-Se detecta automáticamente si el QR corresponde a un almacén, material o unidad.
+Se detecta automáticamente si el QR corresponde a un almacén, material o unidad. [COMPLETADO]
 
-Se abre una vista dividida con dos paneles principales:
+Se abre una vista dividida con dos paneles principales: [COMPLETADO]
 
-🔎 Panel de Previsualización: muestra toda la información registrada (detalles, archivos, imágenes, etc.).
+🔎 Panel de Previsualización: muestra toda la información registrada (detalles, archivos, imágenes, etc.). [COMPLETADO]
 
-📝 Panel de Reporte/Edición: permite modificar campos, añadir observaciones, subir archivos e imágenes.
+📝 Panel de Reporte/Edición: permite modificar campos, añadir observaciones, subir archivos e imágenes. [COMPLETADO]
 
 Acciones del usuario:
 
-✅ Opción para solo guardar el reporte como movimiento.
+✅ Opción para solo guardar el reporte como movimiento. [COMPLETADO]
 
-🔄 Opción para guardar + actualizar directamente el objeto escaneado.
+🔄 Opción para guardar + actualizar directamente el objeto escaneado. [COMPLETADO]
 
 Al guardar:
 
-Se registra en Auditorías.
+Se registra en Auditorías. [COMPLETADO]
 
-El sistema marca el escaneo como verificado en auditorias creando asi una nueva audtoria. 
+El sistema marca el escaneo como verificado en auditorias creando asi una nueva audtoria.  [COMPLETADO]
 
-El reporte queda vinculado al objeto escaneado y visible en la sección de Reportes del dashboard.
+El reporte queda vinculado al objeto escaneado y visible en la sección de Reportes del dashboard. [COMPLETADO]
 
 🧪 2. REPORTES ASOCIADOS A ESCANEOS
 Características del Reporte:
 
 Formulario editable con:
 
-📌 Observaciones.
+📌 Observaciones. [COMPLETADO]
 
-📷 Imagenes adjuntas.
+📷 Imagenes adjuntas. [COMPLETADO]
 
-📁 Archivos adjuntos.
+📁 Archivos adjuntos. [COMPLETADO]
 
-🧾 Categoría del reporte (ej. verificación, incidencia, observación general, etc.).
+🧾 Categoría del reporte (ej. verificación, incidencia, observación general, etc.). [COMPLETADO]
 
 El reporte:
 
-Se guarda en la DB vinculado al objeto.
+Se guarda en la DB vinculado al objeto. [COMPLETADO]
 
-Puede visualizarse desde la sección general de Reportes.
+Puede visualizarse desde la sección general de Reportes. [COMPLETADO]
 
-Puede compartirse/exportarse (PDF, Excel, XML).
+Puede compartirse/exportarse (PDF, Excel, XML). [PENDIENTE]
 
 
 ⚠️ 4. LOG DE DISCREPANCIAS (Registro Automático)
 Activado si:
 
-Se detecta que los datos escaneados no coinciden con los registrados.
+Se detecta que los datos escaneados no coinciden con los registrados. [COMPLETADO]
 Qué hace:
 
-Se genera una entrada automática en Auditorias.
+Se genera una entrada automática en Auditorias. [COMPLETADO]
 
 Incluye:
 
-Campo(s) en conflicto.
+Campo(s) en conflicto. [COMPLETADO]
 
-Valor actual vs. valor escaneado.
+Valor actual vs. valor escaneado. [COMPLETADO]
 
-Opción de revisar/aceptar correcciones.
+Opción de revisar/aceptar correcciones. [PENDIENTE]
 
 📦 5. FUNCIONES INTELIGENTES DE INVENTARIO POST-ESCANEO
 Estas funciones se activan como acciones adicionales opcionales tras el escaneo:
 
 ✅ Ajustar existencias automáticamente
-Si el escaneo confirma un nuevo conteo, permite ajustar stock real al nuevo valor verificado.
+Si el escaneo confirma un nuevo conteo, permite ajustar stock real al nuevo valor verificado. [PENDIENTE]
 
-Se guarda en Auditorías con marca de "Ajuste".
+Se guarda en Auditorías con marca de "Ajuste". [PENDIENTE]
 
 🚨 Activar alertas por rotura de stock
 Si la verificación muestra que la unidad/material está en 0:
 
-Se genera automáticamente una alerta de rotura de stock.
+Se genera automáticamente una alerta de rotura de stock. [PENDIENTE]
 
-Puede verse en el dashboard o en la sección de alertas.
+Puede verse en el dashboard o en la sección de alertas. [PENDIENTE]
 
 📥 Registrar entradas/salidas pendientes
 Si el escaneo pertenece a una unidad en tránsito, o marcada como pendiente:
 
-El sistema permite registrarla como entrada/salida completando el flujo logístico.
+El sistema permite registrarla como entrada/salida completando el flujo logístico. [PENDIENTE]
 
-Al hacerlo, se mueve del estado "pendiente" a "confirmado" en el sistema.
+Al hacerlo, se mueve del estado "pendiente" a "confirmado" en el sistema. [PENDIENTE]
 
-Agrega esto tambien en el forms de Materiales y Unidades como campos de seleccion de estado.
+Agrega esto tambien en el forms de Materiales y Unidades como campos de seleccion de estado. [COMPLETADO]
 
 🔧 TAREAS TÉCNICAS PARA IMPLEMENTAR
-Reestructurar la lógica de QR para identificar tipo de objeto escaneado.
+Reestructurar la lógica de QR para identificar tipo de objeto escaneado. [COMPLETADO]
 
-Crear modal tipo split-view (previsualización / reporte editable).
+Crear modal tipo split-view (previsualización / reporte editable). [COMPLETADO]
 
-Generar modelo de Reporte en DB con vínculo por ID a unidad, material o almacén.
+Generar modelo de Reporte en DB con vínculo por ID a unidad, material o almacén. [COMPLETADO]
 
-Implementar lógica para ajuste automático de stock y discrepancias.
+Implementar lógica para ajuste automático de stock y discrepancias. [PENDIENTE]
 
-Añadir manejo de archivos/imágenes dentro del formulario de reporte.
+Añadir manejo de archivos/imágenes dentro del formulario de reporte. [COMPLETADO]
 
-Mostrar cada reporte desde la sección "Reportes" con filtros por tipo y origen.
+Mostrar cada reporte desde la sección "Reportes" con filtros por tipo y origen. [COMPLETADO]

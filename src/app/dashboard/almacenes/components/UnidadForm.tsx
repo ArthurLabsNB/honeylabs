@@ -230,12 +230,17 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
         <h3 className="font-semibold">Estado y ubicación</h3>
         <div>
         <label htmlFor="unidad-estado" className="text-xs text-[var(--dashboard-muted)]">Estado</label>
-        <input
+        <select
           id="unidad-estado"
-          value={unidad.estado ?? ""}
-          onChange={handle("estado")}
+          value={unidad.estado ?? ''}
+          onChange={handle('estado')}
           className="dashboard-input w-full mt-1"
-        />
+        >
+          <option value="">-</option>
+          <option value="pendiente">pendiente</option>
+          <option value="transito">transito</option>
+          <option value="confirmado">confirmado</option>
+        </select>
         </div>
         <div>
         <label htmlFor="unidad-ubicacionExacta" className="text-xs text-[var(--dashboard-muted)]">Ubicación exacta</label>

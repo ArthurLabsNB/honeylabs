@@ -193,6 +193,21 @@ export default function MaterialForm({
           />
         </div>
       </div>
+      <div>
+        <label htmlFor="material-estado" className="text-xs text-[var(--dashboard-muted)]">Estado</label>
+        <select
+          id="material-estado"
+          value={material.estado ?? ''}
+          onChange={handle('estado')}
+          className="dashboard-input w-full mt-1"
+          disabled={readOnly}
+        >
+          <option value="">-</option>
+          <option value="pendiente">pendiente</option>
+          <option value="transito">transito</option>
+          <option value="confirmado">confirmado</option>
+        </select>
+      </div>
       {/*
       <div className="grid grid-cols-2 gap-2">
         <div>

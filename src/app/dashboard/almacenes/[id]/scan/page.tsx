@@ -95,6 +95,12 @@ export default function ScanAlmacenPage() {
       body: form,
     })
     if (res.ok) {
+      const json = await res.json()
+      await fetch('/api/auditorias', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reporteId: json.reporte.id }),
+      })
       setMensaje('Reporte guardado')
       setObservaciones('')
     } else {
