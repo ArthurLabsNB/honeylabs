@@ -12,7 +12,6 @@ import MaterialList from "../components/MaterialList";
 import UnidadesPanel from "./UnidadesPanel";
 import UnidadForm from "../components/UnidadForm";
 import AuditoriasPanel from "./AuditoriasPanel";
-import AuditoriasAlmacenPanel from "./AuditoriasAlmacenPanel";
 import ExportNavbar from "../components/ExportNavbar";
 import { generarUUID } from "@/lib/uuid";
 import type { UnidadDetalle } from "@/types/unidad-detalle";
@@ -185,6 +184,16 @@ export default function AlmacenPage() {
     }
   }, [guardar, mutate, toast, id])
 
+  useEffect(() => {
+    const handleCancel = () => cancelar()
+    window.addEventListener('audit-cancel', handleCancel)
+    return () => window.removeEventListener('audit-cancel', handleCancel)
+  }, [cancelar])
+
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('audit-preview', { detail: Boolean(historialBackup) }))
+  }, [historialBackup])
+
   const filtrados = useMemo(
     () =>
       materiales
@@ -356,6 +365,7 @@ export default function AlmacenPage() {
           <section className="p-4 space-y-4 overflow-y-auto w-full">
             <AuditoriasPanel
               material={selectedMaterial}
+              almacenId={Number(id)}
               onSelectHistorial={(entry) => {
                 setHistorialBackup(entry);
                 setSelectedId(null);
@@ -414,12 +424,12 @@ export default function AlmacenPage() {
             />
             <AuditoriasPanel
               material={selectedMaterial}
+              almacenId={Number(id)}
               onSelectHistorial={(entry) => {
                 setHistorialBackup(entry);
                 setSelectedId(null);
               }}
             />
-            <AuditoriasAlmacenPanel almacenId={Number(id)} />
           </div>
           </aside>
         )}

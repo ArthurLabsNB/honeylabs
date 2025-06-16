@@ -17,6 +17,7 @@ export default function AlmacenDetailNavbar() {
   const { fullscreen } = useDashboardUI();
   const { usuario } = useSession();
   const toast = useToast();
+  const [auditActive, setAuditActive] = useState(false);
   const [nombre, setNombre] = useState("");
   const [original, setOriginal] = useState("");
   const [guardando, setGuardando] = useState(false);
@@ -28,6 +29,14 @@ export default function AlmacenDetailNavbar() {
     };
     window.addEventListener('almacen-dirty', handler as EventListener);
     return () => window.removeEventListener('almacen-dirty', handler as EventListener);
+  }, []);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      setAuditActive((e as CustomEvent<boolean>).detail);
+    };
+    window.addEventListener('audit-preview', handler as EventListener);
+    return () => window.removeEventListener('audit-preview', handler as EventListener);
   }, []);
 
   useEffect(() => {
@@ -122,6 +131,15 @@ export default function AlmacenDetailNavbar() {
         >
           <Trash2 className="w-5 h-5" />
         </button>
+        {auditActive && (
+          <button
+            onClick={() => window.dispatchEvent(new Event('audit-cancel'))}
+            className="p-2 hover:bg-white/10 rounded-lg"
+            title="Salir de auditoría"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+        )}
         <AlmacenTools id={id as string} />
         <button
           onClick={guardar}
