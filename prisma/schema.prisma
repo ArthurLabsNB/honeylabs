@@ -582,3 +582,15 @@ model ArchivoReporte {
   subidoPorId   Int?
   subidoPor     Usuario? @relation(fields: [subidoPorId], references: [id])
 }
+
+model LogDiscrepancia {
+  id            Int      @id @default(autoincrement())
+  tipo          String
+  objetoId      Int
+  campo         String
+  valorActual   String
+  valorEscaneado String
+  fecha         DateTime @default(now())
+  usuarioId     Int?
+  usuario       Usuario? @relation(fields: [usuarioId], references: [id])
+}

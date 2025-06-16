@@ -21,7 +21,7 @@ export default function HistorialAlmacenPanel({ almacenId }: { almacenId: number
 
   return (
     <div className="p-4 border rounded-md space-y-2">
-      <h2 className="font-semibold">Historial del almacén</h2>
+      <h2 className="font-semibold">Auditorías del almacén</h2>
       <select value={tipo} onChange={e => setTipo(e.target.value as any)} className="dashboard-input">
         <option value="todos">Todos</option>
         <option value="creacion">Creación</option>

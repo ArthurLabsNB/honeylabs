@@ -16,13 +16,13 @@ Acciones del usuario:
 
 ✅ Opción para solo guardar el reporte como movimiento. (completado)
 
-🔄 Opción para guardar + actualizar directamente el objeto escaneado. (pendiente)
+🔄 Opción para guardar + actualizar directamente el objeto escaneado. (completado)
 
 Al guardar:
 
-Se registra en la nueva sección de Auditorías. (pendiente)
+Se registra en la nueva sección de Auditorías. (completado)
 
-El sistema marca el escaneo como verificado. (pendiente)
+El sistema marca el escaneo como verificado. (completado)
 
 El reporte queda vinculado al objeto escaneado y visible en la sección de Reportes del dashboard. (completado)
 
@@ -33,9 +33,9 @@ Formulario editable con:
 
 📌 Observaciones. (completado)
 
-📷 Imagenes adjuntas. (pendiente)
+📷 Imagenes adjuntas. (completado)
 
-📁 Archivos adjuntos. (pendiente)
+📁 Archivos adjuntos. (completado)
 
 🧾 Categoría del reporte (ej. verificación, incidencia, observación general, etc.). (completado)
 
@@ -48,35 +48,35 @@ Puede visualizarse desde la sección general de Reportes. (completado)
 Puede compartirse/exportarse (PDF, Excel, XML). (pendiente)
 
 📑 3. NUEVA SECCIÓN DE AUDITORÍAS (Renombrar Historial/Movimientos)
-Renombrar sección actual "Historial/Movimientos" a "Auditorías". (pendiente)
+Renombrar sección actual "Historial/Movimientos" a "Auditorías". (completado)
 
 Mostrar:
 
-🕒 Fecha del escaneo. (pendiente)
+🕒 Fecha del escaneo. (completado)
 
-🧾 Tipo de objeto (Almacén / Material / Unidad). (pendiente)
+🧾 Tipo de objeto (Almacén / Material / Unidad). (completado)
 
 🔁 Tipo de acción (Guardado, Actualización). (pendiente)
 
 🗂 Enlace al reporte generado. (pendiente)
 
-👤 Usuario que lo hizo. (pendiente)
+👤 Usuario que lo hizo. (completado)
 
 🛠 Enlace rápido a editar objeto auditado. (pendiente)
 
 ⚠️ 4. LOG DE DISCREPANCIAS (Registro Automático)
 Activado si:
 
-Se detecta que los datos escaneados no coinciden con los registrados. (pendiente)
+Se detecta que los datos escaneados no coinciden con los registrados. (completado)
 Qué hace:
 
-Se genera una entrada automática en el "Log de Discrepancias". (pendiente)
+Se genera una entrada automática en el "Log de Discrepancias". (completado)
 
-Incluye: (pendiente)
+Incluye: (completado)
 
-Campo(s) en conflicto. (pendiente)
+Campo(s) en conflicto. (completado)
 
-Valor actual vs. valor escaneado. (pendiente)
+Valor actual vs. valor escaneado. (completado)
 
 Opción de revisar/aceptar correcciones. (pendiente)
 
@@ -113,7 +113,7 @@ Hacer migración para renombrar "Historial" a "Auditorías". (pendiente)
 
 Implementar lógica para ajuste automático de stock y discrepancias. (pendiente)
 
-Añadir manejo de archivos/imágenes dentro del formulario de reporte. (pendiente)
+Añadir manejo de archivos/imágenes dentro del formulario de reporte. (completado)
 
 Mostrar cada reporte desde la sección "Reportes" con filtros por tipo y origen. (completado)
 
