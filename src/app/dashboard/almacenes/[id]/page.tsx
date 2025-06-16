@@ -366,6 +366,7 @@ export default function AlmacenPage() {
             <AuditoriasPanel
               material={selectedMaterial}
               almacenId={Number(id)}
+              unidadId={unidadSel?.id}
               onSelectHistorial={(entry) => {
                 setHistorialBackup(entry);
                 setSelectedId(null);
@@ -425,6 +426,7 @@ export default function AlmacenPage() {
             <AuditoriasPanel
               material={selectedMaterial}
               almacenId={Number(id)}
+              unidadId={unidadSel?.id}
               onSelectHistorial={(entry) => {
                 setHistorialBackup(entry);
                 setSelectedId(null);

@@ -1,3 +1,6 @@
+## 0.2.224
+- Mostramos el historial de unidades en Auditorías.
+
 ## 0.2.222
 - Agregamos la relación inversa `logDiscrepancias` en `Usuario` para evitar el error de Prisma.
 
