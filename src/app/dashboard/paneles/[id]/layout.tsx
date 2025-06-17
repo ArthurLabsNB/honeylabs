@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useDashboardUI } from "../../ui";
 import { useRouter } from "next/navigation";
 import PanelDetailNavbar from "../components/PanelDetailNavbar";
+import { PanelOpsProvider } from "../PanelOpsContext";
 import Spinner from "@/components/Spinner";
 import useSession from "@/hooks/useSession";
 
@@ -45,5 +46,9 @@ function ProtectedPanel({ children }: { children: React.ReactNode }) {
 }
 
 export default function PanelLayout({ children }: { children: React.ReactNode }) {
-  return <ProtectedPanel>{children}</ProtectedPanel>;
+  return (
+    <PanelOpsProvider>
+      <ProtectedPanel>{children}</ProtectedPanel>
+    </PanelOpsProvider>
+  );
 }
