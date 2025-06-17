@@ -41,7 +41,7 @@ export default function CommentsPanel({ comentarios, onAdd, widgetId }: { coment
     }
     window.addEventListener('keydown', esc)
     return () => window.removeEventListener('keydown', esc)
-  }, [])
+  }, [setMostrarComentarios])
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40" onClick={() => setMostrarComentarios(() => {})}>
       <div className="bg-[var(--dashboard-card)] p-4 rounded max-h-[80vh] overflow-auto w-80" onClick={e => e.stopPropagation()}>
