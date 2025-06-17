@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import useSWR from "swr";
 import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
@@ -21,20 +21,20 @@ export default function ChatPanel({ canalId }: { canalId: number }) {
   const [texto, setTexto] = useState("");
   const lastId = useRef<number>(0)
   const listRef = useRef<HTMLUListElement>(null)
-  const enviar = async () => {
-    if (!texto.trim()) return;
-    const form = new FormData();
-    form.append("canalId", String(canalId));
-    form.append("texto", texto.trim());
-    await apiFetch("/api/chat", { method: "POST", body: form });
-    setTexto("");
-    mutate();
+  const enviar = useCallback(async () => {
+    if (!texto.trim()) return
+    const form = new FormData()
+    form.append('canalId', String(canalId))
+    form.append('texto', texto.trim())
+    await apiFetch('/api/chat', { method: 'POST', body: form })
+    setTexto('')
+    mutate()
     setTimeout(() => listRef.current?.scrollTo(0, listRef.current.scrollHeight), 50)
-  };
+  }, [texto, canalId, mutate])
   useEffect(() => {
-    const id = setInterval(() => mutate(), 4000);
-    return () => clearInterval(id);
-  }, [canalId]);
+    const id = setInterval(() => mutate(), 4000)
+    return () => clearInterval(id)
+  }, [canalId, mutate])
 
   useEffect(() => {
     const el = listRef.current

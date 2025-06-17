@@ -98,6 +98,7 @@ export default function PanelPage() {
   const skipHistory = useRef(false)
   const { setUnsaved } = usePanelOps()
   const bcRef = useRef<BroadcastChannel | null>(null)
+  const clientId = useRef<string>(Math.random().toString(36).slice(2))
   const [boardBg, setBoardBg] = useState<string>('')
   const [sections, setSections] = useState(1)
   const [subboards, setSubboards] = useState<{id:string; nombre:string; permiso:'edicion'|'lectura'; widgets:string[]; layout: LayoutItem[]}[]>([])
@@ -118,8 +119,11 @@ export default function PanelPage() {
     if (!panelId) return
     const bc = new BroadcastChannel(`panel-sync-${panelId}`)
     bcRef.current = bc
-    const handle = (e: MessageEvent<{ widgets: string[]; layout: LayoutItem[] }>) => {
-      const { widgets: w, layout: l } = e.data || {}
+    const handle = (
+      e: MessageEvent<{ widgets: string[]; layout: LayoutItem[]; client?: string }>,
+    ) => {
+      const { widgets: w, layout: l, client } = e.data || {}
+      if (client === clientId.current) return
       if (!Array.isArray(w) || !Array.isArray(l)) return
       skipHistory.current = true
       setWidgets(w)
@@ -127,7 +131,7 @@ export default function PanelPage() {
       toast.show('Pizarra actualizada', 'info')
     }
     bc.addEventListener('message', handle)
-    bc.postMessage({ widgets, layout })
+    bc.postMessage({ client: clientId.current, widgets, layout })
     return () => {
       bc.removeEventListener('message', handle)
       bc.close()
@@ -309,7 +313,7 @@ export default function PanelPage() {
     setUndoHist((h) => [...h.slice(0, undoIdx + 1), { widgets, layout }])
     setUndoIdx((i) => i + 1)
     setUnsaved(true)
-    bcRef.current?.postMessage({ widgets, layout })
+    bcRef.current?.postMessage({ client: clientId.current, widgets, layout })
   }, [widgets, layout])
 
   useEffect(() => {
@@ -332,6 +336,10 @@ export default function PanelPage() {
   useEffect(() => {
     setMostrarChat(() => () => setOpenChat(true));
   }, []);
+
+  useEffect(() => {
+    return () => saveCurrentSub()
+  }, [])
 
   
 

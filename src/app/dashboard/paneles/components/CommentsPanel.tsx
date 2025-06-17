@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { usePanelOps } from "../PanelOpsContext";
 
 interface Comment {
@@ -28,13 +28,13 @@ export default function CommentsPanel({ comentarios, onAdd, widgetId }: { coment
     localStorage.setItem("reacciones", JSON.stringify(reacciones))
   }, [reacciones])
 
-  const reaccionar = (id: number, emoji: string) => {
+  const reaccionar = useCallback((id: number, emoji: string) => {
     setReacciones(prev => {
       const actual = prev[id] || {}
       const count = actual[emoji] || 0
       return { ...prev, [id]: { ...actual, [emoji]: count + 1 } }
     })
-  }
+  }, [])
   useEffect(() => {
     const esc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setMostrarComentarios(() => {})
