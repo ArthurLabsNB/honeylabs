@@ -34,7 +34,7 @@ export default function ChatPanel({ canalId }: { canalId: number }) {
   useEffect(() => {
     const id = setInterval(() => mutate(), 4000);
     return () => clearInterval(id);
-  }, [mutate]);
+  }, [canalId]);
 
   useEffect(() => {
     const el = listRef.current
