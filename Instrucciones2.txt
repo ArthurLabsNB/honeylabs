@@ -128,15 +128,15 @@ Panel de métricas y estadísticas de uso: tiempo de edición, usuarios activos,
 
 Integración con calendario/agenda: asocia pizarras a proyectos, tareas o deadlines. (Completado)
 
-Subpizarras y áreas internas: divide la pizarra en zonas con nombres, permisos y funcionalidades independientes.
+Subpizarras y áreas internas: divide la pizarra en zonas con nombres, permisos y funcionalidades independientes. (Completado)
 
-Arrastrar y soltar desde el escritorio para subir archivos e imágenes directo a la pizarra.
+Arrastrar y soltar desde el escritorio para subir archivos e imágenes directo a la pizarra. (Completado)
 
-Reconocimiento de escritura y dibujo a mano (tablet/lápiz).
+Reconocimiento de escritura y dibujo a mano (tablet/lápiz). (Completado)
 
-Modo offline con sincronización automática al recuperar conexión.
+Modo offline con sincronización automática al recuperar conexión. (Completado)
 
-Soporte para código embebido (snippets, bloques ejecutables para documentación técnica).
+Soporte para código embebido (snippets, bloques ejecutables para documentación técnica). (Completado)
 
 API y SDK para desarrolladores: crea plugins, widgets y extensiones propias.
 
