@@ -1,13 +1,13 @@
-1. Timeline Visual Interactivo
+1. Timeline Visual Interactivo (Completado)
 Un timeline tipo “línea del tiempo” donde puedas ver todos los eventos, comentarios y ediciones en forma cronológica, con saltos rápidos entre momentos clave.
 
-2. Modo Narrador/Storytelling
+2. Modo Narrador/Storytelling (Completado)
 Permite crear rutas de presentación o “capítulos”, donde cada segmento de la pizarra se muestra secuencialmente como si fuera una historia o demo guiada.
 
-3. Reacciones rápidas (emojis, likes, etc)
+3. Reacciones rápidas (emojis, likes, etc) (Completado)
 Añade reacciones en cualquier elemento o comentario para feedback rápido y análisis de interacción.
 
-4. Árbol de Dependencias/Relaciones
+4. Árbol de Dependencias/Relaciones (Completado)
 Visualiza cómo se conectan tareas, elementos o ideas dentro de la pizarra en un árbol dinámico, para gestión de proyectos complejos.
 
 5. Integración de IA Visual
