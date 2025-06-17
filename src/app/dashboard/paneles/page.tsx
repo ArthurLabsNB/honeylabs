@@ -17,7 +17,6 @@ interface Panel {
 export default function PanelesPage() {
   const { usuario, loading } = useSession();
   const [paneles, setPaneles] = useState<Panel[]>([]);
-  const [nuevo, setNuevo] = useState("");
   const [view, setView] = useState<"grid" | "list">("grid");
   const [filter, setFilter] = useState<"todos" | "creados" | "conectados">("todos");
 
@@ -32,13 +31,13 @@ export default function PanelesPage() {
   }, [usuario]);
 
   const crear = async () => {
-    if (!nuevo.trim()) return;
+    const nombre = prompt("Nombre de la pizarra")?.trim();
+    if (!nombre) return;
     await apiFetch("/api/paneles", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nombre: nuevo }),
+      body: JSON.stringify({ nombre }),
     });
-    setNuevo("");
     cargar();
   };
 

@@ -1,3 +1,7 @@
+## 0.2.233
+- Agregamos navbar independiente en las pizarras y ocultamos el resto del dashboard.
+- Mostramos el plan del usuario bajo el logo en la vista de paneles.
+- Habilitamos la creación de pizarras solicitando un nombre e invitaciones copian un enlace.
 ## 0.2.232
 - Rediseñamos la vista de paneles con plantillas rápidas y filtros de historial.
 ## 0.2.231

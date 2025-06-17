@@ -68,7 +68,8 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
   // Altura del navbar
   const navbarHeight = NAVBAR_HEIGHT;
   const isAlmacenDetail = /^\/dashboard\/almacenes\/\d+(\/|$)/.test(pathname);
-  const isPanel = pathname.startsWith('/dashboard/paneles');
+  const isPanelList = pathname === '/dashboard/paneles';
+  const isPanelDetail = /^\/dashboard\/paneles\/[^/]+$/.test(pathname);
 
   return (
     <div
@@ -78,7 +79,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
       data-oid="1sqtk2o"
     >
       {/* --- NAVBAR DASHBOARD FIJO --- */}
-      {!isAlmacenDetail && (
+      {!(isAlmacenDetail || isPanelDetail) && (
         <div
           className="fixed top-0 left-0 right-0 z-40 bg-[var(--dashboard-navbar)] border-b border-[var(--dashboard-border)]"
           style={{
@@ -90,7 +91,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
           data-oid="taw.mzt"
         >
           {usuario && (
-            isPanel ? (
+            isPanelList ? (
               <NavbarPaneles />
             ) : (
               <NavbarDashboard usuario={usuario} data-oid="m6qmdem" />
@@ -109,7 +110,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
             top: 0,
             height: '100vh',
             transform: isMobile && !sidebarGlobalVisible ? `translateX(calc(-1 * ${sidebarWidth}))` : 'none',
-            paddingTop: isAlmacenDetail ? 0 : navbarHeight // Asegura que el contenido del sidebar no se oculte bajo el navbar
+            paddingTop: isAlmacenDetail || isPanelDetail ? 0 : navbarHeight // Asegura que el contenido del sidebar no se oculte bajo el navbar
           }}
           className={`fixed z-40 border-r border-[var(--dashboard-border)] bg-[var(--dashboard-sidebar)] transition-all duration-300 dashboard-sidebar`}
           data-oid=".p64bxw"
@@ -131,7 +132,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
       <div
         className="flex flex-col min-h-screen transition-all duration-300 w-full"
         style={{
-          paddingTop: isAlmacenDetail ? 0 : navbarHeight,
+          paddingTop: isAlmacenDetail || isPanelDetail ? 0 : navbarHeight,
           paddingLeft: !fullscreen ? sidebarWidth : 0,
           transition: 'padding-left 0.3s ease',
         }}
@@ -146,7 +147,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
             animate-fade-in
             transition-colors duration-300
           "
-          style={{ minHeight: `calc(100vh - ${isAlmacenDetail ? '0px' : navbarHeight})` }}
+          style={{ minHeight: `calc(100vh - ${isAlmacenDetail || isPanelDetail ? '0px' : navbarHeight})` }}
           data-oid="xvd._xa"
         >
           {children}
