@@ -1019,7 +1019,7 @@ const viewHist = () => {
             { label: 'Sugerencia IA', onClick: iaSuggest }
           ]}
         />
-      )
+      )}
     </div>
   );
 }
