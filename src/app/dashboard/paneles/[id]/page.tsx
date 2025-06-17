@@ -227,17 +227,6 @@ export default function PanelPage() {
         });
         setComponentes(mapa);
 
-        const defaultLayout = permitidos.map((w: WidgetMeta, i: number) => ({
-          i: w.key,
-          x: (i * 2) % 6,
-          y: Math.floor(i / 3) * 2,
-          w: w.w || 2,
-          h: w.h || 2,
-          minW: w.minW || 2,
-          minH: w.minH || 2,
-          z: i + 1,
-          locked: false,
-        }));
         let saved: { widgets: string[]; layout: LayoutItem[]; permiso?: string } | null = null;
         try {
           const resLayout = await apiFetch(`/api/paneles/${panelId}`);
@@ -275,8 +264,8 @@ export default function PanelPage() {
           }
           localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify(boards))
         } else {
-          const lay = defaultLayout.map(it => ({ locked: false, ...it }))
-          const wid = permitidos.map((w: WidgetMeta) => w.key)
+          const lay: LayoutItem[] = []
+          const wid: string[] = []
           const board = { id: 'main', nombre: 'Principal', permiso: 'edicion', widgets: wid, layout: lay }
           let boards: typeof subboards = []
           try { boards = JSON.parse(localStorage.getItem(`panel-subboards-${panelId}`) || '[]') } catch {}
@@ -703,7 +692,7 @@ const viewHist = () => {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen p-4 sm:p-8 overflow-auto"
+      className="min-h-screen p-4 sm:p-8 overflow-auto relative"
       data-oid="japsa91"
       style={{
         ...(showGrid
@@ -913,6 +902,12 @@ const viewHist = () => {
           );
         })}
       </GridLayout>
+      {/* mensaje inicial en pizarras vacías */}
+      {!widgets.length && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none text-gray-400 text-sm">
+          Haz clic derecho o usa el botón [+] para agregar tu primer elemento
+        </div>
+      )}
       </div>
       {openHist && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40">
