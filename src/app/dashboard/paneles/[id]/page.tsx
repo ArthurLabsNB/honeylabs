@@ -11,6 +11,7 @@ import { usePanelOps } from "../PanelOpsContext";
 import CommentsPanel from "../components/CommentsPanel";
 import ChatPanel from "../components/ChatPanel";
 import Minimap from "../components/Minimap";
+import ContextMenu from "../components/ContextMenu";
 import { useToast } from "@/components/Toast";
 
 import dynamic from "next/dynamic";
@@ -82,6 +83,8 @@ export default function PanelPage() {
   const [chatChannel, setChatChannel] = useState<number | null>(null)
   const [comments, setComments] = useState<Comment[]>([])
   const [activeWidget, setActiveWidget] = useState<string | undefined>()
+  const [contextMenu, setContextMenu] = useState<{ type: 'widget' | 'board'; x: number; y: number; id?: string } | null>(null)
+  const [clipboard, setClipboard] = useState<{ key: string; layout: LayoutItem } | null>(null)
   const [diffData, setDiffData] = useState<{ prev: HistEntry; current: HistEntry } | null>(null);
   const [historial, setHistorial] = useState<HistEntry[]>([]);
   const [undoHist, setUndoHist] = useState<{ widgets: string[]; layout: LayoutItem[] }[]>([])
@@ -117,6 +120,7 @@ export default function PanelPage() {
     return () => {
       bc.removeEventListener('message', handle)
       bc.close()
+      bcRef.current = null
     }
   }, [panelId])
 
@@ -386,6 +390,58 @@ export default function PanelPage() {
       { ...orig, i: newKey, x: orig.x + 1, y: orig.y + 1, z: (orig.z || 0) + 1 },
     ])
   }
+const sendToBack = (key: string) => {
+  setLayout(prev => {
+    const minZ = prev.reduce((m, it) => Math.min(m, it.z || 0), Infinity);
+    return prev.map(it => it.i === key ? { ...it, z: minZ - 1 } : it);
+  });
+};
+
+const copyWidget = (key: string) => {
+  const item = layout.find(l => l.i === key);
+  if (!item) return;
+  setClipboard({ key, layout: { ...item } });
+};
+
+const cutWidget = (key: string) => {
+  copyWidget(key);
+  handleRemoveWidget(key);
+};
+
+const pasteWidget = () => {
+  if (!clipboard) return;
+  const { key, layout: it } = clipboard;
+  const newKey = `${key}_${Date.now()}`;
+  setWidgets([...widgets, newKey]);
+  setLayout([...layout, { ...it, i: newKey, x: it.x + 1, y: it.y + 1, z: (it.z || 0) + 1 }]);
+};
+
+const renameWidget = (key: string) => {
+  const name = prompt("Nuevo nombre")?.trim();
+  if (!name) return;
+  setLayout(prev => prev.map(it => it.i === key ? { ...it, label: name } : it));
+};
+
+const changeColor = (key: string) => {
+  const color = prompt("Color de fondo (hex)", "#ffffff")?.trim();
+  if (!color) return;
+  setLayout(prev => prev.map(it => it.i === key ? { ...it, bg: color } : it));
+};
+
+const handleWidgetContext = (e: React.MouseEvent, id: string) => {
+  e.preventDefault();
+  setContextMenu({ type: "widget", x: e.clientX, y: e.clientY, id });
+};
+
+const handleBoardContext = (e: React.MouseEvent) => {
+  if ((e.target as HTMLElement).closest(".dashboard-widget-card")) return;
+  e.preventDefault();
+  setContextMenu({ type: "board", x: e.clientX, y: e.clientY });
+};
+
+const viewHist = () => {
+  alert("Historial no implementado");
+};
 
   const toggleLock = (key: string) => {
     setLayout((prev) =>
@@ -442,6 +498,7 @@ export default function PanelPage() {
       className="min-h-screen p-4 sm:p-8 overflow-auto"
       data-oid="japsa91"
       style={showGrid ? { backgroundSize: '40px 40px', backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)' } : {}}
+      onContextMenu={handleBoardContext}
       onWheel={e => {
         if (e.ctrlKey) {
           e.preventDefault()
@@ -559,10 +616,16 @@ export default function PanelPage() {
             <div
               key={key}
               className="dashboard-widget-card"
-              style={{ zIndex: item?.z || 1 }}
+              style={{ zIndex: item?.z || 1, backgroundColor: (item as any)?.bg }}
               onMouseDown={() => bringToFront(key)}
+              onContextMenu={e => handleWidgetContext(e, key)}
               data-oid="ldgxhem"
             >
+              {item?.label && (
+                <div className="absolute top-1 left-1 text-xs font-semibold pointer-events-none">
+                  {item.label}
+                </div>
+              )}
               <Widget usuario={usuario} panelId={panelId} data-oid="c3illgc" />
               {!readOnly && (
                 <div className="absolute top-1 right-1 flex gap-1 text-xs">
@@ -652,6 +715,29 @@ export default function PanelPage() {
       )}
       {openChat && chatChannel !== null && <ChatPanel canalId={chatChannel} />}
       <Minimap layout={layout} zoom={zoom} containerRef={containerRef} gridSize={gridSize} />
+      {contextMenu && (
+        <ContextMenu
+          position={{ x: contextMenu.x, y: contextMenu.y }}
+          onClose={() => setContextMenu(null)}
+          items={contextMenu.type === "widget" ? [
+            { label: "Copiar", onClick: () => copyWidget(contextMenu.id!) },
+            { label: "Cortar", onClick: () => cutWidget(contextMenu.id!) },
+            { label: "Duplicar", onClick: () => duplicateWidget(contextMenu.id!) },
+            { label: "Eliminar", onClick: () => handleRemoveWidget(contextMenu.id!) },
+            { label: "Renombrar", onClick: () => renameWidget(contextMenu.id!) },
+            { label: "Traer al frente", onClick: () => bringToFront(contextMenu.id!) },
+            { label: "Enviar al fondo", onClick: () => sendToBack(contextMenu.id!) },
+            { label: layout.find(l => l.i === contextMenu.id)?.locked ? "Desbloquear" : "Bloquear", onClick: () => toggleLock(contextMenu.id!) },
+            { label: "Color", onClick: () => changeColor(contextMenu.id!) },
+            { label: "Comentario", onClick: () => { setActiveWidget(contextMenu.id); setOpenComments(true); } },
+            { label: "Historial", onClick: viewHist }
+          ] : [
+            ...(clipboard ? [{ label: "Pegar", onClick: pasteWidget }] : []),
+            { label: "Nuevo Markdown", onClick: () => handleAddWidget("markdown") },
+            { label: showGrid ? "Ocultar cuadrícula" : "Mostrar cuadrícula", onClick: toggleGrid }
+          ]}
+        />
+      )
     </div>
   );
 }

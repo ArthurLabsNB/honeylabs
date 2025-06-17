@@ -83,19 +83,19 @@ Zoom y paneo fluidos, incluso en pizarras gigantes. (Completado)
 C. Menú Contextual (Clic derecho, lógica avanzada)
 Menú contextual sobre elementos:
 
-Copiar, cortar, duplicar, eliminar, renombrar.
+Copiar, cortar, duplicar, eliminar, renombrar. (Completado)
 
-Cambiar color/borde, agregar etiqueta.
+Cambiar color/borde, agregar etiqueta. (Completado)
 
-Enlazar a otra pizarra, añadir comentario, exportar solo ese elemento.
+Enlazar a otra pizarra, añadir comentario, exportar solo ese elemento. (Completado)
 
-Enviar a fondo/primer plano, bloquear/desbloquear, ver historial de ese elemento.
+Enviar a fondo/primer plano, bloquear/desbloquear, ver historial de ese elemento. (Completado)
 
 Asignar responsable o colaborador.
 
 Menú contextual sobre espacio vacío:
 
-Pegar, crear nuevo elemento (forma, texto, imagen, tabla, código, archivo).
+Pegar, crear nuevo elemento (forma, texto, imagen, tabla, código, archivo). (Completado)
 
 Agregar fondo, dividir área, mostrar cuadrícula, buscar elemento, insertar plantilla.
 
