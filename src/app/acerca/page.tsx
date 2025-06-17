@@ -159,10 +159,11 @@ export default function acerca() {
         <p className="text-[var(--dashboard-muted)] mb-6 max-w-xl mx-auto">
           Descubre cómo HoneyLabs puede ayudarte a ahorrar tiempo, evitar errores y tener el control total de tus inventarios.
         </p>
-        <Link href="/contacto">
-          <a className="inline-block px-6 py-3 bg-[var(--dashboard-accent)] text-black font-semibold rounded-lg shadow hover:bg-[var(--dashboard-accent-hover)] transition">
-            Solicita una demo personalizada
-          </a>
+        <Link
+          href="/contacto"
+          className="inline-block px-6 py-3 bg-[var(--dashboard-accent)] text-black font-semibold rounded-lg shadow hover:bg-[var(--dashboard-accent-hover)] transition"
+        >
+          Solicita una demo personalizada
         </Link>
       </section>
 
