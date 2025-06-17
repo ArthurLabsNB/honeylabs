@@ -8,7 +8,12 @@
     "h": 2,
     "minW": 2,
     "minH": 2,
-    "plans": ["Free", "Pro", "Empresarial", "Institucional"]
+    "plans": [
+      "Free",
+      "Pro",
+      "Empresarial",
+      "Institucional"
+    ]
   },
   {
     "key": "almacenes",
@@ -19,7 +24,12 @@
     "h": 2,
     "minW": 2,
     "minH": 2,
-    "plans": ["Free", "Pro", "Empresarial", "Institucional"]
+    "plans": [
+      "Free",
+      "Pro",
+      "Empresarial",
+      "Institucional"
+    ]
   },
   {
     "key": "grafica",
@@ -30,7 +40,12 @@
     "h": 2,
     "minW": 2,
     "minH": 2,
-    "plans": ["Free", "Pro", "Empresarial", "Institucional"]
+    "plans": [
+      "Free",
+      "Pro",
+      "Empresarial",
+      "Institucional"
+    ]
   },
   {
     "key": "novedades",
@@ -41,7 +56,12 @@
     "h": 2,
     "minW": 2,
     "minH": 2,
-    "plans": ["Free", "Pro", "Empresarial", "Institucional"]
+    "plans": [
+      "Free",
+      "Pro",
+      "Empresarial",
+      "Institucional"
+    ]
   },
   {
     "key": "markdown",
@@ -52,7 +72,12 @@
     "h": 3,
     "minW": 2,
     "minH": 2,
-    "plans": ["Free", "Pro", "Empresarial", "Institucional"]
+    "plans": [
+      "Free",
+      "Pro",
+      "Empresarial",
+      "Institucional"
+    ]
   },
   {
     "key": "actividad",
@@ -63,6 +88,27 @@
     "h": 2,
     "minW": 2,
     "minH": 2,
-    "plans": ["Free", "Pro", "Empresarial", "Institucional"]
+    "plans": [
+      "Free",
+      "Pro",
+      "Empresarial",
+      "Institucional"
+    ]
+  },
+  {
+    "key": "media",
+    "title": "Media",
+    "file": "MediaWidget",
+    "category": "General",
+    "w": 4,
+    "h": 3,
+    "minW": 2,
+    "minH": 2,
+    "plans": [
+      "Free",
+      "Pro",
+      "Empresarial",
+      "Institucional"
+    ]
   }
 ]
