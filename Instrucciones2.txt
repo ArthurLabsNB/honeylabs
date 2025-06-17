@@ -37,7 +37,7 @@ Barra de búsqueda en pizarra: permite encontrar elementos, comentarios o etique
 
 Botón “Comentarios”: muestra panel lateral con todos los comentarios y menciones.
 
-Selector de vista/zoom: controla el zoom, ajusta vista al área activa o toda la pizarra.
+Selector de vista/zoom: controla el zoom, ajusta vista al área activa o toda la pizarra. (Completado)
 
 B. Lógica de Acciones dentro de la Pizarra (UX, interacción y flujo)
 Autosave avanzado: guardado automático con versiones de respaldo. (Completado)
