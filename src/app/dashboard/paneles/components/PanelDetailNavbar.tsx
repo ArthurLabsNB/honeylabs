@@ -19,13 +19,17 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   const [saving, setSaving] = useState<"idle" | "saving" | "saved">("idle");
   const [openExport, setOpenExport] = useState(false);
   const [openShare, setOpenShare] = useState(false);
-  const { guardar, undo, redo, readOnly, toggleReadOnly, zoom, setZoom } = usePanelOps();
+  const [openConfig, setOpenConfig] = useState(false);
+  const [openHelp, setOpenHelp] = useState(false);
+  const { guardar, undo, redo, readOnly, toggleReadOnly, zoom, setZoom, mostrarCambios } = usePanelOps();
   const router = useRouter();
 
   useEffect(() => {
     const close = () => {
       setOpenExport(false);
       setOpenShare(false);
+      setOpenConfig(false);
+      setOpenHelp(false);
     };
     document.addEventListener("click", close);
     return () => document.removeEventListener("click", close);
@@ -190,6 +194,30 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
         <button onClick={onShowHistory} className="px-3 py-1 rounded bg-white/10 text-sm">
           Historial
         </button>
+        <button onClick={mostrarCambios} className="px-3 py-1 rounded bg-white/10 text-sm">
+          Vista cambios
+        </button>
+        <div className="relative" onClick={(e) => e.stopPropagation()}> 
+          <button onClick={() => setOpenConfig((o) => !o)} className="px-3 py-1 rounded bg-white/10 text-sm">
+            Configuración
+          </button>
+          {openConfig && (
+            <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10 p-2 text-sm">
+              Próximamente
+            </div>
+          )}
+        </div>
+        <div className="relative" onClick={(e) => e.stopPropagation()}> 
+          <button onClick={() => setOpenHelp((o) => !o)} className="px-3 py-1 rounded bg-white/10 text-sm">
+            Ayuda
+          </button>
+          {openHelp && (
+            <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10 p-2 text-sm">
+              Usa clic y arrastra para mover widgets. 
+              Pulsa Guardar para persistir cambios.
+            </div>
+          )}
+        </div>
         <button onClick={salir} className="px-3 py-1 rounded bg-white/10 text-sm flex items-center gap-1">
           <LogOut className="w-4 h-4" /> Salir
         </button>
