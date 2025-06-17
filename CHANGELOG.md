@@ -1,3 +1,5 @@
+## 0.2.231
+- Corregimos la ruta de importación de widgets en la vista de paneles.
 ## 0.2.227
 - Ajustamos permisos en menú y sidebar para mostrar Auditorías a todos.
 - Al crear una auditoría se registra la fecha actual.

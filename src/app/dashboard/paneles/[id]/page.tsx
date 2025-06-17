@@ -59,7 +59,7 @@ export default function PanelPage() {
         permitidos.forEach((widget: WidgetMeta) => {
           mapa[widget.key] = dynamic(
             () =>
-              import(`../components/widgets/${widget.file}`).catch(() => {
+              import(`../../components/widgets/${widget.file}`).catch(() => {
                 // Si falla la importación, marca error
                 setErrores((prev) => ({ ...prev, [widget.key]: true }));
                 return {
