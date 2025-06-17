@@ -91,17 +91,17 @@ Enlazar a otra pizarra, añadir comentario, exportar solo ese elemento. (Complet
 
 Enviar a fondo/primer plano, bloquear/desbloquear, ver historial de ese elemento. (Completado)
 
-Asignar responsable o colaborador.
+Asignar responsable o colaborador. (Completado)
 
 Menú contextual sobre espacio vacío:
 
 Pegar, crear nuevo elemento (forma, texto, imagen, tabla, código, archivo). (Completado)
 
-Agregar fondo, dividir área, mostrar cuadrícula, buscar elemento, insertar plantilla.
+Agregar fondo, dividir área, mostrar cuadrícula, buscar elemento, insertar plantilla. (Completado)
 
-Configuración rápida de reglas/guías.
+Configuración rápida de reglas/guías. (Completado)
 
-Llamar a la IA para sugerencia de contenido.
+Llamar a la IA para sugerencia de contenido. (Completado)
 
 Menú contextual múltiple: Selecciona varios elementos y accede a acciones grupales (agrupar, alinear, distribuir, duplicar, exportar como grupo, asignar a grupo de trabajo).
 

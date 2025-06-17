@@ -67,6 +67,12 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   }, []);
 
   useEffect(() => {
+    const focus = () => searchRef.current?.focus();
+    document.addEventListener('focus-search', focus);
+    return () => document.removeEventListener('focus-search', focus);
+  }, []);
+
+  useEffect(() => {
     if (typeof window === 'undefined') return
     const color = localStorage.getItem('panel-accent')
     if (color) {

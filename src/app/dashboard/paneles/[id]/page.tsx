@@ -17,7 +17,7 @@ import { useToast } from "@/components/Toast";
 import dynamic from "next/dynamic";
 import GridLayout, { Layout } from "react-grid-layout";
 
-type LayoutItem = Layout & { z?: number; locked?: boolean };
+type LayoutItem = Layout & { z?: number; locked?: boolean; owner?: string };
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 
@@ -93,6 +93,8 @@ export default function PanelPage() {
   const skipHistory = useRef(false)
   const { setUnsaved } = usePanelOps()
   const bcRef = useRef<BroadcastChannel | null>(null)
+  const [boardBg, setBoardBg] = useState<string>('')
+  const [sections, setSections] = useState(1)
   const [shortcuts, setShortcuts] = useState(() => {
     if (typeof window === 'undefined') return { undo: 'ctrl+z', redo: 'ctrl+shift+z' }
     try {
@@ -428,6 +430,28 @@ const changeColor = (key: string) => {
   setLayout(prev => prev.map(it => it.i === key ? { ...it, bg: color } : it));
 };
 
+const assignOwner = (key: string) => {
+  const owner = prompt('Responsable')?.trim();
+  if (!owner) return;
+  setLayout(prev => prev.map(it => it.i === key ? { ...it, owner } : it));
+};
+
+const insertTemplate = () => {
+  const keys = ['markdown', 'markdown', 'markdown'].map(k => `${k}_${Date.now()}_${Math.random().toString(16).slice(2)}`);
+  setWidgets(w => [...w, ...keys]);
+  const maxY = layout.reduce((m, it) => Math.max(m, it.y + (it.h || 0)), 0);
+  const maxZ = layout.reduce((m, it) => Math.max(m, it.z || 0), 0);
+  setLayout(l => [
+    ...l,
+    ...keys.map((k, i) => ({ i: k, x: i * 2, y: maxY, w: 2, h: 2, z: maxZ + i + 1 })),
+  ]);
+};
+
+const iaSuggest = () => {
+  const ideas = ['Añadir resumen', 'Crear diagrama', 'Listar tareas'];
+  alert(`Sugerencia IA: ${ideas[Math.floor(Math.random() * ideas.length)]}`);
+};
+
 const handleWidgetContext = (e: React.MouseEvent, id: string) => {
   e.preventDefault();
   setContextMenu({ type: "widget", x: e.clientX, y: e.clientY, id });
@@ -497,7 +521,25 @@ const viewHist = () => {
       ref={containerRef}
       className="min-h-screen p-4 sm:p-8 overflow-auto"
       data-oid="japsa91"
-      style={showGrid ? { backgroundSize: '40px 40px', backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)' } : {}}
+      style={{
+        ...(showGrid
+          ? {
+              backgroundSize: `${gridSize}px ${gridSize}px`,
+              backgroundImage:
+                'linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)',
+            }
+          : {}),
+        ...(boardBg ? { backgroundColor: boardBg } : {}),
+        ...(sections > 1
+          ? {
+              backgroundImage:
+                'linear-gradient(to right, rgba(255,255,255,0.2) 2px, transparent 2px),' +
+                (showGrid
+                  ? 'linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)'
+                  : ''),
+            }
+          : {}),
+      }}
       onContextMenu={handleBoardContext}
       onWheel={e => {
         if (e.ctrlKey) {
@@ -626,6 +668,11 @@ const viewHist = () => {
                   {item.label}
                 </div>
               )}
+              {item?.owner && (
+                <div className="absolute bottom-1 left-1 text-[10px] pointer-events-none bg-black/50 text-white px-1 rounded">
+                  {item.owner}
+                </div>
+              )}
               <Widget usuario={usuario} panelId={panelId} data-oid="c3illgc" />
               {!readOnly && (
                 <div className="absolute top-1 right-1 flex gap-1 text-xs">
@@ -730,11 +777,18 @@ const viewHist = () => {
             { label: layout.find(l => l.i === contextMenu.id)?.locked ? "Desbloquear" : "Bloquear", onClick: () => toggleLock(contextMenu.id!) },
             { label: "Color", onClick: () => changeColor(contextMenu.id!) },
             { label: "Comentario", onClick: () => { setActiveWidget(contextMenu.id); setOpenComments(true); } },
+            { label: "Asignar responsable", onClick: () => assignOwner(contextMenu.id!) },
             { label: "Historial", onClick: viewHist }
           ] : [
             ...(clipboard ? [{ label: "Pegar", onClick: pasteWidget }] : []),
             { label: "Nuevo Markdown", onClick: () => handleAddWidget("markdown") },
-            { label: showGrid ? "Ocultar cuadrícula" : "Mostrar cuadrícula", onClick: toggleGrid }
+            { label: showGrid ? "Ocultar cuadrícula" : "Mostrar cuadrícula", onClick: toggleGrid },
+            { label: "Cambiar fondo", onClick: () => { const c = prompt('Color de fondo', boardBg || '#000000'); if (c) setBoardBg(c); } },
+            { label: sections > 1 ? 'Unir área' : 'Dividir área', onClick: () => setSections(s => s > 1 ? 1 : 2) },
+            { label: 'Buscar elemento', onClick: () => document.dispatchEvent(new Event('focus-search')) },
+            { label: 'Insertar plantilla', onClick: insertTemplate },
+            { label: 'Configurar reglas', onClick: () => { const v = prompt('Tamaño de cuadrícula', String(gridSize)); const n = parseInt(v || ''); if (!Number.isNaN(n)) setGridSize(n); } },
+            { label: 'Sugerencia IA', onClick: iaSuggest }
           ]}
         />
       )
