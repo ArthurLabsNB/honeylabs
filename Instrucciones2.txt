@@ -1,101 +1,57 @@
-🧭 1. ESCANEO DENTRO DE UN ALMACÉN
-Funcionalidad General:
+1. Catálogo de Plantillas Visuales
+Pizarra en blanco: Comienza desde cero con un lienzo completamente vacío para máxima libertad creativa.
 
-Al activar el modo escaneo desde un almacén:
+Diagramas de flujo: Plantilla optimizada para crear flujos de procesos, decisiones y rutas de trabajo.
 
-Se detecta automáticamente si el QR corresponde a un almacén, material o unidad. [COMPLETADO]
+Mapa mental: Estructura ideas y conceptos de forma jerárquica, ideal para brainstorming.
 
-Se abre una vista dividida con dos paneles principales: [COMPLETADO]
+Kanban: Panel visual para gestión de tareas tipo tablero Kanban.
 
-🔎 Panel de Previsualización: muestra toda la información registrada (detalles, archivos, imágenes, etc.). [COMPLETADO]
+Retrospectiva ágil: Plantillas para análisis de proyectos, retrospectivas y mejoras continuas.
 
-📝 Panel de Reporte/Edición: permite modificar campos, añadir observaciones, subir archivos e imágenes. [COMPLETADO]
+Escritura de ideas: Espacio estructurado para organizar notas, esquemas y puntos clave.
 
-Acciones del usuario:
+Más plantillas: Posibilidad de explorar y personalizar nuevas plantillas a medida que el sistema crece.
 
-✅ Opción para solo guardar el reporte como movimiento. [COMPLETADO]
+2. Creación y Guardado de Pizarras
+Botón “Crear nuevo”: Permite iniciar una pizarra desde cualquier plantilla o en blanco.
 
-🔄 Opción para guardar + actualizar directamente el objeto escaneado. [COMPLETADO]
+Guardado automático: Todo el trabajo realizado en cada pizarra se guarda automáticamente y puede recuperarse en cualquier momento.
 
-Al guardar:
+Historial de guardados: Acceso fácil a todos los paneles y pizarras creadas o modificadas previamente, con filtros por fecha, propietario, estado o tipo de plantilla.
 
-Se registra en Auditorías. [COMPLETADO]
+3. Panel de historial y gestión
+Lista de pizarras guardadas: Visualización clara y ordenada de todos los tableros y pizarras del usuario o del equipo.
 
-El sistema marca el escaneo como verificado en auditorias creando asi una nueva audtoria.  [COMPLETADO]
+Nombre de la pizarra.
 
-El reporte queda vinculado al objeto escaneado y visible en la sección de Reportes del dashboard. [COMPLETADO]
+Fecha de última modificación.
 
-🧪 2. REPORTES ASOCIADOS A ESCANEOS
-Características del Reporte:
+Estado (solo lectura, editable, archivado, etc.).
 
-Formulario editable con:
+Propietario/creador de la pizarra.
 
-📌 Observaciones. [COMPLETADO]
+Filtrado y orden: Permite buscar pizarras por nombre, filtrar por plantillas, propietario, fecha de uso o estado.
 
-📷 Imagenes adjuntas. [COMPLETADO]
+Acciones rápidas: Acceso directo a abrir, editar, duplicar o eliminar pizarras desde la lista.
 
-📁 Archivos adjuntos. [COMPLETADO]
+4. Experiencia colaborativa
+Colaboración en tiempo real: (Opcional) Invita a otros usuarios a editar o visualizar la misma pizarra en tiempo real.
 
-🧾 Categoría del reporte (ej. verificación, incidencia, observación general, etc.). [COMPLETADO]
+Control de permisos: Asigna permisos por usuario (lectura, escritura, propietario).
 
-El reporte:
+Indicadores de usuarios en línea: Muestra quién está colaborando en cada pizarra en ese momento.
 
-Se guarda en la DB vinculado al objeto. [COMPLETADO]
+5. Explora plantillas y comunidad
+Galería de plantillas: Explora plantillas públicas y recomendadas, y guarda tus favoritas.
 
-Puede visualizarse desde la sección general de Reportes. [COMPLETADO]
+Pizarras del equipo: Visualiza y accede fácilmente a los tableros compartidos por el equipo o la organización.
 
-Puede compartirse/exportarse (PDF, Excel, XML). [COMPLETADO]
+Resumen de flujo visual (ejemplo)
+Arriba: Barra con plantillas rápidas (pizarra en blanco, diagrama de flujo, Kanban, etc.) y un botón “Crear nuevo”.
 
+Centro: Lista/tablero con todas las pizarras guardadas, mostrando nombre, propietario, usuarios en línea y fecha de última edición.
 
-⚠️ 4. LOG DE DISCREPANCIAS (Registro Automático)
-Activado si:
+Lateral o arriba: Filtros para buscar por plantilla, estado, propietario o fecha.
 
-Se detecta que los datos escaneados no coinciden con los registrados. [COMPLETADO]
-Qué hace:
-
-Se genera una entrada automática en Auditorias. [COMPLETADO]
-
-Incluye:
-
-Campo(s) en conflicto. [COMPLETADO]
-
-Valor actual vs. valor escaneado. [COMPLETADO]
-
-Opción de revisar/aceptar correcciones. [COMPLETADO]
-
-📦 5. FUNCIONES INTELIGENTES DE INVENTARIO POST-ESCANEO
-Estas funciones se activan como acciones adicionales opcionales tras el escaneo:
-
-✅ Ajustar existencias automáticamente
-Si el escaneo confirma un nuevo conteo, permite ajustar stock real al nuevo valor verificado. [COMPLETADO]
-
-Se guarda en Auditorías con marca de "Ajuste". [COMPLETADO]
-
-🚨 Activar alertas por rotura de stock
-Si la verificación muestra que la unidad/material está en 0:
-
-Se genera automáticamente una alerta de rotura de stock. [COMPLETADO]
-
-Puede verse en el dashboard o en la sección de alertas. [COMPLETADO]
-
-📥 Registrar entradas/salidas pendientes
-Si el escaneo pertenece a una unidad en tránsito, o marcada como pendiente:
-
-El sistema permite registrarla como entrada/salida completando el flujo logístico. [COMPLETADO]
-
-Al hacerlo, se mueve del estado "pendiente" a "confirmado" en el sistema. [COMPLETADO]
-
-Agrega esto tambien en el forms de Materiales y Unidades como campos de seleccion de estado. [COMPLETADO]
-
-🔧 TAREAS TÉCNICAS PARA IMPLEMENTAR
-Reestructurar la lógica de QR para identificar tipo de objeto escaneado. [COMPLETADO]
-
-Crear modal tipo split-view (previsualización / reporte editable). [COMPLETADO]
-
-Generar modelo de Reporte en DB con vínculo por ID a unidad, material o almacén. [COMPLETADO]
-
-Implementar lógica para ajuste automático de stock y discrepancias. [COMPLETADO]
-
-Añadir manejo de archivos/imágenes dentro del formulario de reporte. [COMPLETADO]
-
-Mostrar cada reporte desde la sección "Reportes" con filtros por tipo y origen. [COMPLETADO]
+Opciones rápidas: Acciones sobre cada pizarra (abrir, editar, duplicar, eliminar).
