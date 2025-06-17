@@ -2,7 +2,7 @@
 import { ArrowLeft, Download, Share2, LogOut } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import useSession from "@/hooks/useSession";
 import { apiFetch } from "@lib/api";
@@ -19,6 +19,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   const [nombre, setNombre] = useState("");
   const [edit, setEdit] = useState(false);
   const [saving, setSaving] = useState<"idle" | "saving" | "saved">("idle");
+  const searchRef = useRef<HTMLInputElement>(null);
   const [openExport, setOpenExport] = useState(false);
   const [openShare, setOpenShare] = useState(false);
   const [openConfig, setOpenConfig] = useState(false);
@@ -75,6 +76,22 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   }, [])
 
   useEffect(() => {
+    const esc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpenExport(false)
+        setOpenShare(false)
+        setOpenConfig(false)
+        setOpenHelp(false)
+      } else if (e.key === '/' && document.activeElement !== searchRef.current) {
+        e.preventDefault()
+        searchRef.current?.focus()
+      }
+    }
+    document.addEventListener('keydown', esc)
+    return () => document.removeEventListener('keydown', esc)
+  }, [])
+
+  useEffect(() => {
     if (!panelId) return;
     apiFetch(`/api/paneles/${panelId}`)
       .then(jsonOrNull)
@@ -125,9 +142,10 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
 
   const copyLink = () => {
     const url = window.location.href;
-    navigator.clipboard.writeText(url).then(() => {
-      alert("Enlace copiado");
-    });
+    navigator.clipboard.writeText(url).then(
+      () => alert("Enlace copiado"),
+      () => prompt("Copia manualmente", url)
+    );
   };
 
   const salir = async () => {
@@ -187,6 +205,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
         <input
           type="text"
           placeholder="Buscar..."
+          ref={searchRef}
           value={buscar}
           onChange={(e) => setBuscar(e.target.value)}
           className="ml-3 text-sm px-2 py-1 rounded bg-white/10 focus:bg-white/20 outline-none"
