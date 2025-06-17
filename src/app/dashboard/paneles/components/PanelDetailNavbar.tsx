@@ -1,5 +1,5 @@
 "use client";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Download } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -17,7 +17,14 @@ export default function PanelDetailNavbar() {
   const [nombre, setNombre] = useState("");
   const [edit, setEdit] = useState(false);
   const [saving, setSaving] = useState<"idle" | "saving" | "saved">("idle");
+  const [openExport, setOpenExport] = useState(false);
   const { guardar } = usePanelOps();
+
+  useEffect(() => {
+    const close = () => setOpenExport(false);
+    document.addEventListener("click", close);
+    return () => document.removeEventListener("click", close);
+  }, []);
 
   useEffect(() => {
     if (!panelId) return;
@@ -37,6 +44,26 @@ export default function PanelDetailNavbar() {
     });
     setSaving("saved");
     setTimeout(() => setSaving("idle"), 2000);
+  };
+
+  const exportar = async (formato: string) => {
+    if (!panelId) return;
+    if (formato === "json") {
+      const res = await apiFetch(`/api/paneles/${panelId}`);
+      const data = await jsonOrNull(res);
+      if (!data?.panel) return;
+      const blob = new Blob([
+        JSON.stringify(data.panel, null, 2),
+      ], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `pizarra_${panelId}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } else {
+      alert(`Exportar ${formato} no implementado`);
+    }
   };
 
   return (
@@ -76,6 +103,30 @@ export default function PanelDetailNavbar() {
         >
           Guardar
         </button>
+        <div className="relative" onClick={(e) => e.stopPropagation()}>
+          <button
+            onClick={() => setOpenExport((o) => !o)}
+            className="px-3 py-1 rounded bg-white/10 text-sm flex items-center gap-1"
+          >
+            <Download className="w-4 h-4" /> Exportar
+          </button>
+          {openExport && (
+            <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10">
+              {['pdf','png','svg','json'].map((f) => (
+                <button
+                  key={f}
+                  onClick={() => {
+                    exportar(f);
+                    setOpenExport(false);
+                  }}
+                  className="block px-3 py-1 text-sm text-left hover:bg-white/10 w-full"
+                >
+                  {f.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         {saving === "saving" && <span className="text-xs text-gray-400">Guardando...</span>}
         {saving === "saved" && <span className="text-xs text-green-500">Guardado</span>}
       </div>

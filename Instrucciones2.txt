@@ -13,7 +13,7 @@ Botón de “Guardar”: permite guardar manualmente, aunque el autosave esté a
 
 Indicador de estado de guardado: muestra “Guardando.../Guardado” en tiempo real. (Completado)
 
-Botón “Exportar”: abre menú para descargar la pizarra (PDF, PNG, SVG, JSON).
+Botón “Exportar”: abre menú para descargar la pizarra (PDF, PNG, SVG, JSON). (Completado)
 
 Botón “Compartir”: abre opciones de invitación por enlace, usuarios, o configuración de permisos.
 
