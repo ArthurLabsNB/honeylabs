@@ -6,6 +6,7 @@ import { apiFetch } from "@lib/api";
 import type { Usuario } from "@/types/usuario";
 import useSession from "@/hooks/useSession";
 import { useParams } from "next/navigation";
+import { usePanelOps } from "../PanelOpsContext";
 
 import dynamic from "next/dynamic";
 import GridLayout, { Layout } from "react-grid-layout";
@@ -38,6 +39,7 @@ export default function PanelPage() {
   const [layout, setLayout] = useState<LayoutItem[]>([]);
   const [componentes, setComponentes] = useState<{ [key: string]: any }>({});
   const [errores, setErrores] = useState<{ [key: string]: boolean }>({});
+  const { setGuardar } = usePanelOps();
 
 
   // 2. Cargar catálogo y componentes de widgets
@@ -114,17 +116,24 @@ export default function PanelPage() {
     loadWidgets();
   }, [usuario, panelId]);
 
-  // Guardar en DB cada que cambian widgets o layout
-  useEffect(() => {
-    if (!usuario) return;
+  const guardar = async () => {
+    if (!usuario || !panelId) return;
     const data = { widgets, layout };
-    if (!panelId) return;
-    apiFetch(`/api/paneles/${panelId}`, {
+    await apiFetch(`/api/paneles/${panelId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     }).catch(() => {});
-  }, [widgets, layout, usuario, panelId]);
+  };
+
+  // Guardar en DB cada que cambian widgets o layout
+  useEffect(() => {
+    guardar();
+  }, [widgets, layout]);
+
+  useEffect(() => {
+    setGuardar(() => guardar);
+  }, [guardar, setGuardar]);
 
   // Agregar widget
   const handleAddWidget = (key: string) => {

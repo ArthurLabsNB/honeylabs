@@ -1,17 +1,17 @@
 A. Experiencia de Navegación y Barra Superior (Navbar dedicado de pizarra)
-Modo pantalla completa automático al entrar a una pizarra.
+Modo pantalla completa automático al entrar a una pizarra. (Completado)
 
-Ocultamiento de sidebar y navbar global para enfoque total.
+Ocultamiento de sidebar y navbar global para enfoque total. (Completado)
 
-Barra superior propia de la pizarra (navbar dedicado, sticky y minimalista).
+Barra superior propia de la pizarra (navbar dedicado, sticky y minimalista). (Completado)
 
-Botón “Volver a paneles”: siempre visible a la izquierda para regresar a la lista de pizarras.
+Botón “Volver a paneles”: siempre visible a la izquierda para regresar a la lista de pizarras. (Completado)
 
-Logo mini y nombre editable: muestra logo HoneyLabs reducido y permite editar el nombre de la pizarra en línea.
+Logo mini y nombre editable: muestra logo HoneyLabs reducido y permite editar el nombre de la pizarra en línea. (Completado)
 
-Botón de “Guardar”: permite guardar manualmente, aunque el autosave esté activo.
+Botón de “Guardar”: permite guardar manualmente, aunque el autosave esté activo. (Completado)
 
-Indicador de estado de guardado: muestra “Guardando.../Guardado” en tiempo real.
+Indicador de estado de guardado: muestra “Guardando.../Guardado” en tiempo real. (Completado)
 
 Botón “Exportar”: abre menú para descargar la pizarra (PDF, PNG, SVG, JSON).
 
