@@ -37,7 +37,17 @@ export async function PUT(req: NextRequest) {
     let paneles = Array.isArray(prefs.paneles) ? prefs.paneles : [];
     const idx = paneles.findIndex((p: any) => p.id === id);
     if (idx === -1) return NextResponse.json({ error: 'No encontrado' }, { status: 404 });
-    paneles[idx] = { ...paneles[idx], ...data, fechaMod: new Date().toISOString() };
+    const actual = paneles[idx];
+    const historial = Array.isArray(actual.historial) ? actual.historial : [];
+    historial.push({
+      fecha: new Date().toISOString(),
+      estado: {
+        nombre: actual.nombre,
+        widgets: actual.widgets,
+        layout: actual.layout,
+      },
+    });
+    paneles[idx] = { ...actual, ...data, fechaMod: new Date().toISOString(), historial };
     prefs.paneles = paneles;
     await prisma.usuario.update({ where: { id: usuario.id }, data: { preferencias: JSON.stringify(prefs) } });
     return NextResponse.json({ ok: true });

@@ -9,7 +9,7 @@ import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
 import { usePanelOps } from "../PanelOpsContext";
 
-export default function PanelDetailNavbar() {
+export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: () => void }) {
   const { usuario } = useSession();
   const plan = usuario?.plan?.nombre || "Free";
   const params = useParams();
@@ -127,6 +127,9 @@ export default function PanelDetailNavbar() {
             </div>
           )}
         </div>
+        <button onClick={onShowHistory} className="px-3 py-1 rounded bg-white/10 text-sm">
+          Historial
+        </button>
         {saving === "saving" && <span className="text-xs text-gray-400">Guardando...</span>}
         {saving === "saved" && <span className="text-xs text-green-500">Guardado</span>}
       </div>

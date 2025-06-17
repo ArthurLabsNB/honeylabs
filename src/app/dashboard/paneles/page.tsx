@@ -30,6 +30,12 @@ export default function PanelesPage() {
     if (usuario) cargar();
   }, [usuario]);
 
+  useEffect(() => {
+    if (!usuario) return;
+    const id = setInterval(cargar, 5000);
+    return () => clearInterval(id);
+  }, [usuario]);
+
   const crear = async () => {
     const nombre = prompt("Nombre de la pizarra")?.trim();
     if (!nombre) return;
