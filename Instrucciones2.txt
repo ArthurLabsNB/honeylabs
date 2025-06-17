@@ -1,142 +1,98 @@
-A. Experiencia de Navegación y Barra Superior (Navbar dedicado de pizarra)
-Modo pantalla completa automático al entrar a una pizarra. (Completado)
+1. Timeline Visual Interactivo
+Un timeline tipo “línea del tiempo” donde puedas ver todos los eventos, comentarios y ediciones en forma cronológica, con saltos rápidos entre momentos clave.
 
-Ocultamiento de sidebar y navbar global para enfoque total. (Completado)
+2. Modo Narrador/Storytelling
+Permite crear rutas de presentación o “capítulos”, donde cada segmento de la pizarra se muestra secuencialmente como si fuera una historia o demo guiada.
 
-Barra superior propia de la pizarra (navbar dedicado, sticky y minimalista). (Completado)
+3. Reacciones rápidas (emojis, likes, etc)
+Añade reacciones en cualquier elemento o comentario para feedback rápido y análisis de interacción.
 
-Botón “Volver a paneles”: siempre visible a la izquierda para regresar a la lista de pizarras. (Completado)
+4. Árbol de Dependencias/Relaciones
+Visualiza cómo se conectan tareas, elementos o ideas dentro de la pizarra en un árbol dinámico, para gestión de proyectos complejos.
 
-Logo mini y nombre editable: muestra logo HoneyLabs reducido y permite editar el nombre de la pizarra en línea. (Completado)
+5. Integración de IA Visual
+Analiza automáticamente la estructura del diagrama y sugiere optimizaciones visuales (espaciado, alineación, tamaño, contraste, legibilidad).
 
-Botón de “Guardar”: permite guardar manualmente, aunque el autosave esté activo. (Completado)
+6. Explorador de Vistas Predefinidas
+Permite guardar y cambiar entre “vistas” (por usuario, tipo de contenido, secciones, favoritos), tipo presets personalizables.
 
-Indicador de estado de guardado: muestra “Guardando.../Guardado” en tiempo real. (Completado)
+7. Elementos Interactivos Avanzados
+Soporte para sliders, switches, encuestas en tiempo real, gráficos de votación o inputs interactivos directos dentro de la pizarra.
 
-Botón “Exportar”: abre menú para descargar la pizarra (PDF, PNG, SVG, JSON). (Completado)
+8. Simulación de Procesos/Flujos
+Anima flujos de trabajo o diagramas, mostrando cómo los datos/acciones fluyen a través de los nodos (ejemplo: simulador BPMN).
 
-Botón “Compartir”: abre opciones de invitación por enlace, usuarios, o configuración de permisos. (Completado)
+9. Resaltado Automático por Actividad
+Destaca áreas o elementos donde más usuarios interactúan, con calorimetría visual (“heatmap de uso”).
 
-Botón “Historial”: accede al historial de cambios y versiones. (Completado)
+10. Reconocimiento de Voz y Dictado
+Agregar notas, comandos o texto con voz, con transcripción automática a cualquier elemento o sticky note.
 
-Botón “Deshacer/Rehacer”: permite revertir o rehacer acciones recientes. (Completado)
+11. Busqueda Semántica por IA
+No solo palabras clave: busca conceptos, relaciones, incluso “lo que quiso decir” usando NLP avanzado.
 
-Botón “Presentar”: activa el modo presentación para mostrar la pizarra a otros. (Completado)
+12. Roles Personalizados por Área o Elemento
+Más granular: un usuario puede tener permiso de edición solo en un área/elemento, pero solo lectura en otra, y comentarios en una más.
 
-Botón de “Vista de cambios”: compara dos versiones diferentes en paralelo. (Completado)
+13. Enlaces Inteligentes (Smart Links)
+Conexión automática a recursos relacionados: arrastra una URL y la IA detecta si es PDF, video, tabla, y lo integra contextualizado.
 
-Botón “Configuración”: permite ajustar opciones avanzadas de la pizarra (permisos, color de fondo, reglas, etc). (Completado)
+14. Control Remoto para Presentaciones
+Desde el móvil, controla la pizarra de escritorio como si fuera un clicker/puntero láser digital.
 
-Botón “Ayuda”: acceso directo a tips, tutoriales y atajos del sistema. (Completado)
+15. Modo Torneo o Battle Mode
+Gamifica colaboraciones: usuarios pueden competir resolviendo retos, organizando ideas, completando tareas dentro de la pizarra (puntaje, medallas en tiempo real).
 
-Botón “Salir/Cerrar pizarra”: retorna a la vista de paneles sin perder cambios. (Completado)
+16. Vista de Dependencias/Impacto
+Visualiza qué elementos cambiarán si editas o mueves uno, y qué dependencias se verán afectadas (tipo “what if” analysis).
 
-Avatares de colaboradores: muestra quién está conectado editando en tiempo real. (Completado)
+17. Temporizador y Cronómetro Integrado
+Para sprints, sesiones cronometradas de lluvia de ideas o gestión ágil de reuniones.
 
-Barra de búsqueda en pizarra: permite encontrar elementos, comentarios o etiquetas dentro de la pizarra. (Completado)
+18. Gestión de Recursos Adjuntos
+Inventario visual de todos los archivos, imágenes, videos, audios y enlaces usados en la pizarra, con previsualización avanzada.
 
-Botón “Comentarios”: muestra panel lateral con todos los comentarios y menciones. (Completado)
+19. Vista Modo Kanban o Gantt
+Convierte la pizarra (o secciones) a modo Kanban o Gantt dinámico para gestión de tareas y proyectos.
 
-Selector de vista/zoom: controla el zoom, ajusta vista al área activa o toda la pizarra. (Completado)
+20. Mapa Mental Colaborativo Automático
+A partir de un texto, la IA genera un mapa mental editable, agrupando conceptos automáticamente.
 
-B. Lógica de Acciones dentro de la Pizarra (UX, interacción y flujo)
-Autosave avanzado: guardado automático con versiones de respaldo. (Completado)
+21. Sistema de Sugerencias de Mejora UX/UI
+Tipo “auditoría de usabilidad interna”, la IA revisa patrones de uso y sugiere cómo mejorar la disposición y experiencia.
 
-Modo solo lectura/presentación: la pizarra se bloquea y solo puede ser vista, ideal para presentaciones. (Completado)
+22. API Webhooks de Acciones
+Que la pizarra dispare webhooks ante ciertos eventos (ejemplo: guardado, nuevo comentario, nuevo usuario, etc) para integraciones sin código.
 
-Edición colaborativa en tiempo real: cambios sincronizados instantáneamente. (Completado)
+23. Editor de Animaciones Personalizadas
+Permite animar elementos de la pizarra con keyframes, por ejemplo, para explicar conceptos complejos o dar vida a diagramas.
 
-Chat colaborativo contextual: panel de chat interno específico para la pizarra. (Completado)
+24. Integración de Asistentes Virtuales
+Invoca un bot o asistente IA (tipo copiloto) para ayuda, sugerencias o para automatizar tareas recurrentes dentro de la pizarra.
 
-Permisos granulares: puedes dar acceso total, solo lectura, o solo comentarios a usuarios específicos. (Completado)
+25. Sandbox de Pruebas/Desarrollo
+Un entorno seguro para experimentar con cambios antes de aplicarlos a la pizarra principal, con opción de hacer merge.
 
-Sistema de comentarios anclados: agrega comentarios en puntos o elementos concretos. (Completado)
+26. Analítica de Participación Avanzada
+No solo quién editó, sino patrones de interacción, tiempos activos, tipo de contribución, y análisis visual de colaboración.
 
-Mini mapa interactivo: vista miniatura para navegar pizarras grandes. (Completado)
+27. Editor de Audio Colaborativo
+Permite grabar, subir, editar y anotar audios en vivo o para explicaciones rápidas, con reproducción sincronizada.
 
-Notificaciones en vivo: alerta de cambios, menciones y nuevas versiones en la pizarra. (Completado)
+28. Integración de Widgets IoT/Exteriores
+Muestra sensores, data en vivo o dashboards externos embebidos directamente como bloques.
 
-Visualización de actividad reciente: quién hizo qué y cuándo, con posibilidad de ver autoría de cada cambio. (Completado)
+29. Vista “Histórico Visual”
+Una línea de tiempo animada tipo video time-lapse, mostrando gráficamente cómo fue creciendo y cambiando la pizarra.
 
-Modo oscuro y personalización de temas: elige color de fondo, tema claro/oscuro y estilos de líneas. (Completado)
+30. Modo Código/Automatización Avanzada
+Permite crear “scripts” visuales o con un mini editor de código, para automatizar tareas, validar flujos, hacer cálculos o pruebas directas sobre los elementos de la pizarra.
 
-Atajos de teclado personalizables: crea tus propios accesos rápidos. (Completado)
+Bonus (por si quieres más):
+Integración de Blockchain para auditoría/firmas de cambios importantes.
 
-Soporte para markdown en notas/textos: notas rápidas y tarjetas con formato enriquecido. (Completado)
+Modo “Espectador Silencioso” para usuarios que solo observan sin interactuar, ideal para auditorías o clases.
 
-Soporte para LaTeX: ecuaciones matemáticas y expresiones técnicas. (Completado)
+Copilot IA para “resumir” la pizarra en tiempo real.
 
-Exportación por áreas: permite seleccionar y exportar solo partes de la pizarra. (Completado)
-
-Snapping y alineación automática: ayuda a organizar elementos con precisión. (Completado)
-
-Cuadrícula y reglas configurables: para diagramar con más control. (Completado)
-
-Bloqueo de elementos: protege figuras importantes para que no se modifiquen accidentalmente. (Completado)
-
-Duplicado y clonación de elementos o grupos: haz copias rápidas y organiza flujos. (Completado)
-
-Deshacer/rehacer ilimitado: vuelve a cualquier estado anterior durante la sesión. (Completado)
-
-Zoom y paneo fluidos, incluso en pizarras gigantes. (Completado)
-
-C. Menú Contextual (Clic derecho, lógica avanzada)
-Menú contextual sobre elementos:
-
-Copiar, cortar, duplicar, eliminar, renombrar. (Completado)
-
-Cambiar color/borde, agregar etiqueta. (Completado)
-
-Enlazar a otra pizarra, añadir comentario, exportar solo ese elemento. (Completado)
-
-Enviar a fondo/primer plano, bloquear/desbloquear, ver historial de ese elemento. (Completado)
-
-Asignar responsable o colaborador. (Completado)
-
-Menú contextual sobre espacio vacío:
-
-Pegar, crear nuevo elemento (forma, texto, imagen, tabla, código, archivo). (Completado)
-
-Agregar fondo, dividir área, mostrar cuadrícula, buscar elemento, insertar plantilla. (Completado)
-
-Configuración rápida de reglas/guías. (Completado)
-
-Llamar a la IA para sugerencia de contenido. (Completado)
-
-Menú contextual múltiple: Selecciona varios elementos y accede a acciones grupales (agrupar, alinear, distribuir, duplicar, exportar como grupo, asignar a grupo de trabajo). (Completado)
-
-D. Funciones y herramientas superiores a Miro/Lucidchart
-Generador de diagramas automáticos por IA: crea mapas mentales, diagramas de flujo o procesos a partir de descripciones escritas. (Completado)
-
-Galería de iconos, imágenes y figuras: biblioteca propia, con opción de cargar recursos personalizados. (Completado)
-
-Soporte para subir y visualizar videos, PDFs, documentos y enlaces web dentro de la pizarra. (Completado)
-
-Integraciones API externas: conecta con Google Drive, Dropbox, Slack, MS Teams, Jira, Trello y más. (Completado)
-
-Macros y automatización por usuario: define acciones automáticas como limpiar pizarra, exportar cada hora, enviar notificación por cambio, etc. (Completado)
-
-Comparación de versiones lado a lado. (Completado)
-
-Plantillas públicas, privadas y comunidad: explora, usa y comparte diseños. (Completado)
-
-Gamificación (medallas, logros, uso avanzado, colaboración, etc). (Completado)
-
-Wiki/documentación integrada en la pizarra. (Completado)
-
-Panel de métricas y estadísticas de uso: tiempo de edición, usuarios activos, cambios por sesión. (Completado)
-
-Integración con calendario/agenda: asocia pizarras a proyectos, tareas o deadlines. (Completado)
-
-Subpizarras y áreas internas: divide la pizarra en zonas con nombres, permisos y funcionalidades independientes. (Completado)
-
-Arrastrar y soltar desde el escritorio para subir archivos e imágenes directo a la pizarra. (Completado)
-
-Reconocimiento de escritura y dibujo a mano (tablet/lápiz). (Completado)
-
-Modo offline con sincronización automática al recuperar conexión. (Completado)
-
-Soporte para código embebido (snippets, bloques ejecutables para documentación técnica). (Completado)
-
-API y SDK para desarrolladores: crea plugins, widgets y extensiones propias.
-
+Multi-idioma colaborativo, con traducción en vivo de notas/comentarios.
