@@ -12,6 +12,7 @@ import CommentsPanel from "../components/CommentsPanel";
 import ChatPanel from "../components/ChatPanel";
 import Minimap from "../components/Minimap";
 import ContextMenu from "../components/ContextMenu";
+import GalleryPanel from "../components/GalleryPanel";
 import { useToast } from "@/components/Toast";
 
 import dynamic from "next/dynamic";
@@ -83,7 +84,8 @@ export default function PanelPage() {
   const [chatChannel, setChatChannel] = useState<number | null>(null)
   const [comments, setComments] = useState<Comment[]>([])
   const [activeWidget, setActiveWidget] = useState<string | undefined>()
-  const [contextMenu, setContextMenu] = useState<{ type: 'widget' | 'board'; x: number; y: number; id?: string } | null>(null)
+  const [contextMenu, setContextMenu] = useState<{ type: 'widget' | 'board' | 'multi'; x: number; y: number; id?: string } | null>(null)
+  const [selected, setSelected] = useState<string[]>([])
   const [clipboard, setClipboard] = useState<{ key: string; layout: LayoutItem } | null>(null)
   const [diffData, setDiffData] = useState<{ prev: HistEntry; current: HistEntry } | null>(null);
   const [historial, setHistorial] = useState<HistEntry[]>([]);
@@ -95,6 +97,7 @@ export default function PanelPage() {
   const bcRef = useRef<BroadcastChannel | null>(null)
   const [boardBg, setBoardBg] = useState<string>('')
   const [sections, setSections] = useState(1)
+  const [openGallery, setOpenGallery] = useState(false)
   const [shortcuts, setShortcuts] = useState(() => {
     if (typeof window === 'undefined') return { undo: 'ctrl+z', redo: 'ctrl+shift+z' }
     try {
@@ -452,14 +455,86 @@ const iaSuggest = () => {
   alert(`Sugerencia IA: ${ideas[Math.floor(Math.random() * ideas.length)]}`);
 };
 
+const generateDiagramAI = () => {
+  const desc = prompt('Describe el diagrama')?.trim()
+  if (!desc) return
+  const parts = desc.split(/\s+/).slice(0,3)
+  const keys = parts.map(() => `markdown_${Date.now()}_${Math.random().toString(16).slice(2)}`)
+  setWidgets(w => [...w, ...keys])
+  const maxY = layout.reduce((m, it) => Math.max(m, it.y + (it.h || 0)), 0)
+  const maxZ = layout.reduce((m, it) => Math.max(m, it.z || 0), 0)
+  setLayout(l => [
+    ...l,
+    ...keys.map((k,i)=>({ i:k, x:i*2, y:maxY, w:2, h:2, z:maxZ+i+1, label: parts[i] || `Paso ${i+1}` }))
+  ])
+}
+
+const addMedia = (url?: string) => {
+  const src = url || prompt('URL del recurso')?.trim()
+  if (!src) return
+  const key = `media_${Date.now()}`
+  setWidgets(w => [...w, key])
+  const maxY = layout.reduce((m, it) => Math.max(m, it.y + (it.h || 0)), 0)
+  const maxZ = layout.reduce((m, it) => Math.max(m, it.z || 0), 0)
+  setLayout(l => [...l, { i: key, x:0, y:maxY, w:4, h:3, z:maxZ+1, data:{ url: src } }])
+}
+
+const handleSelect = (e: React.MouseEvent, id: string) => {
+  if (e.ctrlKey || e.metaKey || e.shiftKey) {
+    setSelected(prev => prev.includes(id) ? prev.filter(k => k !== id) : [...prev, id])
+  } else {
+    setSelected([id])
+  }
+};
+
+const groupSelected = () => {
+  const g = Date.now().toString()
+  setLayout(prev => prev.map(it => selected.includes(it.i) ? { ...it, group: g } : it))
+  setSelected([])
+};
+
+const alignSelected = () => {
+  const base = layout.find(it => it.i === selected[0])
+  if (!base) return
+  setLayout(prev => prev.map(it => selected.includes(it.i) ? { ...it, y: base.y } : it))
+};
+
+const distributeSelected = () => {
+  const items = layout.filter(it => selected.includes(it.i)).sort((a,b) => a.x - b.x)
+  if (items.length < 3) return
+  const first = items[0]
+  const last = items[items.length - 1]
+  const step = (last.x - first.x) / (items.length - 1)
+  setLayout(prev => prev.map(it => {
+    const idx = items.findIndex(t => t.i === it.i)
+    return idx !== -1 ? { ...it, x: Math.round(first.x + step * idx) } : it
+  }))
+};
+
+const exportSelected = () => {
+  alert('Exportando grupo...')
+};
+
+const assignGroupSelected = () => {
+  const owner = prompt('Grupo de trabajo')?.trim()
+  if (!owner) return
+  setLayout(prev => prev.map(it => selected.includes(it.i) ? { ...it, owner } : it))
+};
+
 const handleWidgetContext = (e: React.MouseEvent, id: string) => {
   e.preventDefault();
-  setContextMenu({ type: "widget", x: e.clientX, y: e.clientY, id });
+  if (selected.length > 1 && selected.includes(id)) {
+    setContextMenu({ type: 'multi', x: e.clientX, y: e.clientY })
+  } else {
+    setSelected([id])
+    setContextMenu({ type: "widget", x: e.clientX, y: e.clientY, id });
+  }
 };
 
 const handleBoardContext = (e: React.MouseEvent) => {
   if ((e.target as HTMLElement).closest(".dashboard-widget-card")) return;
   e.preventDefault();
+  setSelected([])
   setContextMenu({ type: "board", x: e.clientX, y: e.clientY });
 };
 
@@ -657,9 +732,10 @@ const viewHist = () => {
           return (
             <div
               key={key}
-              className="dashboard-widget-card"
+              className={`dashboard-widget-card${selected.includes(key) ? ' dashboard-widget-selected' : ''}`}
               style={{ zIndex: item?.z || 1, backgroundColor: (item as any)?.bg }}
               onMouseDown={() => bringToFront(key)}
+              onClick={e => handleSelect(e, key)}
               onContextMenu={e => handleWidgetContext(e, key)}
               data-oid="ldgxhem"
             >
@@ -673,7 +749,7 @@ const viewHist = () => {
                   {item.owner}
                 </div>
               )}
-              <Widget usuario={usuario} panelId={panelId} data-oid="c3illgc" />
+              <Widget usuario={usuario} panelId={panelId} url={(item as any)?.data?.url} data-oid="c3illgc" />
               {!readOnly && (
                 <div className="absolute top-1 right-1 flex gap-1 text-xs">
                   <button
@@ -761,6 +837,13 @@ const viewHist = () => {
         />
       )}
       {openChat && chatChannel !== null && <ChatPanel canalId={chatChannel} />}
+      {openGallery && (
+        <GalleryPanel
+          images={["/gallery/icon1.svg", "/gallery/icon2.svg", "/gallery/icon3.svg"]}
+          onSelect={url => addMedia(url)}
+          onClose={() => setOpenGallery(false)}
+        />
+      )}
       <Minimap layout={layout} zoom={zoom} containerRef={containerRef} gridSize={gridSize} />
       {contextMenu && (
         <ContextMenu
@@ -779,6 +862,13 @@ const viewHist = () => {
             { label: "Comentario", onClick: () => { setActiveWidget(contextMenu.id); setOpenComments(true); } },
             { label: "Asignar responsable", onClick: () => assignOwner(contextMenu.id!) },
             { label: "Historial", onClick: viewHist }
+          ] : contextMenu.type === 'multi' ? [
+            { label: 'Agrupar', onClick: groupSelected },
+            { label: 'Alinear', onClick: alignSelected },
+            { label: 'Distribuir', onClick: distributeSelected },
+            { label: 'Duplicar', onClick: () => selected.forEach(duplicateWidget) },
+            { label: 'Exportar grupo', onClick: exportSelected },
+            { label: 'Asignar a grupo', onClick: assignGroupSelected }
           ] : [
             ...(clipboard ? [{ label: "Pegar", onClick: pasteWidget }] : []),
             { label: "Nuevo Markdown", onClick: () => handleAddWidget("markdown") },
@@ -787,6 +877,9 @@ const viewHist = () => {
             { label: sections > 1 ? 'Unir área' : 'Dividir área', onClick: () => setSections(s => s > 1 ? 1 : 2) },
             { label: 'Buscar elemento', onClick: () => document.dispatchEvent(new Event('focus-search')) },
             { label: 'Insertar plantilla', onClick: insertTemplate },
+            { label: 'Abrir galería', onClick: () => setOpenGallery(true) },
+            { label: 'Agregar media', onClick: () => addMedia() },
+            { label: 'Generar diagrama IA', onClick: generateDiagramAI },
             { label: 'Configurar reglas', onClick: () => { const v = prompt('Tamaño de cuadrícula', String(gridSize)); const n = parseInt(v || ''); if (!Number.isNaN(n)) setGridSize(n); } },
             { label: 'Sugerencia IA', onClick: iaSuggest }
           ]}

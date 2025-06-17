@@ -103,14 +103,14 @@ Configuración rápida de reglas/guías. (Completado)
 
 Llamar a la IA para sugerencia de contenido. (Completado)
 
-Menú contextual múltiple: Selecciona varios elementos y accede a acciones grupales (agrupar, alinear, distribuir, duplicar, exportar como grupo, asignar a grupo de trabajo).
+Menú contextual múltiple: Selecciona varios elementos y accede a acciones grupales (agrupar, alinear, distribuir, duplicar, exportar como grupo, asignar a grupo de trabajo). (Completado)
 
 D. Funciones y herramientas superiores a Miro/Lucidchart
-Generador de diagramas automáticos por IA: crea mapas mentales, diagramas de flujo o procesos a partir de descripciones escritas.
+Generador de diagramas automáticos por IA: crea mapas mentales, diagramas de flujo o procesos a partir de descripciones escritas. (Completado)
 
-Galería de iconos, imágenes y figuras: biblioteca propia, con opción de cargar recursos personalizados.
+Galería de iconos, imágenes y figuras: biblioteca propia, con opción de cargar recursos personalizados. (Completado)
 
-Soporte para subir y visualizar videos, PDFs, documentos y enlaces web dentro de la pizarra.
+Soporte para subir y visualizar videos, PDFs, documentos y enlaces web dentro de la pizarra. (Completado)
 
 Integraciones API externas: conecta con Google Drive, Dropbox, Slack, MS Teams, Jira, Trello y más.
 
