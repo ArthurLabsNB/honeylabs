@@ -11,6 +11,10 @@ import {
   Wrench,
   BookOpen,
   BarChart2,
+  Zap,
+  Cloud,
+  Cpu,
+  Database,
 } from "lucide-react";
 
 const accesos = [
@@ -64,7 +68,7 @@ const accesos = [
   },
 ];
 
-export default function acerca() {
+export default function Acerca() {
   return (
     <motion.div
       className="bg-[var(--background)] text-[var(--foreground)] px-4 py-10 sm:px-8 lg:px-20 max-w-7xl mx-auto space-y-20"
@@ -85,11 +89,34 @@ export default function acerca() {
         <p className="text-lg text-[var(--dashboard-muted)] max-w-3xl mx-auto">
           Plataforma integral de inventarios adaptada a las necesidades educativas, empresariales y científicas.
         </p>
-        <div className="mt-6 rounded-2xl overflow-hidden shadow-xl aspect-video max-w-5xl mx-auto">
+        <div className="mt-6 rounded-2xl overflow-hidden shadow-xl aspect-video max-w-5xl mx-auto relative">
           <video className="w-full h-full object-cover" autoPlay muted loop>
-            <source src="/demo-video.mp4" type="video/mp4" />
+            <source src="/utils1.mp4" type="video/mp4" />
             Tu navegador no soporta video.
           </video>
+          {/* Overlay oscuro */}
+          <div className="absolute inset-0 bg-black/70 pointer-events-none" />
+        </div>
+      </section>
+
+      {/* NUEVA SECCIÓN: Misión y Visión */}
+      <section className="grid md:grid-cols-2 gap-10 items-center">
+        <div className="space-y-5">
+          <h2 className="text-2xl font-bold text-[var(--dashboard-accent)]">Nuestra misión</h2>
+          <p>
+            Democratizar la gestión de inventarios ofreciendo una plataforma tecnológica accesible, segura y poderosa que ayude a cualquier organización a digitalizar, controlar y optimizar sus recursos materiales.
+          </p>
+          <h2 className="text-2xl font-bold text-[var(--dashboard-accent)] mt-6">Nuestra visión</h2>
+          <p>
+            Ser el referente #1 en soluciones de inventario inteligente para instituciones educativas y empresas de Latinoamérica, evolucionando continuamente hacia un sistema más inteligente y adaptable con tecnologías emergentes como IA y automatización.
+          </p>
+        </div>
+        <div>
+          <img
+            src="/img/vision-honeysaas.png"
+            alt="Misión y visión"
+            className="rounded-xl shadow-lg border border-[var(--dashboard-border)] w-full object-cover max-h-80"
+          />
         </div>
       </section>
 
@@ -105,7 +132,40 @@ export default function acerca() {
           </p>
         </div>
         <div>
-          <img src="/img/inventario-preview.png" alt="Panel de ejemplo" className="rounded-xl shadow-lg border border-[var(--dashboard-border)]" />
+          <img
+            src="/img/inventario-preview.png"
+            alt="Panel de ejemplo"
+            className="rounded-xl shadow-lg border border-[var(--dashboard-border)] w-full object-cover"
+          />
+        </div>
+      </section>
+
+      {/* NUEVA SECCIÓN: Integraciones y compatibilidad */}
+      <section>
+        <h2 className="text-2xl font-bold text-center text-[var(--dashboard-accent)] mb-6">
+          Integraciones y compatibilidad
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div className="flex flex-col items-center bg-[var(--dashboard-card)] p-6 rounded-xl border border-[var(--dashboard-border)] shadow">
+            <Cloud size={36} className="text-amber-400 mb-2" />
+            <p className="font-semibold">Plataformas Cloud</p>
+            <p className="text-[var(--dashboard-muted)] text-sm">Compatible con AWS, Google Cloud y Azure para backups automáticos y escalabilidad.</p>
+          </div>
+          <div className="flex flex-col items-center bg-[var(--dashboard-card)] p-6 rounded-xl border border-[var(--dashboard-border)] shadow">
+            <Database size={36} className="text-amber-400 mb-2" />
+            <p className="font-semibold">Bases de datos</p>
+            <p className="text-[var(--dashboard-muted)] text-sm">Soporte para PostgreSQL, MySQL, SQLite, SQL Server y más.</p>
+          </div>
+          <div className="flex flex-col items-center bg-[var(--dashboard-card)] p-6 rounded-xl border border-[var(--dashboard-border)] shadow">
+            <Cpu size={36} className="text-amber-400 mb-2" />
+            <p className="font-semibold">IA y Automatización</p>
+            <p className="text-[var(--dashboard-muted)] text-sm">Listo para integrarse con flujos de IA, asistentes y automatización de procesos.</p>
+          </div>
+          <div className="flex flex-col items-center bg-[var(--dashboard-card)] p-6 rounded-xl border border-[var(--dashboard-border)] shadow">
+            <Zap size={36} className="text-amber-400 mb-2" />
+            <p className="font-semibold">Integraciones API</p>
+            <p className="text-[var(--dashboard-muted)] text-sm">REST, Webhooks, integración con Excel, Google Sheets, Zapier y sistemas externos.</p>
+          </div>
         </div>
       </section>
 
@@ -113,31 +173,38 @@ export default function acerca() {
       <section className="text-center">
         <h2 className="text-3xl font-bold mb-10">¿Por qué elegir HoneyLabs?</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[{
-            icon: "📦",
-            title: "Control por unidad",
-            desc: "Cada material se registra por unidad específica con detalles como peso, volumen o ubicación."
-          }, {
-            icon: "🔒",
-            title: "Seguridad de acceso",
-            desc: "Cada usuario ve solo lo que necesita. Sistema de roles y permisos completo."
-          }, {
-            icon: "📈",
-            title: "Visualización avanzada",
-            desc: "Dashboards, filtros inteligentes y exportaciones para tomar decisiones más rápido."
-          }, {
-            icon: "📤",
-            title: "Exportación profesional",
-            desc: "PDF, Excel, XML, JSON, todo desde un clic. Ideal para auditorías o reportes."
-          }, {
-            icon: "📸",
-            title: "Multimedia integrada",
-            desc: "Carga imágenes, planos, archivos y vincúlalos directamente a materiales o unidades."
-          }, {
-            icon: "🧠",
-            title: "Preparado para IA",
-            desc: "Estamos listos para integrar flujos automatizados, asistentes inteligentes y predicciones."
-          }].map(({ icon, title, desc }, i) => (
+          {[
+            {
+              icon: "📦",
+              title: "Control por unidad",
+              desc: "Cada material se registra por unidad específica con detalles como peso, volumen o ubicación.",
+            },
+            {
+              icon: "🔒",
+              title: "Seguridad de acceso",
+              desc: "Cada usuario ve solo lo que necesita. Sistema de roles y permisos completo.",
+            },
+            {
+              icon: "📈",
+              title: "Visualización avanzada",
+              desc: "Dashboards, filtros inteligentes y exportaciones para tomar decisiones más rápido.",
+            },
+            {
+              icon: "📤",
+              title: "Exportación profesional",
+              desc: "PDF, Excel, XML, JSON, todo desde un clic. Ideal para auditorías o reportes.",
+            },
+            {
+              icon: "📸",
+              title: "Multimedia integrada",
+              desc: "Carga imágenes, planos, archivos y vincúlalos directamente a materiales o unidades.",
+            },
+            {
+              icon: "🧠",
+              title: "Preparado para IA",
+              desc: "Estamos listos para integrar flujos automatizados, asistentes inteligentes y predicciones.",
+            },
+          ].map(({ icon, title, desc }, i) => (
             <motion.div
               key={title}
               className="bg-[var(--dashboard-card)] border border-[var(--dashboard-border)] rounded-xl p-6 shadow hover:shadow-md transition text-left"

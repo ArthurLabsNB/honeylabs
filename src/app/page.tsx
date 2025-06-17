@@ -108,7 +108,7 @@ const FEATURES = [
     title: "Inventario en tiempo real",
     desc: "Consulta y actualiza el estado de los materiales al instante, con historial y trazabilidad total. Cada movimiento queda registrado para máxima transparencia y seguridad.",
     image: "/feature-inventario.png",
-    icon: "/icons/real-time.svg",
+    icon: "/logo-honeylabs",
   },
   {
     title: "Acceso desde cualquier lugar",
