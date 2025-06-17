@@ -14,12 +14,18 @@ interface Ops {
   setMostrarCambios: (fn: () => void) => void
   mostrarComentarios: () => void
   setMostrarComentarios: (fn: () => void) => void
+  mostrarChat: () => void
+  setMostrarChat: (fn: () => void) => void
   readOnly: boolean
   toggleReadOnly: () => void
   zoom: number
   setZoom: (z: number) => void
   buscar: string
   setBuscar: (term: string) => void
+  showGrid: boolean
+  toggleGrid: () => void
+  unsaved: boolean
+  setUnsaved: (v: boolean) => void
 }
 
 const PanelOpsContext = createContext<Ops>({
@@ -35,12 +41,18 @@ const PanelOpsContext = createContext<Ops>({
   setMostrarCambios: () => {},
   mostrarComentarios: () => {},
   setMostrarComentarios: () => {},
+  mostrarChat: () => {},
+  setMostrarChat: () => {},
   readOnly: false,
   toggleReadOnly: () => {},
   zoom: 1,
   setZoom: () => {},
   buscar: '',
   setBuscar: () => {},
+  showGrid: false,
+  toggleGrid: () => {},
+  unsaved: false,
+  setUnsaved: () => {},
 })
 
 export function PanelOpsProvider({ children }: { children: React.ReactNode }) {
@@ -48,11 +60,14 @@ export function PanelOpsProvider({ children }: { children: React.ReactNode }) {
   const [mostrarFn, setMostrarFn] = useState<() => void>(() => {});
   const [mostrarCambiosFn, setMostrarCambiosFn] = useState<() => void>(() => {});
   const [mostrarComentariosFn, setMostrarComentariosFn] = useState<() => void>(() => {});
+  const [mostrarChatFn, setMostrarChatFn] = useState<() => void>(() => {});
   const [undoFn, setUndoFn] = useState<() => void>(() => {});
   const [redoFn, setRedoFn] = useState<() => void>(() => {});
   const [readOnly, setReadOnly] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [buscar, setBuscar] = useState('');
+  const [showGrid, setShowGrid] = useState(false);
+  const [unsaved, setUnsaved] = useState(false);
   return (
     <PanelOpsContext.Provider
       value={{
@@ -68,12 +83,18 @@ export function PanelOpsProvider({ children }: { children: React.ReactNode }) {
         setMostrarCambios: setMostrarCambiosFn,
         mostrarComentarios: mostrarComentariosFn,
         setMostrarComentarios: setMostrarComentariosFn,
+        mostrarChat: mostrarChatFn,
+        setMostrarChat: setMostrarChatFn,
         readOnly,
         toggleReadOnly: () => setReadOnly((v) => !v),
         zoom,
         setZoom,
         buscar,
         setBuscar,
+        showGrid,
+        toggleGrid: () => setShowGrid((v) => !v),
+        unsaved,
+        setUnsaved,
       }}
     >
       {children}

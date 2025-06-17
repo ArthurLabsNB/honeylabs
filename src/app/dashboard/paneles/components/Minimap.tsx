@@ -39,6 +39,11 @@ export default function Minimap({ layout, zoom, containerRef }: Props) {
       ctx.fillRect(x, y, w, h);
       ctx.strokeRect(x, y, w, h);
     });
+    if (containerRef.current) {
+      const { scrollLeft, scrollTop, clientWidth, clientHeight } = containerRef.current;
+      ctx.strokeStyle = 'yellow';
+      ctx.strokeRect(scrollLeft * scaleX, scrollTop * scaleY, clientWidth * scaleX, clientHeight * scaleY);
+    }
   }, [layout, zoom]);
 
   const handleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
