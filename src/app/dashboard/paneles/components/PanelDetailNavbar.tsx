@@ -21,6 +21,15 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   const [openExport, setOpenExport] = useState(false);
   const [openShare, setOpenShare] = useState(false);
   const [openConfig, setOpenConfig] = useState(false);
+  const [shortcuts, setShortcuts] = useState(() => {
+    if (typeof window === 'undefined') return { undo: 'ctrl+z', redo: 'ctrl+shift+z' };
+    try {
+      const saved = JSON.parse(localStorage.getItem('panel-shortcuts') || '{}');
+      return { undo: 'ctrl+z', redo: 'ctrl+shift+z', ...saved };
+    } catch {
+      return { undo: 'ctrl+z', redo: 'ctrl+shift+z' };
+    }
+  });
   const [openHelp, setOpenHelp] = useState(false);
   const conectados = usePanelPresence(panelId, usuario);
   const {
@@ -52,6 +61,15 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
     document.addEventListener("click", close);
     return () => document.removeEventListener("click", close);
   }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const color = localStorage.getItem('panel-accent')
+    if (color) {
+      document.documentElement.style.setProperty('--dashboard-accent', color)
+      document.documentElement.style.setProperty('--dashboard-accent-hover', color)
+    }
+  }, [])
 
   useEffect(() => {
     if (!panelId) return;
@@ -256,8 +274,41 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
             Configuración
           </button>
           {openConfig && (
-            <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10 p-2 text-sm">
-              Próximamente
+            <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10 p-2 text-sm space-y-2">
+              <div>
+                <label className="block text-xs">Atajo deshacer</label>
+                <input
+                  value={shortcuts.undo}
+                  onChange={e => {
+                    const val = e.target.value
+                    setShortcuts(s => { const n = { ...s, undo: val }; localStorage.setItem('panel-shortcuts', JSON.stringify(n)); return n })
+                  }}
+                  className="w-28 bg-white/10 px-1 rounded"
+                />
+              </div>
+              <div>
+                <label className="block text-xs">Atajo rehacer</label>
+                <input
+                  value={shortcuts.redo}
+                  onChange={e => {
+                    const val = e.target.value
+                    setShortcuts(s => { const n = { ...s, redo: val }; localStorage.setItem('panel-shortcuts', JSON.stringify(n)); return n })
+                  }}
+                  className="w-28 bg-white/10 px-1 rounded"
+                />
+              </div>
+              <div>
+                <label className="block text-xs">Color acento</label>
+                <input
+                  type="color"
+                  defaultValue={typeof window !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--dashboard-accent').trim() || '#ffe066' : '#ffe066'}
+                  onChange={e => {
+                    document.documentElement.style.setProperty('--dashboard-accent', e.target.value)
+                    document.documentElement.style.setProperty('--dashboard-accent-hover', e.target.value)
+                    localStorage.setItem('panel-accent', e.target.value)
+                  }}
+                />
+              </div>
             </div>
           )}
         </div>

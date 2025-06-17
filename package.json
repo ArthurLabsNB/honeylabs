@@ -39,6 +39,7 @@
     "konva": "^9.3.20",
     "lucide-react": "^0.511.0",
     "lz-string": "^1.5.0",
+    "marked": "^9.1.6",
     "mysql2": "^3.14.1",
     "next": "15.3.2",
     "nodemailer": "^7.0.3",
