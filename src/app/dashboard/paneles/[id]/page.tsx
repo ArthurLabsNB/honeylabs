@@ -316,10 +316,6 @@ export default function PanelPage() {
     setGuardar(() => guardar);
   }, [guardar, setGuardar]);
 
-  useEffect(() => {
-    setUndo(() => undo);
-    setRedo(() => redo);
-  }, [undo, redo, setUndo, setRedo]);
 
   useEffect(() => {
     setMostrarHistorial(() => () => setOpenHist(true));
@@ -337,30 +333,7 @@ export default function PanelPage() {
     setMostrarChat(() => () => setOpenChat(true));
   }, [setMostrarChat]);
 
-  useEffect(() => {
-    const handle = (e: KeyboardEvent) => {
-      const match = (combo: string) => {
-        const parts = combo.toLowerCase().split('+')
-        const key = parts.pop()
-        const ctrl = parts.includes('ctrl')
-        const shift = parts.includes('shift')
-        const alt = parts.includes('alt')
-        return (
-          (!!key && e.key.toLowerCase() === key) &&
-          (!!ctrl === e.ctrlKey) && (!!shift === e.shiftKey) && (!!alt === e.altKey)
-        )
-      }
-      if (match(shortcuts.undo)) {
-        e.preventDefault()
-        undo()
-      } else if (match(shortcuts.redo)) {
-        e.preventDefault()
-        redo()
-      }
-    }
-    window.addEventListener('keydown', handle)
-    return () => window.removeEventListener('keydown', handle)
-  }, [undo, redo, shortcuts])
+  
 
   useEffect(() => {
     if (!openHist || !usuario || !panelId) return;
@@ -660,6 +633,36 @@ const viewHist = () => {
     setLayout(next.layout)
     setUndoIdx((i) => i + 1)
   }
+
+  useEffect(() => {
+    setUndo(() => undo);
+    setRedo(() => redo);
+  }, [undo, redo, setUndo, setRedo]);
+
+  useEffect(() => {
+    const handle = (e: KeyboardEvent) => {
+      const match = (combo: string) => {
+        const parts = combo.toLowerCase().split('+')
+        const key = parts.pop()
+        const ctrl = parts.includes('ctrl')
+        const shift = parts.includes('shift')
+        const alt = parts.includes('alt')
+        return (
+          (!!key && e.key.toLowerCase() === key) &&
+          (!!ctrl === e.ctrlKey) && (!!shift === e.shiftKey) && (!!alt === e.altKey)
+        )
+      }
+      if (match(shortcuts.undo)) {
+        e.preventDefault()
+        undo()
+      } else if (match(shortcuts.redo)) {
+        e.preventDefault()
+        redo()
+      }
+    }
+    window.addEventListener('keydown', handle)
+    return () => window.removeEventListener('keydown', handle)
+  }, [undo, redo, shortcuts])
 
   // Loading/errores de sesión
   if (loading) return <div data-oid="_0v3rjj">Cargando usuario...</div>;
