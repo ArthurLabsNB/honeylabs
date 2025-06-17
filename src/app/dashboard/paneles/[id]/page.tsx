@@ -5,6 +5,7 @@ import { jsonOrNull } from "@lib/http";
 import { apiFetch } from "@lib/api";
 import type { Usuario } from "@/types/usuario";
 import useSession from "@/hooks/useSession";
+import { useParams } from "next/navigation";
 
 import dynamic from "next/dynamic";
 import GridLayout, { Layout } from "react-grid-layout";
@@ -27,8 +28,10 @@ interface WidgetMeta {
 }
 
 
-export default function DashboardPage() {
+export default function PanelPage() {
   const { usuario, loading } = useSession();
+  const params = useParams();
+  const panelId = Array.isArray(params?.id) ? params.id[0] : (params as any)?.id;
 
   const [catalogo, setCatalogo] = useState<WidgetMeta[]>([]);
   const [widgets, setWidgets] = useState<string[]>([]);
@@ -39,7 +42,7 @@ export default function DashboardPage() {
 
   // 2. Cargar catálogo y componentes de widgets
   useEffect(() => {
-    if (!usuario) return;
+    if (!usuario || !panelId) return;
 
     async function loadWidgets() {
       try {
@@ -80,8 +83,8 @@ export default function DashboardPage() {
         }));
         let saved: { widgets: string[]; layout: LayoutItem[] } | null = null;
         try {
-          const resLayout = await apiFetch("/api/dashboard/layout");
-          if (resLayout.ok) saved = await jsonOrNull(resLayout);
+          const resLayout = await apiFetch(`/api/paneles/${panelId}`);
+          if (resLayout.ok) saved = (await jsonOrNull(resLayout)).panel;
         } catch {}
 
         if (
@@ -109,18 +112,19 @@ export default function DashboardPage() {
     }
 
     loadWidgets();
-  }, [usuario]);
+  }, [usuario, panelId]);
 
   // Guardar en DB cada que cambian widgets o layout
   useEffect(() => {
     if (!usuario) return;
     const data = { widgets, layout };
-    apiFetch("/api/dashboard/layout", {
-      method: "POST",
+    if (!panelId) return;
+    apiFetch(`/api/paneles/${panelId}`, {
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     }).catch(() => {});
-  }, [widgets, layout, usuario]);
+  }, [widgets, layout, usuario, panelId]);
 
   // Agregar widget
   const handleAddWidget = (key: string) => {
@@ -188,7 +192,7 @@ export default function DashboardPage() {
         data-oid="zm1.jco"
       >
         <h1 className="text-2xl font-bold" data-oid="ulnh9zq">
-          Pizarra
+          Panel
         </h1>
         <div className="flex items-center gap-2" data-oid="kuayohc">
           <select

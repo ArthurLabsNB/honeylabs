@@ -34,10 +34,10 @@ const sidebarMenu = [
     allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
   },
   {
-    key: "pizarra",
-    label: "Pizarra",
+    key: "paneles",
+    label: "Paneles",
     icon: <Bell className="dashboard-sidebar-icon" data-oid="piz-ico" />,
-    path: "/dashboard/pizarra",
+    path: "/dashboard/paneles",
     allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
   },
   {
