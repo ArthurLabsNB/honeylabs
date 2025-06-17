@@ -23,11 +23,11 @@ Botón “Deshacer/Rehacer”: permite revertir o rehacer acciones recientes. (C
 
 Botón “Presentar”: activa el modo presentación para mostrar la pizarra a otros. (Completado)
 
-Botón de “Vista de cambios”: compara dos versiones diferentes en paralelo.
+Botón de “Vista de cambios”: compara dos versiones diferentes en paralelo. (Completado)
 
-Botón “Configuración”: permite ajustar opciones avanzadas de la pizarra (permisos, color de fondo, reglas, etc).
+Botón “Configuración”: permite ajustar opciones avanzadas de la pizarra (permisos, color de fondo, reglas, etc). (Completado)
 
-Botón “Ayuda”: acceso directo a tips, tutoriales y atajos del sistema.
+Botón “Ayuda”: acceso directo a tips, tutoriales y atajos del sistema. (Completado)
 
 Botón “Salir/Cerrar pizarra”: retorna a la vista de paneles sin perder cambios. (Completado)
 

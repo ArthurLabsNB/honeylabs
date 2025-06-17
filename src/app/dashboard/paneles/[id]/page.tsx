@@ -44,8 +44,10 @@ export default function PanelPage() {
   const [layout, setLayout] = useState<LayoutItem[]>([]);
   const [componentes, setComponentes] = useState<{ [key: string]: any }>({});
   const [errores, setErrores] = useState<{ [key: string]: boolean }>({});
-  const { setGuardar, setMostrarHistorial, setUndo, setRedo, readOnly, zoom } = usePanelOps();
+  const { setGuardar, setMostrarHistorial, setMostrarCambios, setUndo, setRedo, readOnly, zoom } = usePanelOps();
   const [openHist, setOpenHist] = useState(false);
+  const [openDiff, setOpenDiff] = useState(false);
+  const [diffData, setDiffData] = useState<{ prev: HistEntry; current: HistEntry } | null>(null);
   const [historial, setHistorial] = useState<HistEntry[]>([]);
   const [undoHist, setUndoHist] = useState<{ widgets: string[]; layout: LayoutItem[] }[]>([])
   const [undoIdx, setUndoIdx] = useState(-1)
@@ -173,12 +175,31 @@ export default function PanelPage() {
   }, [setMostrarHistorial]);
 
   useEffect(() => {
+    setMostrarCambios(() => () => setOpenDiff(true));
+  }, [setMostrarCambios]);
+
+  useEffect(() => {
     if (!openHist || !usuario || !panelId) return;
     apiFetch(`/api/paneles/${panelId}/historial`)
       .then(jsonOrNull)
       .then((d) => setHistorial(d.historial || []))
       .catch(() => {});
   }, [openHist, usuario, panelId]);
+
+  useEffect(() => {
+    if (!openDiff || !usuario || !panelId) return;
+    apiFetch(`/api/paneles/${panelId}/historial`)
+      .then(jsonOrNull)
+      .then((d) => {
+        const h: HistEntry[] = d.historial || [];
+        if (h.length >= 2) {
+          setDiffData({ prev: h[h.length - 2], current: h[h.length - 1] });
+        } else {
+          setDiffData(null);
+        }
+      })
+      .catch(() => {});
+  }, [openDiff, usuario, panelId]);
 
   // Agregar widget
   const handleAddWidget = (key: string) => {
@@ -408,6 +429,26 @@ export default function PanelPage() {
               {!historial.length && <li className="text-gray-400">Sin historial</li>}
             </ul>
             <button onClick={() => setOpenHist(false)} className="mt-3 px-3 py-1 bg-white/10 rounded w-full text-sm">Cerrar</button>
+          </div>
+        </div>
+      )}
+      {openDiff && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40">
+          <div className="bg-[var(--dashboard-card)] p-4 rounded max-h-[80vh] overflow-auto w-[90vw] sm:w-[70vw]">
+            <h2 className="font-semibold mb-2">Vista de cambios</h2>
+            {diffData ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <pre className="p-2 bg-black/20 rounded overflow-auto whitespace-pre-wrap">
+{JSON.stringify(diffData.prev.estado, null, 2)}
+</pre>
+                <pre className="p-2 bg-black/20 rounded overflow-auto whitespace-pre-wrap">
+{JSON.stringify(diffData.current.estado, null, 2)}
+</pre>
+              </div>
+            ) : (
+              <p>No hay versiones suficientes.</p>
+            )}
+            <button onClick={() => setOpenDiff(false)} className="mt-3 px-3 py-1 bg-white/10 rounded w-full text-sm">Cerrar</button>
           </div>
         </div>
       )}

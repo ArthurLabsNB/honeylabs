@@ -10,6 +10,8 @@ interface Ops {
   setUndo: (fn: () => void) => void
   redo: () => void
   setRedo: (fn: () => void) => void
+  mostrarCambios: () => void
+  setMostrarCambios: (fn: () => void) => void
   readOnly: boolean
   toggleReadOnly: () => void
   zoom: number
@@ -25,6 +27,8 @@ const PanelOpsContext = createContext<Ops>({
   setUndo: () => {},
   redo: () => {},
   setRedo: () => {},
+  mostrarCambios: () => {},
+  setMostrarCambios: () => {},
   readOnly: false,
   toggleReadOnly: () => {},
   zoom: 1,
@@ -34,6 +38,7 @@ const PanelOpsContext = createContext<Ops>({
 export function PanelOpsProvider({ children }: { children: React.ReactNode }) {
   const [guardarFn, setGuardarFn] = useState<() => void>(() => {});
   const [mostrarFn, setMostrarFn] = useState<() => void>(() => {});
+  const [mostrarCambiosFn, setMostrarCambiosFn] = useState<() => void>(() => {});
   const [undoFn, setUndoFn] = useState<() => void>(() => {});
   const [redoFn, setRedoFn] = useState<() => void>(() => {});
   const [readOnly, setReadOnly] = useState(false);
@@ -49,6 +54,8 @@ export function PanelOpsProvider({ children }: { children: React.ReactNode }) {
         setUndo: setUndoFn,
         redo: redoFn,
         setRedo: setRedoFn,
+        mostrarCambios: mostrarCambiosFn,
+        setMostrarCambios: setMostrarCambiosFn,
         readOnly,
         toggleReadOnly: () => setReadOnly((v) => !v),
         zoom,
