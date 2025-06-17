@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import type { Usuario } from '@/types/usuario'
 
 interface Presencia {
@@ -9,6 +9,7 @@ interface Presencia {
 
 export default function usePanelPresence(panelId?: string | null, usuario?: Usuario | null) {
   const [usuarios, setUsuarios] = useState<Presencia[]>([])
+  const infoRef = useRef<{ id: string | number; nombre: string; avatar: string | null }>()
 
   useEffect(() => {
     if (!panelId || !usuario || typeof window === 'undefined') return
@@ -16,6 +17,9 @@ export default function usePanelPresence(panelId?: string | null, usuario?: Usua
     const id = usuario.id ?? usuario.email ?? usuario.correo ?? Math.random().toString(36)
     const nombre = usuario.nombre ?? usuario.email ?? 'Usuario'
     const avatar = usuario.avatarUrl ?? usuario.imagen ?? null
+
+    if (infoRef.current?.id === id) return
+    infoRef.current = { id, nombre, avatar }
 
     const channel = new BroadcastChannel(`panel-presence-${panelId}`)
 
@@ -47,7 +51,7 @@ export default function usePanelPresence(panelId?: string | null, usuario?: Usua
       channel.removeEventListener('message', handle)
       channel.close()
     }
-  }, [panelId, usuario])
+  }, [panelId, usuario?.id])
 
   return usuarios
 }
