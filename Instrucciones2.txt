@@ -33,9 +33,9 @@ Botón “Salir/Cerrar pizarra”: retorna a la vista de paneles sin perder camb
 
 Avatares de colaboradores: muestra quién está conectado editando en tiempo real. (Completado)
 
-Barra de búsqueda en pizarra: permite encontrar elementos, comentarios o etiquetas dentro de la pizarra.
+Barra de búsqueda en pizarra: permite encontrar elementos, comentarios o etiquetas dentro de la pizarra. (Completado)
 
-Botón “Comentarios”: muestra panel lateral con todos los comentarios y menciones.
+Botón “Comentarios”: muestra panel lateral con todos los comentarios y menciones. (Completado)
 
 Selector de vista/zoom: controla el zoom, ajusta vista al área activa o toda la pizarra. (Completado)
 
