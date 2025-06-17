@@ -297,6 +297,26 @@ export default function PanelPage() {
     setUnsaved(false)
   };
 
+  const undo = () => {
+    if (undoIdx <= 0) return;
+    const prev = undoHist[undoIdx - 1];
+    if (!prev) return;
+    skipHistory.current = true;
+    setWidgets(prev.widgets);
+    setLayout(prev.layout);
+    setUndoIdx((i) => i - 1);
+  };
+
+  const redo = () => {
+    if (undoIdx >= undoHist.length - 1) return;
+    const next = undoHist[undoIdx + 1];
+    if (!next) return;
+    skipHistory.current = true;
+    setWidgets(next.widgets);
+    setLayout(next.layout);
+    setUndoIdx((i) => i + 1);
+  };
+
   // Guardar en DB y registrar historial local
   useEffect(() => {
     if (!readyHistory) return
@@ -641,25 +661,6 @@ const viewHist = () => {
     setLayout(entry.estado.layout);
   };
 
-  const undo = () => {
-    if (undoIdx <= 0) return
-    const prev = undoHist[undoIdx - 1]
-    if (!prev) return
-    skipHistory.current = true
-    setWidgets(prev.widgets)
-    setLayout(prev.layout)
-    setUndoIdx((i) => i - 1)
-  }
-
-  const redo = () => {
-    if (undoIdx >= undoHist.length - 1) return
-    const next = undoHist[undoIdx + 1]
-    if (!next) return
-    skipHistory.current = true
-    setWidgets(next.widgets)
-    setLayout(next.layout)
-    setUndoIdx((i) => i + 1)
-  }
 
   // Loading/errores de sesión
   if (loading) return <div data-oid="_0v3rjj">Cargando usuario...</div>;
