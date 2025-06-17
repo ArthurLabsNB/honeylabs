@@ -1,57 +1,142 @@
-1. Catálogo de Plantillas Visuales
-Pizarra en blanco: Comienza desde cero con un lienzo completamente vacío para máxima libertad creativa. (Completado)
+A. Experiencia de Navegación y Barra Superior (Navbar dedicado de pizarra)
+Modo pantalla completa automático al entrar a una pizarra.
 
-Diagramas de flujo: Plantilla optimizada para crear flujos de procesos, decisiones y rutas de trabajo.
+Ocultamiento de sidebar y navbar global para enfoque total.
 
-Mapa mental: Estructura ideas y conceptos de forma jerárquica, ideal para brainstorming.
+Barra superior propia de la pizarra (navbar dedicado, sticky y minimalista).
 
-Kanban: Panel visual para gestión de tareas tipo tablero Kanban.
+Botón “Volver a paneles”: siempre visible a la izquierda para regresar a la lista de pizarras.
 
-Retrospectiva ágil: Plantillas para análisis de proyectos, retrospectivas y mejoras continuas.
+Logo mini y nombre editable: muestra logo HoneyLabs reducido y permite editar el nombre de la pizarra en línea.
 
-Escritura de ideas: Espacio estructurado para organizar notas, esquemas y puntos clave.
+Botón de “Guardar”: permite guardar manualmente, aunque el autosave esté activo.
 
-Más plantillas: Posibilidad de explorar y personalizar nuevas plantillas a medida que el sistema crece.
+Indicador de estado de guardado: muestra “Guardando.../Guardado” en tiempo real.
 
-2. Creación y Guardado de Pizarras
-Botón “Crear nuevo”: Permite iniciar una pizarra desde cualquier plantilla o en blanco. (Completado)
+Botón “Exportar”: abre menú para descargar la pizarra (PDF, PNG, SVG, JSON).
 
-Guardado automático: Todo el trabajo realizado en cada pizarra se guarda automáticamente y puede recuperarse en cualquier momento. (Completado)
+Botón “Compartir”: abre opciones de invitación por enlace, usuarios, o configuración de permisos.
 
-Historial de guardados: Acceso fácil a todos los paneles y pizarras creadas o modificadas previamente, con filtros por fecha, propietario, estado o tipo de plantilla. (Completado)
+Botón “Historial”: accede al historial de cambios y versiones.
 
-3. Panel de historial y gestión
-Lista de pizarras guardadas: Visualización clara y ordenada de todos los tableros y pizarras del usuario o del equipo. (Completado)
+Botón “Deshacer/Rehacer”: permite revertir o rehacer acciones recientes.
 
-Nombre de la pizarra. (Completado)
+Botón “Presentar”: activa el modo presentación para mostrar la pizarra a otros.
 
-Fecha de última modificación. (Completado)
+Botón de “Vista de cambios”: compara dos versiones diferentes en paralelo.
 
-Estado (solo lectura, editable, archivado, etc.).
+Botón “Configuración”: permite ajustar opciones avanzadas de la pizarra (permisos, color de fondo, reglas, etc).
 
-Propietario/creador de la pizarra.
+Botón “Ayuda”: acceso directo a tips, tutoriales y atajos del sistema.
 
-Filtrado y orden: Permite buscar pizarras por nombre, filtrar por plantillas, propietario, fecha de uso o estado.
+Botón “Salir/Cerrar pizarra”: retorna a la vista de paneles sin perder cambios.
 
-Acciones rápidas: Acceso directo a abrir, editar, duplicar o eliminar pizarras desde la lista.
+Avatares de colaboradores: muestra quién está conectado editando en tiempo real.
 
-4. Experiencia colaborativa
-Colaboración en tiempo real: (Opcional) Invita a otros usuarios a editar o visualizar la misma pizarra en tiempo real.
+Barra de búsqueda en pizarra: permite encontrar elementos, comentarios o etiquetas dentro de la pizarra.
 
-Control de permisos: Asigna permisos por usuario (lectura, escritura, propietario).
+Botón “Comentarios”: muestra panel lateral con todos los comentarios y menciones.
 
-Indicadores de usuarios en línea: Muestra quién está colaborando en cada pizarra en ese momento.
+Selector de vista/zoom: controla el zoom, ajusta vista al área activa o toda la pizarra.
 
-5. Explora plantillas y comunidad
-Galería de plantillas: Explora plantillas públicas y recomendadas, y guarda tus favoritas.
+B. Lógica de Acciones dentro de la Pizarra (UX, interacción y flujo)
+Autosave avanzado: guardado automático con versiones de respaldo.
 
-Pizarras del equipo: Visualiza y accede fácilmente a los tableros compartidos por el equipo o la organización.
+Modo solo lectura/presentación: la pizarra se bloquea y solo puede ser vista, ideal para presentaciones.
 
-Resumen de flujo visual (ejemplo)
-Arriba: Barra con plantillas rápidas (pizarra en blanco, diagrama de flujo, Kanban, etc.) y un botón “Crear nuevo”.
+Edición colaborativa en tiempo real: cambios sincronizados instantáneamente.
 
-Centro: Lista/tablero con todas las pizarras guardadas, mostrando nombre, propietario, usuarios en línea y fecha de última edición.
+Chat colaborativo contextual: panel de chat interno específico para la pizarra.
 
-Lateral o arriba: Filtros para buscar por plantilla, estado, propietario o fecha.
+Permisos granulares: puedes dar acceso total, solo lectura, o solo comentarios a usuarios específicos.
 
-Opciones rápidas: Acciones sobre cada pizarra (abrir, editar, duplicar, eliminar).
+Sistema de comentarios anclados: agrega comentarios en puntos o elementos concretos.
+
+Mini mapa interactivo: vista miniatura para navegar pizarras grandes.
+
+Notificaciones en vivo: alerta de cambios, menciones y nuevas versiones en la pizarra.
+
+Visualización de actividad reciente: quién hizo qué y cuándo, con posibilidad de ver autoría de cada cambio.
+
+Modo oscuro y personalización de temas: elige color de fondo, tema claro/oscuro y estilos de líneas.
+
+Atajos de teclado personalizables: crea tus propios accesos rápidos.
+
+Soporte para markdown en notas/textos: notas rápidas y tarjetas con formato enriquecido.
+
+Soporte para LaTeX: ecuaciones matemáticas y expresiones técnicas.
+
+Exportación por áreas: permite seleccionar y exportar solo partes de la pizarra.
+
+Snapping y alineación automática: ayuda a organizar elementos con precisión.
+
+Cuadrícula y reglas configurables: para diagramar con más control.
+
+Bloqueo de elementos: protege figuras importantes para que no se modifiquen accidentalmente.
+
+Duplicado y clonación de elementos o grupos: haz copias rápidas y organiza flujos.
+
+Deshacer/rehacer ilimitado: vuelve a cualquier estado anterior durante la sesión.
+
+Zoom y paneo fluidos, incluso en pizarras gigantes.
+
+C. Menú Contextual (Clic derecho, lógica avanzada)
+Menú contextual sobre elementos:
+
+Copiar, cortar, duplicar, eliminar, renombrar.
+
+Cambiar color/borde, agregar etiqueta.
+
+Enlazar a otra pizarra, añadir comentario, exportar solo ese elemento.
+
+Enviar a fondo/primer plano, bloquear/desbloquear, ver historial de ese elemento.
+
+Asignar responsable o colaborador.
+
+Menú contextual sobre espacio vacío:
+
+Pegar, crear nuevo elemento (forma, texto, imagen, tabla, código, archivo).
+
+Agregar fondo, dividir área, mostrar cuadrícula, buscar elemento, insertar plantilla.
+
+Configuración rápida de reglas/guías.
+
+Llamar a la IA para sugerencia de contenido.
+
+Menú contextual múltiple: Selecciona varios elementos y accede a acciones grupales (agrupar, alinear, distribuir, duplicar, exportar como grupo, asignar a grupo de trabajo).
+
+D. Funciones y herramientas superiores a Miro/Lucidchart
+Generador de diagramas automáticos por IA: crea mapas mentales, diagramas de flujo o procesos a partir de descripciones escritas.
+
+Galería de iconos, imágenes y figuras: biblioteca propia, con opción de cargar recursos personalizados.
+
+Soporte para subir y visualizar videos, PDFs, documentos y enlaces web dentro de la pizarra.
+
+Integraciones API externas: conecta con Google Drive, Dropbox, Slack, MS Teams, Jira, Trello y más.
+
+Macros y automatización por usuario: define acciones automáticas como limpiar pizarra, exportar cada hora, enviar notificación por cambio, etc.
+
+Comparación de versiones lado a lado.
+
+Plantillas públicas, privadas y comunidad: explora, usa y comparte diseños.
+
+Gamificación (medallas, logros, uso avanzado, colaboración, etc).
+
+Wiki/documentación integrada en la pizarra.
+
+Panel de métricas y estadísticas de uso: tiempo de edición, usuarios activos, cambios por sesión.
+
+Integración con calendario/agenda: asocia pizarras a proyectos, tareas o deadlines.
+
+Subpizarras y áreas internas: divide la pizarra en zonas con nombres, permisos y funcionalidades independientes.
+
+Arrastrar y soltar desde el escritorio para subir archivos e imágenes directo a la pizarra.
+
+Reconocimiento de escritura y dibujo a mano (tablet/lápiz).
+
+Modo offline con sincronización automática al recuperar conexión.
+
+Soporte para código embebido (snippets, bloques ejecutables para documentación técnica).
+
+API y SDK para desarrolladores: crea plugins, widgets y extensiones propias.
+
