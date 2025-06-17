@@ -1,98 +1,127 @@
-1. Timeline Visual Interactivo (Completado)
-Un timeline tipo “línea del tiempo” donde puedas ver todos los eventos, comentarios y ediciones en forma cronológica, con saltos rápidos entre momentos clave.
+🟨 1. Principios de Estructura del Navbar para Pizarras
+Ubicación:
+El navbar dedicado de la pizarra siempre debe estar fijo en la parte superior (“sticky top-0 w-full z-50”) sobre la pizarra, ocultando el navbar global y sidebar.
 
-2. Modo Narrador/Storytelling (Completado)
-Permite crear rutas de presentación o “capítulos”, donde cada segmento de la pizarra se muestra secuencialmente como si fuera una historia o demo guiada.
+Consistencia:
+La estructura del navbar debe ser horizontal, minimalista, y contener todos los botones esenciales y avanzados, agrupados de forma lógica y escalable (por secciones).
 
-3. Reacciones rápidas (emojis, likes, etc) (Completado)
-Añade reacciones en cualquier elemento o comentario para feedback rápido y análisis de interacción.
+Distribución modular:
+Los botones y controles se agrupan en “clústeres” funcionales, alineados de izquierda a derecha, según frecuencia de uso y tipo de acción (por ejemplo: navegación, edición, colaboración, exportación, automatización, ayuda, etc).
 
-4. Árbol de Dependencias/Relaciones (Completado)
-Visualiza cómo se conectan tareas, elementos o ideas dentro de la pizarra en un árbol dinámico, para gestión de proyectos complejos.
+🟩 2. Estructura sugerida de navbar (listo para 60+ funciones)
+Imagina el navbar dividido en bloques:
 
-5. Integración de IA Visual (Completado)
-Analiza automáticamente la estructura del diagrama y sugiere optimizaciones visuales (espaciado, alineación, tamaño, contraste, legibilidad).
+less
+Copiar
+Editar
+[ ← Volver ] | [ Logo + Nombre editable ] | [ Guardar ] [ Exportar ] [ Compartir ] [ Presentar ] | [ Edición y gestión ] | [ Colaboración ] | [ Automatización ] | [ Ayuda/Opciones ] | [ Vista/Zoom ] | [ Salir ]
+Bloque 1: Navegación
 
-6. Explorador de Vistas Predefinidas (Completado)
-Permite guardar y cambiar entre “vistas” (por usuario, tipo de contenido, secciones, favoritos), tipo presets personalizables.
+Volver a paneles
 
-7. Elementos Interactivos Avanzados (Completado)
-Soporte para sliders, switches, encuestas en tiempo real, gráficos de votación o inputs interactivos directos dentro de la pizarra.
+Logo HoneyLabs mini
 
-8. Simulación de Procesos/Flujos (Completado)
-Anima flujos de trabajo o diagramas, mostrando cómo los datos/acciones fluyen a través de los nodos (ejemplo: simulador BPMN).
+Nombre de la pizarra (editable inline)
 
-9. Resaltado Automático por Actividad (Completado)
-Destaca áreas o elementos donde más usuarios interactúan, con calorimetría visual (“heatmap de uso”).
+Bloque 2: Acciones rápidas
 
-10. Reconocimiento de Voz y Dictado (Completado)
-Agregar notas, comandos o texto con voz, con transcripción automática a cualquier elemento o sticky note.
+Guardar
 
-11. Busqueda Semántica por IA (Completado)
-No solo palabras clave: busca conceptos, relaciones, incluso “lo que quiso decir” usando NLP avanzado.
+Exportar
 
-12. Roles Personalizados por Área o Elemento (Completado)
-Más granular: un usuario puede tener permiso de edición solo en un área/elemento, pero solo lectura en otra, y comentarios en una más.
+Compartir
 
-13. Enlaces Inteligentes (Smart Links)
-Conexión automática a recursos relacionados: arrastra una URL y la IA detecta si es PDF, video, tabla, y lo integra contextualizado.
+Presentar
 
-14. Control Remoto para Presentaciones
-Desde el móvil, controla la pizarra de escritorio como si fuera un clicker/puntero láser digital.
+Bloque 3: Edición y gestión
 
-15. Modo Torneo o Battle Mode
-Gamifica colaboraciones: usuarios pueden competir resolviendo retos, organizando ideas, completando tareas dentro de la pizarra (puntaje, medallas en tiempo real).
+Deshacer/Rehacer
 
-16. Vista de Dependencias/Impacto
-Visualiza qué elementos cambiarán si editas o mueves uno, y qué dependencias se verán afectadas (tipo “what if” analysis).
+Historial de cambios
 
-17. Temporizador y Cronómetro Integrado
-Para sprints, sesiones cronometradas de lluvia de ideas o gestión ágil de reuniones.
+Vista de cambios (comparar versiones)
 
-18. Gestión de Recursos Adjuntos
-Inventario visual de todos los archivos, imágenes, videos, audios y enlaces usados en la pizarra, con previsualización avanzada.
+Configuración avanzada (menú desplegable)
 
-19. Vista Modo Kanban o Gantt
-Convierte la pizarra (o secciones) a modo Kanban o Gantt dinámico para gestión de tareas y proyectos.
+Plantillas
 
-20. Mapa Mental Colaborativo Automático
-A partir de un texto, la IA genera un mapa mental editable, agrupando conceptos automáticamente.
+Vista Kanban/Gantt (si aplica)
 
-21. Sistema de Sugerencias de Mejora UX/UI
-Tipo “auditoría de usabilidad interna”, la IA revisa patrones de uso y sugiere cómo mejorar la disposición y experiencia.
+Editor de animaciones (si aplica)
 
-22. API Webhooks de Acciones
-Que la pizarra dispare webhooks ante ciertos eventos (ejemplo: guardado, nuevo comentario, nuevo usuario, etc) para integraciones sin código.
+Bloque 4: Colaboración
 
-23. Editor de Animaciones Personalizadas
-Permite animar elementos de la pizarra con keyframes, por ejemplo, para explicar conceptos complejos o dar vida a diagramas.
+Avatares en tiempo real
 
-24. Integración de Asistentes Virtuales
-Invoca un bot o asistente IA (tipo copiloto) para ayuda, sugerencias o para automatizar tareas recurrentes dentro de la pizarra.
+Comentarios
 
-25. Sandbox de Pruebas/Desarrollo
-Un entorno seguro para experimentar con cambios antes de aplicarlos a la pizarra principal, con opción de hacer merge.
+Chat contextual
 
-26. Analítica de Participación Avanzada
-No solo quién editó, sino patrones de interacción, tiempos activos, tipo de contribución, y análisis visual de colaboración.
+Notificaciones
 
-27. Editor de Audio Colaborativo
-Permite grabar, subir, editar y anotar audios en vivo o para explicaciones rápidas, con reproducción sincronizada.
+Roles y permisos
 
-28. Integración de Widgets IoT/Exteriores
-Muestra sensores, data en vivo o dashboards externos embebidos directamente como bloques.
+Bloque 5: Automatización y analítica
 
-29. Vista “Histórico Visual”
-Una línea de tiempo animada tipo video time-lapse, mostrando gráficamente cómo fue creciendo y cambiando la pizarra.
+Macros/automatización
 
-30. Modo Código/Automatización Avanzada
-Permite crear “scripts” visuales o con un mini editor de código, para automatizar tareas, validar flujos, hacer cálculos o pruebas directas sobre los elementos de la pizarra.
+Panel de métricas
 
-Bonus (por si quieres más):
-Integración de Blockchain para auditoría/firmas de cambios importantes.
+Integración IA (botón desplegable)
 
-Modo “Espectador Silencioso” para usuarios que solo observan sin interactuar, ideal para auditorías o clases.
+Wiki/documentación
 
-Copilot IA para “resumir” la pizarra en tiempo real.
+Webhooks/API
 
-Multi-idioma colaborativo, con traducción en vivo de notas/comentarios.
+Bloque 6: Personalización y ayuda
+
+Selector de temas (claro/oscuro)
+
+Ayuda/tutorial
+
+Atajos de teclado
+
+Wiki/documentación
+
+Configuración personal
+
+Bloque 7: Vista y zoom
+
+Zoom in/out, fit to screen, mini mapa
+
+Selector de vistas/presets
+
+Bloque 8: Salir
+
+Salir/cerrar pizarra
+
+Cada bloque se puede convertir en un menú desplegable si tienes muchas opciones. Así el navbar nunca se satura y sigue siendo intuitivo.
+
+🟦 3. Estructura visual y lógica del navbar en código (ejemplo base)
+
+Cada Dropdown puede ser un menú de opciones relacionadas para no saturar el espacio.
+
+🟨 4. Al crear una pizarra nueva, que esté REALMENTE en blanco
+Requisitos:
+
+Sin widgets ni tarjetas pre-cargadas.
+
+Solo muestra la superficie de la pizarra (canvas) y el navbar superior.
+
+Quizá solo una pequeña indicación visual (placeholder discreto tipo “Haz clic derecho o usa el botón [+] para agregar tu primer elemento”).
+
+Todos los menús deben estar activos y listos para añadir, pero ningún elemento en el canvas por defecto.
+
+Lógica para la IA/desarrollador:
+
+Si se detecta que la pizarra no contiene ningún elemento en su estructura de datos, no renderices ningún widget/complemento. Solo el canvas vacío y el navbar. Muestra, si quieres, una ayuda contextual minimalista solo hasta que el usuario agregue algo.
+
+🟧 5. Tips de UX adicionales
+El navbar debe ser responsive y scrollable si hay muchas funciones.
+
+En mobile/tablet, convierte bloques en menús hamburger o tabs laterales.
+
+Usa iconos claros y tooltips en todos los botones.
+
+Al agregar nuevas funciones, solo debes crear un nuevo bloque/grupo en el navbar, sin modificar toda la estructura base.
+
