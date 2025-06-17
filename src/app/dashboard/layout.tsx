@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import useSession from "@/hooks/useSession";
 import Sidebar from "./components/Sidebar";
 import NavbarDashboard from "./components/NavbarDashboard";
-import NavbarPizarra from "./pizarra/components/NavbarPizarra";
+import NavbarPaneles from "./paneles/components/NavbarPaneles";
 import Spinner from "@/components/Spinner";
 import { DashboardUIProvider, useDashboardUI } from "./ui";
 import {
@@ -68,7 +68,7 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
   // Altura del navbar
   const navbarHeight = NAVBAR_HEIGHT;
   const isAlmacenDetail = /^\/dashboard\/almacenes\/\d+(\/|$)/.test(pathname);
-  const isPizarra = pathname.startsWith('/dashboard/pizarra');
+  const isPanel = pathname.startsWith('/dashboard/paneles');
 
   return (
     <div
@@ -90,8 +90,8 @@ function ProtectedDashboard({ children }: { children: React.ReactNode }) {
           data-oid="taw.mzt"
         >
           {usuario && (
-            isPizarra ? (
-              <NavbarPizarra />
+            isPanel ? (
+              <NavbarPaneles />
             ) : (
               <NavbarDashboard usuario={usuario} data-oid="m6qmdem" />
             )

@@ -1,5 +1,5 @@
 1. Catálogo de Plantillas Visuales
-Pizarra en blanco: Comienza desde cero con un lienzo completamente vacío para máxima libertad creativa.
+Pizarra en blanco: Comienza desde cero con un lienzo completamente vacío para máxima libertad creativa. (Completado)
 
 Diagramas de flujo: Plantilla optimizada para crear flujos de procesos, decisiones y rutas de trabajo.
 
@@ -14,18 +14,18 @@ Escritura de ideas: Espacio estructurado para organizar notas, esquemas y puntos
 Más plantillas: Posibilidad de explorar y personalizar nuevas plantillas a medida que el sistema crece.
 
 2. Creación y Guardado de Pizarras
-Botón “Crear nuevo”: Permite iniciar una pizarra desde cualquier plantilla o en blanco.
+Botón “Crear nuevo”: Permite iniciar una pizarra desde cualquier plantilla o en blanco. (Completado)
 
-Guardado automático: Todo el trabajo realizado en cada pizarra se guarda automáticamente y puede recuperarse en cualquier momento.
+Guardado automático: Todo el trabajo realizado en cada pizarra se guarda automáticamente y puede recuperarse en cualquier momento. (Completado)
 
-Historial de guardados: Acceso fácil a todos los paneles y pizarras creadas o modificadas previamente, con filtros por fecha, propietario, estado o tipo de plantilla.
+Historial de guardados: Acceso fácil a todos los paneles y pizarras creadas o modificadas previamente, con filtros por fecha, propietario, estado o tipo de plantilla. (Completado)
 
 3. Panel de historial y gestión
-Lista de pizarras guardadas: Visualización clara y ordenada de todos los tableros y pizarras del usuario o del equipo.
+Lista de pizarras guardadas: Visualización clara y ordenada de todos los tableros y pizarras del usuario o del equipo. (Completado)
 
-Nombre de la pizarra.
+Nombre de la pizarra. (Completado)
 
-Fecha de última modificación.
+Fecha de última modificación. (Completado)
 
 Estado (solo lectura, editable, archivado, etc.).
 
