@@ -3,6 +3,10 @@
 - Al crear una auditoría se registra la fecha actual.
 ## 0.2.228
 - Corregimos enlace en la sección Acerca para usar Link sin anidarlo en un `<a>`.
+## 0.2.229
+- Añadimos buscador y secciones extra al navbar del dashboard.
+- Panel principal ahora permite desplazamiento infinito y widgets superpuestos.
+- Las capas y posiciones se guardan en la base de datos.
 ## 0.2.225
 - Añadimos vista general de auditorías con filtros en tiempo real.
 - Unificamos nombres de objetos al listar auditorías.

@@ -8,6 +8,8 @@ import useSession from "@/hooks/useSession";
 
 import dynamic from "next/dynamic";
 import GridLayout, { Layout } from "react-grid-layout";
+
+type LayoutItem = Layout & { z?: number };
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 
@@ -30,7 +32,7 @@ export default function DashboardPage() {
 
   const [catalogo, setCatalogo] = useState<WidgetMeta[]>([]);
   const [widgets, setWidgets] = useState<string[]>([]);
-  const [layout, setLayout] = useState<Layout[]>([]);
+  const [layout, setLayout] = useState<LayoutItem[]>([]);
   const [componentes, setComponentes] = useState<{ [key: string]: any }>({});
   const [errores, setErrores] = useState<{ [key: string]: boolean }>({});
 
@@ -74,9 +76,9 @@ export default function DashboardPage() {
           h: w.h || 2,
           minW: w.minW || 2,
           minH: w.minH || 2,
+          z: i + 1,
         }));
-
-        let saved: { widgets: string[]; layout: Layout[] } | null = null;
+        let saved: { widgets: string[]; layout: LayoutItem[] } | null = null;
         try {
           const resLayout = await apiFetch("/api/dashboard/layout");
           if (resLayout.ok) saved = await jsonOrNull(resLayout);
@@ -132,6 +134,7 @@ export default function DashboardPage() {
     );
 
     setWidgets([...widgets, key]);
+    const maxZ = layout.reduce((m, it) => Math.max(m, it.z || 0), 0);
     setLayout([
       ...layout,
       {
@@ -142,8 +145,18 @@ export default function DashboardPage() {
         h: widget.h || 2,
         minW: widget.minW || 2,
         minH: widget.minH || 2,
+        z: maxZ + 1,
       },
     ]);
+  };
+
+  const bringToFront = (id: string) => {
+    setLayout((prev) => {
+      const maxZ = prev.reduce((m, it) => Math.max(m, it.z || 0), 0);
+      return prev.map((it) =>
+        it.i === id ? { ...it, z: maxZ + 1 } : it,
+      );
+    });
   };
 
   // Quitar widget
@@ -169,7 +182,7 @@ export default function DashboardPage() {
     );
 
   return (
-    <div className="min-h-screen p-4 sm:p-8" data-oid="japsa91">
+    <div className="min-h-screen p-4 sm:p-8 overflow-auto" data-oid="japsa91">
       <div
         className="flex items-center justify-between mb-5"
         data-oid="zm1.jco"
@@ -199,15 +212,27 @@ export default function DashboardPage() {
 
       <GridLayout
         layout={layout}
-        cols={6}
+        cols={12}
         rowHeight={95}
-        width={1100}
+        width={1600}
         isResizable
         isDraggable
-        onLayoutChange={setLayout}
+        preventCollision={false}
+        compactType={null}
+        allowOverlap
+        autoSize={false}
+        onLayoutChange={(l) =>
+          setLayout((prev) =>
+            l.map((it) => {
+              const found = prev.find((p) => p.i === it.i);
+              return { ...found, ...it } as LayoutItem;
+            }),
+          )
+        }
         draggableHandle=".dashboard-widget-card"
         margin={[18, 18]}
         data-oid="hxrbk.e"
+        style={{ minHeight: "100vh" }}
       >
         {widgets.map((key) => {
           const Widget = componentes[key];
@@ -256,8 +281,15 @@ export default function DashboardPage() {
           }
 
           // Si todo bien, renderiza el widget
+          const item = layout.find((l) => l.i === key);
           return (
-            <div key={key} className="dashboard-widget-card" data-oid="ldgxhem">
+            <div
+              key={key}
+              className="dashboard-widget-card"
+              style={{ zIndex: item?.z || 1 }}
+              onMouseDown={() => bringToFront(key)}
+              data-oid="ldgxhem"
+            >
               <Widget usuario={usuario} data-oid="c3illgc" />
               <button
                 onClick={() => handleRemoveWidget(key)}
