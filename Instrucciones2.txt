@@ -112,13 +112,13 @@ Galería de iconos, imágenes y figuras: biblioteca propia, con opción de carga
 
 Soporte para subir y visualizar videos, PDFs, documentos y enlaces web dentro de la pizarra. (Completado)
 
-Integraciones API externas: conecta con Google Drive, Dropbox, Slack, MS Teams, Jira, Trello y más.
+Integraciones API externas: conecta con Google Drive, Dropbox, Slack, MS Teams, Jira, Trello y más. (Completado)
 
-Macros y automatización por usuario: define acciones automáticas como limpiar pizarra, exportar cada hora, enviar notificación por cambio, etc.
+Macros y automatización por usuario: define acciones automáticas como limpiar pizarra, exportar cada hora, enviar notificación por cambio, etc. (Completado)
 
-Comparación de versiones lado a lado.
+Comparación de versiones lado a lado. (Completado)
 
-Plantillas públicas, privadas y comunidad: explora, usa y comparte diseños.
+Plantillas públicas, privadas y comunidad: explora, usa y comparte diseños. (Completado)
 
 Gamificación (medallas, logros, uso avanzado, colaboración, etc).
 
