@@ -1,3 +1,5 @@
+## 0.2.232
+- Rediseñamos la vista de paneles con plantillas rápidas y filtros de historial.
 ## 0.2.231
 - Corregimos la ruta de importación de widgets en la vista de paneles.
 ## 0.2.227
