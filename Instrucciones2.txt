@@ -52,7 +52,7 @@ Permisos granulares: puedes dar acceso total, solo lectura, o solo comentarios a
 
 Sistema de comentarios anclados: agrega comentarios en puntos o elementos concretos.
 
-Mini mapa interactivo: vista miniatura para navegar pizarras grandes.
+Mini mapa interactivo: vista miniatura para navegar pizarras grandes. (Completado)
 
 Notificaciones en vivo: alerta de cambios, menciones y nuevas versiones en la pizarra.
 

@@ -9,6 +9,7 @@ import { useParams } from "next/navigation";
 import { usePanelOps } from "../PanelOpsContext";
 
 import CommentsPanel from "../components/CommentsPanel";
+import Minimap from "../components/Minimap";
 
 import dynamic from "next/dynamic";
 import GridLayout, { Layout } from "react-grid-layout";
@@ -53,6 +54,7 @@ export default function PanelPage() {
   const [layout, setLayout] = useState<LayoutItem[]>([]);
   const [componentes, setComponentes] = useState<{ [key: string]: any }>({});
   const [errores, setErrores] = useState<{ [key: string]: boolean }>({});
+  const containerRef = useRef<HTMLDivElement>(null);
   const {
     setGuardar,
     setMostrarHistorial,
@@ -317,7 +319,7 @@ export default function PanelPage() {
   });
 
   return (
-    <div className="min-h-screen p-4 sm:p-8 overflow-auto" data-oid="japsa91">
+    <div ref={containerRef} className="min-h-screen p-4 sm:p-8 overflow-auto" data-oid="japsa91">
       <div
         className="flex items-center justify-between mb-5"
         data-oid="zm1.jco"
@@ -494,6 +496,7 @@ export default function PanelPage() {
           }
         />
       )}
+      <Minimap layout={layout} zoom={zoom} containerRef={containerRef} />
     </div>
   );
 }
