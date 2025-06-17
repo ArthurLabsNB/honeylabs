@@ -10,6 +10,7 @@ import html2canvas from 'html2canvas';
 import { jsonOrNull } from "@lib/http";
 import { usePanelOps } from "../PanelOpsContext";
 import usePanelPresence from "@/hooks/usePanelPresence";
+import { buildEventoICS } from '@lib/calendar';
 
 export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: () => void }) {
   const { usuario } = useSession();
@@ -33,6 +34,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
     }
   });
   const [openHelp, setOpenHelp] = useState(false);
+  const [openWiki, setOpenWiki] = useState(false);
   const conectados = usePanelPresence(panelId, usuario);
   const {
     guardar,
@@ -61,6 +63,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
       setOpenShare(false);
       setOpenConfig(false);
       setOpenHelp(false);
+      setOpenWiki(false);
     };
     document.addEventListener("click", close);
     return () => document.removeEventListener("click", close);
@@ -88,6 +91,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
         setOpenShare(false)
         setOpenConfig(false)
         setOpenHelp(false)
+        setOpenWiki(false)
       } else if (e.key === '/' && document.activeElement !== searchRef.current) {
         e.preventDefault()
         searchRef.current?.focus()
@@ -141,6 +145,17 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
       a.href = url;
       a.download = `pizarra_${panelId}.png`;
       a.click();
+    } else if (formato === 'ics') {
+      const start = new Date();
+      const end = new Date(start.getTime() + 60 * 60 * 1000);
+      const ics = buildEventoICS(nombre || `Pizarra ${panelId}`, start, end);
+      const blob = new Blob([ics], { type: 'text/calendar' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `pizarra_${panelId}.ics`;
+      a.click();
+      URL.revokeObjectURL(url);
     } else {
       alert(`Exportar ${formato} no implementado`);
     }
@@ -237,7 +252,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
           </button>
           {openExport && (
             <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10">
-              {['pdf','png','svg','json'].map((f) => (
+              {['pdf','png','svg','json','ics'].map((f) => (
                 <button
                   key={f}
                   onClick={() => {
@@ -360,7 +375,24 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
             </div>
           )}
         </div>
-        <div className="relative" onClick={(e) => e.stopPropagation()}> 
+        <div className="relative" onClick={(e) => e.stopPropagation()}>
+          <button onClick={() => setOpenWiki((o) => !o)} className="px-3 py-1 rounded bg-white/10 text-sm">
+            Wiki
+          </button>
+          {openWiki && (
+            <div
+              className="fixed inset-0 z-40 bg-black/60 flex items-center justify-center"
+              onClick={() => setOpenWiki(false)}
+            >
+              <iframe
+                src="/wiki"
+                className="bg-white w-11/12 h-5/6 rounded-lg"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+          )}
+        </div>
+        <div className="relative" onClick={(e) => e.stopPropagation()}>
           <button onClick={() => setOpenHelp((o) => !o)} className="px-3 py-1 rounded bg-white/10 text-sm">
             Ayuda
           </button>
