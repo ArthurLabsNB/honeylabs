@@ -10,6 +10,8 @@ interface Ops {
   setUndo: (fn: () => void) => void
   redo: () => void
   setRedo: (fn: () => void) => void
+  readOnly: boolean
+  toggleReadOnly: () => void
 }
 
 const PanelOpsContext = createContext<Ops>({
@@ -21,6 +23,8 @@ const PanelOpsContext = createContext<Ops>({
   setUndo: () => {},
   redo: () => {},
   setRedo: () => {},
+  readOnly: false,
+  toggleReadOnly: () => {},
 })
 
 export function PanelOpsProvider({ children }: { children: React.ReactNode }) {
@@ -28,6 +32,7 @@ export function PanelOpsProvider({ children }: { children: React.ReactNode }) {
   const [mostrarFn, setMostrarFn] = useState<() => void>(() => {});
   const [undoFn, setUndoFn] = useState<() => void>(() => {});
   const [redoFn, setRedoFn] = useState<() => void>(() => {});
+  const [readOnly, setReadOnly] = useState(false);
   return (
     <PanelOpsContext.Provider
       value={{
@@ -39,6 +44,8 @@ export function PanelOpsProvider({ children }: { children: React.ReactNode }) {
         setUndo: setUndoFn,
         redo: redoFn,
         setRedo: setRedoFn,
+        readOnly,
+        toggleReadOnly: () => setReadOnly((v) => !v),
       }}
     >
       {children}

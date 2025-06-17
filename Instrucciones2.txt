@@ -21,7 +21,7 @@ Botón “Historial”: accede al historial de cambios y versiones. (Completado)
 
 Botón “Deshacer/Rehacer”: permite revertir o rehacer acciones recientes. (Completado)
 
-Botón “Presentar”: activa el modo presentación para mostrar la pizarra a otros.
+Botón “Presentar”: activa el modo presentación para mostrar la pizarra a otros. (Completado)
 
 Botón de “Vista de cambios”: compara dos versiones diferentes en paralelo.
 
@@ -42,7 +42,7 @@ Selector de vista/zoom: controla el zoom, ajusta vista al área activa o toda la
 B. Lógica de Acciones dentro de la Pizarra (UX, interacción y flujo)
 Autosave avanzado: guardado automático con versiones de respaldo. (Completado)
 
-Modo solo lectura/presentación: la pizarra se bloquea y solo puede ser vista, ideal para presentaciones.
+Modo solo lectura/presentación: la pizarra se bloquea y solo puede ser vista, ideal para presentaciones. (Completado)
 
 Edición colaborativa en tiempo real: cambios sincronizados instantáneamente.
 

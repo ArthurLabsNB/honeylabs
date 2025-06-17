@@ -19,7 +19,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   const [saving, setSaving] = useState<"idle" | "saving" | "saved">("idle");
   const [openExport, setOpenExport] = useState(false);
   const [openShare, setOpenShare] = useState(false);
-  const { guardar, undo, redo } = usePanelOps();
+  const { guardar, undo, redo, readOnly, toggleReadOnly } = usePanelOps();
   const router = useRouter();
 
   useEffect(() => {
@@ -171,6 +171,9 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
         </button>
         <button onClick={redo} className="px-3 py-1 rounded bg-white/10 text-sm" title="Rehacer">
           ↷
+        </button>
+        <button onClick={toggleReadOnly} className="px-3 py-1 rounded bg-white/10 text-sm">
+          {readOnly ? 'Editar' : 'Presentar'}
         </button>
         <button onClick={onShowHistory} className="px-3 py-1 rounded bg-white/10 text-sm">
           Historial

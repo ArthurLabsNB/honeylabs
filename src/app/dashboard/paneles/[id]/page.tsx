@@ -44,7 +44,7 @@ export default function PanelPage() {
   const [layout, setLayout] = useState<LayoutItem[]>([]);
   const [componentes, setComponentes] = useState<{ [key: string]: any }>({});
   const [errores, setErrores] = useState<{ [key: string]: boolean }>({});
-  const { setGuardar, setMostrarHistorial, setUndo, setRedo } = usePanelOps();
+  const { setGuardar, setMostrarHistorial, setUndo, setRedo, readOnly } = usePanelOps();
   const [openHist, setOpenHist] = useState(false);
   const [historial, setHistorial] = useState<HistEntry[]>([]);
   const [undoHist, setUndoHist] = useState<{ widgets: string[]; layout: LayoutItem[] }[]>([])
@@ -274,22 +274,24 @@ export default function PanelPage() {
           Panel
         </h1>
         <div className="flex items-center gap-2" data-oid="kuayohc">
-          <select
-            onChange={(e) => handleAddWidget(e.target.value)}
-            value=""
-            data-oid="1cmvbl6"
-          >
-            <option disabled value="" data-oid="mdilp3j">
-              Agregar widget...
-            </option>
-            {catalogo
-              .filter((w) => !widgets.includes(w.key))
-              .map((w) => (
-                <option key={w.key} value={w.key} data-oid="i6tnk:1">
-                  {w.title}
-                </option>
-              ))}
-          </select>
+          {!readOnly && (
+            <select
+              onChange={(e) => handleAddWidget(e.target.value)}
+              value=""
+              data-oid="1cmvbl6"
+            >
+              <option disabled value="" data-oid="mdilp3j">
+                Agregar widget...
+              </option>
+              {catalogo
+                .filter((w) => !widgets.includes(w.key))
+                .map((w) => (
+                  <option key={w.key} value={w.key} data-oid="i6tnk:1">
+                    {w.title}
+                  </option>
+                ))}
+            </select>
+          )}
         </div>
       </div>
 
@@ -298,8 +300,8 @@ export default function PanelPage() {
         cols={12}
         rowHeight={95}
         width={1600}
-        isResizable
-        isDraggable
+        isResizable={!readOnly}
+        isDraggable={!readOnly}
         preventCollision={false}
         compactType={null}
         allowOverlap
@@ -351,14 +353,16 @@ export default function PanelPage() {
                   Widget <b data-oid="9spv7ji">{widgetMeta?.title || key}</b> no
                   disponible.
                 </span>
-                <button
-                  className="ml-4 text-xs text-red-500 underline"
-                  onClick={() => handleRemoveWidget(key)}
-                  title="Quitar widget problemático"
-                  data-oid="2.9u:_t"
-                >
-                  Quitar
-                </button>
+                {!readOnly && (
+                  <button
+                    className="ml-4 text-xs text-red-500 underline"
+                    onClick={() => handleRemoveWidget(key)}
+                    title="Quitar widget problemático"
+                    data-oid="2.9u:_t"
+                  >
+                    Quitar
+                  </button>
+                )}
               </div>
             );
           }
@@ -374,14 +378,16 @@ export default function PanelPage() {
               data-oid="ldgxhem"
             >
               <Widget usuario={usuario} data-oid="c3illgc" />
-              <button
-                onClick={() => handleRemoveWidget(key)}
-                title="Eliminar widget"
-                className="absolute top-2 right-2 text-lg text-gray-400 hover:text-red-600"
-                data-oid="9b3gzg4"
-              >
-                ✕
-              </button>
+              {!readOnly && (
+                <button
+                  onClick={() => handleRemoveWidget(key)}
+                  title="Eliminar widget"
+                  className="absolute top-2 right-2 text-lg text-gray-400 hover:text-red-600"
+                  data-oid="9b3gzg4"
+                >
+                  ✕
+                </button>
+              )}
             </div>
           );
         })}
