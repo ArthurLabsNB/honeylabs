@@ -12,6 +12,8 @@ interface Ops {
   setRedo: (fn: () => void) => void
   readOnly: boolean
   toggleReadOnly: () => void
+  zoom: number
+  setZoom: (z: number) => void
 }
 
 const PanelOpsContext = createContext<Ops>({
@@ -25,6 +27,8 @@ const PanelOpsContext = createContext<Ops>({
   setRedo: () => {},
   readOnly: false,
   toggleReadOnly: () => {},
+  zoom: 1,
+  setZoom: () => {},
 })
 
 export function PanelOpsProvider({ children }: { children: React.ReactNode }) {
@@ -33,6 +37,7 @@ export function PanelOpsProvider({ children }: { children: React.ReactNode }) {
   const [undoFn, setUndoFn] = useState<() => void>(() => {});
   const [redoFn, setRedoFn] = useState<() => void>(() => {});
   const [readOnly, setReadOnly] = useState(false);
+  const [zoom, setZoom] = useState(1);
   return (
     <PanelOpsContext.Provider
       value={{
@@ -46,6 +51,8 @@ export function PanelOpsProvider({ children }: { children: React.ReactNode }) {
         setRedo: setRedoFn,
         readOnly,
         toggleReadOnly: () => setReadOnly((v) => !v),
+        zoom,
+        setZoom,
       }}
     >
       {children}

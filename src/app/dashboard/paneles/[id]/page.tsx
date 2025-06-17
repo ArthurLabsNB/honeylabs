@@ -44,7 +44,7 @@ export default function PanelPage() {
   const [layout, setLayout] = useState<LayoutItem[]>([]);
   const [componentes, setComponentes] = useState<{ [key: string]: any }>({});
   const [errores, setErrores] = useState<{ [key: string]: boolean }>({});
-  const { setGuardar, setMostrarHistorial, setUndo, setRedo, readOnly } = usePanelOps();
+  const { setGuardar, setMostrarHistorial, setUndo, setRedo, readOnly, zoom } = usePanelOps();
   const [openHist, setOpenHist] = useState(false);
   const [historial, setHistorial] = useState<HistEntry[]>([]);
   const [undoHist, setUndoHist] = useState<{ widgets: string[]; layout: LayoutItem[] }[]>([])
@@ -295,6 +295,7 @@ export default function PanelPage() {
         </div>
       </div>
 
+      <div style={{ transform: `scale(${zoom})`, transformOrigin: 'top left' }}>
       <GridLayout
         layout={layout}
         cols={12}
@@ -392,6 +393,7 @@ export default function PanelPage() {
           );
         })}
       </GridLayout>
+      </div>
       {openHist && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40">
           <div className="bg-[var(--dashboard-card)] p-4 rounded max-h-[80vh] overflow-auto w-80">

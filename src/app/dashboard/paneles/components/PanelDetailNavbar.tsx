@@ -19,7 +19,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   const [saving, setSaving] = useState<"idle" | "saving" | "saved">("idle");
   const [openExport, setOpenExport] = useState(false);
   const [openShare, setOpenShare] = useState(false);
-  const { guardar, undo, redo, readOnly, toggleReadOnly } = usePanelOps();
+  const { guardar, undo, redo, readOnly, toggleReadOnly, zoom, setZoom } = usePanelOps();
   const router = useRouter();
 
   useEffect(() => {
@@ -165,6 +165,18 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
               </button>
             </div>
           )}
+        </div>
+        <div className="flex items-center gap-1">
+          <input
+            type="range"
+            min="0.5"
+            max="2"
+            step="0.1"
+            value={zoom}
+            onChange={(e) => setZoom(parseFloat(e.target.value))}
+            className="h-2 w-24"
+          />
+          <span className="text-xs w-10 text-center">{Math.round(zoom * 100)}%</span>
         </div>
         <button onClick={undo} className="px-3 py-1 rounded bg-white/10 text-sm" title="Deshacer">
           ↶
