@@ -15,7 +15,7 @@ Indicador de estado de guardado: muestra “Guardando.../Guardado” en tiempo r
 
 Botón “Exportar”: abre menú para descargar la pizarra (PDF, PNG, SVG, JSON). (Completado)
 
-Botón “Compartir”: abre opciones de invitación por enlace, usuarios, o configuración de permisos.
+Botón “Compartir”: abre opciones de invitación por enlace, usuarios, o configuración de permisos. (Completado)
 
 Botón “Historial”: accede al historial de cambios y versiones. (Completado)
 
@@ -29,7 +29,7 @@ Botón “Configuración”: permite ajustar opciones avanzadas de la pizarra (p
 
 Botón “Ayuda”: acceso directo a tips, tutoriales y atajos del sistema.
 
-Botón “Salir/Cerrar pizarra”: retorna a la vista de paneles sin perder cambios.
+Botón “Salir/Cerrar pizarra”: retorna a la vista de paneles sin perder cambios. (Completado)
 
 Avatares de colaboradores: muestra quién está conectado editando en tiempo real.
 
