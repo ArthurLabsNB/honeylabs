@@ -622,7 +622,7 @@ const viewHist = () => {
     setLayout(entry.estado.layout);
   };
 
-  const undo = () => {
+  const undo = useCallback(() => {
     if (undoIdx <= 0) return
     const prev = undoHist[undoIdx - 1]
     if (!prev) return
@@ -630,9 +630,9 @@ const viewHist = () => {
     setWidgets(prev.widgets)
     setLayout(prev.layout)
     setUndoIdx((i) => i - 1)
-  }
+  }, [undoIdx, undoHist])
 
-  const redo = () => {
+  const redo = useCallback(() => {
     if (undoIdx >= undoHist.length - 1) return
     const next = undoHist[undoIdx + 1]
     if (!next) return
@@ -640,7 +640,7 @@ const viewHist = () => {
     setWidgets(next.widgets)
     setLayout(next.layout)
     setUndoIdx((i) => i + 1)
-  }
+  }, [undoIdx, undoHist])
 
   useEffect(() => {
     setUndo(() => undo);
