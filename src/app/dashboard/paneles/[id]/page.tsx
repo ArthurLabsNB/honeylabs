@@ -88,6 +88,9 @@ export default function PanelPage() {
   const [selected, setSelected] = useState<string[]>([])
   const [clipboard, setClipboard] = useState<{ key: string; layout: LayoutItem } | null>(null)
   const [diffData, setDiffData] = useState<{ prev: HistEntry; current: HistEntry } | null>(null);
+  const [diffList, setDiffList] = useState<HistEntry[]>([]);
+  const [diffIndexA, setDiffIndexA] = useState(-2);
+  const [diffIndexB, setDiffIndexB] = useState(-1);
   const [historial, setHistorial] = useState<HistEntry[]>([]);
   const [undoHist, setUndoHist] = useState<{ widgets: string[]; layout: LayoutItem[] }[]>([])
   const [undoIdx, setUndoIdx] = useState(-1)
@@ -329,14 +332,27 @@ export default function PanelPage() {
       .then(jsonOrNull)
       .then((d) => {
         const h: HistEntry[] = d.historial || [];
+        setDiffList(h);
         if (h.length >= 2) {
-          setDiffData({ prev: h[h.length - 2], current: h[h.length - 1] });
+          setDiffIndexA(h.length - 2);
+          setDiffIndexB(h.length - 1);
         } else {
-          setDiffData(null);
+          setDiffIndexA(-1);
+          setDiffIndexB(-1);
         }
       })
       .catch(() => {});
   }, [openDiff, usuario, panelId]);
+
+  useEffect(() => {
+    if (diffIndexA < 0 || diffIndexB < 0) {
+      setDiffData(null);
+      return;
+    }
+    if (diffList[diffIndexA] && diffList[diffIndexB]) {
+      setDiffData({ prev: diffList[diffIndexA], current: diffList[diffIndexB] });
+    }
+  }, [diffIndexA, diffIndexB, diffList]);
 
   // Agregar widget
   const handleAddWidget = (key: string) => {
@@ -808,15 +824,43 @@ const viewHist = () => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40">
           <div className="bg-[var(--dashboard-card)] p-4 rounded max-h-[80vh] overflow-auto w-[90vw] sm:w-[70vw]">
             <h2 className="font-semibold mb-2">Vista de cambios</h2>
-            {diffData ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                <pre className="p-2 bg-black/20 rounded overflow-auto whitespace-pre-wrap">
+            {diffList.length >= 2 ? (
+              <>
+                <div className="flex gap-2 text-xs mb-2">
+                  <select
+                    value={diffIndexA}
+                    onChange={(e) => setDiffIndexA(Number(e.target.value))}
+                    className="border p-1 rounded"
+                  >
+                    {diffList.map((h, i) => (
+                      <option key={i} value={i}>
+                        {new Date(h.fecha).toLocaleString()}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    value={diffIndexB}
+                    onChange={(e) => setDiffIndexB(Number(e.target.value))}
+                    className="border p-1 rounded"
+                  >
+                    {diffList.map((h, i) => (
+                      <option key={i} value={i}>
+                        {new Date(h.fecha).toLocaleString()}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {diffData && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    <pre className="p-2 bg-black/20 rounded overflow-auto whitespace-pre-wrap">
 {JSON.stringify(diffData.prev.estado, null, 2)}
 </pre>
-                <pre className="p-2 bg-black/20 rounded overflow-auto whitespace-pre-wrap">
+                    <pre className="p-2 bg-black/20 rounded overflow-auto whitespace-pre-wrap">
 {JSON.stringify(diffData.current.estado, null, 2)}
 </pre>
-              </div>
+                  </div>
+                )}
+              </>
             ) : (
               <p>No hay versiones suficientes.</p>
             )}
