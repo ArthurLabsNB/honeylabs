@@ -19,7 +19,7 @@ Botón “Compartir”: abre opciones de invitación por enlace, usuarios, o con
 
 Botón “Historial”: accede al historial de cambios y versiones. (Completado)
 
-Botón “Deshacer/Rehacer”: permite revertir o rehacer acciones recientes.
+Botón “Deshacer/Rehacer”: permite revertir o rehacer acciones recientes. (Completado)
 
 Botón “Presentar”: activa el modo presentación para mostrar la pizarra a otros.
 
@@ -76,7 +76,7 @@ Bloqueo de elementos: protege figuras importantes para que no se modifiquen acci
 
 Duplicado y clonación de elementos o grupos: haz copias rápidas y organiza flujos.
 
-Deshacer/rehacer ilimitado: vuelve a cualquier estado anterior durante la sesión.
+Deshacer/rehacer ilimitado: vuelve a cualquier estado anterior durante la sesión. (Completado)
 
 Zoom y paneo fluidos, incluso en pizarras gigantes.
 

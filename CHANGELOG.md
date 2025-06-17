@@ -1,3 +1,6 @@
+## 0.2.234
+- Implementamos deshacer y rehacer ilimitado en las pizarras.
+
 ## 0.2.233
 - Agregamos navbar independiente en las pizarras y ocultamos el resto del dashboard.
 - Mostramos el plan del usuario bajo el logo en la vista de paneles.
