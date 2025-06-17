@@ -44,25 +44,25 @@ Autosave avanzado: guardado automático con versiones de respaldo. (Completado)
 
 Modo solo lectura/presentación: la pizarra se bloquea y solo puede ser vista, ideal para presentaciones. (Completado)
 
-Edición colaborativa en tiempo real: cambios sincronizados instantáneamente.
+Edición colaborativa en tiempo real: cambios sincronizados instantáneamente. (Completado)
 
-Chat colaborativo contextual: panel de chat interno específico para la pizarra.
+Chat colaborativo contextual: panel de chat interno específico para la pizarra. (Completado)
 
 Permisos granulares: puedes dar acceso total, solo lectura, o solo comentarios a usuarios específicos.
 
-Sistema de comentarios anclados: agrega comentarios en puntos o elementos concretos.
+Sistema de comentarios anclados: agrega comentarios en puntos o elementos concretos. (Completado)
 
 Mini mapa interactivo: vista miniatura para navegar pizarras grandes. (Completado)
 
-Notificaciones en vivo: alerta de cambios, menciones y nuevas versiones en la pizarra.
+Notificaciones en vivo: alerta de cambios, menciones y nuevas versiones en la pizarra. (Completado)
 
 Visualización de actividad reciente: quién hizo qué y cuándo, con posibilidad de ver autoría de cada cambio.
 
-Modo oscuro y personalización de temas: elige color de fondo, tema claro/oscuro y estilos de líneas.
+Modo oscuro y personalización de temas: elige color de fondo, tema claro/oscuro y estilos de líneas. (Completado)
 
-Atajos de teclado personalizables: crea tus propios accesos rápidos.
+Atajos de teclado personalizables: crea tus propios accesos rápidos. (Completado)
 
-Soporte para markdown en notas/textos: notas rápidas y tarjetas con formato enriquecido.
+Soporte para markdown en notas/textos: notas rápidas y tarjetas con formato enriquecido. (Completado)
 
 Soporte para LaTeX: ecuaciones matemáticas y expresiones técnicas.
 
@@ -72,13 +72,13 @@ Snapping y alineación automática: ayuda a organizar elementos con precisión.
 
 Cuadrícula y reglas configurables: para diagramar con más control.
 
-Bloqueo de elementos: protege figuras importantes para que no se modifiquen accidentalmente.
+Bloqueo de elementos: protege figuras importantes para que no se modifiquen accidentalmente. (Completado)
 
-Duplicado y clonación de elementos o grupos: haz copias rápidas y organiza flujos.
+Duplicado y clonación de elementos o grupos: haz copias rápidas y organiza flujos. (Completado)
 
 Deshacer/rehacer ilimitado: vuelve a cualquier estado anterior durante la sesión. (Completado)
 
-Zoom y paneo fluidos, incluso en pizarras gigantes.
+Zoom y paneo fluidos, incluso en pizarras gigantes. (Completado)
 
 C. Menú Contextual (Clic derecho, lógica avanzada)
 Menú contextual sobre elementos:

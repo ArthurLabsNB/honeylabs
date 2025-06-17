@@ -42,5 +42,16 @@
     "minW": 2,
     "minH": 2,
     "plans": ["Free", "Pro", "Empresarial", "Institucional"]
+  },
+  {
+    "key": "markdown",
+    "title": "Markdown",
+    "file": "MarkdownWidget",
+    "category": "General",
+    "w": 3,
+    "h": 3,
+    "minW": 2,
+    "minH": 2,
+    "plans": ["Free", "Pro", "Empresarial", "Institucional"]
   }
 ]

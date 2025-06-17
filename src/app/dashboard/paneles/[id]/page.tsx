@@ -11,6 +11,7 @@ import { usePanelOps } from "../PanelOpsContext";
 import CommentsPanel from "../components/CommentsPanel";
 import ChatPanel from "../components/ChatPanel";
 import Minimap from "../components/Minimap";
+import { useToast } from "@/components/Toast";
 
 import dynamic from "next/dynamic";
 import GridLayout, { Layout } from "react-grid-layout";
@@ -47,6 +48,7 @@ interface Comment {
 
 export default function PanelPage() {
   const { usuario, loading } = useSession();
+  const toast = useToast();
   const params = useParams();
   const panelId = Array.isArray(params?.id) ? params.id[0] : (params as any)?.id;
 
@@ -84,6 +86,36 @@ export default function PanelPage() {
   const [readyHistory, setReadyHistory] = useState(false)
   const skipHistory = useRef(false)
   const { setUnsaved } = usePanelOps()
+  const bcRef = useRef<BroadcastChannel | null>(null)
+  const [shortcuts, setShortcuts] = useState(() => {
+    if (typeof window === 'undefined') return { undo: 'ctrl+z', redo: 'ctrl+shift+z' }
+    try {
+      const saved = JSON.parse(localStorage.getItem('panel-shortcuts') || '{}')
+      return { undo: 'ctrl+z', redo: 'ctrl+shift+z', ...saved }
+    } catch {
+      return { undo: 'ctrl+z', redo: 'ctrl+shift+z' }
+    }
+  })
+
+  useEffect(() => {
+    if (!panelId) return
+    const bc = new BroadcastChannel(`panel-sync-${panelId}`)
+    bcRef.current = bc
+    const handle = (e: MessageEvent<{ widgets: string[]; layout: LayoutItem[] }>) => {
+      const { widgets: w, layout: l } = e.data || {}
+      if (!Array.isArray(w) || !Array.isArray(l)) return
+      skipHistory.current = true
+      setWidgets(w)
+      setLayout(l as LayoutItem[])
+      toast.show('Pizarra actualizada', 'info')
+    }
+    bc.addEventListener('message', handle)
+    bc.postMessage({ widgets, layout })
+    return () => {
+      bc.removeEventListener('message', handle)
+      bc.close()
+    }
+  }, [panelId])
 
   useEffect(() => {
     if (!openChat || !usuario || !panelId) return
@@ -214,6 +246,7 @@ export default function PanelPage() {
     setUndoHist((h) => [...h.slice(0, undoIdx + 1), { widgets, layout }])
     setUndoIdx((i) => i + 1)
     setUnsaved(true)
+    bcRef.current?.postMessage({ widgets, layout })
   }, [widgets, layout])
 
   useEffect(() => {
@@ -243,18 +276,28 @@ export default function PanelPage() {
 
   useEffect(() => {
     const handle = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key === 'z') {
-        e.preventDefault();
-        undo();
+      const match = (combo: string) => {
+        const parts = combo.toLowerCase().split('+')
+        const key = parts.pop()
+        const ctrl = parts.includes('ctrl')
+        const shift = parts.includes('shift')
+        const alt = parts.includes('alt')
+        return (
+          (!!key && e.key.toLowerCase() === key) &&
+          (!!ctrl === e.ctrlKey) && (!!shift === e.shiftKey) && (!!alt === e.altKey)
+        )
       }
-      if ((e.ctrlKey && e.key === 'y') || (e.ctrlKey && e.shiftKey && e.key === 'Z')) {
-        e.preventDefault();
-        redo();
+      if (match(shortcuts.undo)) {
+        e.preventDefault()
+        undo()
+      } else if (match(shortcuts.redo)) {
+        e.preventDefault()
+        redo()
       }
     }
     window.addEventListener('keydown', handle)
     return () => window.removeEventListener('keydown', handle)
-  }, [undo, redo])
+  }, [undo, redo, shortcuts])
 
   useEffect(() => {
     if (!openHist || !usuario || !panelId) return;
@@ -392,6 +435,13 @@ export default function PanelPage() {
       className="min-h-screen p-4 sm:p-8 overflow-auto"
       data-oid="japsa91"
       style={showGrid ? { backgroundSize: '40px 40px', backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)' } : {}}
+      onWheel={e => {
+        if (e.ctrlKey) {
+          e.preventDefault()
+          const delta = e.deltaY > 0 ? -0.1 : 0.1
+          setZoom(z => Math.min(2, Math.max(0.5, Math.round((z + delta)*10)/10)))
+        }
+      }}
     >
       <div
         className="flex items-center justify-between mb-5"
