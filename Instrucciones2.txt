@@ -48,7 +48,7 @@ Edición colaborativa en tiempo real: cambios sincronizados instantáneamente. (
 
 Chat colaborativo contextual: panel de chat interno específico para la pizarra. (Completado)
 
-Permisos granulares: puedes dar acceso total, solo lectura, o solo comentarios a usuarios específicos.
+Permisos granulares: puedes dar acceso total, solo lectura, o solo comentarios a usuarios específicos. (Completado)
 
 Sistema de comentarios anclados: agrega comentarios en puntos o elementos concretos. (Completado)
 
@@ -56,7 +56,7 @@ Mini mapa interactivo: vista miniatura para navegar pizarras grandes. (Completad
 
 Notificaciones en vivo: alerta de cambios, menciones y nuevas versiones en la pizarra. (Completado)
 
-Visualización de actividad reciente: quién hizo qué y cuándo, con posibilidad de ver autoría de cada cambio.
+Visualización de actividad reciente: quién hizo qué y cuándo, con posibilidad de ver autoría de cada cambio. (Completado)
 
 Modo oscuro y personalización de temas: elige color de fondo, tema claro/oscuro y estilos de líneas. (Completado)
 
@@ -64,13 +64,13 @@ Atajos de teclado personalizables: crea tus propios accesos rápidos. (Completad
 
 Soporte para markdown en notas/textos: notas rápidas y tarjetas con formato enriquecido. (Completado)
 
-Soporte para LaTeX: ecuaciones matemáticas y expresiones técnicas.
+Soporte para LaTeX: ecuaciones matemáticas y expresiones técnicas. (Completado)
 
-Exportación por áreas: permite seleccionar y exportar solo partes de la pizarra.
+Exportación por áreas: permite seleccionar y exportar solo partes de la pizarra. (Completado)
 
-Snapping y alineación automática: ayuda a organizar elementos con precisión.
+Snapping y alineación automática: ayuda a organizar elementos con precisión. (Completado)
 
-Cuadrícula y reglas configurables: para diagramar con más control.
+Cuadrícula y reglas configurables: para diagramar con más control. (Completado)
 
 Bloqueo de elementos: protege figuras importantes para que no se modifiquen accidentalmente. (Completado)
 

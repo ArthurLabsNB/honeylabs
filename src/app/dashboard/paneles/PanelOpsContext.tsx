@@ -18,12 +18,15 @@ interface Ops {
   setMostrarChat: (fn: () => void) => void
   readOnly: boolean
   toggleReadOnly: () => void
+  setReadOnly?: (v: boolean) => void
   zoom: number
   setZoom: (z: number) => void
   buscar: string
   setBuscar: (term: string) => void
   showGrid: boolean
   toggleGrid: () => void
+  gridSize: number
+  setGridSize: (v: number) => void
   unsaved: boolean
   setUnsaved: (v: boolean) => void
 }
@@ -45,12 +48,15 @@ const PanelOpsContext = createContext<Ops>({
   setMostrarChat: () => {},
   readOnly: false,
   toggleReadOnly: () => {},
+  setReadOnly: () => {},
   zoom: 1,
   setZoom: () => {},
   buscar: '',
   setBuscar: () => {},
   showGrid: false,
   toggleGrid: () => {},
+  gridSize: 95,
+  setGridSize: () => {},
   unsaved: false,
   setUnsaved: () => {},
 })
@@ -67,6 +73,7 @@ export function PanelOpsProvider({ children }: { children: React.ReactNode }) {
   const [zoom, setZoom] = useState(1);
   const [buscar, setBuscar] = useState('');
   const [showGrid, setShowGrid] = useState(false);
+  const [gridSize, setGridSize] = useState(95);
   const [unsaved, setUnsaved] = useState(false);
   return (
     <PanelOpsContext.Provider
@@ -87,12 +94,15 @@ export function PanelOpsProvider({ children }: { children: React.ReactNode }) {
         setMostrarChat: setMostrarChatFn,
         readOnly,
         toggleReadOnly: () => setReadOnly((v) => !v),
+        setReadOnly,
         zoom,
         setZoom,
         buscar,
         setBuscar,
         showGrid,
         toggleGrid: () => setShowGrid((v) => !v),
+        gridSize,
+        setGridSize,
         unsaved,
         setUnsaved,
       }}

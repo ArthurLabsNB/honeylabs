@@ -6,13 +6,14 @@ interface Props {
   layout: Layout[];
   zoom: number;
   containerRef: React.RefObject<HTMLDivElement>;
+  gridSize: number;
 }
 
 const GRID_WIDTH = 1600;
 const COLS = 12;
-const ROW_HEIGHT = 95;
+const ROW_HEIGHT_DEFAULT = 95;
 
-export default function Minimap({ layout, zoom, containerRef }: Props) {
+export default function Minimap({ layout, zoom, containerRef, gridSize }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -21,8 +22,9 @@ export default function Minimap({ layout, zoom, containerRef }: Props) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const size = gridSize || ROW_HEIGHT_DEFAULT;
     const maxY = layout.reduce(
-      (m, it) => Math.max(m, (it.y + (it.h || 1)) * ROW_HEIGHT),
+      (m, it) => Math.max(m, (it.y + (it.h || 1)) * size),
       0,
     );
     const scaleX = canvas.width / (GRID_WIDTH * zoom);
@@ -33,9 +35,9 @@ export default function Minimap({ layout, zoom, containerRef }: Props) {
     ctx.strokeStyle = "rgba(255,255,255,0.8)";
     layout.forEach((it) => {
       const x = it.x * (GRID_WIDTH / COLS) * scaleX;
-      const y = it.y * ROW_HEIGHT * scaleY;
+      const y = it.y * size * scaleY;
       const w = (it.w || 1) * (GRID_WIDTH / COLS) * scaleX;
-      const h = (it.h || 1) * ROW_HEIGHT * scaleY;
+      const h = (it.h || 1) * size * scaleY;
       ctx.fillRect(x, y, w, h);
       ctx.strokeRect(x, y, w, h);
     });
@@ -44,7 +46,7 @@ export default function Minimap({ layout, zoom, containerRef }: Props) {
       ctx.strokeStyle = 'yellow';
       ctx.strokeRect(scrollLeft * scaleX, scrollTop * scaleY, clientWidth * scaleX, clientHeight * scaleY);
     }
-  }, [layout, zoom]);
+  }, [layout, zoom, gridSize]);
 
   const handleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
@@ -54,8 +56,9 @@ export default function Minimap({ layout, zoom, containerRef }: Props) {
     const xPct = (e.clientX - rect.left) / rect.width;
     const yPct = (e.clientY - rect.top) / rect.height;
 
+    const size = gridSize || ROW_HEIGHT_DEFAULT;
     const maxY = layout.reduce(
-      (m, it) => Math.max(m, (it.y + (it.h || 1)) * ROW_HEIGHT),
+      (m, it) => Math.max(m, (it.y + (it.h || 1)) * size),
       0,
     );
     const boardWidth = GRID_WIDTH * zoom;

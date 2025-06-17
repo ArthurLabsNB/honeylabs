@@ -67,8 +67,11 @@ export default function PanelPage() {
     setUndo,
     setRedo,
     readOnly,
+    setReadOnly,
     showGrid,
     toggleGrid,
+    gridSize,
+    setGridSize,
     zoom,
     buscar,
   } = usePanelOps();
@@ -181,7 +184,7 @@ export default function PanelPage() {
           z: i + 1,
           locked: false,
         }));
-        let saved: { widgets: string[]; layout: LayoutItem[] } | null = null;
+        let saved: { widgets: string[]; layout: LayoutItem[]; permiso?: string } | null = null;
         try {
           const resLayout = await apiFetch(`/api/paneles/${panelId}`);
           if (resLayout.ok) saved = (await jsonOrNull(resLayout)).panel;
@@ -207,6 +210,9 @@ export default function PanelPage() {
           setUndoHist([{ widgets: wid, layout: lay }])
           setUndoIdx(0)
           setReadyHistory(true)
+          if (saved.permiso && setReadOnly) {
+            setReadOnly(saved.permiso !== 'edicion')
+          }
         } else {
           const lay = defaultLayout.map(it => ({ locked: false, ...it }))
           const wid = permitidos.map((w: WidgetMeta) => w.key)
@@ -215,6 +221,7 @@ export default function PanelPage() {
           setUndoHist([{ widgets: wid, layout: lay }])
           setUndoIdx(0)
           setReadyHistory(true)
+          setReadOnly && setReadOnly(false)
         }
       } catch (err) {
         console.error("Error al cargar widgets:", err);
@@ -472,11 +479,11 @@ export default function PanelPage() {
         </div>
       </div>
 
-      <div style={{ transform: `scale(${zoom})`, transformOrigin: 'top left' }}>
+      <div id="panel-area" style={{ transform: `scale(${zoom})`, transformOrigin: 'top left' }}>
       <GridLayout
         layout={layout}
         cols={12}
-        rowHeight={95}
+        rowHeight={gridSize}
         width={1600}
         isResizable={!readOnly}
         isDraggable={!readOnly}
@@ -494,7 +501,7 @@ export default function PanelPage() {
           )
         }
         draggableHandle=".dashboard-widget-card"
-        margin={[18, 18]}
+        margin={[Math.round(gridSize / 5), Math.round(gridSize / 5)]}
         data-oid="hxrbk.e"
         style={{ minHeight: "100vh" }}
       >
@@ -556,7 +563,7 @@ export default function PanelPage() {
               onMouseDown={() => bringToFront(key)}
               data-oid="ldgxhem"
             >
-              <Widget usuario={usuario} data-oid="c3illgc" />
+              <Widget usuario={usuario} panelId={panelId} data-oid="c3illgc" />
               {!readOnly && (
                 <div className="absolute top-1 right-1 flex gap-1 text-xs">
                   <button
@@ -644,7 +651,7 @@ export default function PanelPage() {
         />
       )}
       {openChat && chatChannel !== null && <ChatPanel canalId={chatChannel} />}
-      <Minimap layout={layout} zoom={zoom} containerRef={containerRef} />
+      <Minimap layout={layout} zoom={zoom} containerRef={containerRef} gridSize={gridSize} />
     </div>
   );
 }
