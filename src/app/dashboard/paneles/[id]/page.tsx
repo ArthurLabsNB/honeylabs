@@ -351,8 +351,10 @@ export default function PanelPage() {
   }, [setMostrarChat]);
 
   useEffect(() => {
-    return () => saveCurrentSub()
-  }, [saveCurrentSub])
+    return () => {
+      saveCurrentSub()
+    }
+  }, [])
 
   
 
