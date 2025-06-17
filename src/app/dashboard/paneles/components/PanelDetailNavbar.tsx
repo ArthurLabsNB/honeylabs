@@ -2,7 +2,7 @@
 import { ArrowLeft, Download, Share2, LogOut } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import useSession from "@/hooks/useSession";
 import { apiFetch } from "@lib/api";
@@ -164,20 +164,20 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
     }
   };
 
-  const copyLink = () => {
+  const copyLink = useCallback(() => {
     const url = window.location.href;
     navigator.clipboard.writeText(url).then(
       () => alert("Enlace copiado"),
       () => prompt("Copia manualmente", url)
     );
-  };
+  }, []);
 
-  const salir = async () => {
-    await guardar();
-    await guardarNombre();
-    setUnsaved(false);
-    router.push("/dashboard/paneles");
-  };
+  const salir = useCallback(async () => {
+    await guardar()
+    await guardarNombre()
+    setUnsaved(false)
+    router.push('/dashboard/paneles')
+  }, [guardar, guardarNombre, router, setUnsaved])
 
   return (
     <header

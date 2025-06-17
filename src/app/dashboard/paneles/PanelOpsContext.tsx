@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useMemo } from "react";
 
 interface Ops {
   guardar: () => void
@@ -75,41 +75,55 @@ export function PanelOpsProvider({ children }: { children: React.ReactNode }) {
   const [showGrid, setShowGrid] = useState(false);
   const [gridSize, setGridSize] = useState(95);
   const [unsaved, setUnsaved] = useState(false);
+  const value = useMemo(
+    () => ({
+      guardar: guardarFn,
+      setGuardar: setGuardarFn,
+      mostrarHistorial: mostrarFn,
+      setMostrarHistorial: setMostrarFn,
+      undo: undoFn,
+      setUndo: setUndoFn,
+      redo: redoFn,
+      setRedo: setRedoFn,
+      mostrarCambios: mostrarCambiosFn,
+      setMostrarCambios: setMostrarCambiosFn,
+      mostrarComentarios: mostrarComentariosFn,
+      setMostrarComentarios: setMostrarComentariosFn,
+      mostrarChat: mostrarChatFn,
+      setMostrarChat: setMostrarChatFn,
+      readOnly,
+      toggleReadOnly: () => setReadOnly((v) => !v),
+      setReadOnly,
+      zoom,
+      setZoom,
+      buscar,
+      setBuscar,
+      showGrid,
+      toggleGrid: () => setShowGrid((v) => !v),
+      gridSize,
+      setGridSize,
+      unsaved,
+      setUnsaved,
+    }),
+    [
+      guardarFn,
+      mostrarFn,
+      mostrarCambiosFn,
+      mostrarComentariosFn,
+      mostrarChatFn,
+      undoFn,
+      redoFn,
+      readOnly,
+      zoom,
+      buscar,
+      showGrid,
+      gridSize,
+      unsaved,
+    ],
+  )
   return (
-    <PanelOpsContext.Provider
-      value={{
-        guardar: guardarFn,
-        setGuardar: setGuardarFn,
-        mostrarHistorial: mostrarFn,
-        setMostrarHistorial: setMostrarFn,
-        undo: undoFn,
-        setUndo: setUndoFn,
-        redo: redoFn,
-        setRedo: setRedoFn,
-        mostrarCambios: mostrarCambiosFn,
-        setMostrarCambios: setMostrarCambiosFn,
-        mostrarComentarios: mostrarComentariosFn,
-        setMostrarComentarios: setMostrarComentariosFn,
-        mostrarChat: mostrarChatFn,
-        setMostrarChat: setMostrarChatFn,
-        readOnly,
-        toggleReadOnly: () => setReadOnly((v) => !v),
-        setReadOnly,
-        zoom,
-        setZoom,
-        buscar,
-        setBuscar,
-        showGrid,
-        toggleGrid: () => setShowGrid((v) => !v),
-        gridSize,
-        setGridSize,
-        unsaved,
-        setUnsaved,
-      }}
-    >
-      {children}
-    </PanelOpsContext.Provider>
-  );
+    <PanelOpsContext.Provider value={value}>{children}</PanelOpsContext.Provider>
+  )
 }
 
 export function usePanelOps() {

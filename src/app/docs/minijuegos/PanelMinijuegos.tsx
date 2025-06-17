@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import SubirRomForm from "./SubirRomForm";
 import ListaJuegos from "./ListaJuegos";
 import EmuladorGBA from "./EmuladorGBA";
@@ -13,27 +13,28 @@ export type Juego = {
 };
 
 export default function PanelMinijuegos() {
-  const [juegoActual, setJuegoActual] = useState<Juego | null>(null);
-  const [iniciado, setIniciado] = useState(false);
+  const [juegoActual, setJuegoActual] = useState<Juego | null>(null)
+  const [iniciado, setIniciado] = useState(false)
+  const cerrar = useCallback(() => setJuegoActual(null), [])
 
   useEffect(() => {
-    if (!juegoActual) return;
-    document.body.style.overflow = "hidden";
+    if (!juegoActual) return
+    document.body.style.overflow = 'hidden'
     return () => {
-      document.body.style.overflow = "";
-    };
-  }, [juegoActual]);
+      document.body.style.overflow = ''
+    }
+  }, [juegoActual])
 
   useEffect(() => {
-    setIniciado(false);
-  }, [juegoActual]);
+    setIniciado(false)
+  }, [juegoActual])
 
   return (
     <div className="space-y-4">
       {juegoActual ? (
         <div>
           <button
-            onClick={() => setJuegoActual(null)}
+            onClick={cerrar}
             className="mb-2 px-3 py-1 rounded bg-miel text-[#22223b] font-bold text-xs shadow"
           >
             &larr; Volver
@@ -56,7 +57,7 @@ export default function PanelMinijuegos() {
         </div>
       ) : (
         <>
-          <SubirRomForm onUpload={() => setJuegoActual(null)} />
+          <SubirRomForm onUpload={cerrar} />
           <ListaJuegos onPlay={setJuegoActual} />
         </>
       )}
