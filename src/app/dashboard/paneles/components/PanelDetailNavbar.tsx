@@ -35,6 +35,10 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
     mostrarComentarios,
     buscar,
     setBuscar,
+    unsaved,
+    setUnsaved,
+    showGrid,
+    toggleGrid,
   } = usePanelOps();
   const router = useRouter();
 
@@ -99,6 +103,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   const salir = async () => {
     await guardar();
     await guardarNombre();
+    setUnsaved(false);
     router.push("/dashboard/paneles");
   };
 
@@ -124,7 +129,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
           />
         ) : (
           <span className="font-semibold text-sm cursor-text" onClick={() => setEdit(true)}>
-            {nombre}
+            {nombre} {unsaved ? '*' : ''}
           </span>
         )}
         <span className="absolute left-0 -bottom-4 text-xs text-gray-400">{plan}</span>
@@ -162,6 +167,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
           onClick={() => {
             guardar();
             guardarNombre();
+            setUnsaved(false);
           }}
           className="px-3 py-1 rounded bg-white/10 text-sm"
         >
@@ -232,6 +238,9 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
         </button>
         <button onClick={toggleReadOnly} className="px-3 py-1 rounded bg-white/10 text-sm">
           {readOnly ? 'Editar' : 'Presentar'}
+        </button>
+        <button onClick={toggleGrid} className="px-3 py-1 rounded bg-white/10 text-sm">
+          {showGrid ? 'Ocultar cuadricula' : 'Cuadricula'}
         </button>
         <button onClick={onShowHistory} className="px-3 py-1 rounded bg-white/10 text-sm">
           Historial

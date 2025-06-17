@@ -9,12 +9,13 @@ import { useParams } from "next/navigation";
 import { usePanelOps } from "../PanelOpsContext";
 
 import CommentsPanel from "../components/CommentsPanel";
+import ChatPanel from "../components/ChatPanel";
 import Minimap from "../components/Minimap";
 
 import dynamic from "next/dynamic";
 import GridLayout, { Layout } from "react-grid-layout";
 
-type LayoutItem = Layout & { z?: number };
+type LayoutItem = Layout & { z?: number; locked?: boolean };
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 
@@ -60,22 +61,50 @@ export default function PanelPage() {
     setMostrarHistorial,
     setMostrarCambios,
     setMostrarComentarios,
+    setMostrarChat,
     setUndo,
     setRedo,
     readOnly,
+    showGrid,
+    toggleGrid,
     zoom,
     buscar,
   } = usePanelOps();
   const [openHist, setOpenHist] = useState(false);
   const [openDiff, setOpenDiff] = useState(false);
-  const [openComments, setOpenComments] = useState(false);
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [openComments, setOpenComments] = useState(false)
+  const [openChat, setOpenChat] = useState(false)
+  const [chatChannel, setChatChannel] = useState<number | null>(null)
+  const [comments, setComments] = useState<Comment[]>([])
+  const [activeWidget, setActiveWidget] = useState<string | undefined>()
   const [diffData, setDiffData] = useState<{ prev: HistEntry; current: HistEntry } | null>(null);
   const [historial, setHistorial] = useState<HistEntry[]>([]);
   const [undoHist, setUndoHist] = useState<{ widgets: string[]; layout: LayoutItem[] }[]>([])
   const [undoIdx, setUndoIdx] = useState(-1)
   const [readyHistory, setReadyHistory] = useState(false)
   const skipHistory = useRef(false)
+  const { setUnsaved } = usePanelOps()
+
+  useEffect(() => {
+    if (!openChat || !usuario || !panelId) return
+    ;(async () => {
+      try {
+        const res = await apiFetch('/api/chat/canales')
+        const data = await jsonOrNull(res)
+        let canal = data?.canales?.find((c: any) => c.nombre === `panel-${panelId}`)
+        if (!canal) {
+          const resNew = await apiFetch('/api/chat/canales', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre: `panel-${panelId}` }),
+          })
+          const d = await jsonOrNull(resNew)
+          canal = d.canal
+        }
+        setChatChannel(canal.id)
+      } catch {}
+    })()
+  }, [openChat, usuario, panelId])
 
 
   // 2. Cargar catálogo y componentes de widgets
@@ -118,6 +147,7 @@ export default function PanelPage() {
           minW: w.minW || 2,
           minH: w.minH || 2,
           z: i + 1,
+          locked: false,
         }));
         let saved: { widgets: string[]; layout: LayoutItem[] } | null = null;
         try {
@@ -138,7 +168,7 @@ export default function PanelPage() {
             validKeys.includes(item.i),
           );
 
-          const lay = filteredLayout.length ? filteredLayout : defaultLayout
+          const lay = (filteredLayout.length ? filteredLayout : defaultLayout).map(it => ({ locked: false, ...it }))
           const wid = filteredWidgets.length ? filteredWidgets : validKeys
           setLayout(lay)
           setWidgets(wid)
@@ -146,7 +176,7 @@ export default function PanelPage() {
           setUndoIdx(0)
           setReadyHistory(true)
         } else {
-          const lay = defaultLayout
+          const lay = defaultLayout.map(it => ({ locked: false, ...it }))
           const wid = permitidos.map((w: WidgetMeta) => w.key)
           setLayout(lay)
           setWidgets(wid)
@@ -170,6 +200,7 @@ export default function PanelPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     }).catch(() => {});
+    setUnsaved(false)
   };
 
   // Guardar en DB y registrar historial local
@@ -182,6 +213,7 @@ export default function PanelPage() {
     }
     setUndoHist((h) => [...h.slice(0, undoIdx + 1), { widgets, layout }])
     setUndoIdx((i) => i + 1)
+    setUnsaved(true)
   }, [widgets, layout])
 
   useEffect(() => {
@@ -204,6 +236,25 @@ export default function PanelPage() {
   useEffect(() => {
     setMostrarComentarios(() => () => setOpenComments(true));
   }, [setMostrarComentarios]);
+
+  useEffect(() => {
+    setMostrarChat(() => () => setOpenChat(true));
+  }, [setMostrarChat]);
+
+  useEffect(() => {
+    const handle = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === 'z') {
+        e.preventDefault();
+        undo();
+      }
+      if ((e.ctrlKey && e.key === 'y') || (e.ctrlKey && e.shiftKey && e.key === 'Z')) {
+        e.preventDefault();
+        redo();
+      }
+    }
+    window.addEventListener('keydown', handle)
+    return () => window.removeEventListener('keydown', handle)
+  }, [undo, redo])
 
   useEffect(() => {
     if (!openHist || !usuario || !panelId) return;
@@ -275,6 +326,23 @@ export default function PanelPage() {
     });
   };
 
+  const duplicateWidget = (key: string) => {
+    const orig = layout.find((l) => l.i === key)
+    if (!orig) return
+    const newKey = `${key}_${Date.now()}`
+    setWidgets([...widgets, newKey])
+    setLayout([
+      ...layout,
+      { ...orig, i: newKey, x: orig.x + 1, y: orig.y + 1, z: (orig.z || 0) + 1 },
+    ])
+  }
+
+  const toggleLock = (key: string) => {
+    setLayout((prev) =>
+      prev.map((it) => (it.i === key ? { ...it, locked: !it.locked } : it)),
+    )
+  }
+
   const restoreVersion = (entry: HistEntry) => {
     setWidgets(entry.estado.widgets);
     setLayout(entry.estado.layout);
@@ -319,7 +387,12 @@ export default function PanelPage() {
   });
 
   return (
-    <div ref={containerRef} className="min-h-screen p-4 sm:p-8 overflow-auto" data-oid="japsa91">
+    <div
+      ref={containerRef}
+      className="min-h-screen p-4 sm:p-8 overflow-auto"
+      data-oid="japsa91"
+      style={showGrid ? { backgroundSize: '40px 40px', backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)' } : {}}
+    >
       <div
         className="flex items-center justify-between mb-5"
         data-oid="zm1.jco"
@@ -364,8 +437,9 @@ export default function PanelPage() {
         onLayoutChange={(l) =>
           setLayout((prev) =>
             l.map((it) => {
-              const found = prev.find((p) => p.i === it.i);
-              return { ...found, ...it } as LayoutItem;
+              const found = prev.find((p) => p.i === it.i)
+              if (found?.locked) return found
+              return { ...found, ...it } as LayoutItem
             }),
           )
         }
@@ -434,14 +508,36 @@ export default function PanelPage() {
             >
               <Widget usuario={usuario} data-oid="c3illgc" />
               {!readOnly && (
-                <button
-                  onClick={() => handleRemoveWidget(key)}
-                  title="Eliminar widget"
-                  className="absolute top-2 right-2 text-lg text-gray-400 hover:text-red-600"
-                  data-oid="9b3gzg4"
-                >
-                  ✕
-                </button>
+                <div className="absolute top-1 right-1 flex gap-1 text-xs">
+                  <button
+                    onClick={() => handleRemoveWidget(key)}
+                    title="Eliminar"
+                    className="text-gray-400 hover:text-red-600"
+                  >
+                    ✕
+                  </button>
+                  <button
+                    onClick={() => duplicateWidget(key)}
+                    title="Duplicar"
+                    className="text-gray-400 hover:text-green-500"
+                  >
+                    ⧉
+                  </button>
+                  <button
+                    onClick={() => { setActiveWidget(key); setOpenComments(true); }}
+                    title="Comentar"
+                    className="text-gray-400 hover:text-blue-500"
+                  >
+                    💬
+                  </button>
+                  <button
+                    onClick={() => toggleLock(key)}
+                    title={item?.locked ? 'Desbloquear' : 'Bloquear'}
+                    className="text-gray-400 hover:text-yellow-500"
+                  >
+                    {item?.locked ? '🔓' : '🔒'}
+                  </button>
+                </div>
               )}
             </div>
           );
@@ -487,15 +583,17 @@ export default function PanelPage() {
       )}
       {openComments && (
         <CommentsPanel
-          comentarios={comments}
-          onAdd={(t) =>
+          comentarios={comments.filter(c => !activeWidget || c.widgetId === activeWidget)}
+          onAdd={(t, wid) =>
             setComments((c) => [
               ...c,
-              { id: Date.now(), texto: t, autor: usuario.nombre || 'Anon', fecha: new Date().toISOString() },
+              { id: Date.now(), texto: t, autor: usuario.nombre || 'Anon', fecha: new Date().toISOString(), widgetId: wid },
             ])
           }
+          widgetId={activeWidget}
         />
       )}
+      {openChat && chatChannel !== null && <ChatPanel canalId={chatChannel} />}
       <Minimap layout={layout} zoom={zoom} containerRef={containerRef} />
     </div>
   );

@@ -1,17 +1,25 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePanelOps } from "../PanelOpsContext";
 
 interface Comment {
-  id: number;
-  texto: string;
-  autor: string;
-  fecha: string;
+  id: number
+  texto: string
+  autor: string
+  fecha: string
+  widgetId?: string
 }
 
-export default function CommentsPanel({ comentarios, onAdd }: { comentarios: Comment[]; onAdd: (texto: string) => void }) {
-  const { setMostrarComentarios } = usePanelOps();
-  const [texto, setTexto] = useState("");
+export default function CommentsPanel({ comentarios, onAdd, widgetId }: { comentarios: Comment[]; onAdd: (texto: string, widgetId?: string) => void; widgetId?: string }) {
+  const { setMostrarComentarios } = usePanelOps()
+  const [texto, setTexto] = useState("")
+  useEffect(() => {
+    const esc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMostrarComentarios(() => {})
+    }
+    window.addEventListener('keydown', esc)
+    return () => window.removeEventListener('keydown', esc)
+  }, [setMostrarComentarios])
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40" onClick={() => setMostrarComentarios(() => {})}>
       <div className="bg-[var(--dashboard-card)] p-4 rounded max-h-[80vh] overflow-auto w-80" onClick={e => e.stopPropagation()}>
@@ -21,6 +29,9 @@ export default function CommentsPanel({ comentarios, onAdd }: { comentarios: Com
             <li key={c.id} className="border-b border-white/10 pb-1">
               <span className="font-semibold">{c.autor}</span>
               <span className="text-xs ml-2 text-gray-400">{new Date(c.fecha).toLocaleString()}</span>
+              {c.widgetId && (
+                <span className="text-xs ml-2 text-blue-400">[{c.widgetId}]</span>
+              )}
               <p>{c.texto}</p>
             </li>
           ))}
@@ -35,7 +46,7 @@ export default function CommentsPanel({ comentarios, onAdd }: { comentarios: Com
         <button
           onClick={() => {
             if (texto.trim()) {
-              onAdd(texto.trim());
+              onAdd(texto.trim(), widgetId);
               setTexto("");
             }
           }}
@@ -50,3 +61,4 @@ export default function CommentsPanel({ comentarios, onAdd }: { comentarios: Com
     </div>
   );
 }
+
