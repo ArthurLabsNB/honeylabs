@@ -319,19 +319,19 @@ export default function PanelPage() {
 
   useEffect(() => {
     setMostrarHistorial(() => () => setOpenHist(true));
-  }, [setMostrarHistorial]);
+  }, []);
 
   useEffect(() => {
     setMostrarCambios(() => () => setOpenDiff(true));
-  }, [setMostrarCambios]);
+  }, []);
 
   useEffect(() => {
     setMostrarComentarios(() => () => setOpenComments(true));
-  }, [setMostrarComentarios]);
+  }, []);
 
   useEffect(() => {
     setMostrarChat(() => () => setOpenChat(true));
-  }, [setMostrarChat]);
+  }, []);
 
   
 
