@@ -1,13 +1,27 @@
 "use client";
-import { useState } from "react";
-import { marked } from "marked";
-import markedKatex from 'marked-katex-extension'
-import 'katex/dist/katex.min.css'
+import { useEffect, useState } from "react";
+import markedKatex from 'marked-katex-extension';
+import 'katex/dist/katex.min.css';
 
-marked.use(markedKatex())
+let cachedMarked: any;
+
+async function loadMarked() {
+  if (!cachedMarked) {
+    const mod = await import('marked');
+    mod.marked.use(markedKatex());
+    cachedMarked = mod.marked;
+  }
+  return cachedMarked;
+}
 
 export default function MarkdownWidget() {
   const [text, setText] = useState("# Titulo\nEscribe **markdown** aquí...");
+  const [parser, setParser] = useState<any>(null);
+
+  useEffect(() => {
+    loadMarked().then(setParser);
+  }, []);
+
   return (
     <div className="flex flex-col h-full">
       <textarea
@@ -17,7 +31,7 @@ export default function MarkdownWidget() {
       />
       <div
         className="prose prose-sm overflow-auto flex-1"
-        dangerouslySetInnerHTML={{ __html: marked.parse(text) }}
+        dangerouslySetInnerHTML={{ __html: parser ? parser.parse(text) : "" }}
       />
     </div>
   );
