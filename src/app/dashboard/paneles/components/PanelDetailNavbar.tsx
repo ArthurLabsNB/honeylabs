@@ -10,7 +10,7 @@ import html2canvas from 'html2canvas';
 import { jsonOrNull } from "@lib/http";
 import { usePanelOps } from "../PanelOpsContext";
 import usePanelPresence from "@/hooks/usePanelPresence";
-import { buildEventoICS } from '@lib/calendar';
+import { buildEventoICS } from '@/lib/calendar';
 
 export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: () => void }) {
   const { usuario } = useSession();
