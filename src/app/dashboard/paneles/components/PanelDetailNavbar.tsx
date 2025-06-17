@@ -18,7 +18,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   const [edit, setEdit] = useState(false);
   const [saving, setSaving] = useState<"idle" | "saving" | "saved">("idle");
   const [openExport, setOpenExport] = useState(false);
-  const { guardar } = usePanelOps();
+  const { guardar, undo, redo } = usePanelOps();
 
   useEffect(() => {
     const close = () => setOpenExport(false);
@@ -127,6 +127,12 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
             </div>
           )}
         </div>
+        <button onClick={undo} className="px-3 py-1 rounded bg-white/10 text-sm" title="Deshacer">
+          ↶
+        </button>
+        <button onClick={redo} className="px-3 py-1 rounded bg-white/10 text-sm" title="Rehacer">
+          ↷
+        </button>
         <button onClick={onShowHistory} className="px-3 py-1 rounded bg-white/10 text-sm">
           Historial
         </button>

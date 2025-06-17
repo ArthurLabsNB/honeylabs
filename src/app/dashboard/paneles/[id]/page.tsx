@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { jsonOrNull } from "@lib/http";
 import { apiFetch } from "@lib/api";
 import type { Usuario } from "@/types/usuario";
@@ -44,9 +44,13 @@ export default function PanelPage() {
   const [layout, setLayout] = useState<LayoutItem[]>([]);
   const [componentes, setComponentes] = useState<{ [key: string]: any }>({});
   const [errores, setErrores] = useState<{ [key: string]: boolean }>({});
-  const { setGuardar, setMostrarHistorial } = usePanelOps();
+  const { setGuardar, setMostrarHistorial, setUndo, setRedo } = usePanelOps();
   const [openHist, setOpenHist] = useState(false);
   const [historial, setHistorial] = useState<HistEntry[]>([]);
+  const [undoHist, setUndoHist] = useState<{ widgets: string[]; layout: LayoutItem[] }[]>([])
+  const [undoIdx, setUndoIdx] = useState(-1)
+  const [readyHistory, setReadyHistory] = useState(false)
+  const skipHistory = useRef(false)
 
 
   // 2. Cargar catálogo y componentes de widgets
@@ -109,11 +113,21 @@ export default function PanelPage() {
             validKeys.includes(item.i),
           );
 
-          setLayout(filteredLayout.length ? filteredLayout : defaultLayout);
-          setWidgets(filteredWidgets.length ? filteredWidgets : validKeys);
+          const lay = filteredLayout.length ? filteredLayout : defaultLayout
+          const wid = filteredWidgets.length ? filteredWidgets : validKeys
+          setLayout(lay)
+          setWidgets(wid)
+          setUndoHist([{ widgets: wid, layout: lay }])
+          setUndoIdx(0)
+          setReadyHistory(true)
         } else {
-          setLayout(defaultLayout);
-          setWidgets(permitidos.map((w: WidgetMeta) => w.key));
+          const lay = defaultLayout
+          const wid = permitidos.map((w: WidgetMeta) => w.key)
+          setLayout(lay)
+          setWidgets(wid)
+          setUndoHist([{ widgets: wid, layout: lay }])
+          setUndoIdx(0)
+          setReadyHistory(true)
         }
       } catch (err) {
         console.error("Error al cargar widgets:", err);
@@ -133,14 +147,26 @@ export default function PanelPage() {
     }).catch(() => {});
   };
 
-  // Guardar en DB cada que cambian widgets o layout
+  // Guardar en DB y registrar historial local
   useEffect(() => {
-    guardar();
-  }, [widgets, layout]);
+    if (!readyHistory) return
+    guardar()
+    if (skipHistory.current) {
+      skipHistory.current = false
+      return
+    }
+    setUndoHist((h) => [...h.slice(0, undoIdx + 1), { widgets, layout }])
+    setUndoIdx((i) => i + 1)
+  }, [widgets, layout])
 
   useEffect(() => {
     setGuardar(() => guardar);
   }, [guardar, setGuardar]);
+
+  useEffect(() => {
+    setUndo(() => undo);
+    setRedo(() => redo);
+  }, [undo, redo, setUndo, setRedo]);
 
   useEffect(() => {
     setMostrarHistorial(() => () => setOpenHist(true));
@@ -205,6 +231,26 @@ export default function PanelPage() {
     setWidgets(entry.estado.widgets);
     setLayout(entry.estado.layout);
   };
+
+  const undo = () => {
+    if (undoIdx <= 0) return
+    const prev = undoHist[undoIdx - 1]
+    if (!prev) return
+    skipHistory.current = true
+    setWidgets(prev.widgets)
+    setLayout(prev.layout)
+    setUndoIdx((i) => i - 1)
+  }
+
+  const redo = () => {
+    if (undoIdx >= undoHist.length - 1) return
+    const next = undoHist[undoIdx + 1]
+    if (!next) return
+    skipHistory.current = true
+    setWidgets(next.widgets)
+    setLayout(next.layout)
+    setUndoIdx((i) => i + 1)
+  }
 
   // Loading/errores de sesión
   if (loading) return <div data-oid="_0v3rjj">Cargando usuario...</div>;
