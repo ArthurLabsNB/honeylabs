@@ -53,5 +53,16 @@
     "minW": 2,
     "minH": 2,
     "plans": ["Free", "Pro", "Empresarial", "Institucional"]
+  },
+  {
+    "key": "actividad",
+    "title": "Actividad reciente",
+    "file": "ActivityWidget",
+    "category": "General",
+    "w": 2,
+    "h": 2,
+    "minW": 2,
+    "minH": 2,
+    "plans": ["Free", "Pro", "Empresarial", "Institucional"]
   }
 ]

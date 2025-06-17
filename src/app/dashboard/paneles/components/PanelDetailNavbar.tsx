@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import useSession from "@/hooks/useSession";
 import { apiFetch } from "@lib/api";
+import html2canvas from 'html2canvas';
 import { jsonOrNull } from "@lib/http";
 import { usePanelOps } from "../PanelOpsContext";
 import usePanelPresence from "@/hooks/usePanelPresence";
@@ -48,6 +49,8 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
     setUnsaved,
     showGrid,
     toggleGrid,
+    gridSize,
+    setGridSize,
   } = usePanelOps();
   const router = useRouter();
 
@@ -106,6 +109,15 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
       a.download = `pizarra_${panelId}.json`;
       a.click();
       URL.revokeObjectURL(url);
+    } else if (formato === 'png') {
+      const area = document.getElementById('panel-area');
+      if (!area) return;
+      const canvas = await html2canvas(area);
+      const url = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `pizarra_${panelId}.png`;
+      a.click();
     } else {
       alert(`Exportar ${formato} no implementado`);
     }
@@ -260,6 +272,17 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
         <button onClick={toggleGrid} className="px-3 py-1 rounded bg-white/10 text-sm">
           {showGrid ? 'Ocultar cuadricula' : 'Cuadricula'}
         </button>
+        {showGrid && (
+          <input
+            type="range"
+            min="40"
+            max="200"
+            step="5"
+            value={gridSize}
+            onChange={e => setGridSize(parseInt(e.target.value))}
+            className="h-2 w-24"
+          />
+        )}
         <button onClick={onShowHistory} className="px-3 py-1 rounded bg-white/10 text-sm">
           Historial
         </button>
