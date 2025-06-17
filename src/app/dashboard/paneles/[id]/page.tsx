@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { jsonOrNull } from "@lib/http";
 import { apiFetch } from "@lib/api";
 import type { Usuario } from "@/types/usuario";
@@ -282,7 +282,7 @@ export default function PanelPage() {
     loadWidgets();
   }, [usuario, panelId]);
 
-  const guardar = async () => {
+  const guardar = useCallback(async () => {
     if (!usuario || !panelId) return;
     const data = { widgets, layout };
     if (!navigator.onLine) {
@@ -294,8 +294,8 @@ export default function PanelPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     }).catch(() => {});
-    setUnsaved(false)
-  };
+    setUnsaved(false);
+  }, [usuario, panelId, widgets, layout, setUnsaved]);
 
   // Guardar en DB y registrar historial local
   useEffect(() => {
@@ -314,7 +314,7 @@ export default function PanelPage() {
 
   useEffect(() => {
     setGuardar(() => guardar);
-  }, [guardar, setGuardar]);
+  }, [guardar]);
 
 
   useEffect(() => {
