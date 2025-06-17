@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { apiFetch } from "@lib/api";
 import Link from "next/link";
 import { Home, Bell, Menu } from "lucide-react";
@@ -14,8 +14,8 @@ import type { Usuario } from "@/types/usuario";
 export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
   // Estado UI
   const navRef = useRef<HTMLDivElement>(null);
-  const { toggleSidebarVisible: toggleSidebar, sidebarGlobalVisible } =
-    useDashboardUI();
+  const { toggleSidebarVisible: toggleSidebar } = useDashboardUI();
+  const [search, setSearch] = useState("");
 
   const logout = async (redirectUrl?: string) => {
     await apiFetch("/api/login", { method: "DELETE" });
@@ -55,6 +55,13 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
             data-oid="5.tu7zt"
           />
         </Link>
+        <input
+          type="search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Buscar..."
+          className="hidden md:block bg-transparent border rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-[var(--dashboard-accent)]"
+        />
 
         
       </div>
