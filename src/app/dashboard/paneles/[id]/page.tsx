@@ -161,7 +161,10 @@ export default function PanelPage() {
   }, [openChat, usuario, panelId])
 
   useEffect(() => {
-    const handleOff = () => { setIsOffline(true); saveCurrentSub(); };
+    const handleOff = () => {
+      setIsOffline(true)
+      saveCurrentSub()
+    }
     const handleOn = () => {
       setIsOffline(false);
       const data = localStorage.getItem(`panel-offline-${panelId}`);
@@ -180,7 +183,7 @@ export default function PanelPage() {
       window.removeEventListener('offline', handleOff);
       window.removeEventListener('online', handleOn);
     };
-  }, [panelId]);
+  }, [panelId, saveCurrentSub]);
 
 
   // 2. Cargar catálogo y componentes de widgets
@@ -318,28 +321,28 @@ export default function PanelPage() {
 
   useEffect(() => {
     setGuardar(() => guardar);
-  }, [guardar]);
+  }, [guardar, setGuardar]);
 
 
   useEffect(() => {
     setMostrarHistorial(() => () => setOpenHist(true));
-  }, []);
+  }, [setMostrarHistorial]);
 
   useEffect(() => {
     setMostrarCambios(() => () => setOpenDiff(true));
-  }, []);
+  }, [setMostrarCambios]);
 
   useEffect(() => {
     setMostrarComentarios(() => () => setOpenComments(true));
-  }, []);
+  }, [setMostrarComentarios]);
 
   useEffect(() => {
     setMostrarChat(() => () => setOpenChat(true));
-  }, []);
+  }, [setMostrarChat]);
 
   useEffect(() => {
     return () => saveCurrentSub()
-  }, [])
+  }, [saveCurrentSub])
 
   
 
@@ -562,11 +565,15 @@ const assignGroupSelected = () => {
   setLayout(prev => prev.map(it => selected.includes(it.i) ? { ...it, owner } : it))
 };
 
-const saveCurrentSub = () => {
-  setSubboards(bs => bs.map(b => b.id === activeSub ? { ...b, widgets, layout } : b))
-  const updated = subboards.map(b => b.id === activeSub ? { ...b, widgets, layout } : b)
+const saveCurrentSub = useCallback(() => {
+  setSubboards(bs =>
+    bs.map(b => (b.id === activeSub ? { ...b, widgets, layout } : b)),
+  )
+  const updated = subboards.map(b =>
+    b.id === activeSub ? { ...b, widgets, layout } : b,
+  )
   localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify(updated))
-};
+}, [activeSub, widgets, layout, subboards, panelId])
 
 const switchSubboard = (id: string) => {
   saveCurrentSub()
