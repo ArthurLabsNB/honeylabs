@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 
-// =============== HERO SECTION SIN FONDO EXTRA ===============
+// =============== HERO SECTION ===============
 function useTypewriter(text: string, speed = 60): string {
   const [displayed, setDisplayed] = useState("");
   useEffect(() => {
@@ -50,7 +50,7 @@ function HeroSection() {
         >
           {showDesc && desc}
         </p>
-        <div className="flex gap-4 mt-6">
+        <div className="flex gap-4 mt-6 flex-wrap justify-center md:justify-start">
           <a
             href="#demo"
             className="bg-amber-400 hover:bg-amber-500 text-black font-bold px-7 py-3 rounded-xl shadow-lg animate-ripple transition focus:outline-none focus:ring-2 focus:ring-amber-200"
@@ -102,63 +102,110 @@ function HeroSection() {
   );
 }
 
-// =============== FEATURES CARDS SIN FONDO EXTRA ===============
+// =============== FEATURES SECTION - LAYOUT PRO ===============
 const FEATURES = [
   {
-    icon: "/icons/real-time.svg",
     title: "Inventario en tiempo real",
-    desc: "Consulta y actualiza el estado de los materiales al instante, con historial y trazabilidad total.",
+    desc: "Consulta y actualiza el estado de los materiales al instante, con historial y trazabilidad total. Cada movimiento queda registrado para máxima transparencia y seguridad.",
     image: "/feature-inventario.png",
+    icon: "/icons/real-time.svg",
   },
   {
-    icon: "/icons/user-roles.svg",
-    title: "Roles y permisos personalizados",
-    desc: "Gestiona acceso y acciones según el tipo de usuario, asegurando la seguridad y organización.",
-    image: "/feature-users.gif",
-  },
-  {
-    icon: "/icons/cloud-access.svg",
     title: "Acceso desde cualquier lugar",
-    desc: "Plataforma 100% web, disponible 24/7 desde cualquier dispositivo, con backups automáticos.",
+    desc: "Gestión 100% web. Ingresa a tu plataforma desde PC, tablet o celular, en todo momento, y con respaldos automáticos de seguridad.",
     image: "/feature-web-devices.png",
+    icon: "/icons/cloud-access.svg",
+    inverse: true,
   },
+  {
+    title: "Roles y permisos personalizados",
+    desc: "Define permisos para cada tipo de usuario, protegiendo la información y asignando responsabilidades. Acciones y acceso totalmente controlados.",
+    image: "/feature-users.gif",
+    icon: "/icons/user-roles.svg",
+  },
+];
+
+const EXTRA_FEATURES = [
   {
     icon: "/icons/integrations.svg",
     title: "Integraciones y reportes",
-    desc: "Exporta a Excel, PDF, conecta con APIs y obtén reportes visuales de movimientos y uso.",
-    image: "/feature-integrations.gif",
+    desc: "Exporta a Excel, PDF, conecta APIs, y genera reportes visuales de movimientos.",
+  },
+  {
+    icon: "/icons/qr.svg",
+    title: "Manejo de fotos y QR",
+    desc: "Asocia imágenes, archivos y códigos QR a cualquier material o almacén.",
+  },
+  {
+    icon: "/icons/backup.svg",
+    title: "Backups y recuperación",
+    desc: "Toda tu información segura, con respaldo automático y restauración simple.",
   },
 ];
 
 function FeaturesSection() {
   return (
-    <section id="features" className="py-24 px-4">
-      <div className="max-w-7xl mx-auto flex flex-col gap-16">
+    <section id="features" className="py-24 px-2 sm:px-4">
+      <div className="max-w-6xl mx-auto flex flex-col gap-20">
         <h2 className="text-3xl md:text-4xl font-extrabold text-center text-[var(--foreground)] mb-8">
           ¿Por qué HoneyLabs?
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-10">
-          {FEATURES.map((f) => (
+        <div className="flex flex-col gap-20">
+          {FEATURES.map((f, idx) => (
             <div
               key={f.title}
-              className="bg-white/80 dark:bg-zinc-900 rounded-3xl shadow-xl hover:shadow-2xl border border-amber-200 p-7 flex flex-col items-center transition-all group"
+              className={clsx(
+                "flex flex-col-reverse items-center justify-between gap-10 md:gap-16 md:flex-row",
+                f.inverse && "md:flex-row-reverse"
+              )}
             >
-              <div className="w-16 h-16 rounded-xl flex items-center justify-center bg-amber-100 mb-5 shadow-md">
-                <Image src={f.icon} alt={f.title} width={42} height={42} />
+              <div className="flex-1 flex items-center justify-center">
+                <div className="relative w-full max-w-[440px] aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-4 border-amber-200 bg-white/60 dark:bg-zinc-900/70">
+                  <Image
+                    src={f.image}
+                    alt={f.title}
+                    fill
+                    className="object-cover"
+                    draggable={false}
+                  />
+                  <div className="absolute bottom-3 right-3 bg-white/80 rounded-xl p-2 shadow-md flex items-center gap-2">
+                    <Image
+                      src={f.icon}
+                      alt="icon"
+                      width={32}
+                      height={32}
+                      className="object-contain"
+                    />
+                  </div>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-[var(--foreground)] mb-2 text-center">
+              <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left gap-4">
+                <h3 className="text-2xl md:text-3xl font-bold text-amber-500 flex items-center gap-2">
+                  <Image src={f.icon} alt="icon" width={32} height={32} />
+                  {f.title}
+                </h3>
+                <p className="text-lg md:text-xl text-[var(--dashboard-muted)]">{f.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 mt-16">
+          {EXTRA_FEATURES.map((f) => (
+            <div
+              key={f.title}
+              className="rounded-2xl bg-white/80 dark:bg-zinc-900/80 p-7 shadow-xl border border-amber-200 flex flex-col items-center text-center gap-4 hover:scale-[1.03] transition"
+            >
+              <Image
+                src={f.icon}
+                alt={f.title}
+                width={48}
+                height={48}
+                className="object-contain mb-2"
+              />
+              <h4 className="text-lg font-semibold text-[var(--foreground)]">
                 {f.title}
-              </h3>
-              <p className="text-[var(--dashboard-muted)] text-center mb-4">{f.desc}</p>
-              <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow border">
-                <Image
-                  src={f.image}
-                  alt={`Demostración de ${f.title}`}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform"
-                  draggable={false}
-                />
-              </div>
+              </h4>
+              <p className="text-[var(--dashboard-muted)] text-base">{f.desc}</p>
             </div>
           ))}
         </div>
@@ -339,7 +386,7 @@ function SuccessCasesSection() {
   );
 }
 
-// =============== PARTNERS SECTION (SIN FONDO) ===============
+// =============== PARTNERS SECTION ===============
 const PARTNERS = [
   {
     nombre: "Tecnológico Nacional de México - ITQ",
