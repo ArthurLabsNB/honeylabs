@@ -8,6 +8,8 @@ import useSession from "@/hooks/useSession";
 import { useParams } from "next/navigation";
 import { usePanelOps } from "../PanelOpsContext";
 
+import CommentsPanel from "../components/CommentsPanel";
+
 import dynamic from "next/dynamic";
 import GridLayout, { Layout } from "react-grid-layout";
 
@@ -34,6 +36,13 @@ interface HistEntry {
   estado: { widgets: string[]; layout: LayoutItem[] };
 }
 
+interface Comment {
+  id: number;
+  texto: string;
+  autor: string;
+  fecha: string;
+}
+
 export default function PanelPage() {
   const { usuario, loading } = useSession();
   const params = useParams();
@@ -44,9 +53,21 @@ export default function PanelPage() {
   const [layout, setLayout] = useState<LayoutItem[]>([]);
   const [componentes, setComponentes] = useState<{ [key: string]: any }>({});
   const [errores, setErrores] = useState<{ [key: string]: boolean }>({});
-  const { setGuardar, setMostrarHistorial, setMostrarCambios, setUndo, setRedo, readOnly, zoom } = usePanelOps();
+  const {
+    setGuardar,
+    setMostrarHistorial,
+    setMostrarCambios,
+    setMostrarComentarios,
+    setUndo,
+    setRedo,
+    readOnly,
+    zoom,
+    buscar,
+  } = usePanelOps();
   const [openHist, setOpenHist] = useState(false);
   const [openDiff, setOpenDiff] = useState(false);
+  const [openComments, setOpenComments] = useState(false);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [diffData, setDiffData] = useState<{ prev: HistEntry; current: HistEntry } | null>(null);
   const [historial, setHistorial] = useState<HistEntry[]>([]);
   const [undoHist, setUndoHist] = useState<{ widgets: string[]; layout: LayoutItem[] }[]>([])
@@ -179,6 +200,10 @@ export default function PanelPage() {
   }, [setMostrarCambios]);
 
   useEffect(() => {
+    setMostrarComentarios(() => () => setOpenComments(true));
+  }, [setMostrarComentarios]);
+
+  useEffect(() => {
     if (!openHist || !usuario || !panelId) return;
     apiFetch(`/api/paneles/${panelId}/historial`)
       .then(jsonOrNull)
@@ -285,6 +310,12 @@ export default function PanelPage() {
       </div>
     );
 
+  const visible = widgets.filter((k) => {
+    if (!buscar) return true;
+    const meta = catalogo.find((w) => w.key === k);
+    return meta?.title.toLowerCase().includes(buscar.toLowerCase());
+  });
+
   return (
     <div className="min-h-screen p-4 sm:p-8 overflow-auto" data-oid="japsa91">
       <div
@@ -341,7 +372,7 @@ export default function PanelPage() {
         data-oid="hxrbk.e"
         style={{ minHeight: "100vh" }}
       >
-        {widgets.map((key) => {
+        {visible.map((key) => {
           const Widget = componentes[key];
           const widgetMeta = catalogo.find((w) => w.key === key);
 
@@ -451,6 +482,17 @@ export default function PanelPage() {
             <button onClick={() => setOpenDiff(false)} className="mt-3 px-3 py-1 bg-white/10 rounded w-full text-sm">Cerrar</button>
           </div>
         </div>
+      )}
+      {openComments && (
+        <CommentsPanel
+          comentarios={comments}
+          onAdd={(t) =>
+            setComments((c) => [
+              ...c,
+              { id: Date.now(), texto: t, autor: usuario.nombre || 'Anon', fecha: new Date().toISOString() },
+            ])
+          }
+        />
       )}
     </div>
   );

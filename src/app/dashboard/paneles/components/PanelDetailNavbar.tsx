@@ -23,7 +23,19 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   const [openConfig, setOpenConfig] = useState(false);
   const [openHelp, setOpenHelp] = useState(false);
   const conectados = usePanelPresence(panelId, usuario);
-  const { guardar, undo, redo, readOnly, toggleReadOnly, zoom, setZoom, mostrarCambios } = usePanelOps();
+  const {
+    guardar,
+    undo,
+    redo,
+    readOnly,
+    toggleReadOnly,
+    zoom,
+    setZoom,
+    mostrarCambios,
+    mostrarComentarios,
+    buscar,
+    setBuscar,
+  } = usePanelOps();
   const router = useRouter();
 
   useEffect(() => {
@@ -137,6 +149,13 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
             )
           ))}
         </div>
+        <input
+          type="text"
+          placeholder="Buscar..."
+          value={buscar}
+          onChange={(e) => setBuscar(e.target.value)}
+          className="ml-3 text-sm px-2 py-1 rounded bg-white/10 focus:bg-white/20 outline-none"
+        />
       </div>
       <div className="flex items-center gap-2">
         <button
@@ -220,7 +239,10 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
         <button onClick={mostrarCambios} className="px-3 py-1 rounded bg-white/10 text-sm">
           Vista cambios
         </button>
-        <div className="relative" onClick={(e) => e.stopPropagation()}> 
+        <button onClick={mostrarComentarios} className="px-3 py-1 rounded bg-white/10 text-sm">
+          Comentarios
+        </button>
+        <div className="relative" onClick={(e) => e.stopPropagation()}>
           <button onClick={() => setOpenConfig((o) => !o)} className="px-3 py-1 rounded bg-white/10 text-sm">
             Configuración
           </button>
