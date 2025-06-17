@@ -1,9 +1,9 @@
 "use client";
-import { ArrowLeft, Download } from "lucide-react";
+import { ArrowLeft, Download, Share2, LogOut } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import useSession from "@/hooks/useSession";
 import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
@@ -18,10 +18,15 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   const [edit, setEdit] = useState(false);
   const [saving, setSaving] = useState<"idle" | "saving" | "saved">("idle");
   const [openExport, setOpenExport] = useState(false);
+  const [openShare, setOpenShare] = useState(false);
   const { guardar, undo, redo } = usePanelOps();
+  const router = useRouter();
 
   useEffect(() => {
-    const close = () => setOpenExport(false);
+    const close = () => {
+      setOpenExport(false);
+      setOpenShare(false);
+    };
     document.addEventListener("click", close);
     return () => document.removeEventListener("click", close);
   }, []);
@@ -64,6 +69,19 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
     } else {
       alert(`Exportar ${formato} no implementado`);
     }
+  };
+
+  const copyLink = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+      alert("Enlace copiado");
+    });
+  };
+
+  const salir = async () => {
+    await guardar();
+    await guardarNombre();
+    router.push("/dashboard/paneles");
   };
 
   return (
@@ -127,6 +145,27 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
             </div>
           )}
         </div>
+        <div className="relative" onClick={(e) => e.stopPropagation()}>
+          <button
+            onClick={() => setOpenShare((o) => !o)}
+            className="px-3 py-1 rounded bg-white/10 text-sm flex items-center gap-1"
+          >
+            <Share2 className="w-4 h-4" /> Compartir
+          </button>
+          {openShare && (
+            <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10">
+              <button
+                onClick={() => {
+                  copyLink();
+                  setOpenShare(false);
+                }}
+                className="block px-3 py-1 text-sm text-left hover:bg-white/10 w-full"
+              >
+                Copiar enlace
+              </button>
+            </div>
+          )}
+        </div>
         <button onClick={undo} className="px-3 py-1 rounded bg-white/10 text-sm" title="Deshacer">
           ↶
         </button>
@@ -135,6 +174,9 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
         </button>
         <button onClick={onShowHistory} className="px-3 py-1 rounded bg-white/10 text-sm">
           Historial
+        </button>
+        <button onClick={salir} className="px-3 py-1 rounded bg-white/10 text-sm flex items-center gap-1">
+          <LogOut className="w-4 h-4" /> Salir
         </button>
         {saving === "saving" && <span className="text-xs text-gray-400">Guardando...</span>}
         {saving === "saved" && <span className="text-xs text-green-500">Guardado</span>}
