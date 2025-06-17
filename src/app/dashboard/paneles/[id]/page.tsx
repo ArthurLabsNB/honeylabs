@@ -100,6 +100,9 @@ export default function PanelPage() {
   const bcRef = useRef<BroadcastChannel | null>(null)
   const [boardBg, setBoardBg] = useState<string>('')
   const [sections, setSections] = useState(1)
+  const [subboards, setSubboards] = useState<{id:string; nombre:string; permiso:'edicion'|'lectura'; widgets:string[]; layout: LayoutItem[]}[]>([])
+  const [activeSub, setActiveSub] = useState('')
+  const [isOffline, setIsOffline] = useState(false)
   const [openGallery, setOpenGallery] = useState(false)
   const [shortcuts, setShortcuts] = useState(() => {
     if (typeof window === 'undefined') return { undo: 'ctrl+z', redo: 'ctrl+shift+z' }
@@ -152,6 +155,28 @@ export default function PanelPage() {
       } catch {}
     })()
   }, [openChat, usuario, panelId])
+
+  useEffect(() => {
+    const handleOff = () => { setIsOffline(true); saveCurrentSub(); };
+    const handleOn = () => {
+      setIsOffline(false);
+      const data = localStorage.getItem(`panel-offline-${panelId}`);
+      if (data) {
+        apiFetch(`/api/paneles/${panelId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: data
+        }).then(() => localStorage.removeItem(`panel-offline-${panelId}`)).catch(()=>{});
+      }
+    };
+    window.addEventListener('offline', handleOff);
+    window.addEventListener('online', handleOn);
+    setIsOffline(!navigator.onLine);
+    return () => {
+      window.removeEventListener('offline', handleOff);
+      window.removeEventListener('online', handleOn);
+    };
+  }, [panelId]);
 
 
   // 2. Cargar catálogo y componentes de widgets
@@ -217,23 +242,37 @@ export default function PanelPage() {
 
           const lay = (filteredLayout.length ? filteredLayout : defaultLayout).map(it => ({ locked: false, ...it }))
           const wid = filteredWidgets.length ? filteredWidgets : validKeys
-          setLayout(lay)
-          setWidgets(wid)
-          setUndoHist([{ widgets: wid, layout: lay }])
+          const board = { id: 'main', nombre: 'Principal', permiso: saved.permiso || 'edicion', widgets: wid, layout: lay }
+          let boards: typeof subboards = []
+          try { boards = JSON.parse(localStorage.getItem(`panel-subboards-${panelId}`) || '[]') } catch {}
+          if (!boards.length) boards = [board]; else boards[0] = { ...boards[0], ...board }
+          setSubboards(boards)
+          setActiveSub(boards[0].id)
+          setWidgets(boards[0].widgets)
+          setLayout(boards[0].layout)
+          setUndoHist([{ widgets: boards[0].widgets, layout: boards[0].layout }])
           setUndoIdx(0)
           setReadyHistory(true)
           if (saved.permiso && setReadOnly) {
             setReadOnly(saved.permiso !== 'edicion')
           }
+          localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify(boards))
         } else {
           const lay = defaultLayout.map(it => ({ locked: false, ...it }))
           const wid = permitidos.map((w: WidgetMeta) => w.key)
-          setLayout(lay)
-          setWidgets(wid)
-          setUndoHist([{ widgets: wid, layout: lay }])
+          const board = { id: 'main', nombre: 'Principal', permiso: 'edicion', widgets: wid, layout: lay }
+          let boards: typeof subboards = []
+          try { boards = JSON.parse(localStorage.getItem(`panel-subboards-${panelId}`) || '[]') } catch {}
+          if (!boards.length) boards = [board]; else boards[0] = { ...boards[0], ...board }
+          setSubboards(boards)
+          setActiveSub(boards[0].id)
+          setWidgets(boards[0].widgets)
+          setLayout(boards[0].layout)
+          setUndoHist([{ widgets: boards[0].widgets, layout: boards[0].layout }])
           setUndoIdx(0)
           setReadyHistory(true)
           setReadOnly && setReadOnly(false)
+          localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify(boards))
         }
       } catch (err) {
         console.error("Error al cargar widgets:", err);
@@ -246,6 +285,10 @@ export default function PanelPage() {
   const guardar = async () => {
     if (!usuario || !panelId) return;
     const data = { widgets, layout };
+    if (!navigator.onLine) {
+      localStorage.setItem(`panel-offline-${panelId}`, JSON.stringify(data));
+      return;
+    }
     await apiFetch(`/api/paneles/${panelId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -258,6 +301,7 @@ export default function PanelPage() {
   useEffect(() => {
     if (!readyHistory) return
     guardar()
+    saveCurrentSub()
     if (skipHistory.current) {
       skipHistory.current = false
       return
@@ -537,6 +581,34 @@ const assignGroupSelected = () => {
   setLayout(prev => prev.map(it => selected.includes(it.i) ? { ...it, owner } : it))
 };
 
+const saveCurrentSub = () => {
+  setSubboards(bs => bs.map(b => b.id === activeSub ? { ...b, widgets, layout } : b))
+  const updated = subboards.map(b => b.id === activeSub ? { ...b, widgets, layout } : b)
+  localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify(updated))
+};
+
+const switchSubboard = (id: string) => {
+  saveCurrentSub()
+  const sb = subboards.find(s => s.id === id)
+  if (!sb) return
+  setActiveSub(id)
+  setWidgets(sb.widgets)
+  setLayout(sb.layout)
+};
+
+const addSubboard = () => {
+  const nombre = prompt('Nombre del área')?.trim()
+  if (!nombre) return
+  saveCurrentSub()
+  const nuevo = { id: Date.now().toString(), nombre, permiso: 'edicion' as const, widgets: [], layout: [] }
+  const list = [...subboards, nuevo]
+  setSubboards(list)
+  setActiveSub(nuevo.id)
+  setWidgets([])
+  setLayout([])
+  localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify(list))
+};
+
 const handleWidgetContext = (e: React.MouseEvent, id: string) => {
   e.preventDefault();
   if (selected.length > 1 && selected.includes(id)) {
@@ -631,6 +703,19 @@ const viewHist = () => {
             }
           : {}),
       }}
+      onDragOver={e => e.preventDefault()}
+      onDrop={e => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const url = reader.result as string;
+            addMedia(url);
+          };
+          reader.readAsDataURL(file);
+        }
+      }}
       onContextMenu={handleBoardContext}
       onWheel={e => {
         if (e.ctrlKey) {
@@ -647,7 +732,12 @@ const viewHist = () => {
         <h1 className="text-2xl font-bold" data-oid="ulnh9zq">
           Panel
         </h1>
+        {isOffline && <span className="text-xs text-red-500 mr-2">Offline</span>}
         <div className="flex items-center gap-2" data-oid="kuayohc">
+          <select value={activeSub} onChange={e => switchSubboard(e.target.value)} className="bg-white/10 text-sm px-2 py-1 rounded">
+            {subboards.map(sb => <option key={sb.id} value={sb.id}>{sb.nombre}</option>)}
+          </select>
+          <button onClick={addSubboard} className="px-2 py-1 bg-white/10 rounded text-sm">+</button>
           {!readOnly && (
             <select
               onChange={(e) => handleAddWidget(e.target.value)}
@@ -918,7 +1008,8 @@ const viewHist = () => {
             { label: "Nuevo Markdown", onClick: () => handleAddWidget("markdown") },
             { label: showGrid ? "Ocultar cuadrícula" : "Mostrar cuadrícula", onClick: toggleGrid },
             { label: "Cambiar fondo", onClick: () => { const c = prompt('Color de fondo', boardBg || '#000000'); if (c) setBoardBg(c); } },
-            { label: sections > 1 ? 'Unir área' : 'Dividir área', onClick: () => setSections(s => s > 1 ? 1 : 2) },
+            { label: 'Nueva subpizarra', onClick: addSubboard },
+            ...subboards.filter(b => b.id !== activeSub).map(b => ({ label: `Cambiar a ${b.nombre}`, onClick: () => switchSubboard(b.id) })),
             { label: 'Buscar elemento', onClick: () => document.dispatchEvent(new Event('focus-search')) },
             { label: 'Insertar plantilla', onClick: insertTemplate },
             { label: 'Abrir galería', onClick: () => setOpenGallery(true) },

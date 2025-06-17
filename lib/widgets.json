@@ -110,5 +110,37 @@
       "Empresarial",
       "Institucional"
     ]
+  },
+  {
+    "key": "code",
+    "title": "Código",
+    "file": "CodeWidget",
+    "category": "General",
+    "w": 4,
+    "h": 3,
+    "minW": 2,
+    "minH": 2,
+    "plans": [
+      "Free",
+      "Pro",
+      "Empresarial",
+      "Institucional"
+    ]
+  },
+  {
+    "key": "scribble",
+    "title": "Dibujo libre",
+    "file": "ScribbleWidget",
+    "category": "General",
+    "w": 4,
+    "h": 3,
+    "minW": 2,
+    "minH": 2,
+    "plans": [
+      "Free",
+      "Pro",
+      "Empresarial",
+      "Institucional"
+    ]
   }
-]
+ ]
