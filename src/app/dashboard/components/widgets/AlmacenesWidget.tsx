@@ -15,7 +15,7 @@ export default function AlmacenesWidget({ usuario }: { usuario: any }) {
         setCantidad(Array.isArray(d.almacenes) ? d.almacenes.length : 0),
       )
       .catch((e) => setError(e.message));
-  }, [usuario]);
+  }, [usuario?.id]);
 
   return (
     <div data-oid="45nqp7w">
