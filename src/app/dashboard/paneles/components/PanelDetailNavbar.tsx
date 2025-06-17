@@ -36,6 +36,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   const [openHelp, setOpenHelp] = useState(false);
   const [openWiki, setOpenWiki] = useState(false);
   const [openTools, setOpenTools] = useState(false);
+  const [section, setSection] = useState<'archivo'|'edicion'|'colaboracion'|'vista'|'utilidades'>('archivo');
   const conectados = usePanelPresence(panelId, usuario);
   const {
     guardar,
@@ -180,299 +181,336 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   }, [guardar, guardarNombre, router, setUnsaved])
 
   return (
-    <header
-      className="flex items-center justify-between h-[3.5rem] min-h-[3.5rem] px-4 border-b border-[var(--dashboard-border)] bg-[var(--dashboard-navbar)] sticky top-0 w-full z-50"
-    >
-      <div className="flex items-center gap-3">
-        <Link href="/dashboard/paneles" className="p-2 text-gray-400 hover:bg-white/10 rounded-lg" title="Volver">
-          <ArrowLeft className="w-5 h-5" />
-        </Link>
-        <Image src="/logo-honeylabs.png" alt="HoneyLabs" width={20} height={20} />
-        {edit ? (
-          <input
-            className="bg-transparent border-b outline-none text-sm"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-            onBlur={() => {
-              setEdit(false);
-              guardarNombre();
-            }}
-            autoFocus
-          />
-        ) : (
-          <span className="font-semibold text-sm cursor-text" onClick={() => setEdit(true)}>
-            {nombre} {unsaved ? '*' : ''}
-          </span>
-        )}
-        <span className="absolute left-0 -bottom-4 text-xs text-gray-400">{plan}</span>
-        <div className="flex -space-x-2 ml-2">
-          {conectados.map((u) => (
-            u.avatar ? (
-              <img
-                key={u.id}
-                src={u.avatar}
-                alt={u.nombre || ''}
-                className="w-6 h-6 rounded-full border-2 border-white"
-                title={u.nombre}
-              />
-            ) : (
-              <div
-                key={u.id}
-                className="w-6 h-6 rounded-full bg-gray-400 text-white flex items-center justify-center text-xs border-2 border-white"
-                title={u.nombre}
-              >
-                {u.nombre?.[0] || '?'}
-              </div>
-            )
-          ))}
-        </div>
-        <input
-          type="text"
-          placeholder="Buscar..."
-          ref={searchRef}
-          value={buscar}
-          onChange={(e) => setBuscar(e.target.value)}
-          className="ml-3 text-sm px-2 py-1 rounded bg-white/10 focus:bg-white/20 outline-none"
-        />
-      </div>
-      <div className="flex items-center gap-2">
-        <button
-          onClick={() => {
-            guardar();
-            guardarNombre();
-            setUnsaved(false);
-          }}
-          className="px-3 py-1 rounded bg-white/10 text-sm"
-        >
-          Guardar
-        </button>
-        <div className="relative" onClick={(e) => e.stopPropagation()}>
-          <button
-            onClick={() => setOpenExport((o) => !o)}
-            className="px-3 py-1 rounded bg-white/10 text-sm flex items-center gap-1"
-          >
-            <Download className="w-4 h-4" /> Exportar
-          </button>
-          {openExport && (
-            <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10">
-              {['pdf','png','svg','json','ics'].map((f) => (
-                <button
-                  key={f}
-                  onClick={() => {
-                    exportar(f);
-                    setOpenExport(false);
-                  }}
-                  className="block px-3 py-1 text-sm text-left hover:bg-white/10 w-full"
+    <header className="sticky top-0 w-full z-50 bg-[var(--dashboard-navbar)] border-b border-[var(--dashboard-border)]">
+      <div className="flex items-center justify-between h-14 px-4">
+        <div className="flex items-center gap-3">
+          <Link href="/dashboard/paneles" className="p-2 text-gray-400 hover:bg-white/10 rounded-lg" title="Volver">
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+          <Image src="/logo-honeylabs.png" alt="HoneyLabs" width={20} height={20} />
+          {edit ? (
+            <input
+              className="bg-transparent border-b outline-none text-sm"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              onBlur={() => {
+                setEdit(false);
+                guardarNombre();
+              }}
+              autoFocus
+            />
+          ) : (
+            <span className="font-semibold text-sm cursor-text" onClick={() => setEdit(true)}>
+              {nombre} {unsaved ? '*' : ''}
+            </span>
+          )}
+          <span className="absolute left-0 -bottom-4 text-xs text-gray-400">{plan}</span>
+          <div className="flex -space-x-2 ml-2">
+            {conectados.map((u) => (
+              u.avatar ? (
+                <img
+                  key={u.id}
+                  src={u.avatar}
+                  alt={u.nombre || ''}
+                  className="w-6 h-6 rounded-full border-2 border-white"
+                  title={u.nombre}
+                />
+              ) : (
+                <div
+                  key={u.id}
+                  className="w-6 h-6 rounded-full bg-gray-400 text-white flex items-center justify-center text-xs border-2 border-white"
+                  title={u.nombre}
                 >
-                  {f.toUpperCase()}
-                </button>
-              ))}
-            </div>
-          )}
+                  {u.nombre?.[0] || '?'}
+                </div>
+              )
+            ))}
+          </div>
+          <input
+            type="text"
+            placeholder="Buscar..."
+            ref={searchRef}
+            value={buscar}
+            onChange={(e) => setBuscar(e.target.value)}
+            className="ml-3 text-sm px-2 py-1 rounded bg-white/10 focus:bg-white/20 outline-none"
+          />
         </div>
-        <div className="relative" onClick={(e) => e.stopPropagation()}>
+      </div>
+      <div className="flex gap-2 px-4 border-t border-b border-[var(--dashboard-border)]">
+        {([
+          ['archivo', 'Archivo'],
+          ['edicion', 'Edición'],
+          ['colaboracion', 'Colaboración'],
+          ['vista', 'Vista'],
+          ['utilidades', 'Utilidades'],
+        ] as const).map(([id, label]) => (
           <button
-            onClick={() => setOpenShare((o) => !o)}
-            className="px-3 py-1 rounded bg-white/10 text-sm flex items-center gap-1"
+            key={id}
+            onClick={() => setSection(id)}
+            className={`px-2 py-1 text-sm rounded ${section===id ? 'bg-[var(--dashboard-accent)]/20 text-white' : 'bg-white/10'}`}
           >
-            <Share2 className="w-4 h-4" /> Compartir
+            {label}
           </button>
-          {openShare && (
-            <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10">
-              <button
-                onClick={() => {
-                  copyLink();
-                  setOpenShare(false);
-                }}
-                className="block px-3 py-1 text-sm text-left hover:bg-white/10 w-full"
-              >
-                Copiar enlace
-              </button>
-            </div>
-          )}
-        </div>
-        <div className="flex items-center gap-1">
-          <input
-            type="range"
-            min="0.5"
-            max="2"
-            step="0.1"
-            value={zoom}
-            onChange={(e) => setZoom(parseFloat(e.target.value))}
-            className="h-2 w-24"
-          />
-          <span className="text-xs w-10 text-center">{Math.round(zoom * 100)}%</span>
-        </div>
-        <button onClick={undo} className="px-3 py-1 rounded bg-white/10 text-sm" title="Deshacer">
-          ↶
-        </button>
-        <button onClick={redo} className="px-3 py-1 rounded bg-white/10 text-sm" title="Rehacer">
-          ↷
-        </button>
-        <button onClick={toggleReadOnly} className="px-3 py-1 rounded bg-white/10 text-sm">
-          {readOnly ? 'Editar' : 'Presentar'}
-        </button>
-        <button onClick={toggleGrid} className="px-3 py-1 rounded bg-white/10 text-sm">
-          {showGrid ? 'Ocultar cuadricula' : 'Cuadricula'}
-        </button>
-        {showGrid && (
-          <input
-            type="range"
-            min="40"
-            max="200"
-            step="5"
-            value={gridSize}
-            onChange={e => setGridSize(parseInt(e.target.value))}
-            className="h-2 w-24"
-          />
-        )}
-        <button onClick={onShowHistory} className="px-3 py-1 rounded bg-white/10 text-sm">
-          Historial
-        </button>
-        <button onClick={mostrarCambios} className="px-3 py-1 rounded bg-white/10 text-sm">
-          Vista cambios
-        </button>
-        <button onClick={mostrarComentarios} className="px-3 py-1 rounded bg-white/10 text-sm">
-          Comentarios
-        </button>
-        <div className="relative" onClick={(e) => e.stopPropagation()}>
-          <button onClick={() => setOpenConfig((o) => !o)} className="px-3 py-1 rounded bg-white/10 text-sm">
-            Configuración
-          </button>
-          {openConfig && (
-            <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10 p-2 text-sm space-y-2">
-              <div>
-                <label className="block text-xs">Atajo deshacer</label>
-                <input
-                  value={shortcuts.undo}
-                  onChange={e => {
-                    const val = e.target.value
-                    setShortcuts(s => { const n = { ...s, undo: val }; localStorage.setItem('panel-shortcuts', JSON.stringify(n)); return n })
-                  }}
-                  className="w-28 bg-white/10 px-1 rounded"
-                />
-              </div>
-              <div>
-                <label className="block text-xs">Atajo rehacer</label>
-                <input
-                  value={shortcuts.redo}
-                  onChange={e => {
-                    const val = e.target.value
-                    setShortcuts(s => { const n = { ...s, redo: val }; localStorage.setItem('panel-shortcuts', JSON.stringify(n)); return n })
-                  }}
-                  className="w-28 bg-white/10 px-1 rounded"
-                />
-              </div>
-              <div>
-                <label className="block text-xs">Color acento</label>
-                <input
-                  type="color"
-                  defaultValue={typeof window !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--dashboard-accent').trim() || '#ffe066' : '#ffe066'}
-                  onChange={e => {
-                    document.documentElement.style.setProperty('--dashboard-accent', e.target.value)
-                    document.documentElement.style.setProperty('--dashboard-accent-hover', e.target.value)
-                    localStorage.setItem('panel-accent', e.target.value)
-                  }}
-                />
-              </div>
-            </div>
-          )}
-        </div>
-        <div className="relative" onClick={(e) => e.stopPropagation()}>
-          <button onClick={() => setOpenWiki((o) => !o)} className="px-3 py-1 rounded bg-white/10 text-sm">
-            Wiki
-          </button>
-          {openWiki && (
-            <div
-              className="fixed inset-0 z-40 bg-black/60 flex items-center justify-center"
-              onClick={() => setOpenWiki(false)}
+        ))}
+      </div>
+      <div className="flex items-center gap-2 px-4 py-2">
+        {section === 'archivo' && (
+          <>
+            <button
+              onClick={() => {
+                guardar();
+                guardarNombre();
+                setUnsaved(false);
+              }}
+              className="px-3 py-1 rounded bg-white/10 text-sm"
             >
-              <iframe
-                src="/wiki"
-                className="bg-white w-11/12 h-5/6 rounded-lg"
-                onClick={(e) => e.stopPropagation()}
+              Guardar
+            </button>
+            <div className="relative" onClick={(e) => e.stopPropagation()}>
+              <button
+                onClick={() => setOpenExport((o) => !o)}
+                className="px-3 py-1 rounded bg-white/10 text-sm flex items-center gap-1"
+              >
+                <Download className="w-4 h-4" /> Exportar
+              </button>
+              {openExport && (
+                <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10">
+                  {['pdf','png','svg','json','ics'].map((f) => (
+                    <button
+                      key={f}
+                      onClick={() => {
+                        exportar(f);
+                        setOpenExport(false);
+                      }}
+                      className="block px-3 py-1 text-sm text-left hover:bg-white/10 w-full"
+                    >
+                      {f.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="relative" onClick={(e) => e.stopPropagation()}>
+              <button
+                onClick={() => setOpenShare((o) => !o)}
+                className="px-3 py-1 rounded bg-white/10 text-sm flex items-center gap-1"
+              >
+                <Share2 className="w-4 h-4" /> Compartir
+              </button>
+              {openShare && (
+                <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10">
+                  <button
+                    onClick={() => {
+                      copyLink();
+                      setOpenShare(false);
+                    }}
+                    className="block px-3 py-1 text-sm text-left hover:bg-white/10 w-full"
+                  >
+                    Copiar enlace
+                  </button>
+                </div>
+              )}
+            </div>
+            <button onClick={salir} className="px-3 py-1 rounded bg-white/10 text-sm flex items-center gap-1">
+              <LogOut className="w-4 h-4" /> Salir
+            </button>
+          </>
+        )}
+        {section === 'edicion' && (
+          <>
+            <div className="flex items-center gap-1">
+              <input
+                type="range"
+                min="0.5"
+                max="2"
+                step="0.1"
+                value={zoom}
+                onChange={(e) => setZoom(parseFloat(e.target.value))}
+                className="h-2 w-24"
               />
+              <span className="text-xs w-10 text-center">{Math.round(zoom * 100)}%</span>
             </div>
-          )}
-        </div>
-        <div className="relative" onClick={(e) => e.stopPropagation()}>
-          <button onClick={() => setOpenHelp((o) => !o)} className="px-3 py-1 rounded bg-white/10 text-sm">
-            Ayuda
-          </button>
-          {openHelp && (
-            <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10 p-2 text-sm">
-              Usa clic y arrastra para mover widgets.
-              Pulsa Guardar para persistir cambios.
-            </div>
-          )}
-        </div>
-        <div className="relative" onClick={(e) => e.stopPropagation()}>
-          <button onClick={() => setOpenTools(o => !o)} className="px-3 py-1 rounded bg-white/10 text-sm">
-            Funciones
-          </button>
-          {openTools && (
-              <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10 p-2 space-y-2">
-                {[
-                  {
-                    title: 'Gestión',
-                    items: [
-                      { label: 'Paneles', path: '/dashboard/paneles' },
-                      { label: 'Reportes', path: '/dashboard/reportes' },
-                      { label: 'Vistas', path: '/dashboard/vistas' },
-                    ],
-                  },
-                  {
-                    title: 'Análisis',
-                    items: [
-                      { label: 'Estadísticas', path: '/dashboard/estadisticas' },
-                      { label: 'Timeline', path: '/dashboard/timeline' },
-                      { label: 'Actividad', path: '/dashboard/actividad' },
-                    ],
-                  },
-                  {
-                    title: 'Diagramas',
-                    items: [
-                      { label: 'Flujo', path: '/dashboard/flujo' },
-                      { label: 'Elementos', path: '/dashboard/elementos' },
-                      { label: 'Dependencias', path: '/dashboard/dependencias' },
-                      { label: 'IA Visual', path: '/dashboard/ia-visual' },
-                    ],
-                  },
-                  {
-                    title: 'Colaboración',
-                    items: [
-                      { label: 'Narrador', path: '/dashboard/story' },
-                      { label: 'Voz', path: '/dashboard/voz' },
-                      { label: 'Roles', path: '/dashboard/roles' },
-                      { label: 'Gamificación', path: '/dashboard/gamificacion' },
-                    ],
-                  },
-                  {
-                    title: 'Utilidades',
-                    items: [
-                      { label: 'Búsqueda', path: '/dashboard/busqueda' },
-                      { label: 'Macros', path: '/dashboard/macros' },
-                      { label: 'Admin', path: '/dashboard/admin' },
-                    ],
-                  },
-                ].map(group => (
-                  <div key={group.title}>
-                    <div className="px-3 py-1 text-xs font-semibold opacity-75">{group.title}</div>
-                    {group.items.map(item => (
-                      <Link key={item.path} href={item.path} className="block px-3 py-1 text-sm hover:bg-white/10 whitespace-nowrap">
-                        {item.label}
-                      </Link>
-                    ))}
-                  </div>
-                ))}
-              </div>
+            <button onClick={undo} className="px-3 py-1 rounded bg-white/10 text-sm" title="Deshacer">
+              ↶
+            </button>
+            <button onClick={redo} className="px-3 py-1 rounded bg-white/10 text-sm" title="Rehacer">
+              ↷
+            </button>
+            <button onClick={toggleReadOnly} className="px-3 py-1 rounded bg-white/10 text-sm">
+              {readOnly ? 'Editar' : 'Presentar'}
+            </button>
+            <button onClick={onShowHistory} className="px-3 py-1 rounded bg-white/10 text-sm">
+              Historial
+            </button>
+            <button onClick={mostrarCambios} className="px-3 py-1 rounded bg-white/10 text-sm">
+              Vista cambios
+            </button>
+          </>
+        )}
+        {section === 'colaboracion' && (
+          <>
+            <button onClick={mostrarComentarios} className="px-3 py-1 rounded bg-white/10 text-sm">
+              Comentarios
+            </button>
+          </>
+        )}
+        {section === 'vista' && (
+          <>
+            <button onClick={toggleGrid} className="px-3 py-1 rounded bg-white/10 text-sm">
+              {showGrid ? 'Ocultar cuadricula' : 'Cuadricula'}
+            </button>
+            {showGrid && (
+              <input
+                type="range"
+                min="40"
+                max="200"
+                step="5"
+                value={gridSize}
+                onChange={e => setGridSize(parseInt(e.target.value))}
+                className="h-2 w-24"
+              />
             )}
-        </div>
-        <button onClick={salir} className="px-3 py-1 rounded bg-white/10 text-sm flex items-center gap-1">
-          <LogOut className="w-4 h-4" /> Salir
-        </button>
-        {saving === "saving" && <span className="text-xs text-gray-400">Guardando...</span>}
-        {saving === "saved" && <span className="text-xs text-green-500">Guardado</span>}
+          </>
+        )}
+        {section === 'utilidades' && (
+          <>
+            <div className="relative" onClick={(e) => e.stopPropagation()}>
+              <button onClick={() => setOpenConfig((o) => !o)} className="px-3 py-1 rounded bg-white/10 text-sm">
+                Configuración
+              </button>
+              {openConfig && (
+                <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10 p-2 text-sm space-y-2">
+                  <div>
+                    <label className="block text-xs">Atajo deshacer</label>
+                    <input
+                      value={shortcuts.undo}
+                      onChange={e => {
+                        const val = e.target.value
+                        setShortcuts(s => { const n = { ...s, undo: val }; localStorage.setItem('panel-shortcuts', JSON.stringify(n)); return n })
+                      }}
+                      className="w-28 bg-white/10 px-1 rounded"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs">Atajo rehacer</label>
+                    <input
+                      value={shortcuts.redo}
+                      onChange={e => {
+                        const val = e.target.value
+                        setShortcuts(s => { const n = { ...s, redo: val }; localStorage.setItem('panel-shortcuts', JSON.stringify(n)); return n })
+                      }}
+                      className="w-28 bg-white/10 px-1 rounded"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs">Color acento</label>
+                    <input
+                      type="color"
+                      defaultValue={typeof window !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--dashboard-accent').trim() || '#ffe066' : '#ffe066'}
+                      onChange={e => {
+                        document.documentElement.style.setProperty('--dashboard-accent', e.target.value)
+                        document.documentElement.style.setProperty('--dashboard-accent-hover', e.target.value)
+                        localStorage.setItem('panel-accent', e.target.value)
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="relative" onClick={(e) => e.stopPropagation()}>
+              <button onClick={() => setOpenWiki((o) => !o)} className="px-3 py-1 rounded bg-white/10 text-sm">
+                Wiki
+              </button>
+              {openWiki && (
+                <div
+                  className="fixed inset-0 z-40 bg-black/60 flex items-center justify-center"
+                  onClick={() => setOpenWiki(false)}
+                >
+                  <iframe
+                    src="/wiki"
+                    className="bg-white w-11/12 h-5/6 rounded-lg"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
+              )}
+            </div>
+            <div className="relative" onClick={(e) => e.stopPropagation()}>
+              <button onClick={() => setOpenHelp((o) => !o)} className="px-3 py-1 rounded bg-white/10 text-sm">
+                Ayuda
+              </button>
+              {openHelp && (
+                <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10 p-2 text-sm">
+                  Usa clic y arrastra para mover widgets.
+                  Pulsa Guardar para persistir cambios.
+                </div>
+              )}
+            </div>
+            <div className="relative" onClick={(e) => e.stopPropagation()}>
+              <button onClick={() => setOpenTools(o => !o)} className="px-3 py-1 rounded bg-white/10 text-sm">
+                Funciones
+              </button>
+              {openTools && (
+                <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10 p-2 space-y-2">
+                  {[
+                    {
+                      title: 'Gestión',
+                      items: [
+                        { label: 'Paneles', path: '/dashboard/paneles' },
+                        { label: 'Reportes', path: '/dashboard/reportes' },
+                        { label: 'Vistas', path: '/dashboard/vistas' },
+                      ],
+                    },
+                    {
+                      title: 'Análisis',
+                      items: [
+                        { label: 'Estadísticas', path: '/dashboard/estadisticas' },
+                        { label: 'Timeline', path: '/dashboard/timeline' },
+                        { label: 'Actividad', path: '/dashboard/actividad' },
+                      ],
+                    },
+                    {
+                      title: 'Diagramas',
+                      items: [
+                        { label: 'Flujo', path: '/dashboard/flujo' },
+                        { label: 'Elementos', path: '/dashboard/elementos' },
+                        { label: 'Dependencias', path: '/dashboard/dependencias' },
+                        { label: 'IA Visual', path: '/dashboard/ia-visual' },
+                      ],
+                    },
+                    {
+                      title: 'Colaboración',
+                      items: [
+                        { label: 'Narrador', path: '/dashboard/story' },
+                        { label: 'Voz', path: '/dashboard/voz' },
+                        { label: 'Roles', path: '/dashboard/roles' },
+                        { label: 'Gamificación', path: '/dashboard/gamificacion' },
+                      ],
+                    },
+                    {
+                      title: 'Utilidades',
+                      items: [
+                        { label: 'Búsqueda', path: '/dashboard/busqueda' },
+                        { label: 'Macros', path: '/dashboard/macros' },
+                        { label: 'Admin', path: '/dashboard/admin' },
+                      ],
+                    },
+                  ].map(group => (
+                    <div key={group.title}>
+                      <div className="px-3 py-1 text-xs font-semibold opacity-75">{group.title}</div>
+                      {group.items.map(item => (
+                        <Link key={item.path} href={item.path} className="block px-3 py-1 text-sm hover:bg-white/10 whitespace-nowrap">
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        )}
+        {saving === 'saving' && <span className="text-xs text-gray-400">Guardando...</span>}
+        {saving === 'saved' && <span className="text-xs text-green-500">Guardado</span>}
       </div>
     </header>
   );
