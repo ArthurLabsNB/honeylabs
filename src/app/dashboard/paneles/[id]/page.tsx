@@ -115,6 +115,16 @@ export default function PanelPage() {
     }
   })
 
+  const saveCurrentSub = useCallback(() => {
+    setSubboards(bs =>
+      bs.map(b => (b.id === activeSub ? { ...b, widgets, layout } : b)),
+    )
+    const updated = subboards.map(b =>
+      b.id === activeSub ? { ...b, widgets, layout } : b,
+    )
+    localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify(updated))
+  }, [activeSub, widgets, layout, subboards, panelId])
+
   useEffect(() => {
     if (!panelId) return
     const bc = new BroadcastChannel(`panel-sync-${panelId}`)
@@ -565,15 +575,6 @@ const assignGroupSelected = () => {
   setLayout(prev => prev.map(it => selected.includes(it.i) ? { ...it, owner } : it))
 };
 
-const saveCurrentSub = useCallback(() => {
-  setSubboards(bs =>
-    bs.map(b => (b.id === activeSub ? { ...b, widgets, layout } : b)),
-  )
-  const updated = subboards.map(b =>
-    b.id === activeSub ? { ...b, widgets, layout } : b,
-  )
-  localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify(updated))
-}, [activeSub, widgets, layout, subboards, panelId])
 
 const switchSubboard = (id: string) => {
   saveCurrentSub()
