@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { marked } from "marked";
-import { markedKatex } from 'marked-katex-extension'
+import markedKatex from 'marked-katex-extension'
 import 'katex/dist/katex.min.css'
 
 marked.use(markedKatex())
