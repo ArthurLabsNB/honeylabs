@@ -35,6 +35,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   });
   const [openHelp, setOpenHelp] = useState(false);
   const [openWiki, setOpenWiki] = useState(false);
+  const [openTools, setOpenTools] = useState(false);
   const conectados = usePanelPresence(panelId, usuario);
   const {
     guardar,
@@ -64,6 +65,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
       setOpenConfig(false);
       setOpenHelp(false);
       setOpenWiki(false);
+      setOpenTools(false);
     };
     document.addEventListener("click", close);
     return () => document.removeEventListener("click", close);
@@ -92,6 +94,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
         setOpenConfig(false)
         setOpenHelp(false)
         setOpenWiki(false)
+        setOpenTools(false)
       } else if (e.key === '/' && document.activeElement !== searchRef.current) {
         e.preventDefault()
         searchRef.current?.focus()
@@ -398,8 +401,43 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
           </button>
           {openHelp && (
             <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10 p-2 text-sm">
-              Usa clic y arrastra para mover widgets. 
+              Usa clic y arrastra para mover widgets.
               Pulsa Guardar para persistir cambios.
+            </div>
+          )}
+        </div>
+        <div className="relative" onClick={(e) => e.stopPropagation()}>
+          <button onClick={() => setOpenTools(o => !o)} className="px-3 py-1 rounded bg-white/10 text-sm">
+            Funciones
+          </button>
+          {openTools && (
+            <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10">
+              {[
+                { label: 'Paneles', path: '/dashboard/paneles' },
+                { label: 'Reportes', path: '/dashboard/reportes' },
+                { label: 'Estadísticas', path: '/dashboard/estadisticas' },
+                { label: 'Historial', path: '/dashboard/timeline' },
+                { label: 'Narrador', path: '/dashboard/story' },
+                { label: 'Dependencias', path: '/dashboard/dependencias' },
+                { label: 'IA Visual', path: '/dashboard/ia-visual' },
+                { label: 'Vistas', path: '/dashboard/vistas' },
+                { label: 'Elementos', path: '/dashboard/elementos' },
+                { label: 'Flujo', path: '/dashboard/flujo' },
+                { label: 'Actividad', path: '/dashboard/actividad' },
+                { label: 'Voz', path: '/dashboard/voz' },
+                { label: 'Búsqueda', path: '/dashboard/busqueda' },
+                { label: 'Roles', path: '/dashboard/roles' },
+                { label: 'Gamificación', path: '/dashboard/gamificacion' },
+                { label: 'Admin', path: '/dashboard/admin' },
+              ].map((item) => (
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  className="block px-3 py-1 text-sm hover:bg-white/10 whitespace-nowrap"
+                >
+                  {item.label}
+                </Link>
+              ))}
             </div>
           )}
         </div>
