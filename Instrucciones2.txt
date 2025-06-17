@@ -120,13 +120,13 @@ Comparación de versiones lado a lado. (Completado)
 
 Plantillas públicas, privadas y comunidad: explora, usa y comparte diseños. (Completado)
 
-Gamificación (medallas, logros, uso avanzado, colaboración, etc).
+Gamificación (medallas, logros, uso avanzado, colaboración, etc). (Completado)
 
-Wiki/documentación integrada en la pizarra.
+Wiki/documentación integrada en la pizarra. (Completado)
 
-Panel de métricas y estadísticas de uso: tiempo de edición, usuarios activos, cambios por sesión.
+Panel de métricas y estadísticas de uso: tiempo de edición, usuarios activos, cambios por sesión. (Completado)
 
-Integración con calendario/agenda: asocia pizarras a proyectos, tareas o deadlines.
+Integración con calendario/agenda: asocia pizarras a proyectos, tareas o deadlines. (Completado)
 
 Subpizarras y áreas internas: divide la pizarra en zonas con nombres, permisos y funcionalidades independientes.
 
