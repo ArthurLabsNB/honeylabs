@@ -10,28 +10,28 @@ Añade reacciones en cualquier elemento o comentario para feedback rápido y an�
 4. Árbol de Dependencias/Relaciones (Completado)
 Visualiza cómo se conectan tareas, elementos o ideas dentro de la pizarra en un árbol dinámico, para gestión de proyectos complejos.
 
-5. Integración de IA Visual
+5. Integración de IA Visual (Completado)
 Analiza automáticamente la estructura del diagrama y sugiere optimizaciones visuales (espaciado, alineación, tamaño, contraste, legibilidad).
 
-6. Explorador de Vistas Predefinidas
+6. Explorador de Vistas Predefinidas (Completado)
 Permite guardar y cambiar entre “vistas” (por usuario, tipo de contenido, secciones, favoritos), tipo presets personalizables.
 
-7. Elementos Interactivos Avanzados
+7. Elementos Interactivos Avanzados (Completado)
 Soporte para sliders, switches, encuestas en tiempo real, gráficos de votación o inputs interactivos directos dentro de la pizarra.
 
-8. Simulación de Procesos/Flujos
+8. Simulación de Procesos/Flujos (Completado)
 Anima flujos de trabajo o diagramas, mostrando cómo los datos/acciones fluyen a través de los nodos (ejemplo: simulador BPMN).
 
-9. Resaltado Automático por Actividad
+9. Resaltado Automático por Actividad (Completado)
 Destaca áreas o elementos donde más usuarios interactúan, con calorimetría visual (“heatmap de uso”).
 
-10. Reconocimiento de Voz y Dictado
+10. Reconocimiento de Voz y Dictado (Completado)
 Agregar notas, comandos o texto con voz, con transcripción automática a cualquier elemento o sticky note.
 
-11. Busqueda Semántica por IA
+11. Busqueda Semántica por IA (Completado)
 No solo palabras clave: busca conceptos, relaciones, incluso “lo que quiso decir” usando NLP avanzado.
 
-12. Roles Personalizados por Área o Elemento
+12. Roles Personalizados por Área o Elemento (Completado)
 Más granular: un usuario puede tener permiso de edición solo en un área/elemento, pero solo lectura en otra, y comentarios en una más.
 
 13. Enlaces Inteligentes (Smart Links)
