@@ -257,8 +257,8 @@ export default function PanelPage() {
             validKeys.includes(item.i),
           );
 
-          const lay = (filteredLayout.length ? filteredLayout : defaultLayout).map(it => ({ locked: false, ...it }))
-          const wid = filteredWidgets.length ? filteredWidgets : validKeys
+          const lay = filteredLayout.map(it => ({ locked: false, ...it }))
+          const wid = filteredWidgets
           const board = { id: 'main', nombre: 'Principal', permiso: saved.permiso || 'edicion', widgets: wid, layout: lay }
           let boards: typeof subboards = []
           try { boards = JSON.parse(localStorage.getItem(`panel-subboards-${panelId}`) || '[]') } catch {}

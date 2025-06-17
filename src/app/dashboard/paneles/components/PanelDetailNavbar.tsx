@@ -411,35 +411,62 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
             Funciones
           </button>
           {openTools && (
-            <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10">
-              {[
-                { label: 'Paneles', path: '/dashboard/paneles' },
-                { label: 'Reportes', path: '/dashboard/reportes' },
-                { label: 'Estadísticas', path: '/dashboard/estadisticas' },
-                { label: 'Historial', path: '/dashboard/timeline' },
-                { label: 'Narrador', path: '/dashboard/story' },
-                { label: 'Dependencias', path: '/dashboard/dependencias' },
-                { label: 'IA Visual', path: '/dashboard/ia-visual' },
-                { label: 'Vistas', path: '/dashboard/vistas' },
-                { label: 'Elementos', path: '/dashboard/elementos' },
-                { label: 'Flujo', path: '/dashboard/flujo' },
-                { label: 'Actividad', path: '/dashboard/actividad' },
-                { label: 'Voz', path: '/dashboard/voz' },
-                { label: 'Búsqueda', path: '/dashboard/busqueda' },
-                { label: 'Roles', path: '/dashboard/roles' },
-                { label: 'Gamificación', path: '/dashboard/gamificacion' },
-                { label: 'Admin', path: '/dashboard/admin' },
-              ].map((item) => (
-                <Link
-                  key={item.path}
-                  href={item.path}
-                  className="block px-3 py-1 text-sm hover:bg-white/10 whitespace-nowrap"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </div>
-          )}
+              <div className="absolute right-0 mt-2 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded shadow-md z-10 p-2 space-y-2">
+                {[
+                  {
+                    title: 'Gestión',
+                    items: [
+                      { label: 'Paneles', path: '/dashboard/paneles' },
+                      { label: 'Reportes', path: '/dashboard/reportes' },
+                      { label: 'Vistas', path: '/dashboard/vistas' },
+                    ],
+                  },
+                  {
+                    title: 'Análisis',
+                    items: [
+                      { label: 'Estadísticas', path: '/dashboard/estadisticas' },
+                      { label: 'Timeline', path: '/dashboard/timeline' },
+                      { label: 'Actividad', path: '/dashboard/actividad' },
+                    ],
+                  },
+                  {
+                    title: 'Diagramas',
+                    items: [
+                      { label: 'Flujo', path: '/dashboard/flujo' },
+                      { label: 'Elementos', path: '/dashboard/elementos' },
+                      { label: 'Dependencias', path: '/dashboard/dependencias' },
+                      { label: 'IA Visual', path: '/dashboard/ia-visual' },
+                    ],
+                  },
+                  {
+                    title: 'Colaboración',
+                    items: [
+                      { label: 'Narrador', path: '/dashboard/story' },
+                      { label: 'Voz', path: '/dashboard/voz' },
+                      { label: 'Roles', path: '/dashboard/roles' },
+                      { label: 'Gamificación', path: '/dashboard/gamificacion' },
+                    ],
+                  },
+                  {
+                    title: 'Utilidades',
+                    items: [
+                      { label: 'Búsqueda', path: '/dashboard/busqueda' },
+                      { label: 'Macros', path: '/dashboard/macros' },
+                      { label: 'Admin', path: '/dashboard/admin' },
+                    ],
+                  },
+                ].map(group => (
+                  <div key={group.title}>
+                    <div className="px-3 py-1 text-xs font-semibold opacity-75">{group.title}</div>
+                    {group.items.map(item => (
+                      <Link key={item.path} href={item.path} className="block px-3 py-1 text-sm hover:bg-white/10 whitespace-nowrap">
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
         </div>
         <button onClick={salir} className="px-3 py-1 rounded bg-white/10 text-sm flex items-center gap-1">
           <LogOut className="w-4 h-4" /> Salir
