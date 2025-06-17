@@ -34,6 +34,13 @@ const sidebarMenu = [
     allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
   },
   {
+    key: "pizarra",
+    label: "Pizarra",
+    icon: <Bell className="dashboard-sidebar-icon" data-oid="piz-ico" />,
+    path: "/dashboard/pizarra",
+    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
+  },
+  {
     key: "almacenes",
     label: "Almacenes",
     icon: <Boxes className="dashboard-sidebar-icon" data-oid="fhr-clw" />,
