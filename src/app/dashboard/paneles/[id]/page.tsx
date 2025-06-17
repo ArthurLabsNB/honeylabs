@@ -29,6 +29,11 @@ interface WidgetMeta {
 }
 
 
+interface HistEntry {
+  fecha: string;
+  estado: { widgets: string[]; layout: LayoutItem[] };
+}
+
 export default function PanelPage() {
   const { usuario, loading } = useSession();
   const params = useParams();
@@ -39,7 +44,9 @@ export default function PanelPage() {
   const [layout, setLayout] = useState<LayoutItem[]>([]);
   const [componentes, setComponentes] = useState<{ [key: string]: any }>({});
   const [errores, setErrores] = useState<{ [key: string]: boolean }>({});
-  const { setGuardar } = usePanelOps();
+  const { setGuardar, setMostrarHistorial } = usePanelOps();
+  const [openHist, setOpenHist] = useState(false);
+  const [historial, setHistorial] = useState<HistEntry[]>([]);
 
 
   // 2. Cargar catálogo y componentes de widgets
@@ -135,6 +142,18 @@ export default function PanelPage() {
     setGuardar(() => guardar);
   }, [guardar, setGuardar]);
 
+  useEffect(() => {
+    setMostrarHistorial(() => () => setOpenHist(true));
+  }, [setMostrarHistorial]);
+
+  useEffect(() => {
+    if (!openHist || !usuario || !panelId) return;
+    apiFetch(`/api/paneles/${panelId}/historial`)
+      .then(jsonOrNull)
+      .then((d) => setHistorial(d.historial || []))
+      .catch(() => {});
+  }, [openHist, usuario, panelId]);
+
   // Agregar widget
   const handleAddWidget = (key: string) => {
     if (widgets.includes(key)) return;
@@ -180,6 +199,11 @@ export default function PanelPage() {
       const { [key]: _, ...rest } = prev;
       return rest;
     });
+  };
+
+  const restoreVersion = (entry: HistEntry) => {
+    setWidgets(entry.estado.widgets);
+    setLayout(entry.estado.layout);
   };
 
   // Loading/errores de sesión
@@ -316,6 +340,23 @@ export default function PanelPage() {
           );
         })}
       </GridLayout>
+      {openHist && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40">
+          <div className="bg-[var(--dashboard-card)] p-4 rounded max-h-[80vh] overflow-auto w-80">
+            <h2 className="font-semibold mb-2">Historial</h2>
+            <ul className="space-y-2 text-sm">
+              {historial.map((h, i) => (
+                <li key={i} className="flex justify-between items-center">
+                  <span>{new Date(h.fecha).toLocaleString()}</span>
+                  <button onClick={() => restoreVersion(h)} className="underline">Restaurar</button>
+                </li>
+              ))}
+              {!historial.length && <li className="text-gray-400">Sin historial</li>}
+            </ul>
+            <button onClick={() => setOpenHist(false)} className="mt-3 px-3 py-1 bg-white/10 rounded w-full text-sm">Cerrar</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

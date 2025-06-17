@@ -17,7 +17,7 @@ Botón “Exportar”: abre menú para descargar la pizarra (PDF, PNG, SVG, JSON
 
 Botón “Compartir”: abre opciones de invitación por enlace, usuarios, o configuración de permisos.
 
-Botón “Historial”: accede al historial de cambios y versiones.
+Botón “Historial”: accede al historial de cambios y versiones. (Completado)
 
 Botón “Deshacer/Rehacer”: permite revertir o rehacer acciones recientes.
 
@@ -40,7 +40,7 @@ Botón “Comentarios”: muestra panel lateral con todos los comentarios y menc
 Selector de vista/zoom: controla el zoom, ajusta vista al área activa o toda la pizarra.
 
 B. Lógica de Acciones dentro de la Pizarra (UX, interacción y flujo)
-Autosave avanzado: guardado automático con versiones de respaldo.
+Autosave avanzado: guardado automático con versiones de respaldo. (Completado)
 
 Modo solo lectura/presentación: la pizarra se bloquea y solo puede ser vista, ideal para presentaciones.
 

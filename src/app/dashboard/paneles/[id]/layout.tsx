@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useDashboardUI } from "../../ui";
 import { useRouter } from "next/navigation";
 import PanelDetailNavbar from "../components/PanelDetailNavbar";
-import { PanelOpsProvider } from "../PanelOpsContext";
+import { PanelOpsProvider, usePanelOps } from "../PanelOpsContext";
 import Spinner from "@/components/Spinner";
 import useSession from "@/hooks/useSession";
 
@@ -33,10 +33,11 @@ function ProtectedPanel({ children }: { children: React.ReactNode }) {
 
   if (!usuario) return null;
 
+  const { mostrarHistorial } = usePanelOps();
   return (
-    <div className={`min-h-screen bg-[var(--dashboard-bg)] relative ${fullscreen ? 'dashboard-full' : ''}`}> 
+    <div className={`min-h-screen bg-[var(--dashboard-bg)] relative ${fullscreen ? 'dashboard-full' : ''}`}>
       <main className="flex flex-col min-h-screen transition-all duration-300" style={{ paddingTop: 56 }}>
-        <PanelDetailNavbar />
+        <PanelDetailNavbar onShowHistory={mostrarHistorial} />
         <section className="flex-1 p-4 overflow-y-auto bg-[var(--dashboard-bg)] text-[var(--dashboard-text)]">
           {children}
         </section>
