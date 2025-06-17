@@ -8,6 +8,7 @@ import useSession from "@/hooks/useSession";
 import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
 import { usePanelOps } from "../PanelOpsContext";
+import usePanelPresence from "@/hooks/usePanelPresence";
 
 export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: () => void }) {
   const { usuario } = useSession();
@@ -21,6 +22,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   const [openShare, setOpenShare] = useState(false);
   const [openConfig, setOpenConfig] = useState(false);
   const [openHelp, setOpenHelp] = useState(false);
+  const conectados = usePanelPresence(panelId, usuario);
   const { guardar, undo, redo, readOnly, toggleReadOnly, zoom, setZoom, mostrarCambios } = usePanelOps();
   const router = useRouter();
 
@@ -114,6 +116,27 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
           </span>
         )}
         <span className="absolute left-0 -bottom-4 text-xs text-gray-400">{plan}</span>
+        <div className="flex -space-x-2 ml-2">
+          {conectados.map((u) => (
+            u.avatar ? (
+              <img
+                key={u.id}
+                src={u.avatar}
+                alt={u.nombre || ''}
+                className="w-6 h-6 rounded-full border-2 border-white"
+                title={u.nombre}
+              />
+            ) : (
+              <div
+                key={u.id}
+                className="w-6 h-6 rounded-full bg-gray-400 text-white flex items-center justify-center text-xs border-2 border-white"
+                title={u.nombre}
+              >
+                {u.nombre?.[0] || '?'}
+              </div>
+            )
+          ))}
+        </div>
       </div>
       <div className="flex items-center gap-2">
         <button
