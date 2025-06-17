@@ -1,6 +1,6 @@
 export const runtime = 'nodejs'
 import { NextResponse } from 'next/server'
-import { getLogros } from '@lib/gamificacion'
+import { getLogros } from '@/lib/gamificacion'
 
 export async function GET() {
   try {
