@@ -7,6 +7,9 @@
 - Añadimos buscador y secciones extra al navbar del dashboard.
 - Panel principal ahora permite desplazamiento infinito y widgets superpuestos.
 - Las capas y posiciones se guardan en la base de datos.
+## 0.2.230
+- Panel principal muestra métricas y gráficas del usuario.
+- Movimos la zona de widgets a la nueva sección Pizarra con navbar propio.
 ## 0.2.225
 - Añadimos vista general de auditorías con filtros en tiempo real.
 - Unificamos nombres de objetos al listar auditorías.
