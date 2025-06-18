@@ -2,16 +2,19 @@
 
 import Link from "next/link";
 import useSession from "@/hooks/useSession";
+import { useToast } from "@/components/Toast";
 
 export default function NavbarPaneles() {
   const { usuario } = useSession();
+  const toast = useToast();
   const plan = usuario?.plan?.nombre || "Free";
 
   const invitar = () => {
     const url = window.location.origin + "/dashboard/paneles";
-    navigator.clipboard.writeText(url).then(() => {
-      alert("Enlace copiado");
-    });
+    navigator.clipboard.writeText(url).then(
+      () => toast.show('Enlace copiado', 'success'),
+      () => toast.show('No se pudo copiar', 'error'),
+    );
   };
 
   return (

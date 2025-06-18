@@ -97,10 +97,8 @@ export default function PanelPage() {
   const [diffIndexA, setDiffIndexA] = useState(-2);
   const [diffIndexB, setDiffIndexB] = useState(-1);
   const [historial, setHistorial] = useState<HistEntry[]>([]);
-  const [undoHist, setUndoHist] = useState<{ widgets: string[]; layout: LayoutItem[] }[]>([])
-  const [undoIdx, setUndoIdx] = useState(-1)
+  const { history: undoHist, index: undoIdx, record, undo: undoHistory, redo: redoHistory, reset, skip } = useUndoRedo<Snapshot>({ widgets: [], layout: [] })
   const [readyHistory, setReadyHistory] = useState(false)
-  const skipHistory = useRef(false)
   const { setUnsaved } = usePanelOps()
   const bcRef = useRef<BroadcastChannel | null>(null)
   const clientId = useRef<string>(Math.random().toString(36).slice(2))
@@ -140,7 +138,7 @@ export default function PanelPage() {
       const { widgets: w, layout: l, client } = e.data || {}
       if (client === clientId.current) return
       if (!Array.isArray(w) || !Array.isArray(l)) return
-      skipHistory.current = true
+      skip.current = true
       setWidgets(w)
       setLayout(l as LayoutItem[])
       toast.show('Pizarra actualizada', 'info')
@@ -178,10 +176,12 @@ export default function PanelPage() {
   useEffect(() => {
     const handleOff = () => {
       setIsOffline(true)
+      toast.show('Conexión perdida', 'error')
       saveCurrentSub()
     }
     const handleOn = () => {
       setIsOffline(false);
+      toast.show('Conectado', 'success')
       const data = localStorage.getItem(`panel-offline-${panelId}`);
       if (data) {
         apiFetch(`/api/paneles/${panelId}`, {
@@ -261,8 +261,7 @@ export default function PanelPage() {
           setActiveSub(boards[0].id)
           setWidgets(boards[0].widgets)
           setLayout(boards[0].layout)
-          setUndoHist([{ widgets: boards[0].widgets, layout: boards[0].layout }])
-          setUndoIdx(0)
+          reset({ widgets: boards[0].widgets, layout: boards[0].layout })
           setReadyHistory(true)
           if (saved.permiso && setReadOnly) {
             setReadOnly(saved.permiso !== 'edicion')
@@ -279,8 +278,7 @@ export default function PanelPage() {
           setActiveSub(boards[0].id)
           setWidgets(boards[0].widgets)
           setLayout(boards[0].layout)
-          setUndoHist([{ widgets: boards[0].widgets, layout: boards[0].layout }])
-          setUndoIdx(0)
+          reset({ widgets: boards[0].widgets, layout: boards[0].layout })
           setReadyHistory(true)
           setReadOnly && setReadOnly(false)
           localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify(boards))
@@ -313,12 +311,7 @@ export default function PanelPage() {
     if (!readyHistory) return
     guardar()
     saveCurrentSub()
-    if (skipHistory.current) {
-      skipHistory.current = false
-      return
-    }
-    setUndoHist((h) => [...h.slice(0, undoIdx + 1), { widgets, layout }])
-    setUndoIdx((i) => i + 1)
+    record({ widgets, layout })
     setUnsaved(true)
     bcRef.current?.postMessage({ client: clientId.current, widgets, layout })
   }, [widgets, layout])
@@ -505,7 +498,7 @@ const insertTemplate = () => {
 
 const iaSuggest = () => {
   const ideas = ['Añadir resumen', 'Crear diagrama', 'Listar tareas'];
-  alert(`Sugerencia IA: ${ideas[Math.floor(Math.random() * ideas.length)]}`);
+  toast.show(`Sugerencia IA: ${ideas[Math.floor(Math.random() * ideas.length)]}`, 'info');
 };
 
 const generateDiagramAI = () => {
@@ -632,7 +625,7 @@ const handleBoardContext = (e: React.MouseEvent) => {
 };
 
 const viewHist = () => {
-  alert("Historial no implementado");
+  toast.show('Historial no implementado', 'info');
 };
 
   const toggleLock = (key: string) => {
@@ -647,54 +640,25 @@ const viewHist = () => {
   };
 
   const undo = useCallback(() => {
-    if (undoIdx <= 0) return
-    const prev = undoHist[undoIdx - 1]
-    if (!prev) return
-    skipHistory.current = true
-    setWidgets(prev.widgets)
-    setLayout(prev.layout)
-    setUndoIdx((i) => i - 1)
-  }, [undoIdx, undoHist])
+    const snap = undoHistory()
+    if (!snap) return
+    setWidgets(snap.widgets)
+    setLayout(snap.layout)
+  }, [undoHistory])
 
   const redo = useCallback(() => {
-    if (undoIdx >= undoHist.length - 1) return
-    const next = undoHist[undoIdx + 1]
-    if (!next) return
-    skipHistory.current = true
-    setWidgets(next.widgets)
-    setLayout(next.layout)
-    setUndoIdx((i) => i + 1)
-  }, [undoIdx, undoHist])
+    const snap = redoHistory()
+    if (!snap) return
+    setWidgets(snap.widgets)
+    setLayout(snap.layout)
+  }, [redoHistory])
 
   useEffect(() => {
     setUndo(() => undo);
     setRedo(() => redo);
   }, [undo, redo, setUndo, setRedo]);
 
-  useEffect(() => {
-    const handle = (e: KeyboardEvent) => {
-      const match = (combo: string) => {
-        const parts = combo.toLowerCase().split('+')
-        const key = parts.pop()
-        const ctrl = parts.includes('ctrl')
-        const shift = parts.includes('shift')
-        const alt = parts.includes('alt')
-        return (
-          (!!key && e.key.toLowerCase() === key) &&
-          (!!ctrl === e.ctrlKey) && (!!shift === e.shiftKey) && (!!alt === e.altKey)
-        )
-      }
-      if (match(shortcuts.undo)) {
-        e.preventDefault()
-        undo()
-      } else if (match(shortcuts.redo)) {
-        e.preventDefault()
-        redo()
-      }
-    }
-    window.addEventListener('keydown', handle)
-    return () => window.removeEventListener('keydown', handle)
-  }, [undo, redo, shortcuts])
+  usePanelShortcuts(shortcuts, undo, redo)
 
   // Loading/errores de sesión
   if (loading) return <div data-oid="_0v3rjj">Cargando usuario...</div>;

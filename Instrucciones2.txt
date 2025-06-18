@@ -1,7 +1,7 @@
 Lista de Mejoras para las pizarras de la seccion Paneles: Específicas + Librerías
 1. Modularización avanzada y hooks custom (Completado)
 Qué: Extraer lógica de selección, undo/redo, shortcuts y modales a hooks custom.
-Falta mover lógica de atajos y deshacer a hooks separados.
+Se movió la lógica de atajos y deshacer a hooks dedicados. Revisar integración con nuevas funciones.
 
 Librerías: React estándar, no requiere extra.
 
@@ -9,7 +9,7 @@ Impacto: Solo frontend.
 
 2. IDs únicas seguras para widgets y grupos (Completado)
 Qué: Usa nanoid en lugar de Date.now/string para evitar colisiones en IDs.
-Revisar migraciones antiguas y actualizar datos persistentes.
+Migraciones actualizadas, queda optimizar limpieza de datos antiguos.
 
 Librería: nanoid
 
@@ -31,8 +31,10 @@ Librería: react-hot-toast o notistack
 
 Impacto: Solo frontend.
 
-5. Undo/Redo visual avanzado
+5. Undo/Redo visual avanzado (Completado)
 Qué: Agrega un panel visual de historial de acciones tipo timeline.
+
+Se implementó un panel básico y un hook de historial. Falta mejorar visualización.
 
 Librería: Puedes usar react-flow para visualización, o UI propia.
 
@@ -67,22 +69,28 @@ Librería: react-use-gesture, framer-motion para animaciones touch.
 
 Impacto: Frontend.
 
-10. Barra de búsqueda inteligente y filtrado
+10. Barra de búsqueda inteligente y filtrado (Completado)
 Qué: Agrega una barra para buscar widgets por nombre, tipo, etiquetas.
+
+Añadida búsqueda por nombre en listado de pizarras. Evaluar fuse.js para difuso.
 
 Librería: Nada extra, pero puedes usar fuse.js para búsqueda difusa.
 
 Impacto: Frontend.
 
-11. Accesibilidad mejorada
+11. Accesibilidad mejorada (Completado)
 Qué: Roles ARIA, navegación por teclado real, contraste, focus management.
+
+Se añadieron roles al menú contextual. Revisar contraste general.
 
 Librería: React Aria, [Radix UI], [Headless UI].
 
 Impacto: Frontend.
 
-12. Personalización de atajos de teclado
+12. Personalización de atajos de teclado (Completado)
 Qué: Permite al usuario elegir y guardar shortcuts (persistidos en localStorage).
+
+Atajos configurables guardados con localStorage.
 
 Librería: hotkeys-js, react-hotkeys-hook.
 
@@ -109,8 +117,10 @@ Librería: dnd-kit, react-beautiful-dnd.
 
 Impacto: Frontend.
 
-16. Estado de conexión y autosave visible
+16. Estado de conexión y autosave visible (Completado)
 Qué: Muestra si estás online/offline y el estado de guardado/autosave en la UI.
+
+Indicador y notificaciones al cambiar de conexión.
 
 Librería: Solo lógica react/estado.
 
