@@ -1,6 +1,17 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server'
+import prisma from '@lib/prisma'
+import * as logger from '@lib/logger'
 
 export async function GET() {
-  const stats = { usuarios: 120, almacenes: 5 };
-  return NextResponse.json({ stats });
+  try {
+    const [usuarios, almacenes] = await Promise.all([
+      prisma.usuario.count(),
+      prisma.almacen.count(),
+    ])
+    const stats = { usuarios, almacenes }
+    return NextResponse.json({ stats })
+  } catch (err) {
+    logger.error('[ADMIN_STATS]', err)
+    return NextResponse.json({ error: 'Error obteniendo estadísticas' }, { status: 500 })
+  }
 }
