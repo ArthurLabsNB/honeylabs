@@ -74,6 +74,7 @@ export default function PanelPage() {
     toggleGrid,
     gridSize,
     setGridSize,
+    setZoom,
     zoom,
     buscar,
   } = usePanelOps();
@@ -730,13 +731,6 @@ const viewHist = () => {
         }
       }}
       onContextMenu={handleBoardContext}
-      onWheel={e => {
-        if (e.ctrlKey) {
-          e.preventDefault()
-          const delta = e.deltaY > 0 ? -0.1 : 0.1
-          setZoom(z => Math.min(2, Math.max(0.5, Math.round((z + delta)*10)/10)))
-        }
-      }}
     >
       <div
         className="flex items-center justify-between mb-5"
@@ -772,7 +766,17 @@ const viewHist = () => {
         </div>
       </div>
 
-      <div id="panel-area" style={{ transform: `scale(${zoom})`, transformOrigin: 'top left' }}>
+      <div
+        id="panel-area"
+        onWheel={e => {
+          if (e.ctrlKey) {
+            e.preventDefault()
+            const delta = e.deltaY > 0 ? -0.1 : 0.1
+            setZoom(z => Math.min(2, Math.max(0.5, Math.round((z + delta) * 10) / 10)))
+          }
+        }}
+        style={{ transform: `scale(${zoom})`, transformOrigin: 'top left' }}
+      >
       <GridLayout
         layout={layout}
         cols={12}
