@@ -200,10 +200,10 @@
     ],
     "tipos": [
       "individual",
-      "empresarial",
       "institucional",
       "codigo",
-      "admin"
+      "admin",
+      "empresarial"
     ]
   }
- ]
+]
