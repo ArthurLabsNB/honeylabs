@@ -7,6 +7,7 @@ import useSession from "@/hooks/useSession";
 import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
 import Spinner from "@/components/Spinner";
+import { usePrompt } from "@/hooks/usePrompt";
 
 interface Panel {
   id: string;
@@ -16,6 +17,7 @@ interface Panel {
 
 export default function PanelesPage() {
   const { usuario, loading } = useSession();
+  const prompt = usePrompt();
   const [paneles, setPaneles] = useState<Panel[]>([]);
   const [view, setView] = useState<"grid" | "list">("grid");
   const [filter, setFilter] = useState<"todos" | "creados" | "conectados">("todos");
@@ -37,7 +39,7 @@ export default function PanelesPage() {
   }, [usuario]);
 
   const crear = async () => {
-    const nombre = prompt("Nombre de la pizarra")?.trim();
+    const nombre = await prompt("Nombre de la pizarra");
     if (!nombre) return;
     await apiFetch("/api/paneles", {
       method: "POST",

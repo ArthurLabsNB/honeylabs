@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
+import { nanoid } from "nanoid";
 import { jsonOrNull } from "@lib/http";
 import { apiFetch } from "@lib/api";
 import type { Usuario } from "@/types/usuario";
@@ -14,6 +15,8 @@ import Minimap from "../components/Minimap";
 import ContextMenu from "../components/ContextMenu";
 import GalleryPanel from "../components/GalleryPanel";
 import { useToast } from "@/components/Toast";
+import { usePrompt } from "@/hooks/usePrompt";
+import useSelection from "@/hooks/useSelection";
 
 import dynamic from "next/dynamic";
 import GridLayout, { Layout } from "react-grid-layout";
@@ -51,6 +54,7 @@ interface Comment {
 export default function PanelPage() {
   const { usuario, loading } = useSession();
   const toast = useToast();
+  const prompt = usePrompt();
   const params = useParams();
   const panelId = Array.isArray(params?.id) ? params.id[0] : (params as any)?.id;
 
@@ -86,7 +90,7 @@ export default function PanelPage() {
   const [comments, setComments] = useState<Comment[]>([])
   const [activeWidget, setActiveWidget] = useState<string | undefined>()
   const [contextMenu, setContextMenu] = useState<{ type: 'widget' | 'board' | 'multi'; x: number; y: number; id?: string } | null>(null)
-  const [selected, setSelected] = useState<string[]>([])
+  const { selected, setSelected, toggle, clear } = useSelection<string>([])
   const [clipboard, setClipboard] = useState<{ key: string; layout: LayoutItem } | null>(null)
   const [diffData, setDiffData] = useState<{ prev: HistEntry; current: HistEntry } | null>(null);
   const [diffList, setDiffList] = useState<HistEntry[]>([]);
@@ -434,7 +438,7 @@ export default function PanelPage() {
   const duplicateWidget = (key: string) => {
     const orig = layout.find((l) => l.i === key)
     if (!orig) return
-    const newKey = `${key}_${Date.now()}`
+    const newKey = `${key}_${nanoid()}`
     setWidgets([...widgets, newKey])
     setLayout([
       ...layout,
@@ -462,31 +466,34 @@ const cutWidget = (key: string) => {
 const pasteWidget = () => {
   if (!clipboard) return;
   const { key, layout: it } = clipboard;
-  const newKey = `${key}_${Date.now()}`;
+  const newKey = `${key}_${nanoid()}`;
   setWidgets([...widgets, newKey]);
   setLayout([...layout, { ...it, i: newKey, x: it.x + 1, y: it.y + 1, z: (it.z || 0) + 1 }]);
 };
 
 const renameWidget = (key: string) => {
-  const name = prompt("Nuevo nombre")?.trim();
-  if (!name) return;
-  setLayout(prev => prev.map(it => it.i === key ? { ...it, label: name } : it));
+  prompt("Nuevo nombre").then(name => {
+    if (!name) return;
+    setLayout(prev => prev.map(it => it.i === key ? { ...it, label: name } : it));
+  });
 };
 
 const changeColor = (key: string) => {
-  const color = prompt("Color de fondo (hex)", "#ffffff")?.trim();
-  if (!color) return;
-  setLayout(prev => prev.map(it => it.i === key ? { ...it, bg: color } : it));
+  prompt("Color de fondo (hex)", "#ffffff").then(color => {
+    if (!color) return;
+    setLayout(prev => prev.map(it => it.i === key ? { ...it, bg: color } : it));
+  });
 };
 
 const assignOwner = (key: string) => {
-  const owner = prompt('Responsable')?.trim();
-  if (!owner) return;
-  setLayout(prev => prev.map(it => it.i === key ? { ...it, owner } : it));
+  prompt('Responsable').then(owner => {
+    if (!owner) return;
+    setLayout(prev => prev.map(it => it.i === key ? { ...it, owner } : it));
+  });
 };
 
 const insertTemplate = () => {
-  const keys = ['markdown', 'markdown', 'markdown'].map(k => `${k}_${Date.now()}_${Math.random().toString(16).slice(2)}`);
+  const keys = ['markdown', 'markdown', 'markdown'].map(k => `${k}_${nanoid()}`);
   setWidgets(w => [...w, ...keys]);
   const maxY = layout.reduce((m, it) => Math.max(m, it.y + (it.h || 0)), 0);
   const maxZ = layout.reduce((m, it) => Math.max(m, it.z || 0), 0);
@@ -502,41 +509,44 @@ const iaSuggest = () => {
 };
 
 const generateDiagramAI = () => {
-  const desc = prompt('Describe el diagrama')?.trim()
-  if (!desc) return
-  const parts = desc.split(/\s+/).slice(0,3)
-  const keys = parts.map(() => `markdown_${Date.now()}_${Math.random().toString(16).slice(2)}`)
-  setWidgets(w => [...w, ...keys])
+  prompt('Describe el diagrama').then(desc => {
+    if (!desc) return
+    const parts = desc.split(/\s+/).slice(0,3)
+    const keys = parts.map(() => `markdown_${nanoid()}`)
+    setWidgets(w => [...w, ...keys])
   const maxY = layout.reduce((m, it) => Math.max(m, it.y + (it.h || 0)), 0)
   const maxZ = layout.reduce((m, it) => Math.max(m, it.z || 0), 0)
-  setLayout(l => [
-    ...l,
-    ...keys.map((k,i)=>({ i:k, x:i*2, y:maxY, w:2, h:2, z:maxZ+i+1, label: parts[i] || `Paso ${i+1}` }))
-  ])
+    setLayout(l => [
+      ...l,
+      ...keys.map((k,i)=>({ i:k, x:i*2, y:maxY, w:2, h:2, z:maxZ+i+1, label: parts[i] || `Paso ${i+1}` }))
+    ])
+  })
 }
 
 const addMedia = (url?: string) => {
-  const src = url || prompt('URL del recurso')?.trim()
-  if (!src) return
-  const key = `media_${Date.now()}`
-  setWidgets(w => [...w, key])
-  const maxY = layout.reduce((m, it) => Math.max(m, it.y + (it.h || 0)), 0)
-  const maxZ = layout.reduce((m, it) => Math.max(m, it.z || 0), 0)
-  setLayout(l => [...l, { i: key, x:0, y:maxY, w:4, h:3, z:maxZ+1, data:{ url: src } }])
+  const get = url ? Promise.resolve(url) : prompt('URL del recurso')
+  get.then(src => {
+    if (!src) return
+    const key = `media_${nanoid()}`
+    setWidgets(w => [...w, key])
+    const maxY = layout.reduce((m, it) => Math.max(m, it.y + (it.h || 0)), 0)
+    const maxZ = layout.reduce((m, it) => Math.max(m, it.z || 0), 0)
+    setLayout(l => [...l, { i: key, x:0, y:maxY, w:4, h:3, z:maxZ+1, data:{ url: src } }])
+  })
 }
 
 const handleSelect = (e: React.MouseEvent, id: string) => {
   if (e.ctrlKey || e.metaKey || e.shiftKey) {
-    setSelected(prev => prev.includes(id) ? prev.filter(k => k !== id) : [...prev, id])
+    toggle(id, true)
   } else {
-    setSelected([id])
+    toggle(id)
   }
 };
 
 const groupSelected = () => {
-  const g = Date.now().toString()
+  const g = nanoid()
   setLayout(prev => prev.map(it => selected.includes(it.i) ? { ...it, group: g } : it))
-  setSelected([])
+  clear()
 };
 
 const alignSelected = () => {
@@ -562,9 +572,10 @@ const exportSelected = () => {
 };
 
 const assignGroupSelected = () => {
-  const owner = prompt('Grupo de trabajo')?.trim()
-  if (!owner) return
-  setLayout(prev => prev.map(it => selected.includes(it.i) ? { ...it, owner } : it))
+  prompt('Grupo de trabajo').then(owner => {
+    if (!owner) return
+    setLayout(prev => prev.map(it => selected.includes(it.i) ? { ...it, owner } : it))
+  })
 };
 
 
@@ -578,16 +589,17 @@ const switchSubboard = (id: string) => {
 };
 
 const addSubboard = () => {
-  const nombre = prompt('Nombre del área')?.trim()
-  if (!nombre) return
-  saveCurrentSub()
-  const nuevo = { id: Date.now().toString(), nombre, permiso: 'edicion' as const, widgets: [], layout: [] }
-  const list = [...subboards, nuevo]
-  setSubboards(list)
-  setActiveSub(nuevo.id)
-  setWidgets([])
-  setLayout([])
-  localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify(list))
+  prompt('Nombre del área').then(nombre => {
+    if (!nombre) return
+    saveCurrentSub()
+    const nuevo = { id: nanoid(), nombre, permiso: 'edicion' as const, widgets: [], layout: [] }
+    const list = [...subboards, nuevo]
+    setSubboards(list)
+    setActiveSub(nuevo.id)
+    setWidgets([])
+    setLayout([])
+    localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify(list))
+  })
 };
 
 const handleWidgetContext = (e: React.MouseEvent, id: string) => {
@@ -595,7 +607,7 @@ const handleWidgetContext = (e: React.MouseEvent, id: string) => {
   if (selected.length > 1 && selected.includes(id)) {
     setContextMenu({ type: 'multi', x: e.clientX, y: e.clientY })
   } else {
-    setSelected([id])
+    toggle(id)
     setContextMenu({ type: "widget", x: e.clientX, y: e.clientY, id });
   }
 };
@@ -603,7 +615,7 @@ const handleWidgetContext = (e: React.MouseEvent, id: string) => {
 const handleBoardContext = (e: React.MouseEvent) => {
   if ((e.target as HTMLElement).closest(".dashboard-widget-card")) return;
   e.preventDefault();
-  setSelected([])
+  clear()
   setContextMenu({ type: "board", x: e.clientX, y: e.clientY });
 };
 
@@ -987,7 +999,7 @@ const viewHist = () => {
           onAdd={(t, wid) =>
             setComments((c) => [
               ...c,
-              { id: Date.now(), texto: t, autor: usuario.nombre || 'Anon', fecha: new Date().toISOString(), widgetId: wid },
+              { id: nanoid(), texto: t, autor: usuario.nombre || 'Anon', fecha: new Date().toISOString(), widgetId: wid },
             ])
           }
           widgetId={activeWidget}
@@ -1030,7 +1042,7 @@ const viewHist = () => {
             ...(clipboard ? [{ label: "Pegar", onClick: pasteWidget }] : []),
             { label: "Nuevo Markdown", onClick: () => handleAddWidget("markdown") },
             { label: showGrid ? "Ocultar cuadrícula" : "Mostrar cuadrícula", onClick: toggleGrid },
-            { label: "Cambiar fondo", onClick: () => { const c = prompt('Color de fondo', boardBg || '#000000'); if (c) setBoardBg(c); } },
+            { label: "Cambiar fondo", onClick: () => { prompt('Color de fondo', boardBg || '#000000').then(c => { if (c) setBoardBg(c); }); } },
             { label: 'Nueva subpizarra', onClick: addSubboard },
             ...subboards.filter(b => b.id !== activeSub).map(b => ({ label: `Cambiar a ${b.nombre}`, onClick: () => switchSubboard(b.id) })),
             { label: 'Buscar elemento', onClick: () => document.dispatchEvent(new Event('focus-search')) },
@@ -1038,7 +1050,7 @@ const viewHist = () => {
             { label: 'Abrir galería', onClick: () => setOpenGallery(true) },
             { label: 'Agregar media', onClick: () => addMedia() },
             { label: 'Generar diagrama IA', onClick: generateDiagramAI },
-            { label: 'Configurar reglas', onClick: () => { const v = prompt('Tamaño de cuadrícula', String(gridSize)); const n = parseInt(v || ''); if (!Number.isNaN(n)) setGridSize(n); } },
+            { label: 'Configurar reglas', onClick: () => { prompt('Tamaño de cuadrícula', String(gridSize)).then(v => { const n = parseInt(v || ''); if (!Number.isNaN(n)) setGridSize(n); }); } },
             { label: 'Sugerencia IA', onClick: iaSuggest }
           ]}
         />

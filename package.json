@@ -44,6 +44,7 @@
     "marked": "^9.1.6",
     "marked-katex-extension": "^5.1.4",
     "mysql2": "^3.14.1",
+    "nanoid": "^5.1.5",
     "next": "15.3.2",
     "nodemailer": "^7.0.3",
     "papaparse": "^5.5.3",

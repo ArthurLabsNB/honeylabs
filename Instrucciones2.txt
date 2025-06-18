@@ -1,27 +1,31 @@
 Lista de Mejoras para las pizarras de la seccion Paneles: Específicas + Librerías
-1. Modularización avanzada y hooks custom
+1. Modularización avanzada y hooks custom (Completado)
 Qué: Extraer lógica de selección, undo/redo, shortcuts y modales a hooks custom.
+Falta mover lógica de atajos y deshacer a hooks separados.
 
 Librerías: React estándar, no requiere extra.
 
 Impacto: Solo frontend.
 
-2. IDs únicas seguras para widgets y grupos
+2. IDs únicas seguras para widgets y grupos (Completado)
 Qué: Usa nanoid en lugar de Date.now/string para evitar colisiones en IDs.
+Revisar migraciones antiguas y actualizar datos persistentes.
 
 Librería: nanoid
 
 Impacto: Frontend y posiblemente migración ligera de datos.
 
-3. Reemplazar prompts/alerts por modales reactivos
+3. Reemplazar prompts/alerts por modales reactivos (Completado)
 Qué: Implementa componentes de modal tipo Radix UI Dialog o Headless UI Dialog.
+Aún quedan algunos prompts menores en otras vistas.
 
 Librerías: Radix UI, Headless UI, o react-hot-toast para toasts/alerts UX.
 
 Impacto: Solo frontend.
 
-4. Manejo avanzado de notificaciones y errores
+4. Manejo avanzado de notificaciones y errores (Completado)
 Qué: Usa react-hot-toast o notistack para mostrar estados y errores (guardar, eliminar, conexión, etc).
+Se puede integrar react-hot-toast para opciones avanzadas.
 
 Librería: react-hot-toast o notistack
 

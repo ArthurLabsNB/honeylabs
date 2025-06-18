@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
+import { nanoid } from "nanoid";
 
 interface ToastItem {
-  id: number;
+  id: string;
   message: string;
   type: "success" | "error" | "info" | "confirm";
   actions?: { label: string; onClick: () => void }[];
@@ -17,21 +18,22 @@ const ToastContext = createContext<ToastContextValue | null>(null);
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
 
-  const remove = (id: number) =>
+  const remove = (id: string) =>
     setToasts((t) => t.filter((toast) => toast.id !== id));
 
   const show = (
     message: string,
     type: "success" | "error" | "info" = "info",
   ) => {
-    const id = Date.now();
+    const id = nanoid();
     setToasts((t) => [...t, { id, message, type }]);
-    setTimeout(() => remove(id), 3000);
+    const timeout = type === "error" ? 5000 : 3000;
+    setTimeout(() => remove(id), timeout);
   };
 
   const confirmToast = (message: string) =>
     new Promise<boolean>((resolve) => {
-      const id = Date.now();
+      const id = nanoid();
       const yes = () => {
         remove(id);
         resolve(true);

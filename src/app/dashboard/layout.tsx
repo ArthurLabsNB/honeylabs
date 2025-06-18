@@ -13,6 +13,7 @@ import {
 } from "./constants";
 import { useRouter, usePathname } from "next/navigation";
 import { ToastProvider } from "@/components/Toast";
+import { PromptProvider } from "@/hooks/usePrompt";
 
 function ProtectedDashboard({ children }: { children: React.ReactNode }) {
   // Añade en tu context esta propiedad si quieres permitir colapsar
@@ -165,7 +166,9 @@ export default function DashboardLayout({
   return (
     <DashboardUIProvider data-oid="-kp1hi9">
       <ToastProvider>
-        <ProtectedDashboard data-oid="khrpzeo">{children}</ProtectedDashboard>
+        <PromptProvider>
+          <ProtectedDashboard data-oid="khrpzeo">{children}</ProtectedDashboard>
+        </PromptProvider>
       </ToastProvider>
     </DashboardUIProvider>
   );
