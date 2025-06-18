@@ -1,5 +1,16 @@
 "use client";
 
+/*****************************************************************************************
+ * AnalyticsPanel.tsx  ─  Gráficas dinámicas con Chart.js + react-chartjs-2 + SWR        *
+ * ------------------------------------------------------------------------------------------------
+ * • 11 tipos de gráfica (líneas, áreas, barras, radar, scatter, bubble, pie, doughnut,   *
+ *   polarArea, barras horizontales y apiladas)                                           *
+ * • Datos actualizados en vivo desde /api/metrics con refresh automático cada minuto     *
+ * • Registro explícito de todos los controllers / elements necesarios (Chart.js v4)      *
+ * • Manejo robusto de métricas (array o número)                                          *
+ * • Accesibilidad: selector de tipo + checkboxes por métrica + botones Quick‑select      *
+ *****************************************************************************************/
+
 import { useEffect, useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 import useSWR from "swr";
@@ -13,50 +24,67 @@ import type {
   ScatterDataPoint,
 } from "chart.js";
 import {
-  Chart as ChartJS,
+  // Scales
   CategoryScale,
   LinearScale,
+  RadialLinearScale,
+  // Elements
   PointElement,
   LineElement,
   BarElement,
-  RadialLinearScale,
   ArcElement,
+  // Controllers
+  BarController,
+  LineController,
+  RadarController,
+  PieController,
+  DoughnutController,
+  PolarAreaController,
   BubbleController,
   ScatterController,
-  Filler,
+  // Plugins
   Legend,
   Tooltip,
+  Filler,
+  Chart as ChartJS,
 } from "chart.js";
 
-/**********************************************************************
- * R E G I S T R O   G L O B A L                                      *
- *********************************************************************/
+/* -------------------------------------------------------------------------- */
+/*                           C H A R T . J S   S E T U P                      */
+/* -------------------------------------------------------------------------- */
 ChartJS.register(
+  // Scales
   CategoryScale,
   LinearScale,
+  RadialLinearScale,
+  // Elements
   PointElement,
   LineElement,
   BarElement,
-  RadialLinearScale,
   ArcElement,
+  // Controllers
+  BarController,
+  LineController,
+  RadarController,
+  PieController,
+  DoughnutController,
+  PolarAreaController,
   BubbleController,
   ScatterController,
-  Filler,
+  // Plugins
   Legend,
-  Tooltip
+  Tooltip,
+  Filler
 );
 
-/**********************************************************************
- * C A R G A   D I N Á M I C A                                        *
- *********************************************************************/
 const Chart = dynamic(() => import("react-chartjs-2").then((m) => m.Chart), {
   ssr: false,
 });
 
-/**********************************************************************
- * T Y P O S  &  C O N S T A N T E S                                  *
- *********************************************************************/
-export type MetricsResponse = Record<string, number | number[]>;
+/* -------------------------------------------------------------------------- */
+/*                         C O N S T A N T E S   &   T Y P E S                */
+/* -------------------------------------------------------------------------- */
+export type MetricsResponse = Record<string, number | number[]>; // 7 valores o único número
 
 const WEEK_LABELS = ["L", "M", "M", "J", "V", "S", "D"] as const;
 
@@ -74,42 +102,36 @@ const CHART_TYPES = [
   { value: "horizontalBar", label: "Barras horizontales" },
 ] as const;
 
-/**********************************************************************
- * F E T C H E R                                                      *
- *********************************************************************/
+type ChartTypeValue = (typeof CHART_TYPES)[number]["value"];
+
+/* -------------------------------------------------------------------------- */
+/*                              F E T C H E R                                 */
+/* -------------------------------------------------------------------------- */
 const fetcher = (url: string) => apiFetch(url).then(jsonOrNull);
 
-/**********************************************************************
- * C O M P O N E N T E                                                *
- *********************************************************************/
+/* -------------------------------------------------------------------------- */
+/*                           C O M P O N E N T E                               */
+/* -------------------------------------------------------------------------- */
 export default function AnalyticsPanel() {
-  /* ------------------------------------------------------------------ */
-  /*                         D A T A   F R O M   A P I                  */
-  /* ------------------------------------------------------------------ */
+  /* -------------------   D A T O S   D E S D E   A P I   ------------------ */
   const { data: metrics, error } = useSWR<MetricsResponse>(
     "/api/metrics",
     fetcher,
-    {
-      refreshInterval: 60_000, // auto‑refresh cada minuto
-      revalidateOnFocus: true,
-    }
+    { refreshInterval: 60_000, revalidateOnFocus: true }
   );
 
-  /* --------------------- S E L E C C I Ó N   D E   K E Y S ------------------ */
+  /* ------------------   S E L E C C I Ó N   D E   M É T R I C A S   -------- */
   const [selected, setSelected] = useState<string[]>([]);
   useEffect(() => {
     if (metrics) setSelected(Object.keys(metrics));
   }, [metrics]);
 
-  const [chartType, setChartType] = useState<(typeof CHART_TYPES)[number]["value"]>(
-    "line"
-  );
+  const [chartType, setChartType] = useState<ChartTypeValue>("line");
 
-  /* -------------------------  T O G G L E   M E T R I C -------------------- */
   const toggleMetric = (k: string) =>
     setSelected((s) => (s.includes(k) ? s.filter((x) => x !== k) : [...s, k]));
 
-  /* ------------------------------  P A L E T T E --------------------------- */
+  /* --------------------------------  P A L E T A  ------------------------- */
   const palette = [
     "#FBBF24",
     "#60A5FA",
@@ -123,43 +145,39 @@ export default function AnalyticsPanel() {
     "#C084FC",
   ];
 
-  /** Convierte cualquier métrica a array de 7 números */
-  const toArray = (k: string): number[] => {
+  /* -------------------  H E L P E R :  v a l o r e s  ---------------------- */
+  const valuesOf = (k: string): number[] => {
     const v = metrics?.[k];
     if (Array.isArray(v)) return v;
     if (typeof v === "number") return Array(WEEK_LABELS.length).fill(v);
     return Array(WEEK_LABELS.length).fill(0);
   };
 
-  /* -----------------------------  C H A R T   D A T A ---------------------- */
-  const chartData = useMemo<ChartData>(() => {
+  /* ------------------------------   D A T A   ------------------------------ */
+  const data = useMemo<ChartData>(() => {
     if (!metrics) return { labels: [], datasets: [] };
 
-    // Labels por defecto (necesarias para leyenda)
-    const defaultLabels = WEEK_LABELS as unknown as string[];
-
-    /* --- Pie / Doughnut / PolarArea ------------------------------------- */
+    // Agrupaciones que requieren un solo dataset con sumatoria ----------------
     if (["pie", "doughnut", "polarArea"].includes(chartType)) {
       const labels = selected;
-      const data = labels.map((k) => toArray(k).reduce((a, b) => a + b, 0));
       return {
         labels,
         datasets: [
           {
-            data,
+            data: labels.map((k) => valuesOf(k).reduce((a, b) => a + b, 0)),
             backgroundColor: labels.map((_, i) => palette[i % palette.length]),
           },
         ],
       };
     }
 
-    /* --- Bubble --------------------------------------------------------- */
+    // Bubble -----------------------------------------------------------------
     if (chartType === "bubble") {
       return {
-        labels: defaultLabels,
+        labels: WEEK_LABELS,
         datasets: selected.map((k, idx) => ({
           label: k,
-          data: toArray(k).map(
+          data: valuesOf(k).map(
             (v, i) => ({ x: i, y: v, r: Math.max(4, v / 2) }) as BubbleDataPoint
           ),
           backgroundColor: palette[idx % palette.length],
@@ -167,27 +185,25 @@ export default function AnalyticsPanel() {
       } as ChartData<"bubble", BubbleDataPoint[]>;
     }
 
-    /* --- Scatter -------------------------------------------------------- */
+    // Scatter ----------------------------------------------------------------
     if (chartType === "scatter") {
       return {
-        labels: defaultLabels,
+        labels: WEEK_LABELS,
         datasets: selected.map((k, idx) => ({
           label: k,
-          data: toArray(k).map(
-            (v, i) => ({ x: i, y: v }) as ScatterDataPoint
-          ),
+          data: valuesOf(k).map((v, i) => ({ x: i, y: v }) as ScatterDataPoint),
           backgroundColor: palette[idx % palette.length],
         })),
       } as ChartData<"scatter", ScatterDataPoint[]>;
     }
 
-    /* --- Line / Bar / Area / Stacked / Horizontal ----------------------- */
+    // Line / Bar / Radar / Área / Stacked / Horizontal -----------------------
     const fill = chartType === "area";
     return {
       labels: WEEK_LABELS,
       datasets: selected.map((k, idx) => ({
         label: k,
-        data: toArray(k),
+        data: valuesOf(k),
         backgroundColor: palette[idx % palette.length],
         borderColor: palette[idx % palette.length],
         fill,
@@ -196,9 +212,9 @@ export default function AnalyticsPanel() {
     };
   }, [metrics, selected, chartType]);
 
-  /* -----------------------------  C H A R T   O P T S ---------------------- */
-  const chartOptions = useMemo<ChartOptions>(() => {
-    const common: ChartOptions = {
+  /* -----------------------------   O P T I O N S   ------------------------ */
+  const options = useMemo<ChartOptions>(() => {
+    const base: ChartOptions = {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
@@ -210,14 +226,17 @@ export default function AnalyticsPanel() {
 
     if (chartType === "stackedBar")
       return {
-        ...common,
+        ...base,
         type: "bar",
-        scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } },
+        scales: {
+          x: { stacked: true },
+          y: { stacked: true, beginAtZero: true },
+        },
       };
 
     if (chartType === "horizontalBar")
       return {
-        ...common,
+        ...base,
         type: "bar",
         indexAxis: "y" as const,
         scales: { y: { beginAtZero: true } },
@@ -225,7 +244,7 @@ export default function AnalyticsPanel() {
 
     if (chartType === "line" || chartType === "area")
       return {
-        ...common,
+        ...base,
         type: "line",
         scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
         animations: {
@@ -239,21 +258,27 @@ export default function AnalyticsPanel() {
         },
       };
 
-    return { ...common, type: chartType };
+    return { ...base, type: chartType };
   }, [chartType]);
 
-  /**********************************************************************
-   * R E N D E R                                                        *
-   *********************************************************************/
-  if (error)
-    return <p className="rounded-md bg-red-500/10 p-4 text-sm text-red-300">{error}</p>;
+  /* -------------   M A P E O   D E   T I P O   →   C O N T R O L L E R  ---- */
+  const controllerType: string =
+    chartType === "area"
+      ? "line"
+      : chartType === "stackedBar" || chartType === "horizontalBar"
+      ? "bar"
+      : chartType;
 
-  if (!metrics)
+  /* -----------------------------   R E N D E R   -------------------------- */
+  if (error)
     return (
-      <p className="animate-pulse text-sm text-muted-foreground">Cargando métricas…</p>
+      <p className="rounded-md bg-red-500/10 p-4 text-sm text-red-300">
+        {error}
+      </p>
     );
 
-  const metricKeys = Object.keys(metrics);
+  if (!metrics)
+    return <p className="animate-pulse text-sm text-muted-foreground">Cargando métricas…</p>;
 
   return (
     <section className="space-y-6">
@@ -263,7 +288,7 @@ export default function AnalyticsPanel() {
 
         <select
           value={chartType}
-          onChange={(e) => setChartType(e.target.value as any)}
+          onChange={(e) => setChartType(e.target.value as ChartTypeValue)}
           className="rounded-lg border border-zinc-600 bg-zinc-800 px-3 py-1 text-sm focus:outline-none"
         >
           {CHART_TYPES.map((t) => (
@@ -274,9 +299,25 @@ export default function AnalyticsPanel() {
         </select>
       </header>
 
-      {/* Metric toggles */}
+      {/* Quick actions */}
+      <div className="flex gap-2 text-xs">
+        <button
+          onClick={() => setSelected(Object.keys(metrics!))}
+          className="rounded border border-zinc-600 px-2 py-0.5 hover:bg-zinc-800"
+        >
+          Seleccionar todo
+        </button>
+        <button
+          onClick={() => setSelected([])}
+          className="rounded border border-zinc-600 px-2 py-0.5 hover:bg-zinc-800"
+        >
+          Limpiar
+        </button>
+      </div>
+
+      {/* Metric filters */}
       <ul className="flex flex-wrap gap-3">
-        {metricKeys.map((k) => (
+        {Object.keys(metrics!).map((k) => (
           <li key={k} className="flex items-center gap-1 text-sm">
             <input
               id={`metric-${k}`}
@@ -295,12 +336,7 @@ export default function AnalyticsPanel() {
       {/* Chart */}
       <div className="h-80 w-full">
         {selected.length > 0 && typeof window !== "undefined" ? (
-          <Chart
-            key={chartType}
-            type={chartType as any}
-            data={chartData as any}
-            options={chartOptions}
-          />
+          <Chart key={chartType} type={controllerType as any} data={data as any} options={options} />
         ) : (
           <p className="text-sm text-muted-foreground">
             Selecciona al menos una métrica para visualizar.
