@@ -317,7 +317,7 @@ export default function UserMenu({
 
               {esAdmin && (
                 <MenuLink
-                  href="/admin/dashboard"
+                  href="/dashboard/admin"
                   icon={<Shield className="h-4 w-4" />}
                   label="Administración"
                   tabIndex={open ? 0 : -1}
