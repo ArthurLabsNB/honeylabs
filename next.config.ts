@@ -1,7 +1,10 @@
 import { securityHeaders } from './lib/securityHeaders';
+import createNextIntlPlugin from 'next-intl/plugin';
 
 /** @type {import('next').NextConfig} */
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''
+
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const nextConfig = {
   eslint: {
@@ -24,4 +27,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);
