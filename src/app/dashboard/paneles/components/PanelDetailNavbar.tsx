@@ -484,7 +484,6 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
             )}
           </div>
       </nav>
-        </div>
         {saving === 'saving' && <span className="text-xs text-gray-400">Guardando...</span>}
         {saving === 'saved' && <span className="text-xs text-green-500">Guardado</span>}
     </header>
