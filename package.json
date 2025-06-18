@@ -75,6 +75,7 @@
     "swr": "^2.3.3",
     "tailwind-merge": "^3.3.0",
     "tailwindcss-animate": "^1.0.7",
+    "use-debounce": "^10.0.5",
     "use-sound": "^5.0.0",
     "uuid": "^11.1.0",
     "xlsx": "^0.18.5",
