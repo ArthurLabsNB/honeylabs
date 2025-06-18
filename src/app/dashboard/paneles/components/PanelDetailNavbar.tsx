@@ -181,8 +181,11 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   }, [guardar, guardarNombre, router, setUnsaved])
 
   return (
-    <header className="sticky top-0 w-full z-50 bg-[var(--dashboard-navbar)] border-b border-[var(--dashboard-border)]">
-      <div className="flex items-center justify-between h-14 px-4">
+    <header
+      className="fixed top-0 left-0 right-0 z-50 bg-[var(--dashboard-navbar)] border-b border-[var(--dashboard-border)] shadow"
+      style={{ minHeight: "70px", width: "100%" }}
+    >
+      <div className="flex items-center justify-between h-[70px] px-4">
         <div className="flex items-center gap-3">
           <Link href="/dashboard/paneles" className="p-2 text-gray-400 hover:bg-white/10 rounded-lg" title="Volver">
             <ArrowLeft className="w-5 h-5" />
