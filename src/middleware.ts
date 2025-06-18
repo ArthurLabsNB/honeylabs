@@ -99,7 +99,7 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  let res = intl(req)
+  let res = path.startsWith('/api') ? NextResponse.next() : intl(req)
   if (!res) res = NextResponse.next()
   if (requiresSession) {
     res.headers.set('Cache-Control', 'no-store')
