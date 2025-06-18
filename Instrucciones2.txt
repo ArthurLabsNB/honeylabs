@@ -1,127 +1,177 @@
-🟨 1. Principios de Estructura del Navbar para Pizarras
-Ubicación:
-El navbar dedicado de la pizarra siempre debe estar fijo en la parte superior (“sticky top-0 w-full z-50”) sobre la pizarra, ocultando el navbar global y sidebar.
+Lista de Mejoras Específicas + Librerías
+1. Modularización avanzada y hooks custom
+Qué: Extraer lógica de selección, undo/redo, shortcuts y modales a hooks custom.
 
-Consistencia:
-La estructura del navbar debe ser horizontal, minimalista, y contener todos los botones esenciales y avanzados, agrupados de forma lógica y escalable (por secciones).
+Librerías: React estándar, no requiere extra.
 
-Distribución modular:
-Los botones y controles se agrupan en “clústeres” funcionales, alineados de izquierda a derecha, según frecuencia de uso y tipo de acción (por ejemplo: navegación, edición, colaboración, exportación, automatización, ayuda, etc).
+Impacto: Solo frontend.
 
-🟩 2. Estructura sugerida de navbar (listo para 60+ funciones)
-Imagina el navbar dividido en bloques:
+2. IDs únicas seguras para widgets y grupos
+Qué: Usa nanoid en lugar de Date.now/string para evitar colisiones en IDs.
 
-less
-Copiar
-Editar
-[ ← Volver ] | [ Logo + Nombre editable ] | [ Guardar ] [ Exportar ] [ Compartir ] [ Presentar ] | [ Edición y gestión ] | [ Colaboración ] | [ Automatización ] | [ Ayuda/Opciones ] | [ Vista/Zoom ] | [ Salir ]
-Bloque 1: Navegación
+Librería: nanoid
 
-Volver a paneles
+Impacto: Frontend y posiblemente migración ligera de datos.
 
-Logo HoneyLabs mini
+3. Reemplazar prompts/alerts por modales reactivos
+Qué: Implementa componentes de modal tipo Radix UI Dialog o Headless UI Dialog.
 
-Nombre de la pizarra (editable inline)
+Librerías: Radix UI, Headless UI, o react-hot-toast para toasts/alerts UX.
 
-Bloque 2: Acciones rápidas
+Impacto: Solo frontend.
 
-Guardar
+4. Manejo avanzado de notificaciones y errores
+Qué: Usa react-hot-toast o notistack para mostrar estados y errores (guardar, eliminar, conexión, etc).
 
-Exportar
+Librería: react-hot-toast o notistack
 
-Compartir
+Impacto: Solo frontend.
 
-Presentar
+5. Undo/Redo visual avanzado
+Qué: Agrega un panel visual de historial de acciones tipo timeline.
 
-Bloque 3: Edición y gestión
+Librería: Puedes usar react-flow para visualización, o UI propia.
 
-Deshacer/Rehacer
+Impacto: Frontend, podría necesitar extensión del historial en backend.
 
-Historial de cambios
+6. Colaboración en tiempo real multiusuario
+Qué: Implementa WebSockets (reemplazando BroadcastChannel) para edición en vivo.
 
-Vista de cambios (comparar versiones)
+Librería: socket.io-client, yjs (CRDTs), ably, pusher-js.
 
-Configuración avanzada (menú desplegable)
+Impacto: Backend y frontend.
 
-Plantillas
+7. Renderizado virtualizado de widgets
+Qué: Renderiza solo los widgets visibles (mejora performance con cientos de elementos).
 
-Vista Kanban/Gantt (si aplica)
+Librería: react-virtualized o react-window.
 
-Editor de animaciones (si aplica)
+Impacto: Frontend.
 
-Bloque 4: Colaboración
+8. Exportación avanzada (PDF, imagen, JSON)
+Qué: Exporta el tablero o grupos como PDF, PNG/JPG, o JSON.
 
-Avatares en tiempo real
+Librería: jspdf, html2canvas, file-saver.
 
-Comentarios
+Impacto: Solo frontend.
 
-Chat contextual
+9. Responsive/mobile-first con soporte touch
+Qué: Usa media queries y react-use-gesture para drag&drop y gestos en móvil/tableta.
 
-Notificaciones
+Librería: react-use-gesture, framer-motion para animaciones touch.
 
-Roles y permisos
+Impacto: Frontend.
 
-Bloque 5: Automatización y analítica
+10. Barra de búsqueda inteligente y filtrado
+Qué: Agrega una barra para buscar widgets por nombre, tipo, etiquetas.
 
-Macros/automatización
+Librería: Nada extra, pero puedes usar fuse.js para búsqueda difusa.
 
-Panel de métricas
+Impacto: Frontend.
 
-Integración IA (botón desplegable)
+11. Accesibilidad mejorada
+Qué: Roles ARIA, navegación por teclado real, contraste, focus management.
 
-Wiki/documentación
+Librería: React Aria, [Radix UI], [Headless UI].
 
-Webhooks/API
+Impacto: Frontend.
 
-Bloque 6: Personalización y ayuda
+12. Personalización de atajos de teclado
+Qué: Permite al usuario elegir y guardar shortcuts (persistidos en localStorage).
 
-Selector de temas (claro/oscuro)
+Librería: hotkeys-js, react-hotkeys-hook.
 
-Ayuda/tutorial
+Impacto: Frontend.
 
-Atajos de teclado
+13. Templates/plantillas de tablero
+Qué: Permite guardar y reutilizar layouts como plantillas.
 
-Wiki/documentación
+Librería: Solo lógica propia.
 
-Configuración personal
+Impacto: Frontend, posible backend si guardas plantillas por usuario.
 
-Bloque 7: Vista y zoom
+14. Drag & Drop mejorado para archivos y widgets
+Qué: Soporte visual para arrastrar archivos, widgets, y soltar donde quieras.
 
-Zoom in/out, fit to screen, mini mapa
+Librería: react-dnd.
 
-Selector de vistas/presets
+Impacto: Frontend.
 
-Bloque 8: Salir
+15. Subpizarras reordenables
+Qué: Permite mover subpizarras por drag&drop.
 
-Salir/cerrar pizarra
+Librería: dnd-kit, react-beautiful-dnd.
 
-Cada bloque se puede convertir en un menú desplegable si tienes muchas opciones. Así el navbar nunca se satura y sigue siendo intuitivo.
+Impacto: Frontend.
 
-🟦 3. Estructura visual y lógica del navbar en código (ejemplo base)
+16. Estado de conexión y autosave visible
+Qué: Muestra si estás online/offline y el estado de guardado/autosave en la UI.
 
-Cada Dropdown puede ser un menú de opciones relacionadas para no saturar el espacio.
+Librería: Solo lógica react/estado.
 
-🟨 4. Al crear una pizarra nueva, que esté REALMENTE en blanco
-Requisitos:
+Impacto: Frontend.
 
-Sin widgets ni tarjetas pre-cargadas.
+17. Barra lateral de historial de acciones y notificaciones
+Qué: Barra donde ves acciones recientes y restauras versiones rápido.
 
-Solo muestra la superficie de la pizarra (canvas) y el navbar superior.
+Librería: Propio, o puedes usar react-timeline.
 
-Quizá solo una pequeña indicación visual (placeholder discreto tipo “Haz clic derecho o usa el botón [+] para agregar tu primer elemento”).
+Impacto: Frontend.
 
-Todos los menús deben estar activos y listos para añadir, pero ningún elemento en el canvas por defecto.
+18. Internacionalización (i18n)
+Qué: Soporte multilenguaje para UI/UX.
 
-Lógica para la IA/desarrollador:
+Librería: react-i18next, next-intl.
 
-Si se detecta que la pizarra no contiene ningún elemento en su estructura de datos, no renderices ningún widget/complemento. Solo el canvas vacío y el navbar. Muestra, si quieres, una ayuda contextual minimalista solo hasta que el usuario agregue algo.
+Impacto: Frontend.
 
-🟧 5. Tips de UX adicionales
-El navbar debe ser responsive y scrollable si hay muchas funciones.
+19. Onboarding/tour interactivo
+Qué: Muestra un tutorial interactivo la primera vez.
 
-En mobile/tablet, convierte bloques en menús hamburger o tabs laterales.
+Librería: react-joyride.
 
-Usa iconos claros y tooltips en todos los botones.
+Impacto: Frontend.
 
-Al agregar nuevas funciones, solo debes crear un nuevo bloque/grupo en el navbar, sin modificar toda la estructura base.
+20. Integración de IA (copilot, resúmenes, auto-layout)
+Qué: Llama a APIs de IA para sugerencias de contenido, autoetiquetado, resúmenes.
+
+Librería: openai npm, fetch, o tu propio wrapper.
+
+Impacto: Frontend y backend si consumes servicios propios.
+
+¿Qué implica cada punto?
+Frontend: Cambios solo en React/Next.js
+
+Backend: Cambios en API o WebSocket
+
+Base de datos: Cambios para guardar nuevas entidades (plantillas, historial avanzado, etc.)
+
+Resumen ultra-rápido por librería
+Propósito	Librería recomendada
+Claves únicas	nanoid
+Notificaciones/toasts	react-hot-toast, notistack
+Modales accesibles	Radix UI, Headless UI
+Colaboración real-time	socket.io, yjs, ably, pusher
+Render virtualizado widgets	react-window, react-virtualized
+Exportar PDF/imagen	jspdf, html2canvas, file-saver
+Drag & Drop widgets	react-dnd, dnd-kit, react-beautiful-dnd
+Atajos custom	hotkeys-js, react-hotkeys-hook
+IA (opcional)	openai, fetch
+Internacionalización	react-i18next, next-intl
+Búsqueda avanzada	fuse.js
+Onboarding/tour	react-joyride
+Accesibilidad extra	React Aria
+
+¿Qué priorizar primero?
+Modularizar y refactor a hooks/modales y toast.
+
+Exportación de widgets/tableros.
+
+Colaboración real-time (WebSockets).
+
+Responsive/touch y accesibilidad.
+
+Barra de historial y plantillas.
+
+Personalización de shortcuts y multiidioma.
 
