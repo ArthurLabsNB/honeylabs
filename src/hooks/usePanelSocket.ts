@@ -24,7 +24,9 @@ export default function usePanelSocket(panelId?: string | null, onUpdate?: (data
     socket.addEventListener('message', handleMessage)
 
     return () => {
-      socket.send(JSON.stringify({ action: 'leave', panelId }))
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({ action: 'leave', panelId }))
+      }
       socket.removeEventListener('message', handleMessage)
       socket.close()
       socketRef.current = null
