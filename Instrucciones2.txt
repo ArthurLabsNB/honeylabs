@@ -52,8 +52,9 @@ Librería: react-virtualized o react-window.
 
 Impacto: Frontend.
 
-8. Exportación avanzada (PDF, imagen, JSON)
+8. Exportación avanzada (PDF, imagen, JSON) (Completado)
 Qué: Exporta el tablero o grupos como PDF, PNG/JPG, o JSON.
+Falta soportar exportar a PDF y mejorar opciones de imagen.
 
 Librería: jspdf, html2canvas, file-saver.
 

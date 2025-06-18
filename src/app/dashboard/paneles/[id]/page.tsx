@@ -568,8 +568,20 @@ const distributeSelected = () => {
 };
 
 const exportSelected = () => {
-  alert('Exportando grupo...')
-};
+  if (!selected.length) return
+  const data = {
+    widgets: widgets.filter(k => selected.includes(k)),
+    layout: layout.filter(it => selected.includes(it.i)),
+  }
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `grupo-${panelId}.json`
+  a.click()
+  URL.revokeObjectURL(url)
+  toast.show('Grupo exportado', 'success')
+}
 
 const assignGroupSelected = () => {
   prompt('Grupo de trabajo').then(owner => {
