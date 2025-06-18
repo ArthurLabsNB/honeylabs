@@ -697,21 +697,24 @@ const viewHist = () => {
       style={{
         ...(showGrid
           ? {
-              backgroundSize: `${gridSize}px ${gridSize}px`,
+              backgroundSize: `${gridSize * zoom}px ${gridSize * zoom}px`,
               backgroundImage:
-                'linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)',
+                [
+                  sections > 1
+                    ? `linear-gradient(to right, rgba(255,255,255,0.2) ${2 * zoom}px, transparent ${2 * zoom}px)`
+                    : null,
+                  'linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px)',
+                  'linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)',
+                ]
+                  .filter(Boolean)
+                  .join(', '),
+            }
+          : sections > 1
+          ? {
+              backgroundImage: `linear-gradient(to right, rgba(255,255,255,0.2) ${2 * zoom}px, transparent ${2 * zoom}px)`,
             }
           : {}),
         ...(boardBg ? { backgroundColor: boardBg } : {}),
-        ...(sections > 1
-          ? {
-              backgroundImage:
-                'linear-gradient(to right, rgba(255,255,255,0.2) 2px, transparent 2px),' +
-                (showGrid
-                  ? 'linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)'
-                  : ''),
-            }
-          : {}),
       }}
       onDragOver={e => e.preventDefault()}
       onDrop={e => {
