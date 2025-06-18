@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SESSION_COOKIE } from '@lib/constants'
+import createIntlMiddleware from 'next-intl/middleware'
 
 const PROTECTED_PREFIXES = ['/dashboard', '/configuracion', '/admin']
 const API_LOGIN = '/api/login'
 const API_REGISTRO = '/api/registro'
+const intl = createIntlMiddleware({
+  locales: ['es', 'en'],
+  defaultLocale: 'es',
+})
 
 // --- Memory Rate Limiter ---
 // Solo para desarrollo, VPS o entornos con estado.
@@ -94,7 +99,8 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  const res = NextResponse.next()
+  let res = intl(req)
+  if (!res) res = NextResponse.next()
   if (requiresSession) {
     res.headers.set('Cache-Control', 'no-store')
   }
@@ -103,10 +109,5 @@ export function middleware(req: NextRequest) {
 
 // Aplica SOLO a login y registro (puedes agregar más rutas aquí si quieres)
 export const config = {
-  matcher: [
-    '/api/:path*',
-    '/dashboard/:path*',
-    '/configuracion/:path*',
-    '/admin/:path*',
-  ],
+  matcher: ['/api/:path*', '/((?!_next|.*\\..*).*)'],
 }
