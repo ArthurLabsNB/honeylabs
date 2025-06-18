@@ -1,6 +1,5 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import widgetsData from './widgets.json'
 
 export interface WidgetMeta {
   key: string
@@ -12,6 +11,22 @@ export interface WidgetMeta {
   minW?: number
   minH?: number
   plans?: string[]
+  tipos?: string[]
+}
+
+export const widgetsFile = path.join(process.cwd(), 'lib/widgets.json')
+
+export function readWidgetsFile(): WidgetMeta[] {
+  try {
+    const data = fs.readFileSync(widgetsFile, 'utf8')
+    return JSON.parse(data) as WidgetMeta[]
+  } catch {
+    return []
+  }
+}
+
+export async function saveWidgetsFile(widgets: WidgetMeta[]) {
+  fs.writeFileSync(widgetsFile, JSON.stringify(widgets, null, 2))
 }
 
 export async function getWidgets(): Promise<WidgetMeta[]> {
@@ -26,7 +41,8 @@ export async function getWidgets(): Promise<WidgetMeta[]> {
   const set = new Set(files.map(f => path.parse(f).name))
   const result: WidgetMeta[] = []
 
-  ;(widgetsData as WidgetMeta[]).forEach(w => {
+  const widgetsData = readWidgetsFile()
+  widgetsData.forEach(w => {
     if (set.has(w.file)) {
       result.push(w)
       set.delete(w.file)

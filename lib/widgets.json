@@ -13,6 +13,13 @@
       "Pro",
       "Empresarial",
       "Institucional"
+    ],
+    "tipos": [
+      "individual",
+      "empresarial",
+      "institucional",
+      "codigo",
+      "admin"
     ]
   },
   {
@@ -29,6 +36,13 @@
       "Pro",
       "Empresarial",
       "Institucional"
+    ],
+    "tipos": [
+      "individual",
+      "empresarial",
+      "institucional",
+      "codigo",
+      "admin"
     ]
   },
   {
@@ -45,6 +59,13 @@
       "Pro",
       "Empresarial",
       "Institucional"
+    ],
+    "tipos": [
+      "individual",
+      "empresarial",
+      "institucional",
+      "codigo",
+      "admin"
     ]
   },
   {
@@ -61,6 +82,13 @@
       "Pro",
       "Empresarial",
       "Institucional"
+    ],
+    "tipos": [
+      "individual",
+      "empresarial",
+      "institucional",
+      "codigo",
+      "admin"
     ]
   },
   {
@@ -77,6 +105,13 @@
       "Pro",
       "Empresarial",
       "Institucional"
+    ],
+    "tipos": [
+      "individual",
+      "empresarial",
+      "institucional",
+      "codigo",
+      "admin"
     ]
   },
   {
@@ -93,6 +128,13 @@
       "Pro",
       "Empresarial",
       "Institucional"
+    ],
+    "tipos": [
+      "individual",
+      "empresarial",
+      "institucional",
+      "codigo",
+      "admin"
     ]
   },
   {
@@ -109,6 +151,13 @@
       "Pro",
       "Empresarial",
       "Institucional"
+    ],
+    "tipos": [
+      "individual",
+      "empresarial",
+      "institucional",
+      "codigo",
+      "admin"
     ]
   },
   {
@@ -125,6 +174,13 @@
       "Pro",
       "Empresarial",
       "Institucional"
+    ],
+    "tipos": [
+      "individual",
+      "empresarial",
+      "institucional",
+      "codigo",
+      "admin"
     ]
   },
   {
@@ -141,6 +197,13 @@
       "Pro",
       "Empresarial",
       "Institucional"
+    ],
+    "tipos": [
+      "individual",
+      "empresarial",
+      "institucional",
+      "codigo",
+      "admin"
     ]
   }
  ]
