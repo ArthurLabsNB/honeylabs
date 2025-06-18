@@ -23,6 +23,7 @@ import { usePrompt } from "@/hooks/usePrompt";
 import useSelection from "@/hooks/useSelection";
 import usePanelSocket from "@/hooks/usePanelSocket";
 import useTouchZoom from "@/hooks/useTouchZoom";
+import useUndoRedo, { type Snapshot } from "@/hooks/useUndoRedo";
 import type { PanelUpdate, HistEntry } from "@/types/panel";
 
 import dynamic from "next/dynamic";
