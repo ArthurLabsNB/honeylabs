@@ -36,7 +36,7 @@ function ProtectedPanel({ children }: { children: React.ReactNode }) {
   const { mostrarHistorial } = usePanelOps();
   return (
     <div className={`min-h-screen bg-[var(--dashboard-bg)] relative ${fullscreen ? 'dashboard-full' : ''}`}>
-      <main className="flex flex-col min-h-screen transition-all duration-300" style={{ paddingTop: 56 }}>
+      <main className="flex flex-col min-h-screen transition-all duration-300" style={{ paddingTop: 140 }}>
         <PanelDetailNavbar onShowHistory={mostrarHistorial} />
         <section className="flex-1 p-4 overflow-y-auto bg-[var(--dashboard-bg)] text-[var(--dashboard-text)]">
           {children}
