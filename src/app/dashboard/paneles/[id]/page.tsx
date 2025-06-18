@@ -24,6 +24,7 @@ import useSelection from "@/hooks/useSelection";
 import usePanelSocket from "@/hooks/usePanelSocket";
 import useTouchZoom from "@/hooks/useTouchZoom";
 import useUndoRedo, { type Snapshot } from "@/hooks/useUndoRedo";
+import usePanelShortcuts from "@/hooks/usePanelShortcuts";
 import type { PanelUpdate, HistEntry } from "@/types/panel";
 import { normalizeTipoCuenta, isAdminUser } from "@lib/permisos";
 
