@@ -143,14 +143,19 @@ export default function ToolsMenu({ usuario }: { usuario: Usuario }) {
 
   const mainRole = getMainRole(usuario)?.toLowerCase();
   const tipo = normalizeTipoCuenta(
-    mainRole === "admin" ? "admin" : usuario.tipoCuenta,
+    mainRole === "admin" || mainRole === "administrador"
+      ? "admin"
+      : usuario.tipoCuenta,
   );
   const allowCreate = hasManagePerms(usuario);
 
-  const filtered = toolsMenu.filter(
-    (i) =>
-      i.allowed.includes(tipo) && (!i.requiresManage || allowCreate),
-  );
+  const filtered =
+    mainRole === "admin" || mainRole === "administrador"
+      ? toolsMenu
+      : toolsMenu.filter(
+          (i) =>
+            i.allowed.includes(tipo) && (!i.requiresManage || allowCreate),
+        );
 
   return (
     <div className="relative" ref={ref}>

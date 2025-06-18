@@ -12,6 +12,16 @@ export function normalizeTipoCuenta(tipo?: string): string {
   return t || 'individual';
 }
 
+export function isAdminUser(u: {
+  rol?: string;
+  roles?: { nombre?: string }[];
+  tipoCuenta?: string;
+} | null | undefined): boolean {
+  const rol = getMainRole(u)?.toLowerCase();
+  const tipo = normalizeTipoCuenta(u?.tipoCuenta);
+  return rol === 'admin' || rol === 'administrador' || tipo === 'admin';
+}
+
 export function hasManagePerms(
   u: {
     rol?: string;

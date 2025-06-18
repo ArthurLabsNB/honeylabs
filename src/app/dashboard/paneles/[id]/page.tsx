@@ -25,7 +25,7 @@ import usePanelSocket from "@/hooks/usePanelSocket";
 import useTouchZoom from "@/hooks/useTouchZoom";
 import useUndoRedo, { type Snapshot } from "@/hooks/useUndoRedo";
 import type { PanelUpdate, HistEntry } from "@/types/panel";
-import { normalizeTipoCuenta } from "@lib/permisos";
+import { normalizeTipoCuenta, isAdminUser } from "@lib/permisos";
 
 import dynamic from "next/dynamic";
 import GridLayout, { Layout } from "react-grid-layout";
@@ -392,7 +392,8 @@ export default function PanelPage() {
 
     const plan = usuario?.plan?.nombre || 'Free'
     const tipo = normalizeTipoCuenta(usuario?.tipoCuenta)
-    if ((widget.plans && !widget.plans.includes(plan)) || (widget.tipos && !widget.tipos.includes(tipo))) {
+    const admin = isAdminUser(usuario)
+    if (!admin && ((widget.plans && !widget.plans.includes(plan)) || (widget.tipos && !widget.tipos.includes(tipo)))) {
       return;
     }
 
@@ -699,6 +700,7 @@ const viewHist = () => {
 
   const plan = usuario.plan?.nombre || 'Free'
   const tipo = normalizeTipoCuenta(usuario.tipoCuenta)
+  const admin = isAdminUser(usuario)
 
   const visible = widgets.filter((k) => {
     if (!buscar) return true;
@@ -775,8 +777,9 @@ const viewHist = () => {
                 .filter((w) => !widgets.includes(w.key))
                 .filter(
                   (w) =>
-                    (!w.plans || w.plans.includes(plan)) &&
-                    (!w.tipos || w.tipos.includes(tipo)),
+                    admin ||
+                    ((!w.plans || w.plans.includes(plan)) &&
+                      (!w.tipos || w.tipos.includes(tipo)))
                 )
                 .map((w) => (
                   <option key={w.key} value={w.key} data-oid="i6tnk:1">

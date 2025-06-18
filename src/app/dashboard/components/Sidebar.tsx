@@ -85,12 +85,15 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
 
   const mainRole = getMainRole(usuario)?.toLowerCase();
   const tipo = normalizeTipoCuenta(
-    mainRole === "admin" ? "admin" : usuario.tipoCuenta,
+    mainRole === "admin" || mainRole === "administrador"
+      ? "admin"
+      : usuario.tipoCuenta,
   );
 
-  const filteredMenu = sidebarMenu.filter((item) =>
-    item.allowed.includes(tipo),
-  );
+  const filteredMenu =
+    mainRole === "admin" || mainRole === "administrador"
+      ? sidebarMenu
+      : sidebarMenu.filter((item) => item.allowed.includes(tipo));
 
   return (
     <aside
