@@ -2,10 +2,11 @@
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
 import { apiFetch } from "@lib/api";
-import type { Usuario } from "@/types/usuario";
 import useSession from "@/hooks/useSession";
 import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
 import Spinner from "@/components/Spinner";
+import UsuariosTable from "./components/UsuariosTable";
+import WidgetsTable from "./components/WidgetsTable";
 
 interface Stats {
   usuarios: number;
@@ -21,10 +22,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (loadingUsuario) return;
-    if (!usuario) {
-      setError("Debes iniciar sesión");
-      return;
-    }
+    if (!usuario) { setError("Debes iniciar sesión"); return; }
     const rol = getMainRole(usuario)?.toLowerCase();
     const tipo = normalizeTipoCuenta(usuario.tipoCuenta);
     if (rol !== "admin" && rol !== "administrador" && !allowed.includes(tipo)) {
@@ -45,15 +43,11 @@ export default function AdminPage() {
   }, [usuario, loadingUsuario, error]);
 
   if (error)
-    return (
-      <div className="p-4 text-red-500" data-oid="ibo6fdf">
-        {error}
-      </div>
-    );
+    return <div className="p-4 text-red-500">{error}</div>;
 
   if (loading || loadingUsuario)
     return (
-      <div className="p-4" data-oid="fuk4kf:">
+      <div className="p-4">
         <Spinner />
       </div>
     );
@@ -61,14 +55,16 @@ export default function AdminPage() {
   if (!stats) return null;
 
   return (
-    <div className="p-4" data-oid="se45rfa">
-      <h1 className="text-2xl font-bold mb-4" data-oid="hzyq36t">
-        Admin
-      </h1>
-      <ul className="list-disc pl-4" data-oid="dphq3e_">
-        <li data-oid="2fbe27y">Usuarios: {stats.usuarios}</li>
-        <li data-oid="bvfbp-z">Almacenes: {stats.almacenes}</li>
-      </ul>
+    <div className="p-4 space-y-8">
+      <section>
+        <h1 className="text-2xl font-bold mb-4">Administración</h1>
+        <ul className="list-disc pl-4">
+          <li>Usuarios: {stats.usuarios}</li>
+          <li>Almacenes: {stats.almacenes}</li>
+        </ul>
+      </section>
+      <UsuariosTable />
+      <WidgetsTable />
     </div>
   );
 }

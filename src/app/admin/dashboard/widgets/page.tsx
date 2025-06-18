@@ -1,1 +1,1 @@
-export { default } from "../../../dashboard/admin/widgets/page";
+export { default } from "../../../dashboard/admin/page";
