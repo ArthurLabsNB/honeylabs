@@ -11,6 +11,7 @@ import { jsonOrNull } from "@lib/http";
 import { usePanelOps } from "../PanelOpsContext";
 import usePanelPresence from "@/hooks/usePanelPresence";
 import { buildEventoICS } from '@/lib/calendar';
+import { useToast } from "@/components/Toast";
 
 export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: () => void }) {
   const { usuario } = useSession();
@@ -20,6 +21,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   const [nombre, setNombre] = useState("");
   const [edit, setEdit] = useState(false);
   const [saving, setSaving] = useState<"idle" | "saving" | "saved">("idle");
+  const toast = useToast();
   const searchRef = useRef<HTMLInputElement>(null);
   const [openExport, setOpenExport] = useState(false);
   const [openShare, setOpenShare] = useState(false);
@@ -160,15 +162,15 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
       a.click();
       URL.revokeObjectURL(url);
     } else {
-      alert(`Exportar ${formato} no implementado`);
+      toast.show(`Exportar ${formato} no implementado`, 'error');
     }
   };
 
   const copyLink = useCallback(() => {
     const url = window.location.href;
     navigator.clipboard.writeText(url).then(
-      () => alert("Enlace copiado"),
-      () => prompt("Copia manualmente", url)
+      () => toast.show('Enlace copiado', 'success'),
+      () => toast.show('No se pudo copiar', 'error')
     );
   }, []);
 

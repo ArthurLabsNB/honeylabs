@@ -21,6 +21,7 @@ export default function PanelesPage() {
   const [paneles, setPaneles] = useState<Panel[]>([]);
   const [view, setView] = useState<"grid" | "list">("grid");
   const [filter, setFilter] = useState<"todos" | "creados" | "conectados">("todos");
+  const [search, setSearch] = useState('');
 
   const cargar = () => {
     apiFetch("/api/paneles")
@@ -52,7 +53,8 @@ export default function PanelesPage() {
   if (loading) return <Spinner />;
 
   const panelesFiltrados = paneles.filter((p) =>
-    filter === "todos" ? true : filter === "creados" ? !p.conectado : !!p.conectado,
+    (filter === "todos" ? true : filter === "creados" ? !p.conectado : !!p.conectado) &&
+    p.nombre.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -80,15 +82,25 @@ export default function PanelesPage() {
 
       {/* Filtros y controles */}
       <div className="flex items-center justify-between">
-        <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value as any)}
-          className="dashboard-input px-2 py-1 text-sm"
-        >
-          <option value="todos">Todas</option>
-          <option value="creados">Creadas</option>
-          <option value="conectados">Conectadas</option>
-        </select>
+        <div className="flex gap-2 items-center">
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value as any)}
+            className="dashboard-input px-2 py-1 text-sm"
+          >
+            <option value="todos">Todas</option>
+            <option value="creados">Creadas</option>
+            <option value="conectados">Conectadas</option>
+          </select>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Buscar..."
+            aria-label="Buscar pizarra"
+            className="dashboard-input px-2 py-1 text-sm"
+          />
+        </div>
         <div className="flex gap-2">
           <button
             onClick={() => setView("grid")}

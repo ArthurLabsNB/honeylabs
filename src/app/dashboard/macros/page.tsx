@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
+import { nanoid } from "nanoid";
+import { useToast } from "@/components/Toast";
 
-interface Macro { id: number; accion: string; intervalo: number; }
+interface Macro { id: string; accion: string; intervalo: number; }
 
 const acciones = [
   "limpiar pizarra",
@@ -13,6 +15,7 @@ export default function MacrosPage() {
   const [lista, setLista] = useState<Macro[]>([]);
   const [accion, setAccion] = useState(acciones[0]);
   const [intervalo, setIntervalo] = useState(60);
+  const toast = useToast();
 
   useEffect(() => {
     const saved = localStorage.getItem("macros");
@@ -25,16 +28,16 @@ export default function MacrosPage() {
 
   useEffect(() => {
     const timers = lista.map((m) =>
-      setInterval(() => alert(`Macro: ${m.accion}`), m.intervalo * 1000),
+      setInterval(() => toast.show(`Macro: ${m.accion}`, 'info'), m.intervalo * 1000),
     );
     return () => timers.forEach(clearInterval);
-  }, [lista]);
+  }, [lista, toast]);
 
   const agregar = () => {
-    setLista([...lista, { id: Date.now(), accion, intervalo }]);
+    setLista([...lista, { id: nanoid(), accion, intervalo }]);
   };
 
-  const borrar = (id: number) => setLista(lista.filter((m) => m.id !== id));
+  const borrar = (id: string) => setLista(lista.filter((m) => m.id !== id));
 
   return (
     <div className="p-4 space-y-4">

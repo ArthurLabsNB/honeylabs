@@ -29,6 +29,8 @@ export default function ContextMenu({ items, position, onClose }: { items: Item[
       ref={ref}
       style={{ top: position.y, left: position.x }}
       className="fixed z-50 bg-[var(--dashboard-navbar)] border border-[var(--dashboard-border)] rounded text-sm shadow"
+      role="menu"
+      aria-label="Context menu"
     >
       {items.map((it, i) => (
         <button
@@ -38,6 +40,7 @@ export default function ContextMenu({ items, position, onClose }: { items: Item[
             it.onClick();
           }}
           className="block px-3 py-1 text-left w-full hover:bg-white/10"
+          role="menuitem"
         >
           {it.label}
         </button>
