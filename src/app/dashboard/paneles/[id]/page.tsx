@@ -25,6 +25,7 @@ import usePanelSocket from "@/hooks/usePanelSocket";
 import useTouchZoom from "@/hooks/useTouchZoom";
 import useUndoRedo, { type Snapshot } from "@/hooks/useUndoRedo";
 import type { PanelUpdate, HistEntry } from "@/types/panel";
+import { normalizeTipoCuenta } from "@lib/permisos";
 
 import dynamic from "next/dynamic";
 import GridLayout, { Layout } from "react-grid-layout";
@@ -44,6 +45,7 @@ interface WidgetMeta {
   minW?: number;
   minH?: number;
   plans?: string[];
+  tipos?: string[];
 }
 
 
@@ -223,25 +225,17 @@ export default function PanelPage() {
 
     async function loadWidgets() {
       try {
-        const plan = usuario.plan?.nombre || "Free";
         const res = await apiFetch("/api/widgets");
         const data = await jsonOrNull(res);
-
-        const permitidos = data.widgets.filter(
-          (w: WidgetMeta) => !w.plans || w.plans.includes(plan),
-        );
-        setCatalogo(permitidos);
+        setCatalogo(data.widgets);
 
         const mapa: Record<string, any> = {};
-        permitidos.forEach((widget: WidgetMeta) => {
+        data.widgets.forEach((widget: WidgetMeta) => {
           mapa[widget.key] = dynamic(
             () =>
               import(`../../components/widgets/${widget.file}`).catch(() => {
-                // Si falla la importación, marca error
                 setErrores((prev) => ({ ...prev, [widget.key]: true }));
-                return {
-                  default: () => null,
-                };
+                return { default: () => null };
               }),
             { ssr: false },
           );
@@ -259,16 +253,8 @@ export default function PanelPage() {
           Array.isArray(saved.widgets) &&
           Array.isArray(saved.layout)
         ) {
-          const validKeys = permitidos.map((w) => w.key);
-          const filteredWidgets = saved.widgets.filter((k) =>
-            validKeys.includes(k),
-          );
-          const filteredLayout = saved.layout.filter((item) =>
-            validKeys.includes(item.i),
-          );
-
-          const lay = filteredLayout.map(it => ({ locked: false, ...it }))
-          const wid = filteredWidgets
+          const lay = saved.layout.map(it => ({ locked: false, ...it }))
+          const wid = saved.widgets
           const board = { id: 'main', nombre: 'Principal', permiso: saved.permiso || 'edicion', widgets: wid, layout: lay }
           let boards: typeof subboards = []
           try { boards = JSON.parse(localStorage.getItem(`panel-subboards-${panelId}`) || '[]') } catch {}
@@ -403,6 +389,12 @@ export default function PanelPage() {
     if (widgets.includes(key)) return;
     const widget = catalogo.find((w) => w.key === key);
     if (!widget) return;
+
+    const plan = usuario?.plan?.nombre || 'Free'
+    const tipo = normalizeTipoCuenta(usuario?.tipoCuenta)
+    if ((widget.plans && !widget.plans.includes(plan)) || (widget.tipos && !widget.tipos.includes(tipo))) {
+      return;
+    }
 
     const nextY = layout.reduce(
       (max, item) => Math.max(max, item.y + (item.h || 0)),
@@ -705,6 +697,9 @@ const viewHist = () => {
       </div>
     );
 
+  const plan = usuario.plan?.nombre || 'Free'
+  const tipo = normalizeTipoCuenta(usuario.tipoCuenta)
+
   const visible = widgets.filter((k) => {
     if (!buscar) return true;
     const meta = catalogo.find((w) => w.key === k);
@@ -778,6 +773,11 @@ const viewHist = () => {
               </option>
               {catalogo
                 .filter((w) => !widgets.includes(w.key))
+                .filter(
+                  (w) =>
+                    (!w.plans || w.plans.includes(plan)) &&
+                    (!w.tipos || w.tipos.includes(tipo)),
+                )
                 .map((w) => (
                   <option key={w.key} value={w.key} data-oid="i6tnk:1">
                     {w.title}
