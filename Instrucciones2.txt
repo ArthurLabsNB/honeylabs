@@ -1,4 +1,4 @@
-Lista de Mejoras Específicas + Librerías
+Lista de Mejoras para las pizarras de la seccion Paneles: Específicas + Librerías
 1. Modularización avanzada y hooks custom
 Qué: Extraer lógica de selección, undo/redo, shortcuts y modales a hooks custom.
 
