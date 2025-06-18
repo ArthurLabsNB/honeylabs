@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import ConditionalLayout from "@/components/ConditionalLayout"; // <--- Cambia aquí
-import { NextIntlClientProvider } from "next-intl";
-import es from "@/messages/es.json";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 export const metadata: Metadata = {
@@ -38,9 +36,7 @@ export default function RootLayout({
         className="bg-[var(--color-background)] text-[var(--color-foreground)] font-sans antialiased transition-colors duration-300 overflow-x-hidden"
         data-oid="41:bv5f"
       >
-        <NextIntlClientProvider locale="es" messages={es}>
-          <ConditionalLayout data-oid="vy-b4dt">{children}</ConditionalLayout>
-        </NextIntlClientProvider>
+        <ConditionalLayout data-oid="vy-b4dt">{children}</ConditionalLayout>
         <Analytics data-oid="egcbm3r" />
         <SpeedInsights data-oid="vrt:7ii" />
       </body>
