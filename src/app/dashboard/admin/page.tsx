@@ -5,8 +5,10 @@ import { apiFetch } from "@lib/api";
 import useSession from "@/hooks/useSession";
 import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
 import Spinner from "@/components/Spinner";
-import UsuariosTable from "./components/UsuariosTable";
+import AdminTabs from "./components/AdminTabs";
+import UsuariosPanel from "./components/UsuariosPanel";
 import WidgetsTable from "./components/WidgetsTable";
+import AnalyticsPanel from "./components/AnalyticsPanel";
 
 interface Stats {
   usuarios: number;
@@ -54,6 +56,12 @@ export default function AdminPage() {
 
   if (!stats) return null;
 
+  const panels = [
+    { key: "usuarios", label: "Usuarios", content: <UsuariosPanel /> },
+    { key: "analiticas", label: "Analíticas", content: <AnalyticsPanel /> },
+    { key: "widgets", label: "Accesos", content: <WidgetsTable /> },
+  ];
+
   return (
     <div className="p-4 space-y-8">
       <section>
@@ -63,8 +71,7 @@ export default function AdminPage() {
           <li>Almacenes: {stats.almacenes}</li>
         </ul>
       </section>
-      <UsuariosTable />
-      <WidgetsTable />
+      <AdminTabs panels={panels} />
     </div>
   );
 }
