@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
@@ -168,7 +168,7 @@ export default function AnalyticsPanel() {
   }, [metrics, selected, chartType]);
 
   /* ----------------------------  O P T I O N S ----------------------------- */
-  const chartOptions = useMemo<ChartOptions>((() => {
+  const chartOptions = useMemo<ChartOptions>(() => {
     const common: ChartOptions = {
       responsive: true,
       maintainAspectRatio: false,
@@ -226,7 +226,7 @@ export default function AnalyticsPanel() {
 
     // Para los demás tipos devolvemos options comunes
     return { ...common, type: chartType };
-  })(), [chartType]);
+  }, [chartType]);
 
   /***************************  R E N D E R  *****************************/
   if (error) {
