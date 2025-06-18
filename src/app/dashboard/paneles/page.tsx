@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Plus, Grid as GridIcon, List as ListIcon } from "lucide-react";
 import { FixedSizeList as VList } from "react-window";
@@ -20,7 +19,6 @@ interface Panel {
 export default function PanelesPage() {
   const { usuario, loading } = useSession();
   const prompt = usePrompt();
-  const t = useTranslations();
   const [paneles, setPaneles] = useState<Panel[]>([]);
   const [view, setView] = useState<"grid" | "list">("grid");
   const [filter, setFilter] = useState<"todos" | "creados" | "conectados">("todos");
@@ -69,7 +67,7 @@ export default function PanelesPage() {
           className="dashboard-card flex flex-col items-center justify-center h-32 cursor-pointer"
         >
           <Plus className="w-8 h-8" />
-          <span className="mt-2 text-sm">{t('newBoard')}</span>
+          <span className="mt-2 text-sm">Nueva pizarra</span>
         </div>
         {[
           "Kanban",
@@ -99,7 +97,7 @@ export default function PanelesPage() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder={t('searchPlaceholder')}
+            placeholder="Buscar..."
             aria-label="Buscar pizarra"
             className="dashboard-input px-2 py-1 text-sm"
           />
@@ -110,8 +108,8 @@ export default function PanelesPage() {
             className={`p-2 rounded ${
               view === "grid" ? "bg-[var(--dashboard-accent)] text-black" : "bg-white/10"
             }`}
-            title={t('gridView')}
-            aria-label={t('gridView')}
+            title="Vista cuadriculada"
+            aria-label="Vista cuadriculada"
           >
             <GridIcon className="w-4 h-4" />
           </button>
@@ -120,8 +118,8 @@ export default function PanelesPage() {
             className={`p-2 rounded ${
               view === "list" ? "bg-[var(--dashboard-accent)] text-black" : "bg-white/10"
             }`}
-            title={t('listView')}
-            aria-label={t('listView')}
+            title="Vista de lista"
+            aria-label="Vista de lista"
           >
             <ListIcon className="w-4 h-4" />
           </button>
@@ -146,7 +144,7 @@ export default function PanelesPage() {
             </Link>
           ))}
           {!panelesFiltrados.length && (
-            <div className="text-sm text-gray-400">{t('noBoards')}</div>
+            <div className="text-sm text-gray-400">No hay pizarras</div>
           )}
         </div>
       ) : (
@@ -173,7 +171,7 @@ export default function PanelesPage() {
               }}
             </VList>
           ) : (
-            <div className="text-sm text-gray-400">{t('noBoards')}</div>
+            <div className="text-sm text-gray-400">No hay pizarras</div>
           )}
         </div>
       )}

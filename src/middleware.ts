@@ -1,14 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SESSION_COOKIE } from '@lib/constants'
-import createIntlMiddleware from 'next-intl/middleware'
 
 const PROTECTED_PREFIXES = ['/dashboard', '/configuracion', '/admin']
 const API_LOGIN = '/api/login'
 const API_REGISTRO = '/api/registro'
-const intl = createIntlMiddleware({
-  locales: ['es', 'en'],
-  defaultLocale: 'es',
-})
 
 // --- Memory Rate Limiter ---
 // Solo para desarrollo, VPS o entornos con estado.
@@ -99,8 +94,7 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  let res = path.startsWith('/api') ? NextResponse.next() : intl(req)
-  if (!res) res = NextResponse.next()
+  const res = NextResponse.next()
   if (requiresSession) {
     res.headers.set('Cache-Control', 'no-store')
   }
