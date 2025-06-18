@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-interface Plantilla { id: number; nombre: string; tipo: string }
+interface Plantilla { id: number; nombre: string; tipo: string; estado?: any }
 
 const store: Plantilla[] = (globalThis as any).plantillasStore ||= [
   { id: 1, nombre: "Solicitud básica", tipo: "publica" },
@@ -12,8 +12,8 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const { nombre, tipo } = await req.json();
-    const plantilla = { id: Date.now(), nombre, tipo: tipo || "privada" } as Plantilla;
+    const { nombre, tipo, estado } = await req.json();
+    const plantilla = { id: Date.now(), nombre, tipo: tipo || "privada", estado } as Plantilla;
     store.push(plantilla);
     return NextResponse.json({ plantilla });
   } catch {
