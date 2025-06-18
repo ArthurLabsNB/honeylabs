@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Plus, Grid as GridIcon, List as ListIcon } from "lucide-react";
+import { FixedSizeList as VList } from "react-window";
 import useSession from "@/hooks/useSession";
 import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
@@ -18,6 +20,7 @@ interface Panel {
 export default function PanelesPage() {
   const { usuario, loading } = useSession();
   const prompt = usePrompt();
+  const t = useTranslations();
   const [paneles, setPaneles] = useState<Panel[]>([]);
   const [view, setView] = useState<"grid" | "list">("grid");
   const [filter, setFilter] = useState<"todos" | "creados" | "conectados">("todos");
@@ -66,7 +69,7 @@ export default function PanelesPage() {
           className="dashboard-card flex flex-col items-center justify-center h-32 cursor-pointer"
         >
           <Plus className="w-8 h-8" />
-          <span className="mt-2 text-sm">Nueva pizarra</span>
+          <span className="mt-2 text-sm">{t('newBoard')}</span>
         </div>
         {[
           "Kanban",
@@ -96,7 +99,7 @@ export default function PanelesPage() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar..."
+            placeholder={t('searchPlaceholder')}
             aria-label="Buscar pizarra"
             className="dashboard-input px-2 py-1 text-sm"
           />
@@ -107,8 +110,8 @@ export default function PanelesPage() {
             className={`p-2 rounded ${
               view === "grid" ? "bg-[var(--dashboard-accent)] text-black" : "bg-white/10"
             }`}
-            title="Vista cuadriculada"
-            aria-label="Vista cuadriculada"
+            title={t('gridView')}
+            aria-label={t('gridView')}
           >
             <GridIcon className="w-4 h-4" />
           </button>
@@ -117,8 +120,8 @@ export default function PanelesPage() {
             className={`p-2 rounded ${
               view === "list" ? "bg-[var(--dashboard-accent)] text-black" : "bg-white/10"
             }`}
-            title="Vista de lista"
-            aria-label="Vista de lista"
+            title={t('listView')}
+            aria-label={t('listView')}
           >
             <ListIcon className="w-4 h-4" />
           </button>
@@ -143,25 +146,36 @@ export default function PanelesPage() {
             </Link>
           ))}
           {!panelesFiltrados.length && (
-            <div className="text-sm text-gray-400">No hay pizarras</div>
+            <div className="text-sm text-gray-400">{t('noBoards')}</div>
           )}
         </div>
       ) : (
-        <ul className="space-y-2">
-          {panelesFiltrados.map((p) => (
-            <li key={p.id} className="dashboard-card flex justify-between items-center">
-              <Link href={`/dashboard/paneles/${p.id}`}>{p.nombre}</Link>
-              {p.fechaMod && (
-                <span className="text-xs text-gray-400">
-                  {new Date(p.fechaMod).toLocaleDateString()}
-                </span>
-              )}
-            </li>
-          ))}
-          {!panelesFiltrados.length && (
-            <li className="text-sm text-gray-400">No hay pizarras</li>
+        <div>
+          {panelesFiltrados.length ? (
+            <VList
+              height={Math.min(400, panelesFiltrados.length * 64)}
+              itemCount={panelesFiltrados.length}
+              itemSize={64}
+              width="100%"
+            >
+              {({ index, style }) => {
+                const p = panelesFiltrados[index]
+                return (
+                  <div style={style} className="dashboard-card flex justify-between items-center px-2">
+                    <Link href={`/dashboard/paneles/${p.id}`}>{p.nombre}</Link>
+                    {p.fechaMod && (
+                      <span className="text-xs text-gray-400">
+                        {new Date(p.fechaMod).toLocaleDateString()}
+                      </span>
+                    )}
+                  </div>
+                )
+              }}
+            </VList>
+          ) : (
+            <div className="text-sm text-gray-400">{t('noBoards')}</div>
           )}
-        </ul>
+        </div>
       )}
     </div>
   );

@@ -14,9 +14,16 @@ import ChatPanel from "../components/ChatPanel";
 import Minimap from "../components/Minimap";
 import ContextMenu from "../components/ContextMenu";
 import GalleryPanel from "../components/GalleryPanel";
+import FileDropZone from "../components/FileDropZone";
+import HistorySidebar from "../components/HistorySidebar";
+import SubboardManager from "../components/SubboardManager";
+import Onboarding from "../components/Onboarding";
 import { useToast } from "@/components/Toast";
 import { usePrompt } from "@/hooks/usePrompt";
 import useSelection from "@/hooks/useSelection";
+import usePanelSocket from "@/hooks/usePanelSocket";
+import useTouchZoom from "@/hooks/useTouchZoom";
+import type { PanelUpdate, HistEntry } from "@/types/panel";
 
 import dynamic from "next/dynamic";
 import GridLayout, { Layout } from "react-grid-layout";
@@ -39,10 +46,6 @@ interface WidgetMeta {
 }
 
 
-interface HistEntry {
-  fecha: string;
-  estado: { widgets: string[]; layout: LayoutItem[] };
-}
 
 interface Comment {
   id: number;
@@ -108,6 +111,7 @@ export default function PanelPage() {
   const [activeSub, setActiveSub] = useState('')
   const [isOffline, setIsOffline] = useState(false)
   const [openGallery, setOpenGallery] = useState(false)
+  const [openBoards, setOpenBoards] = useState(false)
   const [shortcuts, setShortcuts] = useState(() => {
     if (typeof window === 'undefined') return { undo: 'ctrl+z', redo: 'ctrl+shift+z' }
     try {
@@ -117,6 +121,16 @@ export default function PanelPage() {
       return { undo: 'ctrl+z', redo: 'ctrl+shift+z' }
     }
   })
+
+  const { sendUpdate } = usePanelSocket(panelId, (data: PanelUpdate) => {
+    if (data.client === clientId.current) return
+    skip.current = true
+    setWidgets(data.widgets)
+    setLayout(data.layout)
+    toast.show('Pizarra actualizada', 'info')
+  })
+
+  useTouchZoom(containerRef, z => setZoom(z))
 
   const saveCurrentSub = useCallback(() => {
     setSubboards(bs =>
@@ -145,6 +159,7 @@ export default function PanelPage() {
     }
     bc.addEventListener('message', handle)
     bc.postMessage({ client: clientId.current, widgets, layout })
+    sendUpdate({ panelId: panelId!, widgets, layout, client: clientId.current })
     return () => {
       bc.removeEventListener('message', handle)
       bc.close()
@@ -314,6 +329,7 @@ export default function PanelPage() {
     record({ widgets, layout })
     setUnsaved(true)
     bcRef.current?.postMessage({ client: clientId.current, widgets, layout })
+    sendUpdate({ panelId: panelId!, widgets, layout, client: clientId.current })
   }, [widgets, layout])
 
   useEffect(() => {
@@ -485,34 +501,50 @@ const assignOwner = (key: string) => {
   });
 };
 
-const insertTemplate = () => {
-  const keys = ['markdown', 'markdown', 'markdown'].map(k => `${k}_${nanoid()}`);
-  setWidgets(w => [...w, ...keys]);
-  const maxY = layout.reduce((m, it) => Math.max(m, it.y + (it.h || 0)), 0);
-  const maxZ = layout.reduce((m, it) => Math.max(m, it.z || 0), 0);
-  setLayout(l => [
-    ...l,
-    ...keys.map((k, i) => ({ i: k, x: i * 2, y: maxY, w: 2, h: 2, z: maxZ + i + 1 })),
-  ]);
-};
+const insertTemplate = async () => {
+  try {
+    const res = await apiFetch('/api/plantillas')
+    const data = await jsonOrNull(res)
+    const plantilla = data?.plantillas?.[0]
+    if (!plantilla?.estado) return
+    const keys = plantilla.estado.widgets.map((k: string) => `${k}_${nanoid()}`)
+    const maxY = layout.reduce((m, it) => Math.max(m, it.y + (it.h || 0)), 0)
+    const maxZ = layout.reduce((m, it) => Math.max(m, it.z || 0), 0)
+    setWidgets(w => [...w, ...keys])
+    setLayout(l => [
+      ...l,
+      ...plantilla.estado.layout.map((it: any, i: number) => ({
+        ...it,
+        i: keys[i] || `${it.i}_${nanoid()}`,
+        y: it.y + maxY,
+        z: (it.z || 0) + maxZ + i + 1,
+      }))
+    ])
+  } catch {}
+}
 
 const iaSuggest = () => {
   const ideas = ['Añadir resumen', 'Crear diagrama', 'Listar tareas'];
   toast.show(`Sugerencia IA: ${ideas[Math.floor(Math.random() * ideas.length)]}`, 'info');
 };
 
+const saveTemplate = async () => {
+  const nombre = await prompt('Nombre de plantilla')
+  if (!nombre) return
+  await apiFetch('/api/plantillas', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nombre, tipo: 'privada', estado: { widgets, layout } }),
+  })
+  toast.show('Plantilla guardada', 'success')
+}
+
 const generateDiagramAI = () => {
-  prompt('Describe el diagrama').then(desc => {
+  prompt('Describe el diagrama').then(async desc => {
     if (!desc) return
-    const parts = desc.split(/\s+/).slice(0,3)
-    const keys = parts.map(() => `markdown_${nanoid()}`)
-    setWidgets(w => [...w, ...keys])
-  const maxY = layout.reduce((m, it) => Math.max(m, it.y + (it.h || 0)), 0)
-  const maxZ = layout.reduce((m, it) => Math.max(m, it.z || 0), 0)
-    setLayout(l => [
-      ...l,
-      ...keys.map((k,i)=>({ i:k, x:i*2, y:maxY, w:2, h:2, z:maxZ+i+1, label: parts[i] || `Paso ${i+1}` }))
-    ])
+    const res = await apiFetch('/api/ia', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: desc }) })
+    const data = await jsonOrNull(res)
+    toast.show(data?.summary || 'IA lista', 'info')
   })
 }
 
@@ -729,10 +761,11 @@ const viewHist = () => {
         </h1>
         {isOffline && <span className="text-xs text-red-500 mr-2">Offline</span>}
         <div className="flex items-center gap-2" data-oid="kuayohc">
-          <select value={activeSub} onChange={e => switchSubboard(e.target.value)} className="bg-white/10 text-sm px-2 py-1 rounded">
+          <select id="subboard-select" value={activeSub} onChange={e => switchSubboard(e.target.value)} className="bg-white/10 text-sm px-2 py-1 rounded">
             {subboards.map(sb => <option key={sb.id} value={sb.id}>{sb.nombre}</option>)}
           </select>
           <button onClick={addSubboard} className="px-2 py-1 bg-white/10 rounded text-sm">+</button>
+          <button onClick={() => setOpenBoards(true)} className="px-2 py-1 bg-white/10 rounded text-sm">≡</button>
           {!readOnly && (
             <select
               onChange={(e) => handleAddWidget(e.target.value)}
@@ -904,23 +937,6 @@ const viewHist = () => {
         </div>
       )}
       </div>
-      {openHist && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40">
-          <div className="bg-[var(--dashboard-card)] p-4 rounded max-h-[80vh] overflow-auto w-80">
-            <h2 className="font-semibold mb-2">Historial</h2>
-            <ul className="space-y-2 text-sm">
-              {historial.map((h, i) => (
-                <li key={i} className="flex justify-between items-center">
-                  <span>{new Date(h.fecha).toLocaleString()}</span>
-                  <button onClick={() => restoreVersion(h)} className="underline">Restaurar</button>
-                </li>
-              ))}
-              {!historial.length && <li className="text-gray-400">Sin historial</li>}
-            </ul>
-            <button onClick={() => setOpenHist(false)} className="mt-3 px-3 py-1 bg-white/10 rounded w-full text-sm">Cerrar</button>
-          </div>
-        </div>
-      )}
       {openDiff && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40">
           <div className="bg-[var(--dashboard-card)] p-4 rounded max-h-[80vh] overflow-auto w-[90vw] sm:w-[70vw]">
@@ -989,7 +1005,14 @@ const viewHist = () => {
           onClose={() => setOpenGallery(false)}
         />
       )}
+      <FileDropZone onFiles={files => files.forEach(f => {
+        const url = URL.createObjectURL(f)
+        addMedia(url)
+      })} />
       <Minimap layout={layout} zoom={zoom} containerRef={containerRef} gridSize={gridSize} />
+      <HistorySidebar open={openHist} historial={historial} onClose={() => setOpenHist(false)} restore={restoreVersion} />
+      <SubboardManager open={openBoards} boards={subboards} setBoards={setSubboards} onSelect={switchSubboard} onClose={() => setOpenBoards(false)} />
+      <Onboarding />
       {contextMenu && (
         <ContextMenu
           position={{ x: contextMenu.x, y: contextMenu.y }}
@@ -1023,6 +1046,7 @@ const viewHist = () => {
             ...subboards.filter(b => b.id !== activeSub).map(b => ({ label: `Cambiar a ${b.nombre}`, onClick: () => switchSubboard(b.id) })),
             { label: 'Buscar elemento', onClick: () => document.dispatchEvent(new Event('focus-search')) },
             { label: 'Insertar plantilla', onClick: insertTemplate },
+            { label: 'Guardar plantilla', onClick: saveTemplate },
             { label: 'Abrir galería', onClick: () => setOpenGallery(true) },
             { label: 'Agregar media', onClick: () => addMedia() },
             { label: 'Generar diagrama IA', onClick: generateDiagramAI },

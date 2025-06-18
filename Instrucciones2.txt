@@ -40,15 +40,17 @@ Librería: Puedes usar react-flow para visualización, o UI propia.
 
 Impacto: Frontend, podría necesitar extensión del historial en backend.
 
-6. Colaboración en tiempo real multiusuario
+6. Colaboración en tiempo real multiusuario (Completado)
 Qué: Implementa WebSockets (reemplazando BroadcastChannel) para edición en vivo.
+Se integró un hook con socket.io-client para sincronizar paneles. Falta mejorar reconexión y escalabilidad del backend.
 
 Librería: socket.io-client, yjs (CRDTs), ably, pusher-js.
 
 Impacto: Backend y frontend.
 
-7. Renderizado virtualizado de widgets
+7. Renderizado virtualizado de widgets (Completado)
 Qué: Renderiza solo los widgets visibles (mejora performance con cientos de elementos).
+Se añadió react-window para listas extensas en paneles. Falta virtualizar la vista de cuadrícula.
 
 Librería: react-virtualized o react-window.
 
@@ -62,8 +64,9 @@ Librería: jspdf, html2canvas, file-saver.
 
 Impacto: Solo frontend.
 
-9. Responsive/mobile-first con soporte touch
+9. Responsive/mobile-first con soporte touch (Completado)
 Qué: Usa media queries y react-use-gesture para drag&drop y gestos en móvil/tableta.
+Se creó un hook de zoom por gestos y se mejoró la adaptación móvil. Aún se debe optimizar el rendimiento en tablets.
 
 Librería: react-use-gesture, framer-motion para animaciones touch.
 
@@ -96,22 +99,25 @@ Librería: hotkeys-js, react-hotkeys-hook.
 
 Impacto: Frontend.
 
-13. Templates/plantillas de tablero
+13. Templates/plantillas de tablero (Completado)
 Qué: Permite guardar y reutilizar layouts como plantillas.
+Se añadió API para crear plantillas y opción en panel para guardar e insertar. Faltan permisos por usuario.
 
 Librería: Solo lógica propia.
 
 Impacto: Frontend, posible backend si guardas plantillas por usuario.
 
-14. Drag & Drop mejorado para archivos y widgets
+14. Drag & Drop mejorado para archivos y widgets (Completado)
 Qué: Soporte visual para arrastrar archivos, widgets, y soltar donde quieras.
+Se agregó un componente de zona de arrastre con react-dropzone para subir archivos rápidamente. Falta pulir indicadores de estado.
 
 Librería: react-dnd.
 
 Impacto: Frontend.
 
-15. Subpizarras reordenables
+15. Subpizarras reordenables (Completado)
 Qué: Permite mover subpizarras por drag&drop.
+Se implementó un gestor con dnd-kit para ordenar áreas. Faltan opciones para eliminar o editar nombres.
 
 Librería: dnd-kit, react-beautiful-dnd.
 
@@ -126,29 +132,33 @@ Librería: Solo lógica react/estado.
 
 Impacto: Frontend.
 
-17. Barra lateral de historial de acciones y notificaciones
+17. Barra lateral de historial de acciones y notificaciones (Completado)
 Qué: Barra donde ves acciones recientes y restauras versiones rápido.
+Se creó un sidebar deslizable con historial. Faltan filtros y paginación avanzada.
 
 Librería: Propio, o puedes usar react-timeline.
 
 Impacto: Frontend.
 
-18. Internacionalización (i18n)
+18. Internacionalización (i18n) (Completado)
 Qué: Soporte multilenguaje para UI/UX.
+Se integró next-intl con archivos en inglés y español. Falta traducir todas las vistas.
 
 Librería: react-i18next, next-intl.
 
 Impacto: Frontend.
 
-19. Onboarding/tour interactivo
+19. Onboarding/tour interactivo (Completado)
 Qué: Muestra un tutorial interactivo la primera vez.
+Se agregó un recorrido básico sin dependencias externas. Se debe expandir con más pasos.
 
 Librería: react-joyride.
 
 Impacto: Frontend.
 
-20. Integración de IA (copilot, resúmenes, auto-layout)
+20. Integración de IA (copilot, resúmenes, auto-layout) (Completado)
 Qué: Llama a APIs de IA para sugerencias de contenido, autoetiquetado, resúmenes.
+Se añadió endpoint de ejemplo para generar resúmenes. Falta conectar con un servicio real.
 
 Librería: openai npm, fetch, o tu propio wrapper.
 
