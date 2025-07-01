@@ -3,6 +3,7 @@ export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@lib/prisma";
+import type { Prisma } from '@prisma/client'
 import crypto from "node:crypto";
 import { getUsuarioFromSession } from "@lib/auth";
 import { hasManagePerms, normalizeTipoCuenta } from "@lib/permisos";
@@ -18,8 +19,13 @@ const IMAGE_TYPES = [
   'image/gif',
 ];
 
-async function snapshot(almacenId: number, usuarioId: number, descripcion: string) {
-  const almacen = await prisma.almacen.findUnique({
+async function snapshot(
+  db: Prisma.TransactionClient | typeof prisma,
+  almacenId: number,
+  usuarioId: number,
+  descripcion: string,
+) {
+  const almacen = await db.almacen.findUnique({
     where: { id: almacenId },
     select: {
       nombre: true,
@@ -38,7 +44,7 @@ async function snapshot(almacenId: number, usuarioId: number, descripcion: strin
           : null,
       }
     : null
-  await prisma.historialAlmacen.create({
+  await db.historialAlmacen.create({
     data: { almacenId, usuarioId, descripcion, estado },
   })
 }
@@ -226,30 +232,33 @@ export async function POST(req: NextRequest) {
 
     const codigoUnico = crypto.randomUUID().split('-')[0];
 
-  const almacen = await prisma.almacen.create({
-      data: {
-        nombre,
-        descripcion,
-        funciones,
-        permisosPredeterminados,
-        codigoUnico,
-        imagenUrl,
-        imagenNombre,
-        imagen: imagenBuffer as any,
-        entidadId: usuario.entidadId,
-        usuarios: {
-          create: { usuarioId: usuario.id, rolEnAlmacen: 'propietario' },
+  const almacen = await prisma.$transaction(async tx => {
+      const creado = await tx.almacen.create({
+        data: {
+          nombre,
+          descripcion,
+          funciones,
+          permisosPredeterminados,
+          codigoUnico,
+          imagenUrl,
+          imagenNombre,
+          imagen: imagenBuffer as any,
+          entidadId: usuario.entidadId,
+          usuarios: {
+            create: { usuarioId: usuario.id, rolEnAlmacen: 'propietario' },
+          },
         },
-      },
-      select: { id: true, nombre: true, descripcion: true, imagenNombre: true, codigoUnico: true },
-  });
+        select: { id: true, nombre: true, descripcion: true, imagenNombre: true, codigoUnico: true },
+      })
+      await snapshot(tx, creado.id, usuario.id, 'Creación')
+      return creado
+  })
 
   const resp = {
     ...almacen,
     imagenUrl: imagenNombre ? `/api/almacenes/foto?nombre=${encodeURIComponent(imagenNombre)}` : null,
-  };
-  await snapshot(almacen.id, usuario.id, 'Creación')
-  return NextResponse.json({ almacen: resp });
+  }
+  return NextResponse.json({ almacen: resp })
   } catch (err) {
     logger.error('POST /api/almacenes', err);
     return NextResponse.json(

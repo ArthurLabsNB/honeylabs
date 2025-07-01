@@ -2,6 +2,7 @@ export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@lib/prisma";
+import type { Prisma } from '@prisma/client';
 import { getUsuarioFromSession } from "@lib/auth";
 import { hasManagePerms } from "@lib/permisos";
 import crypto from 'node:crypto';
@@ -24,8 +25,13 @@ const IMAGE_TYPES = [
   'image/gif',
 ];
 
-async function snapshot(almacenId: number, usuarioId: number, descripcion: string) {
-  const almacen = await prisma.almacen.findUnique({
+async function snapshot(
+  db: Prisma.TransactionClient | typeof prisma,
+  almacenId: number,
+  usuarioId: number,
+  descripcion: string,
+) {
+  const almacen = await db.almacen.findUnique({
     where: { id: almacenId },
     select: {
       nombre: true,
@@ -44,7 +50,7 @@ async function snapshot(almacenId: number, usuarioId: number, descripcion: strin
           : null,
       }
     : null
-  await prisma.historialAlmacen.create({
+  await db.historialAlmacen.create({
     data: { almacenId, usuarioId, descripcion, estado },
   })
 }
@@ -169,22 +175,22 @@ export async function DELETE(req: NextRequest) {
   if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
     }
-    await snapshot(id, usuario.id, 'Eliminación')
-    await prisma.$transaction([
-      prisma.usuarioAlmacen.deleteMany({ where: { almacenId: id } }),
-      prisma.codigoAlmacen.deleteMany({ where: { almacenId: id } }),
-      prisma.movimiento.deleteMany({ where: { almacenId: id } }),
-      prisma.eventoAlmacen.deleteMany({ where: { almacenId: id } }),
-      prisma.novedadAlmacen.deleteMany({ where: { almacenId: id } }),
-      prisma.documentoAlmacen.deleteMany({ where: { almacenId: id } }),
-      prisma.incidencia.deleteMany({ where: { almacenId: id } }),
-      prisma.notificacion.deleteMany({ where: { almacenId: id } }),
-      prisma.alerta.deleteMany({ where: { almacenId: id } }),
-      prisma.materialUnidad.deleteMany({ where: { material: { almacenId: id } } }),
-      prisma.archivoMaterial.deleteMany({ where: { material: { almacenId: id } } }),
-      prisma.material.deleteMany({ where: { almacenId: id } }),
-      prisma.almacen.delete({ where: { id } }),
-    ]);
+    await prisma.$transaction(async tx => {
+      await snapshot(tx, id, usuario.id, 'Eliminación')
+      await tx.usuarioAlmacen.deleteMany({ where: { almacenId: id } })
+      await tx.codigoAlmacen.deleteMany({ where: { almacenId: id } })
+      await tx.movimiento.deleteMany({ where: { almacenId: id } })
+      await tx.eventoAlmacen.deleteMany({ where: { almacenId: id } })
+      await tx.novedadAlmacen.deleteMany({ where: { almacenId: id } })
+      await tx.documentoAlmacen.deleteMany({ where: { almacenId: id } })
+      await tx.incidencia.deleteMany({ where: { almacenId: id } })
+      await tx.notificacion.deleteMany({ where: { almacenId: id } })
+      await tx.alerta.deleteMany({ where: { almacenId: id } })
+      await tx.materialUnidad.deleteMany({ where: { material: { almacenId: id } } })
+      await tx.archivoMaterial.deleteMany({ where: { material: { almacenId: id } } })
+      await tx.material.deleteMany({ where: { almacenId: id } })
+      await tx.almacen.delete({ where: { id } })
+    })
     return NextResponse.json({ success: true });
   } catch (err) {
     logger.error('DELETE /api/almacenes/[id]', err);
@@ -242,18 +248,21 @@ export async function PUT(req: NextRequest) {
       imagenNombre = body.imagenNombre ?? null;
     }
 
-  const almacen = await prisma.almacen.update({
-      where: { id },
-      data: { nombre, descripcion, imagenUrl, imagenNombre, imagen: imagenBuffer as any },
-      select: { id: true, nombre: true, descripcion: true, imagenNombre: true },
-    });
+  const almacen = await prisma.$transaction(async tx => {
+      const upd = await tx.almacen.update({
+        where: { id },
+        data: { nombre, descripcion, imagenUrl, imagenNombre, imagen: imagenBuffer as any },
+        select: { id: true, nombre: true, descripcion: true, imagenNombre: true },
+      })
+      await snapshot(tx, id, usuario.id, 'Modificación')
+      return upd
+  })
 
   const resp = {
     ...almacen,
     imagenUrl: almacen.imagenNombre ? `/api/almacenes/foto?nombre=${encodeURIComponent(almacen.imagenNombre)}` : null,
-  };
-  await snapshot(id, usuario.id, 'Modificación')
-  return NextResponse.json({ almacen: resp });
+  }
+  return NextResponse.json({ almacen: resp })
   } catch (err) {
     logger.error('PUT /api/almacenes/[id]', err);
     return NextResponse.json({ error: 'Error al actualizar' }, { status: 500 });
