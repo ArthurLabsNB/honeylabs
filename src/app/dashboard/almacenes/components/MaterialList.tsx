@@ -29,11 +29,24 @@ export default function MaterialList({
   const filtrados = useMemo(
     () =>
       materiales
-        .filter((m) => (m?.nombre ?? "").toLowerCase().includes(busqueda.toLowerCase()))
+        .filter((m) => {
+          const q = busqueda.toLowerCase();
+          return (
+            (m.nombre ?? '').toLowerCase().includes(q) ||
+            (m.lote ?? '').toLowerCase().includes(q) ||
+            (m.codigoBarra ?? '').toLowerCase().includes(q) ||
+            (m.codigoQR ?? '').toLowerCase().includes(q)
+          );
+        })
         .sort((a, b) =>
-          orden === "nombre" ? a.nombre.localeCompare(b.nombre) : a.cantidad - b.cantidad,
+          orden === 'nombre' ? a.nombre.localeCompare(b.nombre) : a.cantidad - b.cantidad,
         ),
     [materiales, busqueda, orden],
+  );
+
+  const totalStock = useMemo(
+    () => materiales.reduce((sum, m) => sum + (m.cantidad ?? 0), 0),
+    [materiales],
   );
 
   const [preview, setPreview] = useState<string | null>(null);
@@ -56,6 +69,15 @@ export default function MaterialList({
           <option value="nombre">Nombre</option>
           <option value="cantidad">Cantidad</option>
         </select>
+        <button
+          onClick={() => {
+            setBusqueda('');
+            setOrden('nombre');
+          }}
+          className="px-3 py-1 rounded bg-white/10 text-sm"
+        >
+          Limpiar
+        </button>
       </div>
       <ul className="space-y-2 overflow-y-auto max-h-[calc(100vh-12rem)]">
         {filtrados.map((m) => (
@@ -96,6 +118,7 @@ export default function MaterialList({
           </li>
         ))}
       </ul>
+      <p className="text-xs text-right">Total stock: {totalStock}</p>
       <div className="flex gap-2">
         <button
           onClick={onNuevo}

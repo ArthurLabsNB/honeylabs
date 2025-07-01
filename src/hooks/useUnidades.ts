@@ -1,5 +1,6 @@
 import useSWR from 'swr'
 import { jsonOrNull } from '@lib/http'
+import fetcher from '@lib/swrFetcher'
 
 const fileToBase64 = (file: File) =>
   new Promise<string>((resolve, reject) => {
@@ -55,8 +56,6 @@ export interface Unidad {
   [clave: string]: any
 }
 
-const fetcher = (url: string) =>
-  fetch(url, { credentials: 'include' }).then(jsonOrNull)
 
 export default function useUnidades(materialId?: number | string) {
   const id = Number(materialId)

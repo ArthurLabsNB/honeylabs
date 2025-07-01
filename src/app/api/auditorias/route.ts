@@ -11,6 +11,8 @@ export async function GET(req: NextRequest) {
     const tipo = req.nextUrl.searchParams.get('tipo') || undefined
     const categoria = req.nextUrl.searchParams.get('categoria') || undefined
     const q = req.nextUrl.searchParams.get('q')?.toLowerCase() || undefined
+    const desde = req.nextUrl.searchParams.get('desde') || undefined
+    const hasta = req.nextUrl.searchParams.get('hasta') || undefined
     const where: any = {}
     if (tipo && ['almacen','material','unidad'].includes(tipo)) where.tipo = tipo
     if (categoria) where.categoria = categoria
@@ -23,6 +25,9 @@ export async function GET(req: NextRequest) {
         { usuario: { nombre: { contains: q, mode: 'insensitive' } } },
       ]
     }
+    if (desde) where.fecha = { gte: new Date(desde) }
+    if (hasta) where.fecha = { ...(where.fecha || {}), lte: new Date(hasta) }
+
     const auditorias = await prisma.reporte.findMany({
       take: 50,
       orderBy: { fecha: 'desc' },

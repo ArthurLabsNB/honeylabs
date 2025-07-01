@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { jsonOrNull } from '@lib/http'
+import fetcher from '@lib/swrFetcher'
 
 export interface ArchivoInfo {
   id: number
@@ -8,7 +8,6 @@ export interface ArchivoInfo {
   fecha?: string
 }
 
-const fetcher = (url: string) => fetch(url).then(jsonOrNull)
 
 export default function useArchivosMaterial(materialId?: number) {
   const id = Number(materialId)

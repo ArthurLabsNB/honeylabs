@@ -12,6 +12,7 @@ import { usePanelOps } from "../PanelOpsContext";
 import usePanelPresence from "@/hooks/usePanelPresence";
 import { buildEventoICS } from '@/lib/calendar';
 import { useToast } from "@/components/Toast";
+import { useDashboardUI } from "../../ui";
 
 export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: () => void }) {
   const { usuario } = useSession();
@@ -39,6 +40,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   const [openWiki, setOpenWiki] = useState(false);
   const [openTools, setOpenTools] = useState(false);
   const conectados = usePanelPresence(panelId, usuario);
+  const { toggleFullscreen } = useDashboardUI();
   const {
     guardar,
     undo,
@@ -89,7 +91,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   }, [])
 
   useEffect(() => {
-    const esc = (e: KeyboardEvent) => {
+    const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setOpenExport(false)
         setOpenShare(false)
@@ -100,11 +102,25 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
       } else if (e.key === '/' && document.activeElement !== searchRef.current) {
         e.preventDefault()
         searchRef.current?.focus()
+      } else if (e.key === 'F11') {
+        e.preventDefault()
+        toggleFullscreen()
+      } else if ((e.key === '+' || e.key === '=') && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault()
+        setZoom(z => Math.min(2, z + 0.1))
+      } else if (e.key === '-' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault()
+        setZoom(z => Math.max(0.5, z - 0.1))
+      } else if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault()
+        guardar();
+        guardarNombre();
+        setUnsaved(false);
       }
     }
-    document.addEventListener('keydown', esc)
-    return () => document.removeEventListener('keydown', esc)
-  }, [])
+    document.addEventListener('keydown', handler)
+    return () => document.removeEventListener('keydown', handler)
+  }, [toggleFullscreen, setZoom, guardar, guardarNombre, setUnsaved])
 
   useEffect(() => {
     if (!panelId) return;

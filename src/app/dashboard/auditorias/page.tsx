@@ -9,7 +9,9 @@ export default function AuditoriasPage() {
   const [tipo, setTipo] = useState("todos");
   const [categoria, setCategoria] = useState("todas");
   const [busqueda, setBusqueda] = useState("");
-  const { auditorias, loading } = useAuditorias({ tipo, categoria, q: busqueda });
+  const [desde, setDesde] = useState('');
+  const [hasta, setHasta] = useState('');
+  const { auditorias, loading } = useAuditorias({ tipo, categoria, q: busqueda, desde, hasta });
   const [detalle, setDetalle] = useState<any | null>(null);
   const [activo, setActivo] = useState<number | null>(null);
 
@@ -24,6 +26,8 @@ export default function AuditoriasPage() {
       a.usuario?.nombre?.toLowerCase().includes(q)
     );
   });
+
+  const total = filtradas.length;
 
   if (loading)
     return (
@@ -46,6 +50,18 @@ export default function AuditoriasPage() {
           onChange={(e) => setBusqueda(e.target.value)}
           placeholder="Buscar"
           className="dashboard-input flex-1"
+        />
+        <input
+          type="date"
+          value={desde}
+          onChange={(e) => setDesde(e.target.value)}
+          className="dashboard-input"
+        />
+        <input
+          type="date"
+          value={hasta}
+          onChange={(e) => setHasta(e.target.value)}
+          className="dashboard-input"
         />
         <select
           value={tipo}
@@ -73,7 +89,20 @@ export default function AuditoriasPage() {
           <option value="actualizacion">Actualizaciones</option>
           <option value="duplicacion">Duplicaciones</option>
         </select>
+        <button
+          onClick={() => {
+            setBusqueda('');
+            setTipo('todos');
+            setCategoria('todas');
+            setDesde('');
+            setHasta('');
+          }}
+          className="px-3 py-1 rounded bg-white/10 text-sm"
+        >
+          Limpiar
+        </button>
       </div>
+      <p className="text-xs">Total: {total}</p>
       <ul className="space-y-2">
         {filtradas.map((a) => (
           <li
@@ -112,6 +141,12 @@ export default function AuditoriasPage() {
           {detalle.almacen?.nombre && <div>Almacén: {detalle.almacen.nombre}</div>}
           {detalle.observaciones && <div>{detalle.observaciones}</div>}
           <div>{new Date(detalle.fecha).toLocaleString()}</div>
+          <button
+            onClick={() => navigator.clipboard.writeText(JSON.stringify(detalle))}
+            className="px-2 py-1 rounded bg-white/10 text-xs"
+          >
+            Copiar
+          </button>
         </div>
       )}
     </div>
