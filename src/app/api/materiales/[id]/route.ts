@@ -2,10 +2,51 @@ export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@lib/prisma'
+import type { Prisma } from '@prisma/client'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import crypto from 'node:crypto'
 import * as logger from '@lib/logger'
+
+async function snapshot(
+  db: Prisma.TransactionClient | typeof prisma,
+  materialId: number,
+  usuarioId: number,
+  descripcion: string,
+) {
+  const material = await db.material.findUnique({
+    where: { id: materialId },
+    include: {
+      archivos: { select: { nombre: true, archivoNombre: true, archivo: true } },
+    },
+  })
+  const estado = material
+    ? {
+        ...material,
+        miniatura: material.miniatura
+          ? Buffer.from(material.miniatura as Buffer).toString('base64')
+          : null,
+        archivos: material.archivos.map((a) => ({
+          nombre: a.nombre,
+          archivoNombre: a.archivoNombre,
+          archivo: a.archivo
+            ? Buffer.from(a.archivo as Buffer).toString('base64')
+            : null,
+        })),
+      }
+    : null
+  await db.historialLote.create({
+    data: {
+      materialId,
+      usuarioId,
+      descripcion,
+      lote: material?.lote ?? null,
+      ubicacion: material?.ubicacion ?? null,
+      cantidad: material?.cantidad ?? null,
+      estado,
+    },
+  })
+}
 
 function getMaterialId(req: NextRequest): number | null {
   const parts = req.nextUrl.pathname.split('/');
@@ -102,10 +143,14 @@ export async function PUT(req: NextRequest) {
       datos = await req.json()
     }
 
-    const actualizado = await prisma.material.update({
-      where: { id },
-      data: datos,
-      select: { id: true },
+    const actualizado = await prisma.$transaction(async (tx) => {
+      const upd = await tx.material.update({
+        where: { id },
+        data: datos,
+        select: { id: true },
+      })
+      await snapshot(tx, id, usuario.id, 'Modificación')
+      return upd
     })
     return NextResponse.json({ material: actualizado })
   } catch (err) {
@@ -132,9 +177,12 @@ export async function DELETE(req: NextRequest) {
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
     }
-    await prisma.materialUnidad.deleteMany({ where: { materialId: id } })
-    await prisma.archivoMaterial.deleteMany({ where: { materialId: id } })
-    await prisma.material.delete({ where: { id } })
+    await prisma.$transaction(async (tx) => {
+      await snapshot(tx, id, usuario.id, 'Eliminación')
+      await tx.materialUnidad.deleteMany({ where: { materialId: id } })
+      await tx.archivoMaterial.deleteMany({ where: { materialId: id } })
+      await tx.material.delete({ where: { id } })
+    })
     return NextResponse.json({ success: true })
   } catch (err) {
     logger.error('DELETE /api/materiales/[id]', err)

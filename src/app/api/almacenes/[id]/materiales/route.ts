@@ -2,10 +2,51 @@ export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@lib/prisma'
+import type { Prisma } from '@prisma/client'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import crypto from 'node:crypto'
 import * as logger from '@lib/logger'
+
+async function snapshot(
+  db: Prisma.TransactionClient | typeof prisma,
+  materialId: number,
+  usuarioId: number,
+  descripcion: string,
+) {
+  const material = await db.material.findUnique({
+    where: { id: materialId },
+    include: {
+      archivos: { select: { nombre: true, archivoNombre: true, archivo: true } },
+    },
+  })
+  const estado = material
+    ? {
+        ...material,
+        miniatura: material.miniatura
+          ? Buffer.from(material.miniatura as Buffer).toString('base64')
+          : null,
+        archivos: material.archivos.map((a) => ({
+          nombre: a.nombre,
+          archivoNombre: a.archivoNombre,
+          archivo: a.archivo
+            ? Buffer.from(a.archivo as Buffer).toString('base64')
+            : null,
+        })),
+      }
+    : null
+  await db.historialLote.create({
+    data: {
+      materialId,
+      usuarioId,
+      descripcion,
+      lote: material?.lote ?? null,
+      ubicacion: material?.ubicacion ?? null,
+      cantidad: material?.cantidad ?? null,
+      estado,
+    },
+  })
+}
 
 function getAlmacenIdFromRequest(req: NextRequest): number | null {
   const parts = req.nextUrl.pathname.split('/')
@@ -144,32 +185,32 @@ export async function POST(req: NextRequest) {
 
     if (!nombre) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 })
 
-    const material = await prisma.material.create({
-      data: {
-        nombre,
-        descripcion,
-        miniatura: miniaturaBuffer as any,
-        miniaturaNombre,
-        cantidad,
-        unidad,
-        lote,
-        fechaCaducidad,
-        ubicacion,
-        proveedor,
-        estado,
-        observaciones,
-        codigoBarra,
-        codigoQR,
-        minimo,
-        maximo,
-        almacen: { connect: { id: almacenId } },
-        usuario: { connect: { id: usuario.id } },
-      },
-      select: {
-        id: true,
-        nombre: true,
-        miniaturaNombre: true,
-      },
+    const material = await prisma.$transaction(async (tx) => {
+      const creado = await tx.material.create({
+        data: {
+          nombre,
+          descripcion,
+          miniatura: miniaturaBuffer as any,
+          miniaturaNombre,
+          cantidad,
+          unidad,
+          lote,
+          fechaCaducidad,
+          ubicacion,
+          proveedor,
+          estado,
+          observaciones,
+          codigoBarra,
+          codigoQR,
+          minimo,
+          maximo,
+          almacen: { connect: { id: almacenId } },
+          usuario: { connect: { id: usuario.id } },
+        },
+        select: { id: true, nombre: true, miniaturaNombre: true },
+      })
+      await snapshot(tx, creado.id, usuario.id, 'Creación')
+      return creado
     })
 
     const res = NextResponse.json({ material })
