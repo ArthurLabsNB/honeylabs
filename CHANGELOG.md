@@ -1,3 +1,7 @@
+## 0.2.235
+- Corrigimos la URL de imagen al crear y editar almacenes.
+- Ajustamos los campos seleccionados en las respuestas de almacenes.
+
 ## 0.2.234
 - Implementamos deshacer y rehacer ilimitado en las pizarras.
 

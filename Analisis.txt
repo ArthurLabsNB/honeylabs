@@ -1,0 +1,33 @@
+Resumen de mecánicas y funciones en la sección de Almacenes.
+
+FUNCIONES EXISTENTES
+- Creación, actualización y eliminación de almacenes con historial.
+- Gestión de materiales y unidades, incluyendo ajustes de stock.
+- Registro de movimientos y reportes de auditoría.
+- Escaneo de códigos QR para acceder o verificar datos.
+
+ERRORES CORREGIDOS
+- La URL de imagen no se devolvía correctamente al crear o editar un almacén.
+- Se añadió la propiedad `imagenUrl` en las selecciones de Prisma para reflejar la ruta almacenada.
+- Se eliminó el casteo innecesario de buffers de imagen.
+
+FALLAS PENDIENTES
+- Dependencia del servidor de base de datos para las pruebas automatizadas.
+- Validaciones de datos mínimas en campos numéricos y fechas.
+- Manejo limitado de errores al importar códigos QR.
+
+MEJORAS PROPUESTAS
+1. **Validaciones estrictas** de campos en API (rangos, formatos y tamaños).
+2. **Paginación** en listados de materiales y auditorías para grandes volúmenes.
+3. **Control de concurrencia** al actualizar stock para evitar condiciones de carrera.
+4. **Cacheo** de catálogos y configuraciones poco cambiantes.
+5. **Registro detallado** de cambios en unidades con diffs de valores.
+6. **Política de permisos** más granular por operación y rol.
+
+AÑADIDOS EXTRAS
+1. **Integración con dispositivos móviles** para notificaciones push.
+2. **Soporte offline** y sincronización diferida en la app de escaneo.
+3. **Dashboard de métricas** de uso y rendimiento por almacén.
+4. **Exportación avanzada** a formatos CSV y PDF con filtros.
+5. **Búsqueda avanzada** con autocompletado en todo el inventario.
+6. **Automatización de alertas** vía webhooks a sistemas externos.

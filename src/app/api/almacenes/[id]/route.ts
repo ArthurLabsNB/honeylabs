@@ -251,8 +251,20 @@ export async function PUT(req: NextRequest) {
   const almacen = await prisma.$transaction(async tx => {
       const upd = await tx.almacen.update({
         where: { id },
-        data: { nombre, descripcion, imagenUrl, imagenNombre, imagen: imagenBuffer as any },
-        select: { id: true, nombre: true, descripcion: true, imagenNombre: true },
+        data: {
+          nombre,
+          descripcion,
+          imagenUrl,
+          imagenNombre,
+          imagen: imagenBuffer,
+        },
+        select: {
+          id: true,
+          nombre: true,
+          descripcion: true,
+          imagenNombre: true,
+          imagenUrl: true,
+        },
       })
       await snapshot(tx, id, usuario.id, 'Modificación')
       return upd
@@ -260,7 +272,9 @@ export async function PUT(req: NextRequest) {
 
   const resp = {
     ...almacen,
-    imagenUrl: almacen.imagenNombre ? `/api/almacenes/foto?nombre=${encodeURIComponent(almacen.imagenNombre)}` : null,
+    imagenUrl: almacen.imagenNombre
+      ? `/api/almacenes/foto?nombre=${encodeURIComponent(almacen.imagenNombre)}`
+      : almacen.imagenUrl,
   }
   return NextResponse.json({ almacen: resp })
   } catch (err) {
