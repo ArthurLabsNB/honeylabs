@@ -7,10 +7,10 @@ import { hasManagePerms } from '@lib/permisos';
 import * as logger from '@lib/logger';
 
 function getMaterialIdFromRequest(req: NextRequest): number | null {
-  const parts = req.nextUrl.pathname.split('/');
-  const idx = parts.findIndex((p) => p === 'materiales');
-  const id = idx !== -1 && parts.length > idx + 1 ? Number(parts[idx + 1]) : null;
-  return id && !Number.isNaN(id) ? id : null;
+  const match = /\/materiales\/(\d+)/.exec(req.nextUrl.pathname);
+  if (!match) return null;
+  const id = Number(match[1]);
+  return Number.isNaN(id) ? null : id;
 }
 
 export async function GET(req: NextRequest) {
