@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { jsonOrNull } from '@lib/http'
+import fetcher from '@lib/swrFetcher'
 
 export interface Almacen {
   id: number
@@ -16,7 +16,6 @@ export interface Almacen {
   codigoUnico?: string
 }
 
-const fetcher = (url: string) => fetch(url).then(jsonOrNull)
 
 const EMPTY_ALMACENES: Almacen[] = []
 

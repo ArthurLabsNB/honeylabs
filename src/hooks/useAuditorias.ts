@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { jsonOrNull } from '@lib/http'
+import fetcher from '@lib/swrFetcher'
 
 export interface Auditoria {
   id: number
@@ -13,13 +13,13 @@ export interface Auditoria {
   unidad?: { nombre: string }
 }
 
-const fetcher = (url: string) => fetch(url).then(jsonOrNull)
-
-export default function useAuditorias(opts?: { tipo?: string, categoria?: string, q?: string }) {
+export default function useAuditorias(opts?: { tipo?: string, categoria?: string, q?: string, desde?: string, hasta?: string }) {
   const params = new URLSearchParams()
   if (opts?.tipo && opts.tipo !== 'todos') params.set('tipo', opts.tipo)
   if (opts?.categoria && opts.categoria !== 'todas') params.set('categoria', opts.categoria)
   if (opts?.q) params.set('q', opts.q)
+  if (opts?.desde) params.set('desde', opts.desde)
+  if (opts?.hasta) params.set('hasta', opts.hasta)
   const url = `/api/auditorias${params.toString() ? `?${params.toString()}` : ''}`
 
   const { data, error, isLoading, mutate } = useSWR(url, fetcher, {

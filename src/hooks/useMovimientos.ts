@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { jsonOrNull } from '@lib/http'
+import fetcher from '@lib/swrFetcher'
 
 export interface Movimiento {
   id: number
@@ -11,7 +11,6 @@ export interface Movimiento {
   usuario?: { nombre: string }
 }
 
-const fetcher = (url: string) => fetch(url).then(jsonOrNull)
 
 export default function useMovimientos(almacenId?: number | string) {
   const id = Number(almacenId)

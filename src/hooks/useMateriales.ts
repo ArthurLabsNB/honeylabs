@@ -1,10 +1,10 @@
 import useSWR from 'swr'
+import fetcher from '@lib/swrFetcher'
 import { jsonOrNull } from '@lib/http'
 import { useMemo } from 'react'
 import { generarUUID } from '@/lib/uuid'
 import type { Material } from '@/app/dashboard/almacenes/components/MaterialRow'
 
-const fetcher = (url: string) => fetch(url).then(jsonOrNull)
 
 const EMPTY_MATERIALS: Material[] = []
 

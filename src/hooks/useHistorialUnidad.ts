@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { jsonOrNull } from '@lib/http'
+import fetcher from '@lib/swrFetcher'
 
 export interface HistorialUnidadEntry {
   id: number
@@ -9,7 +9,6 @@ export interface HistorialUnidadEntry {
   usuario?: { nombre: string }
 }
 
-const fetcher = (url: string) => fetch(url).then(jsonOrNull)
 
 export default function useHistorialUnidad(materialId?: number | string, unidadId?: number | string) {
   const mid = Number(materialId)

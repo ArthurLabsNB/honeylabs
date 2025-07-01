@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { jsonOrNull } from '@lib/http'
+import fetcher from '@lib/swrFetcher'
 
 export interface AdminUsuario {
   id: number
@@ -9,7 +9,6 @@ export interface AdminUsuario {
   estado: string
 }
 
-const fetcher = (url: string) => fetch(url).then(jsonOrNull)
 
 export default function useAdminUsuarios() {
   const { data, error, isLoading, mutate } = useSWR('/api/admin/usuarios', fetcher, {
