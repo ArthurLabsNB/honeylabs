@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useReducer } from "react";
 import { nanoid } from "nanoid";
 import { jsonOrNull } from "@lib/http";
 import { apiFetch } from "@lib/api";
@@ -13,6 +13,9 @@ import CommentsPanel from "../components/CommentsPanel";
 import ChatPanel from "../components/ChatPanel";
 import Minimap from "../components/Minimap";
 import ContextMenu from "../components/ContextMenu";
+import usePanelSync from "@/hooks/usePanelSync";
+import useSubboards from "@/hooks/useSubboards";
+import { buildMenu, MenuAction } from "../contextMenu";
 import GalleryPanel from "../components/GalleryPanel";
 import FileDropZone from "../components/FileDropZone";
 import HistorySidebar from "../components/HistorySidebar";
@@ -21,7 +24,6 @@ import Onboarding from "../components/Onboarding";
 import { useToast } from "@/components/Toast";
 import { usePrompt } from "@/hooks/usePrompt";
 import useSelection from "@/hooks/useSelection";
-import usePanelSocket from "@/hooks/usePanelSocket";
 import useTouchZoom from "@/hooks/useTouchZoom";
 import useUndoRedo, { type Snapshot } from "@/hooks/useUndoRedo";
 import usePanelShortcuts from "@/hooks/usePanelShortcuts";
@@ -66,8 +68,27 @@ export default function PanelPage() {
   const panelId = Array.isArray(params?.id) ? params.id[0] : (params as any)?.id;
 
   const [catalogo, setCatalogo] = useState<WidgetMeta[]>([]);
-  const [widgets, setWidgets] = useState<string[]>([]);
-  const [layout, setLayout] = useState<LayoutItem[]>([]);
+  interface PanelState { widgets: string[]; layout: LayoutItem[] }
+  type PanelAction =
+    | { type: 'set'; widgets: string[]; layout: LayoutItem[] }
+    | { type: 'setWidgets'; widgets: string[] }
+    | { type: 'setLayout'; layout: LayoutItem[] }
+  const reducer = (state: PanelState, action: PanelAction): PanelState => {
+    switch (action.type) {
+      case 'set':
+        return { widgets: action.widgets, layout: action.layout };
+      case 'setWidgets':
+        return { ...state, widgets: action.widgets };
+      case 'setLayout':
+        return { ...state, layout: action.layout };
+      default:
+        return state;
+    }
+  };
+  const [panelState, dispatch] = useReducer(reducer, { widgets: [], layout: [] });
+  const { widgets, layout } = panelState;
+  const setWidgets = (w: string[]) => dispatch({ type: 'setWidgets', widgets: w });
+  const setLayout = (l: LayoutItem[]) => dispatch({ type: 'setLayout', layout: l });
   const [componentes, setComponentes] = useState<{ [key: string]: any }>({});
   const [errores, setErrores] = useState<{ [key: string]: boolean }>({});
   const containerRef = useRef<HTMLDivElement>(null);
@@ -107,12 +128,8 @@ export default function PanelPage() {
   const { history: undoHist, index: undoIdx, record, undo: undoHistory, redo: redoHistory, reset, skip } = useUndoRedo<Snapshot>({ widgets: [], layout: [] })
   const [readyHistory, setReadyHistory] = useState(false)
   const { setUnsaved } = usePanelOps()
-  const bcRef = useRef<BroadcastChannel | null>(null)
-  const clientId = useRef<string>(Math.random().toString(36).slice(2))
   const [boardBg, setBoardBg] = useState<string>('')
   const [sections, setSections] = useState(1)
-  const [subboards, setSubboards] = useState<{id:string; nombre:string; permiso:'edicion'|'lectura'; widgets:string[]; layout: LayoutItem[]}[]>([])
-  const [activeSub, setActiveSub] = useState('')
   const [isOffline, setIsOffline] = useState(false)
   const [openGallery, setOpenGallery] = useState(false)
   const [openBoards, setOpenBoards] = useState(false)
@@ -126,50 +143,12 @@ export default function PanelPage() {
     }
   })
 
-  const { sendUpdate } = usePanelSocket(panelId, (data: PanelUpdate) => {
-    if (data.client === clientId.current) return
-    skip.current = true
-    setWidgets(data.widgets)
-    setLayout(data.layout)
-    toast.show('Pizarra actualizada', 'info')
-  })
-
   useTouchZoom(containerRef, z => setZoom(z))
 
-  const saveCurrentSub = useCallback(() => {
-    setSubboards(bs =>
-      bs.map(b => (b.id === activeSub ? { ...b, widgets, layout } : b)),
-    )
-    const updated = subboards.map(b =>
-      b.id === activeSub ? { ...b, widgets, layout } : b,
-    )
-    localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify(updated))
-  }, [activeSub, widgets, layout, subboards, panelId])
+  const { subboards, activeSub, addSubboard, switchSubboard, saveCurrentSub } =
+    useSubboards(panelId, widgets, layout, setWidgets, setLayout)
 
-  useEffect(() => {
-    if (!panelId) return
-    const bc = new BroadcastChannel(`panel-sync-${panelId}`)
-    bcRef.current = bc
-    const handle = (
-      e: MessageEvent<{ widgets: string[]; layout: LayoutItem[]; client?: string }>,
-    ) => {
-      const { widgets: w, layout: l, client } = e.data || {}
-      if (client === clientId.current) return
-      if (!Array.isArray(w) || !Array.isArray(l)) return
-      skip.current = true
-      setWidgets(w)
-      setLayout(l as LayoutItem[])
-      toast.show('Pizarra actualizada', 'info')
-    }
-    bc.addEventListener('message', handle)
-    bc.postMessage({ client: clientId.current, widgets, layout })
-    sendUpdate({ panelId: panelId!, widgets, layout, client: clientId.current })
-    return () => {
-      bc.removeEventListener('message', handle)
-      bc.close()
-      bcRef.current = null
-    }
-  }, [panelId])
+  usePanelSync(panelId, widgets, layout, setWidgets, setLayout)
 
   useEffect(() => {
     if (!openChat || !usuario || !panelId) return
@@ -256,35 +235,27 @@ export default function PanelPage() {
         ) {
           const lay = saved.layout.map(it => ({ locked: false, ...it }))
           const wid = saved.widgets
-          const board = { id: 'main', nombre: 'Principal', permiso: saved.permiso || 'edicion', widgets: wid, layout: lay }
-          let boards: typeof subboards = []
-          try { boards = JSON.parse(localStorage.getItem(`panel-subboards-${panelId}`) || '[]') } catch {}
-          if (!boards.length) boards = [board]; else boards[0] = { ...boards[0], ...board }
-          setSubboards(boards)
-          setActiveSub(boards[0].id)
-          setWidgets(boards[0].widgets)
-          setLayout(boards[0].layout)
-          reset({ widgets: boards[0].widgets, layout: boards[0].layout })
+          setWidgets(wid)
+          setLayout(lay)
+          reset({ widgets: wid, layout: lay })
           setReadyHistory(true)
           if (saved.permiso && setReadOnly) {
             setReadOnly(saved.permiso !== 'edicion')
           }
-          localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify(boards))
+          setSubboards([{ id: 'main', nombre: 'Principal', permiso: saved.permiso || 'edicion', widgets: wid, layout: lay }])
+          setActiveSub('main')
+          localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify([{ id: 'main', nombre: 'Principal', permiso: saved.permiso || 'edicion', widgets: wid, layout: lay }]))
         } else {
           const lay: LayoutItem[] = []
           const wid: string[] = []
-          const board = { id: 'main', nombre: 'Principal', permiso: 'edicion', widgets: wid, layout: lay }
-          let boards: typeof subboards = []
-          try { boards = JSON.parse(localStorage.getItem(`panel-subboards-${panelId}`) || '[]') } catch {}
-          if (!boards.length) boards = [board]; else boards[0] = { ...boards[0], ...board }
-          setSubboards(boards)
-          setActiveSub(boards[0].id)
-          setWidgets(boards[0].widgets)
-          setLayout(boards[0].layout)
-          reset({ widgets: boards[0].widgets, layout: boards[0].layout })
+          setWidgets(wid)
+          setLayout(lay)
+          reset({ widgets: wid, layout: lay })
           setReadyHistory(true)
           setReadOnly && setReadOnly(false)
-          localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify(boards))
+          setSubboards([{ id: 'main', nombre: 'Principal', permiso: 'edicion', widgets: wid, layout: lay }])
+          setActiveSub('main')
+          localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify([{ id: 'main', nombre: 'Principal', permiso: 'edicion', widgets: wid, layout: lay }]))
         }
       } catch (err) {
         console.error("Error al cargar widgets:", err);
@@ -316,8 +287,6 @@ export default function PanelPage() {
     saveCurrentSub()
     record({ widgets, layout })
     setUnsaved(true)
-    bcRef.current?.postMessage({ client: clientId.current, widgets, layout })
-    sendUpdate({ panelId: panelId!, widgets, layout, client: clientId.current })
   }, [widgets, layout])
 
   useEffect(() => {
@@ -610,29 +579,107 @@ const assignGroupSelected = () => {
   })
 };
 
-
-const switchSubboard = (id: string) => {
-  saveCurrentSub()
-  const sb = subboards.find(s => s.id === id)
-  if (!sb) return
-  setActiveSub(id)
-  setWidgets(sb.widgets)
-  setLayout(sb.layout)
+const handleMenu = (action: MenuAction, id?: string) => {
+  switch (action) {
+    case MenuAction.Copy:
+      id && copyWidget(id);
+      break;
+    case MenuAction.Cut:
+      id && cutWidget(id);
+      break;
+    case MenuAction.Duplicate:
+      id && duplicateWidget(id);
+      break;
+    case MenuAction.Delete:
+      id && handleRemoveWidget(id);
+      break;
+    case MenuAction.Rename:
+      id && renameWidget(id);
+      break;
+    case MenuAction.BringFront:
+      id && bringToFront(id);
+      break;
+    case MenuAction.SendBack:
+      id && sendToBack(id);
+      break;
+    case MenuAction.ToggleLock:
+      id && toggleLock(id);
+      break;
+    case MenuAction.Color:
+      id && changeColor(id);
+      break;
+    case MenuAction.Comment:
+      if (id) { setActiveWidget(id); setOpenComments(true); }
+      break;
+    case MenuAction.AssignOwner:
+      id && assignOwner(id);
+      break;
+    case MenuAction.History:
+      viewHist();
+      break;
+    case MenuAction.Group:
+      groupSelected();
+      break;
+    case MenuAction.Align:
+      alignSelected();
+      break;
+    case MenuAction.Distribute:
+      distributeSelected();
+      break;
+    case MenuAction.DuplicateMulti:
+      selected.forEach(duplicateWidget);
+      break;
+    case MenuAction.ExportGroup:
+      exportSelected();
+      break;
+    case MenuAction.AssignGroup:
+      assignGroupSelected();
+      break;
+    case MenuAction.Paste:
+      pasteWidget();
+      break;
+    case MenuAction.NewMarkdown:
+      handleAddWidget('markdown');
+      break;
+    case MenuAction.ToggleGrid:
+      toggleGrid();
+      break;
+    case MenuAction.ChangeBg:
+      prompt('Color de fondo', boardBg || '#000000').then(c => { if (c) setBoardBg(c); });
+      break;
+    case MenuAction.NewSub:
+      addSubboard();
+      break;
+    case MenuAction.SwitchSub:
+      if (id) switchSubboard(id);
+      break;
+    case MenuAction.Search:
+      document.dispatchEvent(new Event('focus-search'));
+      break;
+    case MenuAction.InsertTemplate:
+      insertTemplate();
+      break;
+    case MenuAction.SaveTemplate:
+      saveTemplate();
+      break;
+    case MenuAction.OpenGallery:
+      setOpenGallery(true);
+      break;
+    case MenuAction.AddMedia:
+      addMedia();
+      break;
+    case MenuAction.GenerateAI:
+      generateDiagramAI();
+      break;
+    case MenuAction.ConfigRules:
+      prompt('Tamaño de cuadrícula', String(gridSize)).then(v => { const n = parseInt(v || ''); if (!Number.isNaN(n)) setGridSize(n); });
+      break;
+    case MenuAction.IASuggest:
+      iaSuggest();
+      break;
+  }
 };
 
-const addSubboard = () => {
-  prompt('Nombre del área').then(nombre => {
-    if (!nombre) return
-    saveCurrentSub()
-    const nuevo = { id: nanoid(), nombre, permiso: 'edicion' as const, widgets: [], layout: [] }
-    const list = [...subboards, nuevo]
-    setSubboards(list)
-    setActiveSub(nuevo.id)
-    setWidgets([])
-    setLayout([])
-    localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify(list))
-  })
-};
 
 const handleWidgetContext = (e: React.MouseEvent, id: string) => {
   e.preventDefault();
@@ -1022,42 +1069,17 @@ const viewHist = () => {
         <ContextMenu
           position={{ x: contextMenu.x, y: contextMenu.y }}
           onClose={() => setContextMenu(null)}
-          items={contextMenu.type === "widget" ? [
-            { label: "Copiar", onClick: () => copyWidget(contextMenu.id!) },
-            { label: "Cortar", onClick: () => cutWidget(contextMenu.id!) },
-            { label: "Duplicar", onClick: () => duplicateWidget(contextMenu.id!) },
-            { label: "Eliminar", onClick: () => handleRemoveWidget(contextMenu.id!) },
-            { label: "Renombrar", onClick: () => renameWidget(contextMenu.id!) },
-            { label: "Traer al frente", onClick: () => bringToFront(contextMenu.id!) },
-            { label: "Enviar al fondo", onClick: () => sendToBack(contextMenu.id!) },
-            { label: layout.find(l => l.i === contextMenu.id)?.locked ? "Desbloquear" : "Bloquear", onClick: () => toggleLock(contextMenu.id!) },
-            { label: "Color", onClick: () => changeColor(contextMenu.id!) },
-            { label: "Comentario", onClick: () => { setActiveWidget(contextMenu.id); setOpenComments(true); } },
-            { label: "Asignar responsable", onClick: () => assignOwner(contextMenu.id!) },
-            { label: "Historial", onClick: viewHist }
-          ] : contextMenu.type === 'multi' ? [
-            { label: 'Agrupar', onClick: groupSelected },
-            { label: 'Alinear', onClick: alignSelected },
-            { label: 'Distribuir', onClick: distributeSelected },
-            { label: 'Duplicar', onClick: () => selected.forEach(duplicateWidget) },
-            { label: 'Exportar grupo', onClick: exportSelected },
-            { label: 'Asignar a grupo', onClick: assignGroupSelected }
-          ] : [
-            ...(clipboard ? [{ label: "Pegar", onClick: pasteWidget }] : []),
-            { label: "Nuevo Markdown", onClick: () => handleAddWidget("markdown") },
-            { label: showGrid ? "Ocultar cuadrícula" : "Mostrar cuadrícula", onClick: toggleGrid },
-            { label: "Cambiar fondo", onClick: () => { prompt('Color de fondo', boardBg || '#000000').then(c => { if (c) setBoardBg(c); }); } },
-            { label: 'Nueva subpizarra', onClick: addSubboard },
-            ...subboards.filter(b => b.id !== activeSub).map(b => ({ label: `Cambiar a ${b.nombre}`, onClick: () => switchSubboard(b.id) })),
-            { label: 'Buscar elemento', onClick: () => document.dispatchEvent(new Event('focus-search')) },
-            { label: 'Insertar plantilla', onClick: insertTemplate },
-            { label: 'Guardar plantilla', onClick: saveTemplate },
-            { label: 'Abrir galería', onClick: () => setOpenGallery(true) },
-            { label: 'Agregar media', onClick: () => addMedia() },
-            { label: 'Generar diagrama IA', onClick: generateDiagramAI },
-            { label: 'Configurar reglas', onClick: () => { prompt('Tamaño de cuadrícula', String(gridSize)).then(v => { const n = parseInt(v || ''); if (!Number.isNaN(n)) setGridSize(n); }); } },
-            { label: 'Sugerencia IA', onClick: iaSuggest }
-          ]}
+          items={buildMenu(contextMenu.type, {
+            id: contextMenu.id,
+            clipboard: !!clipboard,
+            layout,
+            showGrid,
+            subboards,
+            activeSub,
+          }).map(it => ({
+            label: it.label,
+            onClick: () => handleMenu(it.action, it.value ?? contextMenu.id),
+          }))}
         />
       )}
     </div>
