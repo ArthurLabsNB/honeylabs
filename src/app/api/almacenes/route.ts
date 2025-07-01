@@ -242,13 +242,20 @@ export async function POST(req: NextRequest) {
           codigoUnico,
           imagenUrl,
           imagenNombre,
-          imagen: imagenBuffer as any,
+          imagen: imagenBuffer,
           entidadId: usuario.entidadId,
           usuarios: {
             create: { usuarioId: usuario.id, rolEnAlmacen: 'propietario' },
           },
         },
-        select: { id: true, nombre: true, descripcion: true, imagenNombre: true, codigoUnico: true },
+        select: {
+          id: true,
+          nombre: true,
+          descripcion: true,
+          imagenNombre: true,
+          imagenUrl: true,
+          codigoUnico: true,
+        },
       })
       await snapshot(tx, creado.id, usuario.id, 'Creación')
       return creado
@@ -256,7 +263,9 @@ export async function POST(req: NextRequest) {
 
   const resp = {
     ...almacen,
-    imagenUrl: imagenNombre ? `/api/almacenes/foto?nombre=${encodeURIComponent(imagenNombre)}` : null,
+    imagenUrl: imagenNombre
+      ? `/api/almacenes/foto?nombre=${encodeURIComponent(imagenNombre)}`
+      : almacen.imagenUrl,
   }
   return NextResponse.json({ almacen: resp })
   } catch (err) {
