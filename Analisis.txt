@@ -34,7 +34,7 @@ AÑADIDOS EXTRAS
 4. **Exportación avanzada** a formatos CSV y PDF con filtros.
 5. **Búsqueda avanzada** con autocompletado en todo el inventario.
 6. **Automatización de alertas** vía webhooks a sistemas externos.
-7. **Sección App** en el dashboard para descarga y versiones de la aplicación.
+7. **Sección App** en el dashboard para descarga y versiones de la aplicación (App Center eliminado).
 8. **Paneles personalizables** con colores y vistas guardadas.
 9. **Modo kiosko** para consulta rápida en almacenes.
 10. **App offline login** con tokens temporales.
@@ -86,7 +86,7 @@ github.com
 
 Siguiente paso práctico
 
-Configura next-pwa y valida que tu app corre 100 % offline.
+Se integró **next-pwa** para habilitar modo offline. Validar que la app funcione sin conexión.
 
 Prueba npx cap add android && cap open android en una rama.
 

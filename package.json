@@ -1,6 +1,6 @@
 {
   "name": "honeylabs",
-  "version": "0.2.236",
+  "version": "0.2.237",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -51,6 +51,7 @@
     "mysql2": "^3.14.1",
     "nanoid": "^5.1.5",
     "next": "15.3.2",
+    "next-pwa": "^5.6.0",
     "nodemailer": "^7.0.3",
     "papaparse": "^5.5.3",
     "pdfkit": "^0.17.1",

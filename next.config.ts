@@ -1,8 +1,14 @@
 import { securityHeaders } from './lib/securityHeaders';
+import nextPWA from 'next-pwa';
 
 /** @type {import('next').NextConfig} */
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''
 
+
+const withPWA = nextPWA({
+  dest: 'public',
+  disable: process.env.NODE_ENV === 'development',
+});
 
 const nextConfig = {
   eslint: {
@@ -25,4 +31,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default withPWA(nextConfig);
