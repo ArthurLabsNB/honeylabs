@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, MouseEvent } from "react";
+import { useEffect, useRef, MouseEvent } from "react";
 import { apiFetch } from "@lib/api";
 import { ApiError } from "@lib/errors";
 import { jsonOrNull } from "@lib/http";
@@ -7,7 +7,7 @@ import { API_APP, API_APP_URL, API_BUILD_MOBILE } from "@lib/apiPaths";
 import useSession from "@/hooks/useSession";
 import Spinner from "@/components/Spinner";
 import { AppInfo, appInfoSchema } from "@/types/app";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useBuildProgress from "@/hooks/useBuildProgress";
 import { useToast } from "@/components/Toast";
 
@@ -21,10 +21,11 @@ async function startBuild() {
 export default function AppPage() {
   const { usuario, loading: loadingUsuario } = useSession();
   const shownRef = useRef(false);
-  const [prevBuilding, setPrevBuilding] = useState(false);
+  const prevBuilding = useRef(false);
   const toast = useToast();
+  const qc = useQueryClient();
 
-  const { data: info, isLoading, refetch } = useQuery({
+  const { data: info, isLoading } = useQuery({
     queryKey: ["app"],
     queryFn: async ({ signal }) => {
       const res = await apiFetch(API_APP, { signal });
@@ -35,6 +36,7 @@ export default function AppPage() {
       return data ? appInfoSchema.parse(data) : undefined;
     },
     refetchInterval: 60_000,
+    enabled: !!usuario,
     onError: (err: ApiError | Error) => {
       if ((err as Error).name === 'AbortError') return;
       const msg = err instanceof ApiError && err.code === "fetch_error" ?
@@ -45,8 +47,13 @@ export default function AppPage() {
 
   const buildMutation = useMutation({
     mutationFn: startBuild,
+    onMutate: () => {
+      qc.setQueryData(["app"], (prev: AppInfo | undefined) =>
+        prev ? { ...prev, building: true } : prev
+      );
+    },
     onSuccess: () => {
-      refetch();
+      // los datos se actualizarán por SSE
     },
     onError: (err: ApiError | Error) => {
       if ((err as Error).name === 'AbortError') return;
@@ -77,18 +84,17 @@ export default function AppPage() {
       }
     } else {
       shownRef.current = false;
-      refetch();
     }
-  }, [loadingUsuario, usuario, refetch, toast]);
+  }, [loadingUsuario, usuario, toast]);
 
 
 
   useEffect(() => {
-    if (prevBuilding && info && !info.building) {
+    if (prevBuilding.current && info && !info.building) {
       toast.show("APK listo", "success");
     }
-    setPrevBuilding(Boolean(info?.building));
-  }, [info, prevBuilding, toast]);
+    prevBuilding.current = Boolean(info?.building);
+  }, [info, toast]);
 
   useBuildProgress(Boolean(info?.building));
 
@@ -121,6 +127,7 @@ export default function AppPage() {
       <a
         href={info.url}
         download
+        rel="noopener"
         onClick={handleDownload}
         className="inline-block px-4 py-2 bg-accent-500 text-black rounded"
       >

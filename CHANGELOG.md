@@ -1,6 +1,13 @@
 ## 0.2.247
 - Ignoramos `AbortError` en consultas de App para evitar toasts falsos.
 
+## 0.2.248
+- Evitamos refetch manual en App utilizando `enabled` por sesión.
+- Cerramos la SSE de progreso al recibir 401.
+- Usamos `useRef` para detectar final de build sin render extra.
+- Forzamos `building: true` al iniciar el build.
+- Añadimos `rel="noopener"` al enlace de descarga.
+
 ## 0.2.245
 - Compartimos la lógica de progreso de build en `useBuildProgress`.
 - Cambiamos el enlace de descarga a `/api/app/url`.
