@@ -1,3 +1,6 @@
+## 0.2.243
+- Añadimos ReactQueryProvider global y manifest PWA.
+
 ## 0.2.242
 - Registramos el service worker de PWA solo en producción.
 
