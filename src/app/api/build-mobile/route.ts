@@ -43,9 +43,11 @@ export async function POST(req: NextRequest) {
         logger.info('[BUILD_MOBILE] repository_dispatch sent')
       } catch (err) {
         logger.error('[BUILD_MOBILE] dispatch error', err)
+        await fs.writeFile(buildStatusPath, JSON.stringify({ building: false, progress: 0 }))
       }
     } else {
       logger.info('[BUILD_MOBILE] dispatch skipped, env missing')
+      await fs.writeFile(buildStatusPath, JSON.stringify({ building: false, progress: 0 }))
     }
     return NextResponse.json({ success: true, run_id: runId })
   } catch (err) {

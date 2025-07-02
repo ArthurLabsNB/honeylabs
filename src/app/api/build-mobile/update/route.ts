@@ -6,9 +6,8 @@ import path from 'path'
 
 const appInfoPath = path.join(process.cwd(), 'lib', 'app-info.json')
 const buildStatusPath = path.join(process.cwd(), 'lib', 'build-status.json')
-const token = process.env.BUILD_TOKEN
-
 export async function POST(req: NextRequest) {
+  const token = process.env.BUILD_TOKEN
   let body: any
   try {
     body = await req.json()
