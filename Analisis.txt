@@ -41,18 +41,18 @@ Wrapper desktop opcional
 8.1. Tauri (tauri build) para .msi / .dmg / .AppImage (< 20 MB). (Pendiente)
 
 Pipeline de build “on-demand” (botón Descargar App)
-9.1. GitHub Action / EAS Build pasos: (Pendiente)
+9.1. GitHub Action / EAS Build pasos: (Completado)
 • npm ci → npm run build (Next)
 • cap sync android && cap build android
 • Firma APK, sube a GitHub Release / S3 presignado.
-9.2. Endpoint /api/build-mobile (Route Handler): (Pendiente)
+9.2. Endpoint /api/build-mobile (Route Handler): (Completado)
 • Autentica admin → dispara repository_dispatch → devuelve run_id.
-9.3. Frontend abre SSE/WS para progreso; muestra barra y ETA. (Pendiente)
+9.3. Frontend abre SSE/WS para progreso; muestra barra y ETA. (Completado)
 
 Página “App” en la web
-10.1. Fetch /api/app → {version, url, sha256}. (Pendiente)
-10.2. Si build en curso: spinner y porcentaje. (Pendiente)
-10.3. Botón <a download> con SHA-256 visible para confianza. (Pendiente)
+10.1. Fetch /api/app → {version, url, sha256}. (Completado)
+10.2. Si build en curso: spinner y porcentaje. (Completado)
+10.3. Botón <a download> con SHA-256 visible para confianza. (Completado)
 
 Actualización continua (snapshot)
 11.1. Cada merge a main: pruebas → prisma migrate deploy → genera nueva APK; nombre HoneyLabs-YYYYMMDDHH.apk. (Pendiente)

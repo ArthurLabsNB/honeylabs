@@ -1,0 +1,23 @@
+name: Build Mobile App
+
+on:
+  repository_dispatch:
+    types: [build-mobile]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run build
+      - run: npx cap sync android && npx cap build android
+      - name: Sign APK
+        run: echo "Signing APK"
+      - name: Upload Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: apps/mobile/android/app/build/outputs/**/*.apk

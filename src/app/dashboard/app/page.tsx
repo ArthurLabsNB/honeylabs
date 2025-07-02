@@ -19,6 +19,19 @@ export default function AppPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const startBuild = async () => {
+    setLoading(true);
+    try {
+      const res = await apiFetch("/api/build-mobile", { method: "POST" });
+      if (!res.ok) throw new Error();
+      setInfo((prev) => (prev ? { ...prev, building: true, progress: 0 } : prev));
+    } catch {
+      setError("No se pudo iniciar el build");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (loadingUsuario) return;
     if (!usuario) {
@@ -37,6 +50,20 @@ export default function AppPage() {
       .catch(() => setError("Error al cargar datos"))
       .finally(() => setLoading(false));
   }, [usuario, loadingUsuario, error]);
+
+  useEffect(() => {
+    if (!info?.building) return;
+    const es = new EventSource("/api/build-mobile/progress");
+    es.onmessage = (e) => {
+      try {
+        const data = JSON.parse(e.data);
+        setInfo((prev) => (prev ? { ...prev, ...data } : data));
+      } catch {}
+    };
+    return () => {
+      es.close();
+    };
+  }, [info?.building]);
 
   if (error)
     return (
@@ -77,6 +104,15 @@ export default function AppPage() {
       >
         Descargar
       </a>
+      {usuario?.tipoCuenta === "admin" && (
+        <button
+          type="button"
+          onClick={startBuild}
+          className="ml-4 px-4 py-2 bg-amber-500 text-black rounded"
+        >
+          Generar nueva versión
+        </button>
+      )}
     </div>
   );
 }
