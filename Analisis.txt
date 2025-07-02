@@ -56,7 +56,7 @@ Página “App” en la web
 
 Actualización continua (snapshot)
 11.1. Cada merge a main: pruebas → prisma migrate deploy → genera nueva APK; nombre HoneyLabs-YYYYMMDDHH.apk. (Pendiente)
-11.2. Backend publica /version con número + enlace. (Pendiente)
+11.2. Backend publica /version con número + enlace. (Completado)
 11.3. App al abrir: comprueba /version; si mayor, descarga en segundo plano (Capacitor Live Update o propia), verifica firma, reinicia. (Pendiente)
 
 Persistencia offline perfecta

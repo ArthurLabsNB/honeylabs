@@ -100,7 +100,7 @@ export default function useAlmacenesLogic() {
     async (id: number) => {
       const ok = await toast.confirm('¿Eliminar almacén?')
       if (!ok) return
-      const res = await fetch(`/api/almacenes/${id}`, { method: 'DELETE' })
+      const res = await apiFetch(`/api/almacenes/${id}`, { method: 'DELETE' })
       if (res.ok) {
         mutate()
         toast.show('Almacén eliminado', 'success')
