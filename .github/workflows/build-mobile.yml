@@ -21,3 +21,14 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: apps/mobile/android/app/build/outputs/**/*.apk
+      - name: Notify server
+        env:
+          WEBHOOK_URL: ${{ secrets.BUILD_WEBHOOK_URL }}
+          BUILD_TOKEN: ${{ secrets.BUILD_TOKEN }}
+        run: |
+          if [ -n "$WEBHOOK_URL" ]; then
+            SHA=$(sha256sum apps/mobile/android/app/build/outputs/**/*.apk | head -n1 | cut -d' ' -f1)
+            curl -X POST "$WEBHOOK_URL" \
+              -H 'Content-Type: application/json' \
+              -d '{"token":"'$BUILD_TOKEN'","version":"${{ github.run_number }}","url":"https://github.com/${{ github.repository }}/releases/latest/download/app.apk","sha256":"'$SHA'"}'
+          fi

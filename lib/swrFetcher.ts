@@ -1,5 +1,6 @@
 import { jsonOrNull } from './http'
+import { apiFetch } from './api'
 
 export default function swrFetcher(url: string) {
-  return fetch(url, { credentials: 'include' }).then(jsonOrNull)
+  return apiFetch(url).then(jsonOrNull)
 }

@@ -3,6 +3,7 @@ import fetcher from '@lib/swrFetcher'
 import { jsonOrNull } from '@lib/http'
 import { useMemo } from 'react'
 import { generarUUID } from '@/lib/uuid'
+import { apiFetch } from '@lib/api'
 import type { Material } from '@/app/dashboard/almacenes/components/MaterialRow'
 
 
@@ -37,7 +38,7 @@ export default function useMateriales(almacenId?: number | string) {
     if (m.codigoBarra) form.append('codigoBarra', m.codigoBarra)
     if (m.codigoQR) form.append('codigoQR', m.codigoQR)
     if (m.miniatura) form.append('miniatura', m.miniatura)
-    const res = await fetch(`/api/almacenes/${id}/materiales`, { method: 'POST', body: form })
+    const res = await apiFetch(`/api/almacenes/${id}/materiales`, { method: 'POST', body: form })
     const data = await jsonOrNull(res)
     if (res.ok) {
       const materialId = data?.material?.id
@@ -47,7 +48,7 @@ export default function useMateriales(almacenId?: number | string) {
             const fd = new FormData()
             fd.append('nombre', file.name)
             fd.append('archivo', file)
-            await fetch(`/api/materiales/${materialId}/archivos`, {
+            await apiFetch(`/api/materiales/${materialId}/archivos`, {
               method: 'POST',
               body: fd,
             })
@@ -77,7 +78,7 @@ export default function useMateriales(almacenId?: number | string) {
     if (m.codigoBarra) form.append('codigoBarra', m.codigoBarra)
     if (m.codigoQR) form.append('codigoQR', m.codigoQR)
     if (m.miniatura) form.append('miniatura', m.miniatura)
-    const res = await fetch(`/api/materiales/${m.dbId}`, { method: 'PUT', body: form })
+    const res = await apiFetch(`/api/materiales/${m.dbId}`, { method: 'PUT', body: form })
     const data = await jsonOrNull(res)
     if (res.ok) {
       if (m.archivos && m.archivos.length) {
@@ -86,7 +87,7 @@ export default function useMateriales(almacenId?: number | string) {
             const fd = new FormData()
             fd.append('nombre', file.name)
             fd.append('archivo', file)
-            await fetch(`/api/materiales/${m.dbId}/archivos`, {
+            await apiFetch(`/api/materiales/${m.dbId}/archivos`, {
               method: 'POST',
               body: fd,
             })
@@ -99,7 +100,7 @@ export default function useMateriales(almacenId?: number | string) {
   }
 
   const eliminar = async (materialId: number) => {
-    const res = await fetch(`/api/materiales/${materialId}`, { method: 'DELETE' })
+    const res = await apiFetch(`/api/materiales/${materialId}`, { method: 'DELETE' })
     const data = await jsonOrNull(res)
     if (res.ok) mutate()
     return data

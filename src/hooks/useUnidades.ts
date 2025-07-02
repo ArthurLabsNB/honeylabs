@@ -1,6 +1,7 @@
 import useSWR from 'swr'
 import { jsonOrNull } from '@lib/http'
 import fetcher from '@lib/swrFetcher'
+import { apiFetch } from '@lib/api'
 
 const fileToBase64 = (file: File) =>
   new Promise<string>((resolve, reject) => {
@@ -66,13 +67,12 @@ export default function useUnidades(materialId?: number | string) {
   const registrar = async (descripcion: string, cantidad = 1) => {
     if (Number.isNaN(id) || id <= 0) return
     try {
-      const res = await fetch(`/api/materiales/${id}/historial`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ descripcion, cantidad }),
+    const res = await apiFetch(`/api/materiales/${id}/historial`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ descripcion, cantidad }),
 
-      })
+    })
       return await jsonOrNull(res)
     } catch {
       return null
@@ -86,10 +86,9 @@ export default function useUnidades(materialId?: number | string) {
       payload.imagen = await fileToBase64(datos.imagen)
       payload.imagenNombre = datos.imagen.name
     }
-    const res = await fetch(`/api/materiales/${id}/unidades`, {
+    const res = await apiFetch(`/api/materiales/${id}/unidades`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
       body: JSON.stringify(payload),
     })
     const result = await jsonOrNull(res)
@@ -101,7 +100,7 @@ export default function useUnidades(materialId?: number | string) {
             const fd = new FormData()
             fd.append('nombre', f.name)
             fd.append('archivo', f)
-            await fetch(`/api/materiales/${id}/unidades/${unidad.id}/archivos`, {
+            await apiFetch(`/api/materiales/${id}/unidades/${unidad.id}/archivos`, {
               method: 'POST',
               body: fd,
             })
@@ -122,10 +121,9 @@ export default function useUnidades(materialId?: number | string) {
       ;(payload as any).imagen = await fileToBase64(payload.imagen)
       ;(payload as any).imagenNombre = payload.imagen.name
     }
-    const res = await fetch(`/api/materiales/${id}/unidades/${uid}`, {
+    const res = await apiFetch(`/api/materiales/${id}/unidades/${uid}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
       body: JSON.stringify(payload),
     })
     const result = await jsonOrNull(res)
@@ -136,7 +134,7 @@ export default function useUnidades(materialId?: number | string) {
             const fd = new FormData()
             fd.append('nombre', f.name)
             fd.append('archivo', f)
-            await fetch(`/api/materiales/${id}/unidades/${uid}/archivos`, {
+            await apiFetch(`/api/materiales/${id}/unidades/${uid}/archivos`, {
               method: 'POST',
               body: fd,
             })
@@ -153,9 +151,8 @@ export default function useUnidades(materialId?: number | string) {
     if (Number.isNaN(id) || id <= 0) return { error: 'ID inválido' }
     if (Number.isNaN(unidadId) || unidadId <= 0)
       return { error: 'ID de unidad inválido' }
-    const res = await fetch(`/api/materiales/${id}/unidades/${unidadId}`, {
+    const res = await apiFetch(`/api/materiales/${id}/unidades/${unidadId}`, {
       method: 'DELETE',
-      credentials: 'include',
     })
     const result = await jsonOrNull(res)
     if (res.ok) {
@@ -167,9 +164,7 @@ export default function useUnidades(materialId?: number | string) {
 
   const obtener = async (unidadId: number) => {
     if (Number.isNaN(id) || id <= 0) return undefined
-    const res = await fetch(`/api/materiales/${id}/unidades/${unidadId}`, {
-      credentials: 'include',
-    })
+    const res = await apiFetch(`/api/materiales/${id}/unidades/${unidadId}`)
     const result = await jsonOrNull(res)
     const unidad = result?.unidad as Unidad | undefined
     if (unidad) {

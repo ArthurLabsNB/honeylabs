@@ -1,9 +1,10 @@
 import useSWR, { mutate } from 'swr'
 import { jsonOrNull } from '@lib/http'
+import { apiFetch } from '@lib/api'
 import type { Usuario } from '@/types/usuario'
 
 export async function sessionFetcher(url: string) {
-  const res = await fetch(url, { credentials: 'include' })
+  const res = await apiFetch(url)
   if (res.status === 401) {
     // 401 indica falta de sesión, no es un error real
     return { success: false }
