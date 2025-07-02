@@ -6,7 +6,6 @@ import path from 'path'
 
 const appInfoPath = path.join(process.cwd(), 'lib', 'app-info.json')
 const buildStatusPath = path.join(process.cwd(), 'lib', 'build-status.json')
-const token = process.env.BUILD_TOKEN
 
 export async function POST(req: NextRequest) {
   let body: any
@@ -15,6 +14,7 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: 'invalid' }, { status: 400 })
   }
+  const token = process.env.BUILD_TOKEN
   if (!body || body.token !== token) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
