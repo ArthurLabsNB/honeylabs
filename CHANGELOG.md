@@ -1,3 +1,6 @@
+## 0.2.242
+- Registramos el service worker de PWA solo en producción.
+
 ## 0.2.240
 - Corregimos el estado de builds fallidos para evitar bucles.
 
