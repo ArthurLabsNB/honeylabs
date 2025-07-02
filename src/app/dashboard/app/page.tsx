@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState, MouseEvent } from "react";
 import { apiFetch } from "@lib/api";
+import { ApiError } from "@lib/errors";
 import { jsonOrNull } from "@lib/http";
 import { API_APP, API_APP_URL, API_BUILD_MOBILE } from "@lib/apiPaths";
 import useSession from "@/hooks/useSession";
@@ -13,41 +14,30 @@ import { useToast } from "@/components/Toast";
 async function startBuild() {
   const res = await apiFetch(API_BUILD_MOBILE, { method: "POST" });
   if (!res.ok) {
-    const err = new Error("start_failed");
-    // @ts-ignore
-    err.code = "start_failed";
-    throw err;
+    throw new ApiError("start_failed");
   }
 }
 
 export default function AppPage() {
   const { usuario, loading: loadingUsuario } = useSession();
-  const controllerRef = useRef<AbortController>();
+  const shownRef = useRef(false);
   const [prevBuilding, setPrevBuilding] = useState(false);
   const toast = useToast();
 
-  const { data: info, isLoading, isError, refetch } = useQuery({
+  const { data: info, isLoading, refetch } = useQuery({
     queryKey: ["app"],
-    queryFn: async () => {
-      const controller = new AbortController();
-      controllerRef.current = controller;
-      const res = await apiFetch(API_APP, { signal: controller.signal });
+    queryFn: async ({ signal }) => {
+      const res = await apiFetch(API_APP, { signal });
       if (!res.ok) {
-        const err = new Error("fetch_error");
-        // @ts-ignore
-        err.code = "fetch_error";
-        throw err;
+        throw new ApiError("fetch_error");
       }
       const data = await jsonOrNull(res);
       return data ? appInfoSchema.parse(data) : undefined;
     },
     refetchInterval: 60_000,
-    onError: (err: any) => {
+    onError: (err: ApiError) => {
       const msg = err?.code === "fetch_error" ? "No se pudo obtener la información de la app" : "Error desconocido";
       toast.show(msg, "error");
-    },
-    onSettled: () => {
-      controllerRef.current?.abort();
     },
   });
 
@@ -56,7 +46,7 @@ export default function AppPage() {
     onSuccess: () => {
       refetch();
     },
-    onError: (err: any) => {
+    onError: (err: ApiError) => {
       const msg = err?.code === "start_failed" ? "No se pudo iniciar el build" : "Error desconocido";
       toast.show(msg, "error");
     },
@@ -76,11 +66,16 @@ export default function AppPage() {
 
   useEffect(() => {
     if (loadingUsuario) return;
-    if (!usuario) toast.show("Debes iniciar sesión", "error");
-    else {
+    if (!usuario) {
+      if (!shownRef.current) {
+        toast.show("Debes iniciar sesión", "error");
+        shownRef.current = true;
+      }
+    } else {
+      shownRef.current = false;
       refetch();
     }
-  }, [loadingUsuario, usuario, refetch]);
+  }, [loadingUsuario, usuario, refetch, toast]);
 
 
 
