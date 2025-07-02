@@ -1,3 +1,6 @@
+## 0.2.239
+- Añadimos API y página para descargar la app móvil.
+
 ## 0.2.238
 - Marcamos cada paso de Analisis.txt con su estado.
 
