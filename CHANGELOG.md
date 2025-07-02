@@ -1,3 +1,6 @@
+## 0.2.238
+- Marcamos cada paso de Analisis.txt con su estado.
+
 ## 0.2.236
 - Eliminamos la conexion a base de datos en tests.
 - Validamos cantidad y fechas al crear materiales.
