@@ -1,3 +1,6 @@
+## 0.2.240
+- Corregimos el estado de builds fallidos para evitar bucles.
+
 ## 0.2.239
 - Añadimos API y página para descargar la app móvil.
 
