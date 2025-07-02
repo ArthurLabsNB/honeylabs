@@ -10,11 +10,14 @@ ERRORES CORREGIDOS
 - La URL de imagen no se devolvía correctamente al crear o editar un almacén.
 - Se añadió la propiedad `imagenUrl` en las selecciones de Prisma para reflejar la ruta almacenada.
 - Se eliminó el casteo innecesario de buffers de imagen.
+- Se evitó la conexión a base de datos en pruebas automatizadas.
+- Se agregaron validaciones de cantidades y fechas en materiales.
+- Se validó el código recibido al importar QR.
 
 FALLAS PENDIENTES
-- Dependencia del servidor de base de datos para las pruebas automatizadas.
-- Validaciones de datos mínimas en campos numéricos y fechas.
-- Manejo limitado de errores al importar códigos QR.
+- Pruebas de integración más amplias para los módulos de almacenes.
+- Validación de permisos en operaciones de QR.
+- Optimización de paginación en listados grandes.
 
 MEJORAS PROPUESTAS
 1. **Validaciones estrictas** de campos en API (rangos, formatos y tamaños).
@@ -32,6 +35,10 @@ AÑADIDOS EXTRAS
 5. **Búsqueda avanzada** con autocompletado en todo el inventario.
 6. **Automatización de alertas** vía webhooks a sistemas externos.
 7. **Sección App** en el dashboard para descarga y versiones de la aplicación.
+8. **Paneles personalizables** con colores y vistas guardadas.
+9. **Modo kiosko** para consulta rápida en almacenes.
+10. **App offline login** con tokens temporales.
+11. **Panel de tendencias** para materiales más usados.
 
 
 Sistema para app:

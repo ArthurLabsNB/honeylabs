@@ -185,6 +185,15 @@ export async function POST(req: NextRequest) {
 
     if (!nombre) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 })
 
+    if (Number.isNaN(cantidad) || cantidad < 0)
+      return NextResponse.json({ error: 'Cantidad inválida' }, { status: 400 })
+    if (minimo !== null && (Number.isNaN(minimo) || minimo < 0))
+      return NextResponse.json({ error: 'Mínimo inválido' }, { status: 400 })
+    if (maximo !== null && (Number.isNaN(maximo) || maximo < 0))
+      return NextResponse.json({ error: 'Máximo inválido' }, { status: 400 })
+    if (fechaCaducidad && Number.isNaN(fechaCaducidad.getTime()))
+      return NextResponse.json({ error: 'Fecha inválida' }, { status: 400 })
+
     const material = await prisma.$transaction(async (tx) => {
       const creado = await tx.material.create({
         data: {
