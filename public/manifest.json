@@ -1,0 +1,16 @@
+{
+  "name": "HoneyLabs",
+  "short_name": "HoneyLabs",
+  "description": "Gestión inteligente de inventarios educativos y empresariales",
+  "icons": [
+    {
+      "src": "/logo-honeylabs.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#ffe066",
+  "background_color": "#131219"
+}

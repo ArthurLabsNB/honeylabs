@@ -1,3 +1,7 @@
+## 0.2.243
+- Añadimos `QueryClientProvider` en el dashboard.
+- Incluimos `manifest.json` y `theme-color` para PWA.
+
 ## 0.2.242
 - Registramos el service worker de PWA solo en producción.
 

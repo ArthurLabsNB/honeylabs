@@ -30,6 +30,8 @@ export default function RootLayout({
           content="width=device-width, initial-scale=1"
           data-oid="y9u6sdi"
         />
+        <meta name="theme-color" content="#ffe066" />
+        <link rel="manifest" href="/manifest.json" />
 
         <link rel="icon" href="/favicon.ico" data-oid="oydwumc" />
       </head>
