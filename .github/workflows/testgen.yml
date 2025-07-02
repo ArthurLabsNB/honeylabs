@@ -1,0 +1,13 @@
+name: testgen
+on:
+  pull_request:
+    types: [opened, synchronize]
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: octomind-ai/testgen@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+

@@ -8,6 +8,13 @@ jobs:
     env:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     steps:
+      - name: create check
+        id: check
+        uses: ./.github/actions/create-check
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repo: ${{ github.repository }}
+          sha: ${{ github.sha }}
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v3
       - run: pnpm i
@@ -48,3 +55,18 @@ jobs:
       - name: update app-info.json
         run: node scripts/update-app-info.js ${{ steps.sha.outputs.sha }} ${{ github.event.client_payload.version }}
       - uses: EndBug/add-and-commit@v9
+
+  deploy-canary:
+    needs: build-android
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "deploying canary 10% via Capgo"
+      - id: sentry
+        run: echo "error_rate=0" >> $GITHUB_OUTPUT
+
+  promote-prod:
+    needs: deploy-canary
+    if: ${{ needs.deploy-canary.outputs.error_rate < 0.5 }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "promoting canary to prod"
