@@ -22,9 +22,13 @@ export function startBuildProgress(
         onData(data)
       } catch {}
     }
-    es.onerror = () => {
+    es.onerror = async () => {
       es.close()
       attempts += 1
+      try {
+        const r = await fetch(API_BUILD_PROGRESS, { method: 'HEAD' })
+        if (r.status === 401) return
+      } catch {}
       if (attempts <= maxRetries) {
         setTimeout(connect, retry * 1000)
         retry = Math.min(retry * 2, 30)
