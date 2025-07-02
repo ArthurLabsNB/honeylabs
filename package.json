@@ -1,6 +1,6 @@
 {
   "name": "honeylabs",
-  "version": "0.2.251",
+  "version": "0.2.252",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -88,7 +88,12 @@
     "zod": "^3.25.32",
     "zustand": "^5.0.5",
     "yjs": "^13.6.9",
-    "dexie": "^3.2.2"
+    "dexie": "^3.2.2",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/sdk-trace-web": "^2.0.1",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.202.0",
+    "@opentelemetry/instrumentation": "^0.45.0",
+    "@opentelemetry/instrumentation-fetch": "^0.45.0"
   },
   "devDependencies": {
     "@aws-sdk/client-s3": "^3.840.0",
