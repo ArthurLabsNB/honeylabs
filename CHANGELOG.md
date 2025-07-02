@@ -1,3 +1,6 @@
+## 0.2.247
+- Ignoramos `AbortError` en consultas de App para evitar toasts falsos.
+
 ## 0.2.245
 - Compartimos la lógica de progreso de build en `useBuildProgress`.
 - Cambiamos el enlace de descarga a `/api/app/url`.
