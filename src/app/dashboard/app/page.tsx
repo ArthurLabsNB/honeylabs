@@ -1,13 +1,14 @@
 "use client";
-import { useEffect, useRef, MouseEvent } from "react";
+import { useEffect, useRef, useState, MouseEvent } from "react";
 import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
-import { API_APP, API_BUILD_MOBILE, API_BUILD_PROGRESS } from "@lib/apiPaths";
+import { API_APP, API_APP_URL, API_BUILD_MOBILE } from "@lib/apiPaths";
 import useSession from "@/hooks/useSession";
 import Spinner from "@/components/Spinner";
 import { AppInfo } from "@/types/app";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import toast from "react-hot-toast";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import useBuildProgress from "@/hooks/useBuildProgress";
+import { useToast } from "@/components/Toast";
 
 async function startBuild() {
   const res = await apiFetch(API_BUILD_MOBILE, { method: "POST" });
@@ -17,7 +18,8 @@ async function startBuild() {
 export default function AppPage() {
   const { usuario, loading: loadingUsuario } = useSession();
   const controllerRef = useRef<AbortController>();
-  const qc = useQueryClient();
+  const [prevBuilding, setPrevBuilding] = useState(false);
+  const toast = useToast();
 
   const { data: info, isLoading, isError, refetch } = useQuery({
     queryKey: ["app"],
@@ -39,63 +41,41 @@ export default function AppPage() {
     onSuccess: () => {
       refetch();
     },
-    onError: () => toast.error("No se pudo iniciar el build"),
+    onError: () => toast.show("No se pudo iniciar el build", "error"),
   });
 
   const handleDownload = async (e: MouseEvent<HTMLAnchorElement>) => {
     if (!info) return;
     e.preventDefault();
     try {
-      const head = await fetch(info.url, { method: "HEAD" });
-      let url = info.url;
-      if (head.status === 403) {
-        const result = await refetch();
-        url = result.data?.url || url;
-      }
-      window.location.href = url;
+      const res = await apiFetch(API_APP_URL);
+      const data = res.ok ? await jsonOrNull(res) : null;
+      window.location.href = data?.url || info.url;
     } catch {
-      toast.error("Enlace no disponible");
+      toast.show("Enlace no disponible", "error");
     }
   };
 
   useEffect(() => {
     if (loadingUsuario) return;
-    if (!usuario) toast.error("Debes iniciar sesión");
+    if (!usuario) toast.show("Debes iniciar sesión", "error");
     else {
-      toast.dismiss();
       refetch();
     }
   }, [loadingUsuario, usuario, refetch]);
 
   useEffect(() => {
-    if (isError) toast.error("No se pudo obtener la información de la app");
+    if (isError) toast.show("No se pudo obtener la información de la app", "error");
   }, [isError]);
 
   useEffect(() => {
-    if (!info?.building) return;
-    let retry = 1;
-    let es: EventSource;
-    const connect = () => {
-      es = new EventSource(API_BUILD_PROGRESS);
-      es.onmessage = (e) => {
-        try {
-          const data = JSON.parse(e.data) as Partial<AppInfo>;
-          qc.setQueryData(["app"], (prev: AppInfo | undefined) =>
-            prev ? { ...prev, ...data } : undefined,
-          );
-        } catch {}
-      };
-      es.onerror = () => {
-        es.close();
-        setTimeout(connect, retry * 1000);
-        retry = Math.min(retry * 2, 30);
-      };
-    };
-    connect();
-    return () => {
-      es.close();
-    };
-  }, [info?.building, qc]);
+    if (prevBuilding && info && !info.building) {
+      toast.show("APK listo", "success");
+    }
+    setPrevBuilding(Boolean(info?.building));
+  }, [info, prevBuilding, toast]);
+
+  useBuildProgress(Boolean(info?.building));
 
 
   if (isLoading || loadingUsuario)
@@ -127,7 +107,7 @@ export default function AppPage() {
         href={info.url}
         download
         onClick={handleDownload}
-        className="inline-block px-4 py-2 bg-[var(--dashboard-accent)] text-black rounded"
+        className="inline-block px-4 py-2 bg-accent-500 text-black rounded"
       >
         Descargar
       </a>

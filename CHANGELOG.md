@@ -1,3 +1,9 @@
+## 0.2.245
+- Compartimos la lógica de progreso de build en `useBuildProgress`.
+- Cambiamos el enlace de descarga a `/api/app/url`.
+- Mostramos "APK listo" con Toast cuando finaliza la generación.
+- Reemplazamos `bg-[var(--dashboard-accent)]` por `bg-accent-500`.
+
 ## 0.2.244
 - Simplificamos la vista de App eliminando `useReducer`.
 - Cancelamos peticiones de información con `AbortController` para evitar fugas.
