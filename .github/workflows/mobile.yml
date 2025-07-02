@@ -11,10 +11,34 @@ jobs:
       - run: pnpm i
       - run: pnpm build
       - run: pnpm cap sync android && pnpm cap build android --release
+      - uses: sigstore/cosign-installer@v3
+      - uses: anchore/sbom-action@v0
+        with:
+          output-file: sbom.json
+          path: android/app/build/outputs/apk/release/app-release.apk
+      - name: cosign sign apk
+        run: cosign sign --yes --key ${{ secrets.COSIGN_PRIVATE_KEY }} android/app/build/outputs/apk/release/app-release.apk
+      - name: cosign sign sbom
+        run: cosign sign --yes --key ${{ secrets.COSIGN_PRIVATE_KEY }} sbom.json
+      - name: cosign attest
+        run: cosign attest --yes --key ${{ secrets.COSIGN_PRIVATE_KEY }} --predicate sbom.json android/app/build/outputs/apk/release/app-release.apk > build-provenance.json
+      - name: cosign verify
+        run: |
+          cosign verify --key ${{ secrets.COSIGN_PUBLIC_KEY }} android/app/build/outputs/apk/release/app-release.apk
+          cosign verify --key ${{ secrets.COSIGN_PUBLIC_KEY }} sbom.json
+      - name: upload provenance
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: provenance
+          path: |
+            build-provenance.json
+            sbom.json
       - name: calc sha
         id: sha
         run: echo "sha=$(sha256sum android/app/build/outputs/apk/release/app-release.apk | cut -d' ' -f1)" >> $GITHUB_OUTPUT
       - name: upload artifact
+        if: success()
         uses: softprops/action-gh-release@v1
         with:
           files: android/app/build/outputs/apk/release/app-release.apk

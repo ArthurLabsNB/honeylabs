@@ -1,3 +1,7 @@
+## 0.2.249
+- Integramos Capgo para actualizaciones OTA.
+- Firmamos APK y SBOM con cosign en el workflow móvil.
+
 ## 0.2.247
 - Ignoramos `AbortError` en consultas de App para evitar toasts falsos.
 
