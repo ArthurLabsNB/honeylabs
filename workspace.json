@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "projects": {
+    "web": {
+      "root": ".",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/next:build",
+          "options": {}
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "options": {}
+        }
+      }
+    }
+  }
+}
