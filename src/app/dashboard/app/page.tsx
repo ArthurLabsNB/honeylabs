@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useReducer, MouseEvent } from "react";
+import { useEffect, useRef, MouseEvent } from "react";
 import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
 import { API_APP, API_BUILD_MOBILE, API_BUILD_PROGRESS } from "@lib/apiPaths";
@@ -9,23 +9,6 @@ import { AppInfo } from "@/types/app";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-
-interface State {
-  state: "idle" | "fetching" | "error";
-  msg?: string;
-}
-
-function reducer(_s: State, action: State): State {
-  return action;
-}
-
-async function fetchAppInfo() {
-  const controller = new AbortController();
-  const res = await apiFetch(API_APP, { signal: controller.signal });
-  if (!res.ok) throw new Error("fetch_error");
-  return (await jsonOrNull(res)) as AppInfo;
-}
-
 async function startBuild() {
   const res = await apiFetch(API_BUILD_MOBILE, { method: "POST" });
   if (!res.ok) throw new Error("start_failed");
@@ -33,13 +16,22 @@ async function startBuild() {
 
 export default function AppPage() {
   const { usuario, loading: loadingUsuario } = useSession();
-  const [state, dispatch] = useReducer(reducer, { state: "fetching" });
+  const controllerRef = useRef<AbortController>();
   const qc = useQueryClient();
 
-  const { data: info, isLoading, refetch } = useQuery({
+  const { data: info, isLoading, isError, refetch } = useQuery({
     queryKey: ["app"],
-    queryFn: fetchAppInfo,
+    queryFn: async () => {
+      const controller = new AbortController();
+      controllerRef.current = controller;
+      const res = await apiFetch(API_APP, { signal: controller.signal });
+      if (!res.ok) throw new Error("fetch_error");
+      return (await jsonOrNull(res)) as AppInfo;
+    },
     refetchInterval: 60_000,
+    onSettled: () => {
+      controllerRef.current?.abort();
+    },
   });
 
   const buildMutation = useMutation({
@@ -68,13 +60,16 @@ export default function AppPage() {
 
   useEffect(() => {
     if (loadingUsuario) return;
-    if (!usuario) dispatch({ state: "error", msg: "Debes iniciar sesión" });
-    else refetch();
+    if (!usuario) toast.error("Debes iniciar sesión");
+    else {
+      toast.dismiss();
+      refetch();
+    }
   }, [loadingUsuario, usuario, refetch]);
 
   useEffect(() => {
-    if (state.state === "error" && state.msg) toast.error(state.msg);
-  }, [state]);
+    if (isError) toast.error("No se pudo obtener la información de la app");
+  }, [isError]);
 
   useEffect(() => {
     if (!info?.building) return;
@@ -122,7 +117,7 @@ export default function AppPage() {
     );
 
   return (
-    <div className="p-4 space-y-4" aria-busy={state.state === "fetching" || info?.building} aria-live="polite">
+    <div className="p-4 space-y-4" aria-busy={isLoading || info?.building} aria-live="polite">
       <h1 className="text-2xl font-bold">App</h1>
       <p>
         Versión actual: <span className="font-mono">{info.version}</span>

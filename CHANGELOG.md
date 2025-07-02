@@ -1,3 +1,8 @@
+## 0.2.244
+- Simplificamos la vista de App eliminando `useReducer`.
+- Cancelamos peticiones de información con `AbortController` para evitar fugas.
+- Descargamos `toast` al iniciar sesión para limpiar mensajes previos.
+
 ## 0.2.243
 - Añadimos `QueryClientProvider` en el dashboard.
 - Incluimos `manifest.json` y `theme-color` para PWA.
