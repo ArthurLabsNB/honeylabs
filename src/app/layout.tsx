@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import ConditionalLayout from "@/components/ConditionalLayout"; // <--- Cambia aquí
 import PwaRegister from "@/components/PwaRegister";
+import CapgoUpdater from "@/components/CapgoUpdater";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 export const metadata: Metadata = {
@@ -41,6 +42,7 @@ export default function RootLayout({
       >
         <ConditionalLayout data-oid="vy-b4dt">{children}</ConditionalLayout>
         <PwaRegister />
+        <CapgoUpdater />
         <Analytics data-oid="egcbm3r" />
         <SpeedInsights data-oid="vrt:7ii" />
       </body>
