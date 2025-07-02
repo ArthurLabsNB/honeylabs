@@ -18,5 +18,7 @@ describe('build mobile endpoint', () => {
     const req = new NextRequest('http://localhost/api/build-mobile', { method: 'POST' })
     const res = await POST(req)
     expect(res.status).toBe(200)
+    const data = await res.json()
+    expect(data).toHaveProperty('run_id')
   })
 })
