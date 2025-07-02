@@ -3,6 +3,8 @@ export const runtime = 'nodejs'
 import { NextResponse } from 'next/server'
 import fs from 'fs/promises'
 import path from 'path'
+import { z } from 'zod'
+import { AppInfo } from '@/types/app'
 
 const appInfoPath = path.join(process.cwd(), 'lib', 'app-info.json')
 const buildStatusPath = path.join(process.cwd(), 'lib', 'build-status.json')
@@ -10,7 +12,12 @@ const buildStatusPath = path.join(process.cwd(), 'lib', 'build-status.json')
 export async function GET() {
   try {
     const infoRaw = await fs.readFile(appInfoPath, 'utf8')
-    const info = JSON.parse(infoRaw) as { version: string; url: string; sha256: string }
+    const schema = z.object({
+      version: z.string(),
+      url: z.string(),
+      sha256: z.string(),
+    })
+    const info = schema.parse(JSON.parse(infoRaw)) as AppInfo
     let building = false
     let progress = 1
     try {
@@ -19,7 +26,7 @@ export async function GET() {
       building = Boolean(status.building)
       progress = Number(status.progress) || 0
     } catch {}
-    return NextResponse.json({ ...info, building, progress })
+    return NextResponse.json({ ...info, building, progress }, { headers: { 'Cache-Control': 'no-store' } })
   } catch {
     return NextResponse.json({ error: 'info_unavailable' }, { status: 500 })
   }

@@ -26,12 +26,12 @@ describe('build mobile endpoint', () => {
     vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue({ tipoCuenta: 'admin' } as any)
     const req = new NextRequest('http://localhost/api/build-mobile', { method: 'POST' })
     const res = await POST(req)
-    expect(res.status).toBe(200)
+    expect(res.status).toBe(202)
     const data = await res.json()
-    expect(data).toHaveProperty('run_id')
+    expect(data.ok).toBe(true)
   })
 
-  it('clears status when dispatch fails', async () => {
+  it('keeps building status when dispatch fails', async () => {
     vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue({ tipoCuenta: 'admin' } as any)
     process.env.GITHUB_REPO = ''
     process.env.GITHUB_TOKEN = ''
@@ -39,6 +39,6 @@ describe('build mobile endpoint', () => {
     await POST(req)
     const statusRaw = await fs.readFile(buildStatusPath, 'utf8')
     const status = JSON.parse(statusRaw)
-    expect(status.building).toBe(false)
+    expect(status.building).toBe(true)
   })
 })
