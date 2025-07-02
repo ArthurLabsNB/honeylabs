@@ -3,6 +3,7 @@ export const runtime = 'nodejs'
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
+import { materialSchema } from '@lib/validators/material'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import crypto from 'node:crypto'
@@ -124,75 +125,63 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
     }
 
-    let nombre = ''
-    let descripcion = ''
     let miniaturaNombre: string | null = null
     let miniaturaBuffer: Buffer | null = null
-    let unidad: string | null = null
-    let cantidad = 0
-    let lote: string | null = null
-    let fechaCaducidad: Date | null = null
-    let ubicacion: string | null = null
-    let proveedor: string | null = null
-    let estado: string | null = null
-    let observaciones: string | null = null
-    let minimo: number | null = null
-    let maximo: number | null = null
-    let codigoBarra: string | null = null
-    let codigoQR: string | null = null
+    let datos: any = {}
 
     if (req.headers.get('content-type')?.includes('multipart/form-data')) {
       const formData = await req.formData()
-      nombre = String(formData.get('nombre') ?? '').trim()
-      descripcion = String(formData.get('descripcion') ?? '').trim()
-      unidad = String(formData.get('unidad') ?? '').trim() || null
-      cantidad = Number(formData.get('cantidad') ?? '0')
-      lote = String(formData.get('lote') ?? '').trim() || null
-      fechaCaducidad = formData.get('fechaCaducidad') ? new Date(String(formData.get('fechaCaducidad'))) : null
-      ubicacion = String(formData.get('ubicacion') ?? '').trim() || null
-      proveedor = String(formData.get('proveedor') ?? '').trim() || null
-      estado = String(formData.get('estado') ?? '').trim() || null
-      observaciones = String(formData.get('observaciones') ?? '').trim() || null
-      minimo = formData.get('minimo') ? Number(formData.get('minimo')) : null
-      maximo = formData.get('maximo') ? Number(formData.get('maximo')) : null
-      codigoBarra = String(formData.get('codigoBarra') ?? '').trim() || null
-      codigoQR = String(formData.get('codigoQR') ?? '').trim() || null
+      datos = {
+        nombre: formData.get('nombre'),
+        descripcion: formData.get('descripcion') ?? undefined,
+        cantidad: formData.get('cantidad'),
+        unidad: formData.get('unidad'),
+        lote: formData.get('lote'),
+        fechaCaducidad: formData.get('fechaCaducidad'),
+        ubicacion: formData.get('ubicacion'),
+        proveedor: formData.get('proveedor'),
+        estado: formData.get('estado'),
+        observaciones: formData.get('observaciones'),
+        minimo: formData.get('minimo'),
+        maximo: formData.get('maximo'),
+        codigoBarra: formData.get('codigoBarra'),
+        codigoQR: formData.get('codigoQR'),
+        reorderLevel: formData.get('reorderLevel'),
+        miniaturaNombre: undefined,
+      }
       const archivo = formData.get('miniatura') as File | null
       if (archivo) {
         const buffer = Buffer.from(await archivo.arrayBuffer())
         const nombreArchivo = `${crypto.randomUUID()}_${archivo.name}`
         miniaturaNombre = nombreArchivo
         miniaturaBuffer = buffer
+        datos.miniaturaNombre = nombreArchivo
       }
     } else {
-      const body = await req.json()
-      nombre = body.nombre
-      descripcion = body.descripcion
-      unidad = body.unidad || null
-      cantidad = Number(body.cantidad)
-      lote = body.lote || null
-      fechaCaducidad = body.fechaCaducidad ? new Date(body.fechaCaducidad) : null
-      ubicacion = body.ubicacion || null
-      proveedor = body.proveedor || null
-      estado = body.estado || null
-      observaciones = body.observaciones || null
-      minimo = body.minimo ?? null
-      maximo = body.maximo ?? null
-      codigoBarra = body.codigoBarra || null
-      codigoQR = body.codigoQR || null
-      miniaturaNombre = body.miniaturaNombre ?? null
+      datos = await req.json()
     }
+    const parsed = materialSchema.safeParse(datos)
+    if (!parsed.success)
+      return NextResponse.json({ error: 'Datos inválidos' }, { status: 400 })
+    const {
+      nombre,
+      descripcion,
+      cantidad,
+      unidad,
+      lote,
+      fechaCaducidad,
+      ubicacion,
+      proveedor,
+      estado,
+      observaciones,
+      minimo,
+      maximo,
+      codigoBarra,
+      codigoQR,
+      reorderLevel,
+    } = parsed.data
 
-    if (!nombre) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 })
-
-    if (Number.isNaN(cantidad) || cantidad < 0)
-      return NextResponse.json({ error: 'Cantidad inválida' }, { status: 400 })
-    if (minimo !== null && (Number.isNaN(minimo) || minimo < 0))
-      return NextResponse.json({ error: 'Mínimo inválido' }, { status: 400 })
-    if (maximo !== null && (Number.isNaN(maximo) || maximo < 0))
-      return NextResponse.json({ error: 'Máximo inválido' }, { status: 400 })
-    if (fechaCaducidad && Number.isNaN(fechaCaducidad.getTime()))
-      return NextResponse.json({ error: 'Fecha inválida' }, { status: 400 })
+    miniaturaNombre = parsed.data.miniaturaNombre ?? miniaturaNombre
 
     const material = await prisma.$transaction(async (tx) => {
       const creado = await tx.material.create({
@@ -213,6 +202,7 @@ export async function POST(req: NextRequest) {
           codigoQR,
           minimo,
           maximo,
+          reorderLevel,
           almacen: { connect: { id: almacenId } },
           usuario: { connect: { id: usuario.id } },
         },

@@ -5,6 +5,7 @@ import prisma from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
+import { materialSchema } from '@lib/validators/material'
 import crypto from 'node:crypto'
 import * as logger from '@lib/logger'
 
@@ -119,20 +120,24 @@ export async function PUT(req: NextRequest) {
     let datos: any = {}
     if (req.headers.get('content-type')?.includes('multipart/form-data')) {
       const formData = await req.formData()
-      if (formData.has('nombre')) datos.nombre = String(formData.get('nombre'))
-      if (formData.has('descripcion')) datos.descripcion = String(formData.get('descripcion'))
-      if (formData.has('unidad')) datos.unidad = String(formData.get('unidad'))
-      if (formData.has('cantidad')) datos.cantidad = Number(formData.get('cantidad'))
-      if (formData.has('lote')) datos.lote = String(formData.get('lote'))
-      if (formData.has('fechaCaducidad')) datos.fechaCaducidad = new Date(String(formData.get('fechaCaducidad')))
-      if (formData.has('ubicacion')) datos.ubicacion = String(formData.get('ubicacion'))
-      if (formData.has('proveedor')) datos.proveedor = String(formData.get('proveedor'))
-      if (formData.has('estado')) datos.estado = String(formData.get('estado'))
-      if (formData.has('observaciones')) datos.observaciones = String(formData.get('observaciones'))
-      if (formData.has('codigoBarra')) datos.codigoBarra = String(formData.get('codigoBarra'))
-      if (formData.has('codigoQR')) datos.codigoQR = String(formData.get('codigoQR'))
-      if (formData.has('minimo')) datos.minimo = Number(formData.get('minimo'))
-      if (formData.has('maximo')) datos.maximo = Number(formData.get('maximo'))
+      datos = {
+        nombre: formData.get('nombre'),
+        descripcion: formData.get('descripcion'),
+        unidad: formData.get('unidad'),
+        cantidad: formData.get('cantidad'),
+        lote: formData.get('lote'),
+        fechaCaducidad: formData.get('fechaCaducidad'),
+        ubicacion: formData.get('ubicacion'),
+        proveedor: formData.get('proveedor'),
+        estado: formData.get('estado'),
+        observaciones: formData.get('observaciones'),
+        codigoBarra: formData.get('codigoBarra'),
+        codigoQR: formData.get('codigoQR'),
+        minimo: formData.get('minimo'),
+        maximo: formData.get('maximo'),
+        reorderLevel: formData.get('reorderLevel'),
+        miniaturaNombre: undefined,
+      }
       const archivo = formData.get('miniatura') as File | null
       if (archivo) {
         const buffer = Buffer.from(await archivo.arrayBuffer())
@@ -142,6 +147,11 @@ export async function PUT(req: NextRequest) {
     } else {
       datos = await req.json()
     }
+
+    const parsed = materialSchema.partial().safeParse(datos)
+    if (!parsed.success)
+      return NextResponse.json({ error: 'Datos inválidos' }, { status: 400 })
+    datos = parsed.data
 
     const actualizado = await prisma.$transaction(async (tx) => {
       const upd = await tx.material.update({

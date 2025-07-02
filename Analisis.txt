@@ -1,24 +1,24 @@
 #	Acción prioritaria	Impacto inmediato
 1	Validación dura + transacciones en inventario
-• Añade Zod + Prisma middleware en todas las mutaciones de stock.
+• Añade Zod + Prisma middleware en todas las mutaciones de stock. ✔
 • Usa prisma.$transaction para altas/bajas y préstamos.	✔ Elimina cantidades negativas, inconsistencias y errores de concurrencia.
 2	Modo offline-first & sincronización CRDT
-• Implementa cache local (IndexedDB ↔ SQLite) con Yjs/Automerge.
+• Implementa cache local (IndexedDB ↔ SQLite) con Yjs/Automerge. ✔
 • Cola de mutaciones + reconciliación en servidor.	✔ La app sigue operando sin red; cero conflictos al volver online.
 3	Multi-almacén y ubicaciones internas
-• Extiende modelos: warehouse, location, transfer.
+• Extiende modelos: warehouse, location, transfer. ✔
 • UI: selector de almacén, movimientos entre ubicaciones.	✔ Escala a múltiples laboratorios/bodegas; trazabilidad real.
 4	Alertas de stock & punto de pedido
-• Campo reorderLevel en materiales.
+• Campo reorderLevel en materiales. ✔
 • Cron job que envía notificación push/email + widget dashboard.	✔ Evita quiebres de stock; automatiza reabastecimiento.
 5	Panel dashboard personalizable
 • Widgets independientes (React dynamic imports).
 • API /metrics y drag-and-drop para ordenar widgets.	✔ Usuarios ven KPIs clave a su medida; adopción y eficiencia.
 6	Gestión granular de roles (RBAC)
-• Tabla permissions, mapeo rol-permiso; UI para crear roles.
+• Tabla permissions, mapeo rol-permiso; UI para crear roles. ✔
 • Middleware hasPermission() en cada endpoint.	✔ Cumplimiento y seguridad a nivel de acción/pantalla.
 7	Notificaciones en tiempo real (WebSocket/push)
-• Servicio events → envía “stock bajo”, “incidencia asignada”, “build listo”.
+• Servicio events → envía “stock bajo”, “incidencia asignada”, “build listo”. ✔
 • Toast en web, push en móvil (FCM).	✔ Usuarios reaccionan al instante; flujo de trabajo proactivo.
 8	OTA con Capgo + canales canary/prod
 • Activa liveUpdates y rollout 10 % → 100 % si error < 0.5 %.	✔ Distribución de nuevas versiones sin reinstalar APK; menos fricción.
