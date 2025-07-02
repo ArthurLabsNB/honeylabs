@@ -1,3 +1,8 @@
+## 0.2.236
+- Eliminamos la conexion a base de datos en tests.
+- Validamos cantidad y fechas al crear materiales.
+- Mejoramos la verificacion de codigo en importacion QR.
+
 ## 0.2.235
 - Corrigimos la URL de imagen al crear y editar almacenes.
 - Ajustamos los campos seleccionados en las respuestas de almacenes.

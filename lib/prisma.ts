@@ -24,7 +24,7 @@ export const prisma =
         : ['error'],
   })
 
-if (!globalForPrisma.prisma) {
+if (!globalForPrisma.prisma && !process.env.VITEST) {
   prisma.$connect().catch((e) =>
     console.error('Prisma connection error:', e),
   )

@@ -11,7 +11,9 @@ export async function POST(req: NextRequest) {
     const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const { codigo } = await req.json()
-    if (!codigo) return NextResponse.json({ error: 'Código requerido' }, { status: 400 })
+    if (typeof codigo !== 'string' || !codigo.trim()) {
+      return NextResponse.json({ error: 'Código requerido' }, { status: 400 })
+    }
 
     const unidad = await prisma.materialUnidad.findUnique({
       where: { codigoQR: codigo },
