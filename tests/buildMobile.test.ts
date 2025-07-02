@@ -17,14 +17,15 @@ afterEach(() => {
 describe('build mobile endpoint', () => {
   it('rejects unauthorized user', async () => {
     vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue(null as any)
-    const req = new NextRequest('http://localhost/api/build-mobile', { method: 'POST' })
+    const req = new NextRequest('http://localhost/api/build-mobile', { method: 'POST', headers: { 'x-csrf-token': 'secret' } })
     const res = await POST(req)
     expect(res.status).toBe(401)
   })
 
   it('triggers build for admin', async () => {
     vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue({ tipoCuenta: 'admin' } as any)
-    const req = new NextRequest('http://localhost/api/build-mobile', { method: 'POST' })
+    process.env.CSRF_TOKEN = 'secret'
+    const req = new NextRequest('http://localhost/api/build-mobile', { method: 'POST', headers: { 'x-csrf-token': 'secret' } })
     const res = await POST(req)
     expect(res.status).toBe(202)
     const data = await res.json()
@@ -35,7 +36,8 @@ describe('build mobile endpoint', () => {
     vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue({ tipoCuenta: 'admin' } as any)
     process.env.GITHUB_REPO = ''
     process.env.GITHUB_TOKEN = ''
-    const req = new NextRequest('http://localhost/api/build-mobile', { method: 'POST' })
+    process.env.CSRF_TOKEN = 'secret'
+    const req = new NextRequest('http://localhost/api/build-mobile', { method: 'POST', headers: { 'x-csrf-token': 'secret' } })
     await POST(req)
     const statusRaw = await fs.readFile(buildStatusPath, 'utf8')
     const status = JSON.parse(statusRaw)

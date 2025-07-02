@@ -8,6 +8,8 @@ import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import * as logger from '@lib/logger'
 
+let lastRun = 0
+
 const buildStatusPath = path.join(process.cwd(), 'lib', 'build-status.json')
 
 export async function POST(req: NextRequest) {
@@ -15,6 +17,14 @@ export async function POST(req: NextRequest) {
   if (!usuario || !hasManagePerms(usuario)) {
     return NextResponse.json({ error: 'no_autorizado' }, { status: 401 })
   }
+  const csrf = req.headers.get('x-csrf-token')
+  if (process.env.CSRF_TOKEN && csrf !== process.env.CSRF_TOKEN) {
+    return NextResponse.json({ error: 'csrf_invalid' }, { status: 403 })
+  }
+  if (Date.now() - lastRun < 10000) {
+    return NextResponse.json({ error: 'rate_limited' }, { status: 429 })
+  }
+  lastRun = Date.now()
   try {
     await fs.writeFile(buildStatusPath, JSON.stringify({ building: true, progress: 0 }))
     const repo = env.GITHUB_REPO
