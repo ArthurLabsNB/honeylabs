@@ -35,8 +35,10 @@ export default function AppPage() {
       return data ? appInfoSchema.parse(data) : undefined;
     },
     refetchInterval: 60_000,
-    onError: (err: ApiError) => {
-      const msg = err?.code === "fetch_error" ? "No se pudo obtener la información de la app" : "Error desconocido";
+    onError: (err: ApiError | Error) => {
+      if ((err as Error).name === 'AbortError') return;
+      const msg = err instanceof ApiError && err.code === "fetch_error" ?
+        "No se pudo obtener la información de la app" : "Error desconocido";
       toast.show(msg, "error");
     },
   });
@@ -46,8 +48,10 @@ export default function AppPage() {
     onSuccess: () => {
       refetch();
     },
-    onError: (err: ApiError) => {
-      const msg = err?.code === "start_failed" ? "No se pudo iniciar el build" : "Error desconocido";
+    onError: (err: ApiError | Error) => {
+      if ((err as Error).name === 'AbortError') return;
+      const msg = err instanceof ApiError && err.code === "start_failed" ?
+        "No se pudo iniciar el build" : "Error desconocido";
       toast.show(msg, "error");
     },
   });
