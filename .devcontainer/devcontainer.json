@@ -1,0 +1,9 @@
+{
+  "name": "honeylabs",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "features": {},
+  "mounts": ["source=honeylabs-node-modules,target=/workspace/honeylabs/node_modules,type=volume"],
+  "postCreateCommand": "pnpm install"
+}
