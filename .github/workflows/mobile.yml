@@ -5,6 +5,8 @@ on:
 jobs:
   build-android:
     runs-on: ubuntu-latest
+    env:
+      NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v3
@@ -14,18 +16,19 @@ jobs:
       - uses: sigstore/cosign-installer@v3
       - uses: anchore/sbom-action@v0
         with:
-          output-file: sbom.json
+          output-file: cyclonedx.json
+          format: cyclonedx-json
           path: android/app/build/outputs/apk/release/app-release.apk
       - name: cosign sign apk
         run: cosign sign --yes --key ${{ secrets.COSIGN_PRIVATE_KEY }} android/app/build/outputs/apk/release/app-release.apk
       - name: cosign sign sbom
-        run: cosign sign --yes --key ${{ secrets.COSIGN_PRIVATE_KEY }} sbom.json
+        run: cosign sign --yes --key ${{ secrets.COSIGN_PRIVATE_KEY }} cyclonedx.json
       - name: cosign attest
-        run: cosign attest --yes --key ${{ secrets.COSIGN_PRIVATE_KEY }} --predicate sbom.json android/app/build/outputs/apk/release/app-release.apk > build-provenance.json
+        run: cosign attest --yes --key ${{ secrets.COSIGN_PRIVATE_KEY }} --predicate cyclonedx.json android/app/build/outputs/apk/release/app-release.apk > build-provenance.json
       - name: cosign verify
         run: |
           cosign verify --key ${{ secrets.COSIGN_PUBLIC_KEY }} android/app/build/outputs/apk/release/app-release.apk
-          cosign verify --key ${{ secrets.COSIGN_PUBLIC_KEY }} sbom.json
+          cosign verify --key ${{ secrets.COSIGN_PUBLIC_KEY }} cyclonedx.json
       - name: upload provenance
         if: success()
         uses: actions/upload-artifact@v4
@@ -33,7 +36,7 @@ jobs:
           name: provenance
           path: |
             build-provenance.json
-            sbom.json
+            cyclonedx.json
       - name: calc sha
         id: sha
         run: echo "sha=$(sha256sum android/app/build/outputs/apk/release/app-release.apk | cut -d' ' -f1)" >> $GITHUB_OUTPUT

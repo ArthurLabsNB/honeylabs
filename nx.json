@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json.schemastore.org/nx",
+  "npmScope": "honeylabs",
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nx/workspace/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "test"],
+        "accessToken": "${NX_CLOUD_ACCESS_TOKEN}"
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "honeylabs",
-  "version": "0.2.249",
+  "version": "0.2.250",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "nx": "nx"
   },
   "dependencies": {
     "@capgo/capacitor-updater": "^7.6.0",
@@ -85,7 +86,9 @@
     "xlsx": "^0.18.5",
     "yaml": "^2.8.0",
     "zod": "^3.25.32",
-    "zustand": "^5.0.5"
+    "zustand": "^5.0.5",
+    "yjs": "^13.6.9",
+    "dexie": "^3.2.2"
   },
   "devDependencies": {
     "@aws-sdk/client-s3": "^3.840.0",
@@ -107,6 +110,10 @@
     "prisma": "^6.10.0",
     "tailwindcss": "^4.1.7",
     "typescript": "^5",
-    "vitest": "^3.2.2"
+    "vitest": "^3.2.2",
+    "fake-indexeddb": "^6.0.1",
+    "nx": "^18.1.0",
+    "@nrwl/next": "^18.1.0",
+    "nx-cloud": "^19.1.0"
   }
 }

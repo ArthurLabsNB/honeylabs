@@ -28,6 +28,9 @@
       ],
       "@/*": [
         "./src/*"
+      ],
+      "@honeylabs/sdk": [
+        "./packages/sdk/src"
       ]
     }
   },
