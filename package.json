@@ -1,6 +1,6 @@
 {
   "name": "honeylabs",
-  "version": "0.2.250",
+  "version": "0.2.251",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -114,6 +114,7 @@
     "fake-indexeddb": "^6.0.1",
     "nx": "^18.1.0",
     "@nrwl/next": "^18.1.0",
-    "nx-cloud": "^19.1.0"
+    "nx-cloud": "^19.1.0",
+    "@aws-sdk/client-sts": "^3.840.0"
   }
 }

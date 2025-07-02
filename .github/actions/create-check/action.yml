@@ -1,0 +1,19 @@
+name: 'Create Check'
+description: 'Create GitHub check run'
+inputs:
+  token:
+    required: true
+    description: 'GitHub token'
+  repo:
+    required: true
+    description: 'owner/repo'
+  sha:
+    required: true
+    description: 'commit sha'
+  name:
+    required: false
+    default: 'mobile-build'
+    description: 'check name'
+runs:
+  using: 'node20'
+  main: 'index.js'
