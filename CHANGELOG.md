@@ -1,3 +1,9 @@
+## 0.2.253
+- Añadimos campo `reorderLevel` en materiales y validaciones con Zod.
+- Middleware de Prisma evita cantidades negativas.
+- Ruta `/api/events` para notificaciones SSE.
+- Script `checkReorder` genera alertas y emite eventos.
+
 ## 0.2.249
 - Integramos Capgo para actualizaciones OTA.
 - Firmamos APK y SBOM con cosign en el workflow móvil.

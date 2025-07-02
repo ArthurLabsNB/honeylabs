@@ -24,6 +24,22 @@ export const prisma =
         : ['error'],
   })
 
+prisma.$use(async (params, next) => {
+  if (
+    params.model === 'Material' &&
+    ['create', 'update', 'updateMany'].includes(params.action)
+  ) {
+    const data = params.args.data
+    if (typeof data?.cantidad === 'number' && data.cantidad < 0) {
+      throw new Error('Cantidad negativa no permitida')
+    }
+    if (typeof data?.reorderLevel === 'number' && data.reorderLevel < 0) {
+      throw new Error('reorderLevel negativo no permitido')
+    }
+  }
+  return next(params)
+})
+
 if (!globalForPrisma.prisma && !process.env.VITEST) {
   prisma.$connect().catch((e) =>
     console.error('Prisma connection error:', e),

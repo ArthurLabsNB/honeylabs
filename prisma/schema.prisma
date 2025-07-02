@@ -300,6 +300,7 @@ model Material {
   observaciones       String?
   minimo              Float?
   maximo              Float?
+  reorderLevel        Int?
   fechaRegistro       DateTime             @default(now())
   fechaActualizacion  DateTime             @updatedAt
   almacenId           Int

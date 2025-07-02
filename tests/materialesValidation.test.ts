@@ -32,4 +32,14 @@ describe('validaciones de materiales', () => {
     const res = await POST(req)
     expect(res.status).toBe(400)
   })
+
+  it('rechaza reorderLevel negativo', async () => {
+    vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue({ id: 1 } as any)
+    vi.spyOn(prisma.usuarioAlmacen, 'findFirst').mockResolvedValue({ id: 1 } as any)
+    vi.spyOn(permisos, 'hasManagePerms').mockReturnValue(true)
+    const body = JSON.stringify({ nombre: 'test', cantidad: 1, reorderLevel: -5 })
+    const req = new NextRequest('http://localhost/api/almacenes/1/materiales', { ...baseReq, body })
+    const res = await POST(req)
+    expect(res.status).toBe(400)
+  })
 })

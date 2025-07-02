@@ -1,6 +1,6 @@
 {
   "name": "honeylabs",
-  "version": "0.2.252",
+  "version": "0.2.253",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run",
+    "check-reorder": "node scripts/checkReorder.ts",
     "nx": "nx"
   },
   "dependencies": {
