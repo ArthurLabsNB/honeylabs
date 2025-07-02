@@ -5,14 +5,19 @@ import { jsonOrNull } from "@lib/http";
 import { API_APP, API_APP_URL, API_BUILD_MOBILE } from "@lib/apiPaths";
 import useSession from "@/hooks/useSession";
 import Spinner from "@/components/Spinner";
-import { AppInfo } from "@/types/app";
+import { AppInfo, appInfoSchema } from "@/types/app";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import useBuildProgress from "@/hooks/useBuildProgress";
 import { useToast } from "@/components/Toast";
 
 async function startBuild() {
   const res = await apiFetch(API_BUILD_MOBILE, { method: "POST" });
-  if (!res.ok) throw new Error("start_failed");
+  if (!res.ok) {
+    const err = new Error("start_failed");
+    // @ts-ignore
+    err.code = "start_failed";
+    throw err;
+  }
 }
 
 export default function AppPage() {
@@ -27,10 +32,20 @@ export default function AppPage() {
       const controller = new AbortController();
       controllerRef.current = controller;
       const res = await apiFetch(API_APP, { signal: controller.signal });
-      if (!res.ok) throw new Error("fetch_error");
-      return (await jsonOrNull(res)) as AppInfo;
+      if (!res.ok) {
+        const err = new Error("fetch_error");
+        // @ts-ignore
+        err.code = "fetch_error";
+        throw err;
+      }
+      const data = await jsonOrNull(res);
+      return data ? appInfoSchema.parse(data) : undefined;
     },
     refetchInterval: 60_000,
+    onError: (err: any) => {
+      const msg = err?.code === "fetch_error" ? "No se pudo obtener la información de la app" : "Error desconocido";
+      toast.show(msg, "error");
+    },
     onSettled: () => {
       controllerRef.current?.abort();
     },
@@ -41,7 +56,10 @@ export default function AppPage() {
     onSuccess: () => {
       refetch();
     },
-    onError: () => toast.show("No se pudo iniciar el build", "error"),
+    onError: (err: any) => {
+      const msg = err?.code === "start_failed" ? "No se pudo iniciar el build" : "Error desconocido";
+      toast.show(msg, "error");
+    },
   });
 
   const handleDownload = async (e: MouseEvent<HTMLAnchorElement>) => {
@@ -64,9 +82,7 @@ export default function AppPage() {
     }
   }, [loadingUsuario, usuario, refetch]);
 
-  useEffect(() => {
-    if (isError) toast.show("No se pudo obtener la información de la app", "error");
-  }, [isError]);
+
 
   useEffect(() => {
     if (prevBuilding && info && !info.building) {
