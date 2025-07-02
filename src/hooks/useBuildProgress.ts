@@ -3,13 +3,18 @@ import { useQueryClient } from '@tanstack/react-query'
 import { API_BUILD_PROGRESS } from '@lib/apiPaths'
 import type { AppInfo } from '@/types/app'
 
-export function startBuildProgress(onData: (data: Partial<AppInfo>) => void) {
+export function startBuildProgress(
+  onData: (data: Partial<AppInfo>) => void,
+  maxRetries = 5,
+) {
   let retry = 1
+  let attempts = 0
   let es: EventSource
   const connect = () => {
     es = new EventSource(API_BUILD_PROGRESS)
     es.addEventListener('open', () => {
       retry = 1
+      attempts = 0
     })
     es.onmessage = (e) => {
       try {
@@ -19,8 +24,11 @@ export function startBuildProgress(onData: (data: Partial<AppInfo>) => void) {
     }
     es.onerror = () => {
       es.close()
-      setTimeout(connect, retry * 1000)
-      retry = Math.min(retry * 2, 30)
+      attempts += 1
+      if (attempts <= maxRetries) {
+        setTimeout(connect, retry * 1000)
+        retry = Math.min(retry * 2, 30)
+      }
     }
   }
   connect()
