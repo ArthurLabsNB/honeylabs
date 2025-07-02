@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, MouseEvent } from "react";
 import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
 import { API_APP, API_BUILD_MOBILE, API_BUILD_PROGRESS } from "@lib/apiPaths";
@@ -49,6 +49,22 @@ export default function AppPage() {
     },
     onError: () => toast.error("No se pudo iniciar el build"),
   });
+
+  const handleDownload = async (e: MouseEvent<HTMLAnchorElement>) => {
+    if (!info) return;
+    e.preventDefault();
+    try {
+      const head = await fetch(info.url, { method: "HEAD" });
+      let url = info.url;
+      if (head.status === 403) {
+        const result = await refetch();
+        url = result.data?.url || url;
+      }
+      window.location.href = url;
+    } catch {
+      toast.error("Enlace no disponible");
+    }
+  };
 
   useEffect(() => {
     if (loadingUsuario) return;
@@ -115,6 +131,7 @@ export default function AppPage() {
       <a
         href={info.url}
         download
+        onClick={handleDownload}
         className="inline-block px-4 py-2 bg-[var(--dashboard-accent)] text-black rounded"
       >
         Descargar
