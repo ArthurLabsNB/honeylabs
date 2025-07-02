@@ -16,40 +16,21 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'no_autorizado' }, { status: 401 })
   }
   try {
-    const status = { building: true, progress: 0 }
-    await fs.writeFile(buildStatusPath, JSON.stringify(status))
-    let runId = 0
+    await fs.writeFile(buildStatusPath, JSON.stringify({ building: true, progress: 0 }))
     const repo = env.GITHUB_REPO
     const token = env.GITHUB_TOKEN
     if (repo && token) {
-      try {
-        const dispatchRes = await fetch(`https://api.github.com/repos/${repo}/dispatches`, {
-          method: 'POST',
-          headers: {
-            Authorization: `token ${token}`,
-            'User-Agent': 'honeylabs-build',
-            Accept: 'application/vnd.github+json',
-          },
-          body: JSON.stringify({ event_type: 'build-mobile' }),
-        })
-        if (!dispatchRes.ok) throw new Error(`dispatch failed ${dispatchRes.status}`)
-        const runsRes = await fetch(`https://api.github.com/repos/${repo}/actions/runs?per_page=1`, {
-          headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github+json' },
-        })
-        if (runsRes.ok) {
-          const data = await runsRes.json()
-          runId = data?.workflow_runs?.[0]?.id ?? 0
-        }
-        logger.info('[BUILD_MOBILE] repository_dispatch sent')
-      } catch (err) {
-        logger.error('[BUILD_MOBILE] dispatch error', err)
-        await fs.writeFile(buildStatusPath, JSON.stringify({ building: false, progress: 0 }))
-      }
-    } else {
-      logger.info('[BUILD_MOBILE] dispatch skipped, env missing')
-      await fs.writeFile(buildStatusPath, JSON.stringify({ building: false, progress: 0 }))
+      fetch(`https://api.github.com/repos/${repo}/dispatches`, {
+        method: 'POST',
+        headers: {
+          Authorization: `token ${token}`,
+          'User-Agent': 'honeylabs-build',
+          Accept: 'application/vnd.github+json',
+        },
+        body: JSON.stringify({ event_type: 'mobile_build' }),
+      }).catch((err) => logger.error('[BUILD_MOBILE] dispatch error', err))
     }
-    return NextResponse.json({ success: true, run_id: runId })
+    return NextResponse.json({ ok: true }, { status: 202 })
   } catch (err) {
     logger.error('[BUILD_MOBILE]', err)
     await fs.writeFile(buildStatusPath, JSON.stringify({ building: false, progress: 0 }))

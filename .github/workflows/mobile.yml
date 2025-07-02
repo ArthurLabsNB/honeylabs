@@ -1,0 +1,23 @@
+on:
+  repository_dispatch:
+    types: [mobile_build]
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+      - run: pnpm i
+      - run: pnpm build
+      - run: pnpm cap sync android && pnpm cap build android --release
+      - name: calc sha
+        id: sha
+        run: echo "sha=$(sha256sum android/app/build/outputs/apk/release/app-release.apk | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+      - name: upload artifact
+        uses: softprops/action-gh-release@v1
+        with:
+          files: android/app/build/outputs/apk/release/app-release.apk
+      - name: update app-info.json
+        run: node scripts/update-app-info.js ${{ steps.sha.outputs.sha }} ${{ github.event.client_payload.version }}
+      - uses: EndBug/add-and-commit@v9
