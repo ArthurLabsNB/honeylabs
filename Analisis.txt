@@ -31,3 +31,55 @@ AÑADIDOS EXTRAS
 4. **Exportación avanzada** a formatos CSV y PDF con filtros.
 5. **Búsqueda avanzada** con autocompletado en todo el inventario.
 6. **Automatización de alertas** vía webhooks a sistemas externos.
+
+
+Sistema para app:
+
+Fase	Qué hacer	Tips / herramientas clave
+1. Estructura “core” común (web + móvil)	- Refactoriza tu Next.js monorepo a core packages (UI, servicios, hooks, lógica de dominio).
+- Centraliza peticiones en un SDK (REST/GraphQL) con modo offline (IndexedDB/SQLite).	Mantén los bundles libres de credenciales.
+2. Convierte HoneyLabs en PWA robusta	- Añade next-pwa y Workbox → precache + background sync (para inventarios).
+- Implementa strategy “Stale-While-Revalidate” para UI y NetworkFirst para datos críticos.	Esta base te servirá tanto para web como para el wrapper nativo.
+3. Wrapper móvil	Opción rápida:
+ • Capacitor 5: npx @capacitor/cli init, npx cap add android, cap build → genera APK nativo con WebView. 
+capgo.app
+
+ • Suma plugins nativos (SQLite, Push, Files).
+
+Opción súper ligera:
+ • Trusted Web Activity (TWA) + Bubblewrap para empaquetar tu PWA como APK sin WebView extra. 
+medium.com
+4. Wrapper desktop	- Usa Tauri (Rust) en modo “edge” con tauri build para producir .msi/.dmg/.AppImage. Peso < 20 MB y acceso al sistema de archivos local.	
+5. Seguridad & anti-exfiltración	- Activa R8 + ProGuard (Android) y ofusca .wasm/js con Terser.
+- Verificación de integridad: checksum de bundles firmada desde el backend.
+- Licensing / JWT embedded validado con tu API; caduca si la firma cambia.
+- Implementa certificate pinning + TLS 1.3	Ten preparada una clave de firma de producción en GH Secrets.
+6. Sincronización offline → online	- Persistencia local (Dexie/IndexedDB web, SQLite móvil).
+- Cola de mutaciones encriptada y subida via Background Sync o Capacitor Network listener al reconectar.	
+7. Pipeline de build “on-demand” (el corazón del botón)	1. GitHub Action / EAS Build configurada para:
+  • npm ci && npm run build && cap sync android o eas build -p android 
+docs.expo.dev
+github.com
+
+  • Firmar con keystore.
+  • Subir artefacto a GitHub Release / S3 presignado.
+2. Crea en Next.js un API Route /api/build-mobile que:
+  • Autentica (JWT admin).
+  • Hace POST /repos/:owner/:repo/dispatches → dispara el workflow.
+  • Devuelve el run_id para seguimiento.
+3. Usa Server-Sent Events / WebSocket para reportar progreso en tiempo real en el frontend.	
+8. UX del botón	- Si el último build < versión actual → muestra “Descargando vX.Y.Z (50 MB)”.
+- Mientras corre el workflow, indica ETA y link a Release cuando termine.
+- Cachea la descarga con <link rel="prefetch"> si el usuario abre la sección.	
+9. Gestión de versiones y actualizaciones internas	- Autoincrementa build-number desde GH Action (date +%Y%m%d%H).
+- El app, al iniciar, llama /version de tu API. Si hay versión > local, ofrece actualizar in-app (descarga silenciosa + reinicio).	
+10. Cumplimiento y legal	- Añade cláusula de licencia propietaria y anti-ingeniería inversa.
+- Integra Google Play App Signing si planeas publicarla (evita exponer tu keystore).	
+
+Siguiente paso práctico
+
+Configura next-pwa y valida que tu app corre 100 % offline.
+
+Prueba npx cap add android && cap open android en una rama.
+
+Cuando estés listo, creamos juntos el workflow YAML y el endpoint /api/build-mobile.
