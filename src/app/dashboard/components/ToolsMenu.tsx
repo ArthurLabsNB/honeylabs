@@ -37,13 +37,6 @@ const toolsMenu = [
     allowed: ["admin", "administrador", "institucional"],
   },
   {
-    key: "appcenter",
-    label: "App Center",
-    icon: <AppWindow className="dashboard-sidebar-icon" />,
-    path: "/dashboard/app-center",
-    allowed: ["admin", "administrador", "institucional", "empresarial"],
-  },
-  {
     key: "billing",
     label: "Billing",
     icon: <Receipt className="dashboard-sidebar-icon" />,

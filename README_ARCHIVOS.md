@@ -25,7 +25,7 @@ El código fuente se encuentra en `src/app` y se organiza por páginas y rutas:
 - `estado` – Consulta del estado del sistema.
 - `wiki` – Base de conocimiento en construcción.
 
-Dentro de `dashboard` existen subsecciones como `almacenes`, `admin`, `network` y `app-center` que amplían la funcionalidad. Cada una cuenta con su propio `layout.tsx` y componentes dedicados.
+Dentro de `dashboard` existen subsecciones como `almacenes`, `admin` y `network` que amplían la funcionalidad. Cada una cuenta con su propio `layout.tsx` y componentes dedicados.
 
 ## Funciones Actuales
 - Gestión básica de usuarios y sesiones con JWT.
