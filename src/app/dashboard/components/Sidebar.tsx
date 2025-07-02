@@ -26,6 +26,7 @@ import {
   Key,
   ChevronLeft,
   ChevronRight,
+  Download,
   User,
 } from "lucide-react";
 
@@ -61,6 +62,13 @@ const sidebarMenu = [
     label: "Paneles",
     icon: <Bell className="dashboard-sidebar-icon" data-oid="piz-ico" />,
     path: "/dashboard/paneles",
+    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
+  },
+  {
+    key: "app",
+    label: "App",
+    icon: <Download className="dashboard-sidebar-icon" />,
+    path: "/dashboard/app",
     allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
   },
 ];

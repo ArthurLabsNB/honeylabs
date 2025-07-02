@@ -31,6 +31,7 @@ AÑADIDOS EXTRAS
 4. **Exportación avanzada** a formatos CSV y PDF con filtros.
 5. **Búsqueda avanzada** con autocompletado en todo el inventario.
 6. **Automatización de alertas** vía webhooks a sistemas externos.
+7. **Sección App** en el dashboard para descarga y versiones de la aplicación.
 
 
 Sistema para app:
