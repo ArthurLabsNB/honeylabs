@@ -1,93 +1,102 @@
-Resumen de mecánicas y funciones en la sección de Almacenes.
+Organiza el monorepo
+1.1. Crea workspace PNPM/Turbo con: packages/ui, packages/hooks, packages/sdk, packages/db, apps/web, apps/mobile.
+1.2. Usa ESLint + Prettier + Vitest compartidos.
 
-FUNCIONES EXISTENTES
-- Creación, actualización y eliminación de almacenes con historial.
-- Gestión de materiales y unidades, incluyendo ajustes de stock.
-- Registro de movimientos y reportes de auditoría.
-- Escaneo de códigos QR para acceder o verificar datos.
+Capa de base de datos solo‐servidor
+2.1. Paquete @honeylabs/db → schema.prisma + prisma-client.ts.
+2.2. En package.json: "browser": { "./prisma-client.ts": "./noop.js" } para que Prisma nunca llegue al cliente.
+2.3. Variables DATABASE_URL únicamente en el entorno backend.
 
-ERRORES CORREGIDOS
-- La URL de imagen no se devolvía correctamente al crear o editar un almacén.
-- Se añadió la propiedad `imagenUrl` en las selecciones de Prisma para reflejar la ruta almacenada.
-- Se eliminó el casteo innecesario de buffers de imagen.
-- Se evitó la conexión a base de datos en pruebas automatizadas.
-- Se agregaron validaciones de cantidades y fechas en materiales.
-- Se validó el código recibido al importar QR.
+API tipada
+3.1. Implementa route handlers Next 14 (app/api/**/route.ts) o routers tRPC.
+3.2. Allí se llama a db.*; usa Prisma Accelerate si es edge/serverless.
+3.3. Protege cada endpoint con JWT; aplica Row-Level Security en PostgreSQL.
 
-FALLAS PENDIENTES
-- Pruebas de integración más amplias para los módulos de almacenes.
-- Validación de permisos en operaciones de QR.
-- Optimización de paginación en listados grandes.
+SDK cliente offline-first
+4.1. Genera hooks (useInventario, useAlmacén, etc.) con tRPC/GraphQL Codegen.
+4.2. Persiste queries y mutaciones con TanStack Query + Dexie (web) ↔ SQLite (Capacitor).
+4.3. Implementa cola de mutaciones cifrada (txn_id, client_id, ts).
 
-MEJORAS PROPUESTAS
-1. **Validaciones estrictas** de campos en API (rangos, formatos y tamaños).
-2. **Paginación** en listados de materiales y auditorías para grandes volúmenes.
-3. **Control de concurrencia** al actualizar stock para evitar condiciones de carrera.
-4. **Cacheo** de catálogos y configuraciones poco cambiantes.
-5. **Registro detallado** de cambios en unidades con diffs de valores.
-6. **Política de permisos** más granular por operación y rol.
+Sincronización y resolución de conflictos
+5.1. Al volver online, POST /sync con lote de ops.
+5.2. Backend: deduplica por txn_id; aplica última versión (updated_at) o merge-patch/CRDT.
+5.3. Devuelve diff; frontend actualiza cache TanStack Query.
+5.4. Propaga cambios en tiempo real vía WebSocket (LISTEN/NOTIFY).
 
-AÑADIDOS EXTRAS
-1. **Integración con dispositivos móviles** para notificaciones push.
-2. **Soporte offline** y sincronización diferida en la app de escaneo.
-3. **Dashboard de métricas** de uso y rendimiento por almacén.
-4. **Exportación avanzada** a formatos CSV y PDF con filtros.
-5. **Búsqueda avanzada** con autocompletado en todo el inventario.
-6. **Automatización de alertas** vía webhooks a sistemas externos.
-7. **Sección App** en el dashboard para descarga y versiones de la aplicación (App Center eliminado).
-8. **Paneles personalizables** con colores y vistas guardadas.
-9. **Modo kiosko** para consulta rápida en almacenes.
-10. **App offline login** con tokens temporales.
-11. **Panel de tendencias** para materiales más usados.
+PWA robusta (web)
+6.1. Instala next-pwa; configura Workbox:
+• UI → Stale-While-Revalidate
+• Datos críticos → NetworkFirst
+6.2. Activa Background Sync para cola cuando la pantalla esté cerrada.
+6.3. Genera manifest, icons, theme_color.
 
+Wrapper móvil (Android)
+7.1. Opción completa: Capacitor 5
+– npx cap init → cap add android → cap sync android.
+– Plugins: SQLite, Push, Filesystem, Network.
+7.2. Opción ultraligera: Trusted Web Activity + Bubblewrap.
+7.3. Configura ProGuard + R8, firma con keystore prod.
 
-Sistema para app:
+Wrapper desktop opcional
+8.1. Tauri (tauri build) para .msi / .dmg / .AppImage (< 20 MB).
 
-Fase	Qué hacer	Tips / herramientas clave
-1. Estructura “core” común (web + móvil)	- Refactoriza tu Next.js monorepo a core packages (UI, servicios, hooks, lógica de dominio).
-- Centraliza peticiones en un SDK (REST/GraphQL) con modo offline (IndexedDB/SQLite).	Mantén los bundles libres de credenciales.
-2. Convierte HoneyLabs en PWA robusta	- Añade next-pwa y Workbox → precache + background sync (para inventarios).
-- Implementa strategy “Stale-While-Revalidate” para UI y NetworkFirst para datos críticos.	Esta base te servirá tanto para web como para el wrapper nativo.
-3. Wrapper móvil	Opción rápida:
- • Capacitor 5: npx @capacitor/cli init, npx cap add android, cap build → genera APK nativo con WebView. 
-capgo.app
+Pipeline de build “on-demand” (botón Descargar App)
+9.1. GitHub Action / EAS Build pasos:
+• npm ci → npm run build (Next)
+• cap sync android && cap build android
+• Firma APK, sube a GitHub Release / S3 presignado.
+9.2. Endpoint /api/build-mobile (Route Handler):
+• Autentica admin → dispara repository_dispatch → devuelve run_id.
+9.3. Frontend abre SSE/WS para progreso; muestra barra y ETA.
 
- • Suma plugins nativos (SQLite, Push, Files).
+Página “App” en la web
+10.1. Fetch /api/app → {version, url, sha256}.
+10.2. Si build en curso: spinner y porcentaje.
+10.3. Botón <a download> con SHA-256 visible para confianza.
 
-Opción súper ligera:
- • Trusted Web Activity (TWA) + Bubblewrap para empaquetar tu PWA como APK sin WebView extra. 
-medium.com
-4. Wrapper desktop	- Usa Tauri (Rust) en modo “edge” con tauri build para producir .msi/.dmg/.AppImage. Peso < 20 MB y acceso al sistema de archivos local.	
-5. Seguridad & anti-exfiltración	- Activa R8 + ProGuard (Android) y ofusca .wasm/js con Terser.
-- Verificación de integridad: checksum de bundles firmada desde el backend.
-- Licensing / JWT embedded validado con tu API; caduca si la firma cambia.
-- Implementa certificate pinning + TLS 1.3	Ten preparada una clave de firma de producción en GH Secrets.
-6. Sincronización offline → online	- Persistencia local (Dexie/IndexedDB web, SQLite móvil).
-- Cola de mutaciones encriptada y subida via Background Sync o Capacitor Network listener al reconectar.	
-7. Pipeline de build “on-demand” (el corazón del botón)	1. GitHub Action / EAS Build configurada para:
-  • npm ci && npm run build && cap sync android o eas build -p android 
-docs.expo.dev
-github.com
+Actualización continua (snapshot)
+11.1. Cada merge a main: pruebas → prisma migrate deploy → genera nueva APK; nombre HoneyLabs-YYYYMMDDHH.apk.
+11.2. Backend publica /version con número + enlace.
+11.3. App al abrir: comprueba /version; si mayor, descarga en segundo plano (Capacitor Live Update o propia), verifica firma, reinicia.
 
-  • Firmar con keystore.
-  • Subir artefacto a GitHub Release / S3 presignado.
-2. Crea en Next.js un API Route /api/build-mobile que:
-  • Autentica (JWT admin).
-  • Hace POST /repos/:owner/:repo/dispatches → dispara el workflow.
-  • Devuelve el run_id para seguimiento.
-3. Usa Server-Sent Events / WebSocket para reportar progreso en tiempo real en el frontend.	
-8. UX del botón	- Si el último build < versión actual → muestra “Descargando vX.Y.Z (50 MB)”.
-- Mientras corre el workflow, indica ETA y link a Release cuando termine.
-- Cachea la descarga con <link rel="prefetch"> si el usuario abre la sección.	
-9. Gestión de versiones y actualizaciones internas	- Autoincrementa build-number desde GH Action (date +%Y%m%d%H).
-- El app, al iniciar, llama /version de tu API. Si hay versión > local, ofrece actualizar in-app (descarga silenciosa + reinicio).	
-10. Cumplimiento y legal	- Añade cláusula de licencia propietaria y anti-ingeniería inversa.
-- Integra Google Play App Signing si planeas publicarla (evita exponer tu keystore).	
+Persistencia offline perfecta
+12.1. Todas las escrituras primero a store local (Dexie/SQLite).
+12.2. Marcadas con pending=true.
+12.3. Éxito de sync ➜ marca pending=false; error retriable → re-queue.
 
-Siguiente paso práctico
+Prevención de duplicados/pérdidas
+13.1. Llave primaria compuesta (id, client_id).
+13.2. Postgres ON CONFLICT DO NOTHING para idempotencia.
+13.3. Soft-delete (deleted_at) en vez de DELETE físico.
 
-Se integró **next-pwa** para habilitar modo offline. Validar que la app funcione sin conexión.
+Seguridad adicional
+14.1. TLS 1.3 + certificate pinning móvil.
+14.2. URLs de descarga presignadas válidas 15 min.
+14.3. Ofusca JS/WASM con Terser; R8 full-mode.
+14.4. Licencia propietaria + obfuscación cadena de texto.
 
-Prueba npx cap add android && cap open android en una rama.
+Control de versiones de datos
+15.1. Añade columna version incremental.
+15.2. Durante merge, conserva mayor version.
 
-Cuando estés listo, creamos juntos el workflow YAML y el endpoint /api/build-mobile.
+QA automática
+16.1. Vitest backend y frontend.
+16.2. Playwright e2e para PWA.
+16.3. Detox (Capacitor) para móvil.
+
+Monitoreo y telemetry
+17.1. Sentry (web + móvil).
+17.2. Supabase Logflare o Grafana Loki para logs.
+17.3. Postgres pg_stat_statements para detectar consultas lentas.
+
+Auditoría del bundle
+18.1. webpack-bundle-analyzer asegure cero @prisma/client/pg.
+18.2. Alias cliente: resolve.alias["@honeylabs/db"] = false.
+
+Registro de cambios (changelog)
+19.1. Genera automáticamente con Conventional Commits (release-please).
+19.2. Muestra notas en la app cuando hay actualización mayor.
+
+Documentación interna
+20.1. README por paquete.
+20.2. Diagrama de flujo sync (Mermaid) en /docs.
