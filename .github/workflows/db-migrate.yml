@@ -1,0 +1,17 @@
+name: Deploy DB Migrations
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+      - run: pnpm install
+      - name: Migrate
+        run: pnpm prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.DIRECT_DB_URL }}
