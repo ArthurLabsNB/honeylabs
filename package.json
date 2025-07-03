@@ -1,6 +1,6 @@
 {
   "name": "honeylabs",
-  "version": "0.2.262",
+  "version": "0.2.263",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -84,6 +84,7 @@
     "react-resizable": "^3.0.5",
     "react-window": "^1.8.11",
     "react-zxing": "^2.1.0",
+    "sigstore": "^3",
     "socket.io-client": "^4.8.1",
     "styled-jsx": "^5.1.7",
     "swr": "^2.3.3",
