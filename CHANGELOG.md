@@ -1,3 +1,8 @@
+## 0.2.258
+- Ocultamos el botón de generación salvo para administradores.
+- Enviamos `commit` y `type` al iniciar la compilación.
+- Mostramos barra de progreso en la sección App.
+
 ## 0.2.256
 - Corregimos import de BatchSpanProcessor en `setupTracing` para evitar undefined en navegador.
 
