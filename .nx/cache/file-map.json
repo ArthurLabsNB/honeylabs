@@ -1,0 +1,1674 @@
+{
+  "version": "6.0",
+  "nxVersion": "18.3.5",
+  "deps": {
+    "@capacitor/core": "^7.4.0",
+    "@capgo/capacitor-updater": "^7.6.0",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@heroicons/react": "^2.0.18",
+    "@hookform/resolvers": "^5.0.1",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.202.0",
+    "@opentelemetry/instrumentation": "^0.202.0",
+    "@opentelemetry/instrumentation-fetch": "^0.202.0",
+    "@opentelemetry/sdk-trace-base": "^2.0.1",
+    "@opentelemetry/sdk-trace-web": "^2.0.1",
+    "@prisma/client": "^6.10.0",
+    "@prisma/extension-accelerate": "^2.0.1",
+    "@react-spring/web": "^10.0.1",
+    "@svgr/webpack": "^8.1.0",
+    "@tanstack/react-query": "^5.81.5",
+    "@use-gesture/react": "^10.3.1",
+    "@vercel/analytics": "^1.5.0",
+    "@vercel/speed-insights": "^1.2.0",
+    "bcryptjs": "^3.0.2",
+    "bootstrap": "^5.3.6",
+    "chart.js": "^4.4.9",
+    "classnames": "^2.5.1",
+    "clsx": "^2.1.1",
+    "dayjs": "^1.11.13",
+    "dexie": "^3.2.2",
+    "dnd-kit": "^0.0.2",
+    "exceljs": "^4.4.0",
+    "fast-xml-parser": "^5.2.5",
+    "formidable": "^3.5.4",
+    "framer-motion": "^12.18.1",
+    "html2canvas": "^1.4.1",
+    "html5-qrcode": "^2.3.8",
+    "immer": "^10.1.1",
+    "jsbarcode": "^3.11.6",
+    "jsnes": "^1.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "jspdf": "^3.0.1",
+    "jszip": "^3.10.1",
+    "katex": "^0.16.22",
+    "konva": "^9.3.20",
+    "lucide-react": "^0.511.0",
+    "lz-string": "^1.5.0",
+    "marked": "^9.1.6",
+    "marked-katex-extension": "^5.1.4",
+    "mysql2": "^3.14.1",
+    "nanoid": "^5.1.5",
+    "next": "15.3.2",
+    "next-pwa": "^5.6.0",
+    "nodemailer": "^7.0.3",
+    "papaparse": "^5.5.3",
+    "pdfkit": "^0.17.1",
+    "pg": "^8.16.0",
+    "qrcode": "^1.5.4",
+    "qrcode.react": "^4.2.0",
+    "react": "^19.0.0",
+    "react-chartjs-2": "^5.3.0",
+    "react-dom": "^19.0.0",
+    "react-dropzone": "^14.3.8",
+    "react-game-kit": "^1.0.6",
+    "react-grid-layout": "^1.5.1",
+    "react-hook-form": "^7.56.4",
+    "react-hot-toast": "^2.5.2",
+    "react-hotkeys-hook": "^5.1.0",
+    "react-konva": "^19.0.4",
+    "react-modal": "^3.16.3",
+    "react-resizable": "^3.0.5",
+    "react-window": "^1.8.11",
+    "react-zxing": "^2.1.0",
+    "socket.io-client": "^4.8.1",
+    "styled-jsx": "^5.1.7",
+    "swr": "^2.3.3",
+    "tailwind-merge": "^3.3.0",
+    "tailwindcss-animate": "^1.0.7",
+    "use-debounce": "^10.0.5",
+    "use-sound": "^5.0.0",
+    "uuid": "^11.1.0",
+    "xlsx": "^0.18.5",
+    "yaml": "^2.8.0",
+    "yjs": "^13.6.9",
+    "zod": "^3.25.32",
+    "zustand": "^5.0.5",
+    "@aws-sdk/client-s3": "^3.840.0",
+    "@aws-sdk/client-sts": "^3.840.0",
+    "@aws-sdk/s3-request-presigner": "^3.840.0",
+    "@eslint/eslintrc": "^3",
+    "@nrwl/next": "^18.1.0",
+    "@tailwindcss/postcss": "^4",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/lz-string": "^1.5.0",
+    "@types/node": "^20",
+    "@types/nodemailer": "^6.4.17",
+    "@types/qrcode": "^1.5.5",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/react-grid-layout": "^1.3.5",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.2",
+    "fake-indexeddb": "^6.0.1",
+    "nx": "^18.1.0",
+    "nx-cloud": "^19.1.0",
+    "postcss": "^8.5.3",
+    "prisma": "^6.10.0",
+    "tailwindcss": "^4.1.7",
+    "typescript": "^5",
+    "vitest": "^3.2.2"
+  },
+  "pathMappings": {},
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "projectFileMap": {},
+    "nonProjectFiles": [
+      {
+        "file": ".devcontainer/Dockerfile",
+        "hash": "9571776845087528763"
+      },
+      {
+        "file": ".devcontainer/devcontainer.json",
+        "hash": "5884672296157108940"
+      },
+      {
+        "file": ".env.example",
+        "hash": "16241591697366522479"
+      },
+      {
+        "file": ".github/actions/create-check/action.yml",
+        "hash": "5027959039215906781"
+      },
+      {
+        "file": ".github/actions/create-check/index.js",
+        "hash": "11376584773204364670"
+      },
+      {
+        "file": ".github/workflows/mobile.yml",
+        "hash": "1889800335624488661"
+      },
+      {
+        "file": ".github/workflows/testgen.yml",
+        "hash": "5714210617934925818"
+      },
+      {
+        "file": ".gitignore",
+        "hash": "1559909914054900136"
+      },
+      {
+        "file": "Analisis.txt",
+        "hash": "12496260296244270095"
+      },
+      {
+        "file": "CHANGELOG.md",
+        "hash": "4274063484463083654"
+      },
+      {
+        "file": "DEVELOPER_README.md",
+        "hash": "16800541326340934463"
+      },
+      {
+        "file": "Instrucciones2.txt",
+        "hash": "8493591161051588779"
+      },
+      {
+        "file": "README.md",
+        "hash": "2352908218644660561"
+      },
+      {
+        "file": "README_ARCHIVOS.md",
+        "hash": "6442814824917758526"
+      },
+      {
+        "file": "bun.lock",
+        "hash": "606367436538020893"
+      },
+      {
+        "file": "capacitor.config.ts",
+        "hash": "16316745595612727449"
+      },
+      {
+        "file": "edge/validate-jwt.js",
+        "hash": "2193896698238772452"
+      },
+      {
+        "file": "eslint.config.mjs",
+        "hash": "9457570080930645618"
+      },
+      {
+        "file": "lib/api.ts",
+        "hash": "3180158472556929206"
+      },
+      {
+        "file": "lib/apiPaths.ts",
+        "hash": "1631293112418740391"
+      },
+      {
+        "file": "lib/app-info.json",
+        "hash": "3031385918092495609"
+      },
+      {
+        "file": "lib/auth.ts",
+        "hash": "4378403032789757364"
+      },
+      {
+        "file": "lib/build-status.json",
+        "hash": "4141806635129789635"
+      },
+      {
+        "file": "lib/chatIntegration.ts",
+        "hash": "15651618751761002709"
+      },
+      {
+        "file": "lib/constants.ts",
+        "hash": "9328587697303387060"
+      },
+      {
+        "file": "lib/errors.ts",
+        "hash": "355533222568502837"
+      },
+      {
+        "file": "lib/http.ts",
+        "hash": "12047495359745060691"
+      },
+      {
+        "file": "lib/logger.ts",
+        "hash": "14440859126597935518"
+      },
+      {
+        "file": "lib/permisos.ts",
+        "hash": "17863556736449061791"
+      },
+      {
+        "file": "lib/prisma.ts",
+        "hash": "6472928812019830584"
+      },
+      {
+        "file": "lib/securityHeaders.ts",
+        "hash": "16070760375085596321"
+      },
+      {
+        "file": "lib/slack.ts",
+        "hash": "12383172188267827203"
+      },
+      {
+        "file": "lib/swrFetcher.ts",
+        "hash": "3720563816582093601"
+      },
+      {
+        "file": "lib/widgets.json",
+        "hash": "10535932550148806262"
+      },
+      {
+        "file": "lib/widgets.ts",
+        "hash": "15817336710205259458"
+      },
+      {
+        "file": "next.config.ts",
+        "hash": "11181935469987612304"
+      },
+      {
+        "file": "nx.json",
+        "hash": "10522471710786952099"
+      },
+      {
+        "file": "package-lock.json",
+        "hash": "15925891519772231227"
+      },
+      {
+        "file": "package.json",
+        "hash": "17965036826713996698"
+      },
+      {
+        "file": "packages/plugins/example/index.ts",
+        "hash": "18362783873192584685"
+      },
+      {
+        "file": "packages/plugins/metadata.json",
+        "hash": "2046808601657006768"
+      },
+      {
+        "file": "packages/sdk/package.json",
+        "hash": "5420258989114246499"
+      },
+      {
+        "file": "packages/sdk/src/crdtMap.ts",
+        "hash": "2467210706139042957"
+      },
+      {
+        "file": "packages/sdk/src/index.ts",
+        "hash": "4232105970552929848"
+      },
+      {
+        "file": "packages/sdk/tsconfig.json",
+        "hash": "2886227854854597102"
+      },
+      {
+        "file": "pnpm-lock.yaml",
+        "hash": "6993857797459186165"
+      },
+      {
+        "file": "postcss.config.mjs",
+        "hash": "512361679910886401"
+      },
+      {
+        "file": "prisma/migrations/20250521184110_init/migration.sql",
+        "hash": "2155605635288450871"
+      },
+      {
+        "file": "prisma/migrations/20250524012118_inicial/migration.sql",
+        "hash": "15266344770310409502"
+      },
+      {
+        "file": "prisma/migrations/20250529232959_movimiento_inventario/migration.sql",
+        "hash": "15535487227808733837"
+      },
+      {
+        "file": "prisma/migrations/20250530051933_minijuegos/migration.sql",
+        "hash": "8996568610703075270"
+      },
+      {
+        "file": "prisma/migrations/20250601014914_dasboard/migration.sql",
+        "hash": "15076367055799086915"
+      },
+      {
+        "file": "prisma/migrations/20250601020542_dasboard/migration.sql",
+        "hash": "7968628015181557605"
+      },
+      {
+        "file": "prisma/migrations/20250602021753_add_alerta/migration.sql",
+        "hash": "10898631421459757567"
+      },
+      {
+        "file": "prisma/migrations/20250606000000_tipo_cuenta_update/migration.sql",
+        "hash": "3573151830893371635"
+      },
+      {
+        "file": "prisma/migrations/20250606010000_json_permisos_update/migration.sql",
+        "hash": "11500262496995151795"
+      },
+      {
+        "file": "prisma/migrations/20250608020000_almacen_imagen_bytes/migration.sql",
+        "hash": "7741653843575712483"
+      },
+      {
+        "file": "prisma/migrations/20250608183359_newndefined/migration.sql",
+        "hash": "4870284586401671338"
+      },
+      {
+        "file": "prisma/migrations/20250609035720_add_material_tables/migration.sql",
+        "hash": "18165349479766314909"
+      },
+      {
+        "file": "prisma/migrations/20250609040126_material_tables/migration.sql",
+        "hash": "13345143882197384235"
+      },
+      {
+        "file": "prisma/migrations/20250610000000_material_codigos/migration.sql",
+        "hash": "11886851604660600669"
+      },
+      {
+        "file": "prisma/migrations/20250611000000_material_unidad/migration.sql",
+        "hash": "16666763369725310885"
+      },
+      {
+        "file": "prisma/migrations/20250611000001_unidad_material/migration.sql",
+        "hash": "12468805931357616574"
+      },
+      {
+        "file": "prisma/migrations/20250611212210_optional_unidad/migration.sql",
+        "hash": "9093501696365105426"
+      },
+      {
+        "file": "prisma/migrations/20250612000000_movimiento_material/migration.sql",
+        "hash": "13965522458045205235"
+      },
+      {
+        "file": "prisma/migrations/20250613000000_unidad_codigoqr/migration.sql",
+        "hash": "6842296512114868972"
+      },
+      {
+        "file": "prisma/migrations/20250614000000_unidad_detalle_fields/migration.sql",
+        "hash": "16841024086180358573"
+      },
+      {
+        "file": "prisma/migrations/20250615000000_contexto_movimientos/migration.sql",
+        "hash": "12804661837457776624"
+      },
+      {
+        "file": "prisma/migrations/20250616000000_chat_tablas/migration.sql",
+        "hash": "17651327520743331051"
+      },
+      {
+        "file": "prisma/migrations/20250617000000_historial_almacen/migration.sql",
+        "hash": "9658679848196567620"
+      },
+      {
+        "file": "prisma/migrations/20250622010000_reorder_level/migration.sql",
+        "hash": "12049542420450357512"
+      },
+      {
+        "file": "prisma/migrations/20250703000000_historial_estado_json/migration.sql",
+        "hash": "10534066153753524935"
+      },
+      {
+        "file": "prisma/migrations/migration_lock.toml",
+        "hash": "2102472203520572126"
+      },
+      {
+        "file": "prisma/schema.prisma",
+        "hash": "4995085090913637378"
+      },
+      {
+        "file": "public/almacenes/.gitkeep",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "public/background.gif",
+        "hash": "749220587754629164"
+      },
+      {
+        "file": "public/builtwith.js",
+        "hash": "3002399773346699373"
+      },
+      {
+        "file": "public/downloads/README.md",
+        "hash": "17909453074650599479"
+      },
+      {
+        "file": "public/downloads/honeylabs-1.0.0.apk",
+        "hash": "7735450814583915846"
+      },
+      {
+        "file": "public/file.svg",
+        "hash": "15617830351863523835"
+      },
+      {
+        "file": "public/gallery/icon1.svg",
+        "hash": "3168606427997862937"
+      },
+      {
+        "file": "public/gallery/icon2.svg",
+        "hash": "15232486360416609044"
+      },
+      {
+        "file": "public/gallery/icon3.svg",
+        "hash": "9637810594795172690"
+      },
+      {
+        "file": "public/globe.svg",
+        "hash": "9134466864871335697"
+      },
+      {
+        "file": "public/ilustracion-almacen-3d.svg",
+        "hash": "278775351394163022"
+      },
+      {
+        "file": "public/logo-honeylabs.png",
+        "hash": "15653266742424081027"
+      },
+      {
+        "file": "public/manifest.json",
+        "hash": "246034929865930565"
+      },
+      {
+        "file": "public/next.svg",
+        "hash": "8300767200008744458"
+      },
+      {
+        "file": "public/sobrelab.mp4",
+        "hash": "8676816361216287662"
+      },
+      {
+        "file": "public/sw.js",
+        "hash": "9500463569147573860"
+      },
+      {
+        "file": "public/textura-pared-ladrillo.jpg",
+        "hash": "6621894769627629086"
+      },
+      {
+        "file": "public/utils1.mp4",
+        "hash": "9112629351945203761"
+      },
+      {
+        "file": "public/vercel.svg",
+        "hash": "3007623926711696394"
+      },
+      {
+        "file": "public/window.svg",
+        "hash": "16677869292061012332"
+      },
+      {
+        "file": "public/workbox-4754cb34.js",
+        "hash": "17115321900018070404"
+      },
+      {
+        "file": "scripts/checkReorder.ts",
+        "hash": "8162460781832506206"
+      },
+      {
+        "file": "scripts/scaffold-plugin.ts",
+        "hash": "10402952407466850381"
+      },
+      {
+        "file": "scripts/update-app-info.js",
+        "hash": "16959506799378334049"
+      },
+      {
+        "file": "src/app/(auth)/layout.tsx",
+        "hash": "2901550585605651338"
+      },
+      {
+        "file": "src/app/(auth)/login/page.tsx",
+        "hash": "6841298872917586503"
+      },
+      {
+        "file": "src/app/(auth)/registro/page.tsx",
+        "hash": "7726156250233969418"
+      },
+      {
+        "file": "src/app/acerca/page.tsx",
+        "hash": "16730543552743457885"
+      },
+      {
+        "file": "src/app/api/admin/route.ts",
+        "hash": "17606520382749145453"
+      },
+      {
+        "file": "src/app/api/admin/usuarios/[id]/route.ts",
+        "hash": "10540268645673210417"
+      },
+      {
+        "file": "src/app/api/admin/usuarios/route.ts",
+        "hash": "5235207869432369072"
+      },
+      {
+        "file": "src/app/api/admin/widgets/route.ts",
+        "hash": "612304838403928953"
+      },
+      {
+        "file": "src/app/api/alertas/route.ts",
+        "hash": "13544418589136095133"
+      },
+      {
+        "file": "src/app/api/almacenes/[id]/duplicar/route.ts",
+        "hash": "4798828529902815279"
+      },
+      {
+        "file": "src/app/api/almacenes/[id]/historial/route.ts",
+        "hash": "3019903524008404754"
+      },
+      {
+        "file": "src/app/api/almacenes/[id]/materiales/route.ts",
+        "hash": "7281883026112767405"
+      },
+      {
+        "file": "src/app/api/almacenes/[id]/movimientos/route.ts",
+        "hash": "12076966413749427611"
+      },
+      {
+        "file": "src/app/api/almacenes/[id]/route.ts",
+        "hash": "3264673748385300982"
+      },
+      {
+        "file": "src/app/api/almacenes/foto/route.ts",
+        "hash": "2884789198045595377"
+      },
+      {
+        "file": "src/app/api/almacenes/orden/route.ts",
+        "hash": "75066958999969787"
+      },
+      {
+        "file": "src/app/api/almacenes/route.ts",
+        "hash": "14387144781600978451"
+      },
+      {
+        "file": "src/app/api/app/route.ts",
+        "hash": "16131204263305241397"
+      },
+      {
+        "file": "src/app/api/app/url/route.ts",
+        "hash": "12252511723172414798"
+      },
+      {
+        "file": "src/app/api/archivos/export/route.ts",
+        "hash": "9856674051888159137"
+      },
+      {
+        "file": "src/app/api/archivos/import/route.ts",
+        "hash": "13902020597093402761"
+      },
+      {
+        "file": "src/app/api/auditorias/[id]/route.ts",
+        "hash": "9509378892119098455"
+      },
+      {
+        "file": "src/app/api/auditorias/route.ts",
+        "hash": "12525058196117048099"
+      },
+      {
+        "file": "src/app/api/billing/route.ts",
+        "hash": "2534483042049392649"
+      },
+      {
+        "file": "src/app/api/build-mobile/progress/route.ts",
+        "hash": "8887248641595178155"
+      },
+      {
+        "file": "src/app/api/build-mobile/route.ts",
+        "hash": "8010652446278666103"
+      },
+      {
+        "file": "src/app/api/build-mobile/update/route.ts",
+        "hash": "5552313488531418573"
+      },
+      {
+        "file": "src/app/api/chat/canales/route.ts",
+        "hash": "11014714646103983032"
+      },
+      {
+        "file": "src/app/api/chat/mensajes/[id]/route.ts",
+        "hash": "16137481568424016398"
+      },
+      {
+        "file": "src/app/api/chat/route.ts",
+        "hash": "15334147056627938428"
+      },
+      {
+        "file": "src/app/api/codigos/generar/route.ts",
+        "hash": "1232763528839199124"
+      },
+      {
+        "file": "src/app/api/codigos/validar/route.ts",
+        "hash": "10423517865422227079"
+      },
+      {
+        "file": "src/app/api/dashboard/layout/route.ts",
+        "hash": "6571732555561379505"
+      },
+      {
+        "file": "src/app/api/dashboard/resumen/route.ts",
+        "hash": "1908335600727993361"
+      },
+      {
+        "file": "src/app/api/discrepancias/[id]/route.ts",
+        "hash": "2180002588352103130"
+      },
+      {
+        "file": "src/app/api/discrepancias/route.ts",
+        "hash": "11811932100205152447"
+      },
+      {
+        "file": "src/app/api/events/route.ts",
+        "hash": "7153364837823586647"
+      },
+      {
+        "file": "src/app/api/gamificacion/route.ts",
+        "hash": "5549742314022692898"
+      },
+      {
+        "file": "src/app/api/historial/[tipo]/[id]/route.ts",
+        "hash": "5550204497219096501"
+      },
+      {
+        "file": "src/app/api/ia/route.ts",
+        "hash": "9549756584923425064"
+      },
+      {
+        "file": "src/app/api/integraciones/route.ts",
+        "hash": "11276017539455956579"
+      },
+      {
+        "file": "src/app/api/login/route.ts",
+        "hash": "5445575945016423606"
+      },
+      {
+        "file": "src/app/api/logout-all/route.ts",
+        "hash": "4480406691637283403"
+      },
+      {
+        "file": "src/app/api/materiales/[id]/ajuste/route.ts",
+        "hash": "10892534608812730926"
+      },
+      {
+        "file": "src/app/api/materiales/[id]/archivos/[archivoId]/route.ts",
+        "hash": "4905944666336304999"
+      },
+      {
+        "file": "src/app/api/materiales/[id]/archivos/route.ts",
+        "hash": "4622694791748899492"
+      },
+      {
+        "file": "src/app/api/materiales/[id]/export/route.ts",
+        "hash": "6287475283688311870"
+      },
+      {
+        "file": "src/app/api/materiales/[id]/historial/route.ts",
+        "hash": "9374232932603855777"
+      },
+      {
+        "file": "src/app/api/materiales/[id]/movimientos/route.ts",
+        "hash": "5097042948172191381"
+      },
+      {
+        "file": "src/app/api/materiales/[id]/route.ts",
+        "hash": "2302007200457031059"
+      },
+      {
+        "file": "src/app/api/materiales/[id]/unidades/[unidadId]/archivos/[archivoId]/route.ts",
+        "hash": "6746002357527123461"
+      },
+      {
+        "file": "src/app/api/materiales/[id]/unidades/[unidadId]/archivos/route.ts",
+        "hash": "3093002654341352145"
+      },
+      {
+        "file": "src/app/api/materiales/[id]/unidades/[unidadId]/historial/route.ts",
+        "hash": "4242132320754498818"
+      },
+      {
+        "file": "src/app/api/materiales/[id]/unidades/[unidadId]/route.ts",
+        "hash": "13283198494338204625"
+      },
+      {
+        "file": "src/app/api/materiales/[id]/unidades/route.ts",
+        "hash": "8889798461157740091"
+      },
+      {
+        "file": "src/app/api/materiales/archivo/route.ts",
+        "hash": "13851642265807716935"
+      },
+      {
+        "file": "src/app/api/materiales/route.ts",
+        "hash": "6679885217136829869"
+      },
+      {
+        "file": "src/app/api/metrics/historial/route.ts",
+        "hash": "6528029069889673462"
+      },
+      {
+        "file": "src/app/api/metrics/route.ts",
+        "hash": "11342332736236726584"
+      },
+      {
+        "file": "src/app/api/minijuegos/[id]/route.ts",
+        "hash": "7178248486479132605"
+      },
+      {
+        "file": "src/app/api/minijuegos/route.ts",
+        "hash": "7760868626178227852"
+      },
+      {
+        "file": "src/app/api/minijuegos/upload/route.ts",
+        "hash": "12412493487757405080"
+      },
+      {
+        "file": "src/app/api/network/route.ts",
+        "hash": "7190961830715296286"
+      },
+      {
+        "file": "src/app/api/novedades/route.ts",
+        "hash": "5898331693065161383"
+      },
+      {
+        "file": "src/app/api/paneles/[id]/historial/route.ts",
+        "hash": "5252568388020682387"
+      },
+      {
+        "file": "src/app/api/paneles/[id]/route.ts",
+        "hash": "7392962501580639090"
+      },
+      {
+        "file": "src/app/api/paneles/route.ts",
+        "hash": "9229828013135926248"
+      },
+      {
+        "file": "src/app/api/paneles/story/route.ts",
+        "hash": "13743847673700433702"
+      },
+      {
+        "file": "src/app/api/perfil/export/route.ts",
+        "hash": "1300663750433670794"
+      },
+      {
+        "file": "src/app/api/perfil/foto/route.ts",
+        "hash": "11785158239035313926"
+      },
+      {
+        "file": "src/app/api/perfil/route.ts",
+        "hash": "3187468519132664411"
+      },
+      {
+        "file": "src/app/api/ping-db/route.ts",
+        "hash": "9896556686997963180"
+      },
+      {
+        "file": "src/app/api/plantillas/route.ts",
+        "hash": "17345782584798149165"
+      },
+      {
+        "file": "src/app/api/preferences/route.ts",
+        "hash": "6150110899693179640"
+      },
+      {
+        "file": "src/app/api/qr/importar/route.ts",
+        "hash": "13416830917455220082"
+      },
+      {
+        "file": "src/app/api/registro/route.ts",
+        "hash": "12200383160125792239"
+      },
+      {
+        "file": "src/app/api/reportes/[id]/export/route.ts",
+        "hash": "14562326440837838057"
+      },
+      {
+        "file": "src/app/api/reportes/route.ts",
+        "hash": "13450671380679458534"
+      },
+      {
+        "file": "src/app/api/widgets/route.ts",
+        "hash": "3454611668951575150"
+      },
+      {
+        "file": "src/app/ayuda/page.tsx",
+        "hash": "16482624117665529071"
+      },
+      {
+        "file": "src/app/configuracion/page.tsx",
+        "hash": "10575459339258707962"
+      },
+      {
+        "file": "src/app/contacto/page.tsx",
+        "hash": "9350076318484163244"
+      },
+      {
+        "file": "src/app/dashboard/actividad/page.tsx",
+        "hash": "11651900499964921433"
+      },
+      {
+        "file": "src/app/dashboard/admin/components/AdminTabs.tsx",
+        "hash": "9866238625132728133"
+      },
+      {
+        "file": "src/app/dashboard/admin/components/AnalyticsPanel.tsx",
+        "hash": "7841192042981149999"
+      },
+      {
+        "file": "src/app/dashboard/admin/components/UsuariosPanel.tsx",
+        "hash": "9123572317937436813"
+      },
+      {
+        "file": "src/app/dashboard/admin/components/UsuariosTable.tsx",
+        "hash": "6608932024694490728"
+      },
+      {
+        "file": "src/app/dashboard/admin/components/WidgetsTable.tsx",
+        "hash": "11127425831466384789"
+      },
+      {
+        "file": "src/app/dashboard/admin/page.tsx",
+        "hash": "8652626710232775056"
+      },
+      {
+        "file": "src/app/dashboard/admin/usuarios/page.tsx",
+        "hash": "14384661537798572335"
+      },
+      {
+        "file": "src/app/dashboard/admin/widgets/page.tsx",
+        "hash": "14384661537798572335"
+      },
+      {
+        "file": "src/app/dashboard/alertas/page.tsx",
+        "hash": "2877764219405575683"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/[id]/AuditoriasPanel.tsx",
+        "hash": "18103815563482894356"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/[id]/QuickInventoryModal.tsx",
+        "hash": "8789325415240306384"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/[id]/UnidadesPanel.tsx",
+        "hash": "8867423551965554410"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/[id]/editar/page.tsx",
+        "hash": "7064029365111602814"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/[id]/layout.tsx",
+        "hash": "3822314001216571546"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/[id]/page.tsx",
+        "hash": "5995213663957525490"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/[id]/scan/page.tsx",
+        "hash": "5418351982982290654"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/archivos/page.tsx",
+        "hash": "5957963545465619932"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/archivos/utils.ts",
+        "hash": "6285263957598810478"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/ayuda/page.tsx",
+        "hash": "11272802220848395830"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/components/AlmacenDetailNavbar.tsx",
+        "hash": "17643320568534303112"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/components/AlmacenTools.tsx",
+        "hash": "5141006558717438756"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/components/AlmacenesGrid.tsx",
+        "hash": "6862093183494779069"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/components/AlmacenesList.tsx",
+        "hash": "6555479837943424915"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/components/AlmacenesTree.tsx",
+        "hash": "5088331449359007959"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/components/ExportNavbar.tsx",
+        "hash": "12781128644857348779"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/components/FloatingAddMenu.tsx",
+        "hash": "2233305953528890385"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/components/MaterialCodes.tsx",
+        "hash": "2463717016330658860"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/components/MaterialForm.tsx",
+        "hash": "17764020725296423887"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/components/MaterialList.tsx",
+        "hash": "16762454103363596593"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/components/MaterialRow.tsx",
+        "hash": "12311251496472265603"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/components/UnidadForm.tsx",
+        "hash": "14638375688164939492"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/configuracion/page.tsx",
+        "hash": "7356234761439604934"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/duplicar/page.tsx",
+        "hash": "16455216938188922293"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/inventario/page.tsx",
+        "hash": "10006404978802839369"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/layout.tsx",
+        "hash": "11157862969942073356"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/nuevo/page.tsx",
+        "hash": "16112248478847731219"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/operaciones/page.tsx",
+        "hash": "8073328659417049084"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/page.tsx",
+        "hash": "7324481850062875757"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/reportes/page.tsx",
+        "hash": "17607039356371227259"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/scan/page.tsx",
+        "hash": "13538987107288782185"
+      },
+      {
+        "file": "src/app/dashboard/almacenes/ui.tsx",
+        "hash": "12672383897299819412"
+      },
+      {
+        "file": "src/app/dashboard/app/page.tsx",
+        "hash": "17090345720442978205"
+      },
+      {
+        "file": "src/app/dashboard/auditorias/page.tsx",
+        "hash": "1499334703238848065"
+      },
+      {
+        "file": "src/app/dashboard/billing/page.tsx",
+        "hash": "15502355200618140961"
+      },
+      {
+        "file": "src/app/dashboard/busqueda/page.tsx",
+        "hash": "5621199138514433487"
+      },
+      {
+        "file": "src/app/dashboard/chat/page.tsx",
+        "hash": "2156263057628452588"
+      },
+      {
+        "file": "src/app/dashboard/components/NavbarDashboard.tsx",
+        "hash": "18007187532326919858"
+      },
+      {
+        "file": "src/app/dashboard/components/Sidebar.tsx",
+        "hash": "18276192852992352240"
+      },
+      {
+        "file": "src/app/dashboard/components/ToolsMenu.tsx",
+        "hash": "4943868225392912361"
+      },
+      {
+        "file": "src/app/dashboard/components/widgets/ActivityWidget.tsx",
+        "hash": "2205872239286684250"
+      },
+      {
+        "file": "src/app/dashboard/components/widgets/AlertasWidget.tsx",
+        "hash": "12984326695185097794"
+      },
+      {
+        "file": "src/app/dashboard/components/widgets/AlmacenesWidget.tsx",
+        "hash": "6388651662002610999"
+      },
+      {
+        "file": "src/app/dashboard/components/widgets/CodeWidget.tsx",
+        "hash": "8438632378446514480"
+      },
+      {
+        "file": "src/app/dashboard/components/widgets/GraficaWidget.tsx",
+        "hash": "2306789938047193386"
+      },
+      {
+        "file": "src/app/dashboard/components/widgets/MarkdownWidget.tsx",
+        "hash": "5401092099170340811"
+      },
+      {
+        "file": "src/app/dashboard/components/widgets/MediaWidget.tsx",
+        "hash": "6788980170996748940"
+      },
+      {
+        "file": "src/app/dashboard/components/widgets/NovedadesWidget.tsx",
+        "hash": "12515726565306244900"
+      },
+      {
+        "file": "src/app/dashboard/components/widgets/ReportesWidget.tsx",
+        "hash": "18205080730395521115"
+      },
+      {
+        "file": "src/app/dashboard/components/widgets/ScribbleWidget.tsx",
+        "hash": "17303680584426654120"
+      },
+      {
+        "file": "src/app/dashboard/constants.ts",
+        "hash": "13777630323233606329"
+      },
+      {
+        "file": "src/app/dashboard/dependencias/page.tsx",
+        "hash": "10806913221931154073"
+      },
+      {
+        "file": "src/app/dashboard/elementos/page.tsx",
+        "hash": "3915270047874144720"
+      },
+      {
+        "file": "src/app/dashboard/estadisticas/page.tsx",
+        "hash": "17345448792998034090"
+      },
+      {
+        "file": "src/app/dashboard/flujo/page.tsx",
+        "hash": "9833915650030337778"
+      },
+      {
+        "file": "src/app/dashboard/gamificacion/page.tsx",
+        "hash": "832469075983995917"
+      },
+      {
+        "file": "src/app/dashboard/ia-visual/page.tsx",
+        "hash": "12909066491594522706"
+      },
+      {
+        "file": "src/app/dashboard/integraciones/page.tsx",
+        "hash": "8988088707982578189"
+      },
+      {
+        "file": "src/app/dashboard/layout.tsx",
+        "hash": "3313558019004144866"
+      },
+      {
+        "file": "src/app/dashboard/macros/page.tsx",
+        "hash": "1774761700509865751"
+      },
+      {
+        "file": "src/app/dashboard/network/page.tsx",
+        "hash": "10041733827921727533"
+      },
+      {
+        "file": "src/app/dashboard/page.tsx",
+        "hash": "15442188826343157024"
+      },
+      {
+        "file": "src/app/dashboard/paneles/PanelOpsContext.tsx",
+        "hash": "7654103422117073367"
+      },
+      {
+        "file": "src/app/dashboard/paneles/[id]/layout.tsx",
+        "hash": "15285902099686650570"
+      },
+      {
+        "file": "src/app/dashboard/paneles/[id]/page.tsx",
+        "hash": "8256498862823166055"
+      },
+      {
+        "file": "src/app/dashboard/paneles/components/ChatPanel.tsx",
+        "hash": "17098320614993264409"
+      },
+      {
+        "file": "src/app/dashboard/paneles/components/CommentsPanel.tsx",
+        "hash": "9445865547086865333"
+      },
+      {
+        "file": "src/app/dashboard/paneles/components/ContextMenu.tsx",
+        "hash": "6278660204304534028"
+      },
+      {
+        "file": "src/app/dashboard/paneles/components/FileDropZone.tsx",
+        "hash": "6706649218676261325"
+      },
+      {
+        "file": "src/app/dashboard/paneles/components/GalleryPanel.tsx",
+        "hash": "3292279341178404785"
+      },
+      {
+        "file": "src/app/dashboard/paneles/components/HistorySidebar.tsx",
+        "hash": "14412926477839296784"
+      },
+      {
+        "file": "src/app/dashboard/paneles/components/Minimap.tsx",
+        "hash": "9990332573622877431"
+      },
+      {
+        "file": "src/app/dashboard/paneles/components/NavbarPaneles.tsx",
+        "hash": "13751311211065182643"
+      },
+      {
+        "file": "src/app/dashboard/paneles/components/Onboarding.tsx",
+        "hash": "6378236152289388093"
+      },
+      {
+        "file": "src/app/dashboard/paneles/components/PanelDetailNavbar.tsx",
+        "hash": "5702023385723548252"
+      },
+      {
+        "file": "src/app/dashboard/paneles/components/SubboardManager.tsx",
+        "hash": "5204725332577072371"
+      },
+      {
+        "file": "src/app/dashboard/paneles/contextMenu.ts",
+        "hash": "2992259774179117107"
+      },
+      {
+        "file": "src/app/dashboard/paneles/page.tsx",
+        "hash": "5998192930881529888"
+      },
+      {
+        "file": "src/app/dashboard/plantillas/page.tsx",
+        "hash": "17061441489850083182"
+      },
+      {
+        "file": "src/app/dashboard/reportes/page.tsx",
+        "hash": "6876206574849804594"
+      },
+      {
+        "file": "src/app/dashboard/roles/page.tsx",
+        "hash": "6239754042885752549"
+      },
+      {
+        "file": "src/app/dashboard/story/page.tsx",
+        "hash": "6298584601683867695"
+      },
+      {
+        "file": "src/app/dashboard/timeline/page.tsx",
+        "hash": "9455831671709135985"
+      },
+      {
+        "file": "src/app/dashboard/ui.tsx",
+        "hash": "9668752179178680877"
+      },
+      {
+        "file": "src/app/dashboard/vistas/page.tsx",
+        "hash": "9079775600610261472"
+      },
+      {
+        "file": "src/app/dashboard/voz/page.tsx",
+        "hash": "17839289951041866338"
+      },
+      {
+        "file": "src/app/docs/minijuegos/EmuladorGBA.tsx",
+        "hash": "17146201058696375900"
+      },
+      {
+        "file": "src/app/docs/minijuegos/EmuladorNES.tsx",
+        "hash": "8113166251199661648"
+      },
+      {
+        "file": "src/app/docs/minijuegos/ListaJuegos.tsx",
+        "hash": "388922465229960905"
+      },
+      {
+        "file": "src/app/docs/minijuegos/PanelMinijuegos.tsx",
+        "hash": "15695212127621581143"
+      },
+      {
+        "file": "src/app/docs/minijuegos/SubirRomForm.tsx",
+        "hash": "14507934447739169798"
+      },
+      {
+        "file": "src/app/docs/page.tsx",
+        "hash": "12136793098311392702"
+      },
+      {
+        "file": "src/app/estado/page.tsx",
+        "hash": "15664136480638302348"
+      },
+      {
+        "file": "src/app/favicon.ico",
+        "hash": "9157999678830540297"
+      },
+      {
+        "file": "src/app/globals.css",
+        "hash": "8368648719767931376"
+      },
+      {
+        "file": "src/app/layout.tsx",
+        "hash": "10817551791228442645"
+      },
+      {
+        "file": "src/app/legal/accesibilidad/page.tsx",
+        "hash": "11858257707589801262"
+      },
+      {
+        "file": "src/app/legal/conducta/page.tsx",
+        "hash": "3375507115458927648"
+      },
+      {
+        "file": "src/app/legal/cookies/page.tsx",
+        "hash": "5780935099712415044"
+      },
+      {
+        "file": "src/app/legal/derechos/page.tsx",
+        "hash": "5808606200829694303"
+      },
+      {
+        "file": "src/app/legal/privacidad/page.tsx",
+        "hash": "335401011498607215"
+      },
+      {
+        "file": "src/app/legal/terminos/page.tsx",
+        "hash": "10287162318747133821"
+      },
+      {
+        "file": "src/app/page.tsx",
+        "hash": "5279081685470875337"
+      },
+      {
+        "file": "src/app/servicios/page.tsx",
+        "hash": "5286590836928160582"
+      },
+      {
+        "file": "src/app/wiki/page.tsx",
+        "hash": "7341514159378509319"
+      },
+      {
+        "file": "src/components/Attachment.tsx",
+        "hash": "16958252532518860836"
+      },
+      {
+        "file": "src/components/CapgoUpdater.tsx",
+        "hash": "15274801406512992872"
+      },
+      {
+        "file": "src/components/ClientLayout.tsx",
+        "hash": "13046370767408357029"
+      },
+      {
+        "file": "src/components/ConditionalLayout.tsx",
+        "hash": "13945873533973309706"
+      },
+      {
+        "file": "src/components/CookieBanner.tsx",
+        "hash": "12152569627305636186"
+      },
+      {
+        "file": "src/components/EmptyState.tsx",
+        "hash": "4633793058297641740"
+      },
+      {
+        "file": "src/components/Footer.tsx",
+        "hash": "17443363061838443417"
+      },
+      {
+        "file": "src/components/ImageModal.tsx",
+        "hash": "8717387411574235995"
+      },
+      {
+        "file": "src/components/Navbar.tsx",
+        "hash": "15876976299150852893"
+      },
+      {
+        "file": "src/components/PromptModal.tsx",
+        "hash": "909968695924962173"
+      },
+      {
+        "file": "src/components/PwaRegister.tsx",
+        "hash": "8570908703362341688"
+      },
+      {
+        "file": "src/components/QueryProvider.tsx",
+        "hash": "2372835476077729061"
+      },
+      {
+        "file": "src/components/Spinner.tsx",
+        "hash": "10418821089070799427"
+      },
+      {
+        "file": "src/components/Toast.tsx",
+        "hash": "7964929735185546447"
+      },
+      {
+        "file": "src/components/TracingInit.tsx",
+        "hash": "784250340877435380"
+      },
+      {
+        "file": "src/components/UserMenu.tsx",
+        "hash": "4704706256344701887"
+      },
+      {
+        "file": "src/hooks/useAdminUsuarios.ts",
+        "hash": "822239283536884987"
+      },
+      {
+        "file": "src/hooks/useAlmacenes.ts",
+        "hash": "12001674930178829220"
+      },
+      {
+        "file": "src/hooks/useAlmacenesLogic.ts",
+        "hash": "8726267909942646933"
+      },
+      {
+        "file": "src/hooks/useArchivosMaterial.ts",
+        "hash": "13873071705979028590"
+      },
+      {
+        "file": "src/hooks/useArchivosUnidad.ts",
+        "hash": "15434909337484857205"
+      },
+      {
+        "file": "src/hooks/useAuditorias.ts",
+        "hash": "10502791091869402264"
+      },
+      {
+        "file": "src/hooks/useBuildProgress.ts",
+        "hash": "13934684413821308480"
+      },
+      {
+        "file": "src/hooks/useHistorialAlmacen.ts",
+        "hash": "17288964400644488158"
+      },
+      {
+        "file": "src/hooks/useHistorialMaterial.ts",
+        "hash": "6630022649238836423"
+      },
+      {
+        "file": "src/hooks/useHistorialUnidad.ts",
+        "hash": "9663529300474334264"
+      },
+      {
+        "file": "src/hooks/useMateriales.ts",
+        "hash": "12285593177458659070"
+      },
+      {
+        "file": "src/hooks/useMovimientos.ts",
+        "hash": "14319285554408732472"
+      },
+      {
+        "file": "src/hooks/useMovimientosMaterial.ts",
+        "hash": "7153107292613683585"
+      },
+      {
+        "file": "src/hooks/usePanelPresence.ts",
+        "hash": "7499356925154452425"
+      },
+      {
+        "file": "src/hooks/usePanelShortcuts.ts",
+        "hash": "5810954808245026936"
+      },
+      {
+        "file": "src/hooks/usePanelSocket.ts",
+        "hash": "4130855746960662022"
+      },
+      {
+        "file": "src/hooks/usePanelSync.ts",
+        "hash": "1585828363350783993"
+      },
+      {
+        "file": "src/hooks/usePermisos.ts",
+        "hash": "3344529790704537269"
+      },
+      {
+        "file": "src/hooks/usePrompt.tsx",
+        "hash": "10521994865041667339"
+      },
+      {
+        "file": "src/hooks/useSelection.ts",
+        "hash": "17399543208938581132"
+      },
+      {
+        "file": "src/hooks/useSession.ts",
+        "hash": "1215341347668834481"
+      },
+      {
+        "file": "src/hooks/useSpeech.ts",
+        "hash": "1716060429357407325"
+      },
+      {
+        "file": "src/hooks/useSubboards.ts",
+        "hash": "11979295112554199488"
+      },
+      {
+        "file": "src/hooks/useTouchZoom.ts",
+        "hash": "11019520350251512467"
+      },
+      {
+        "file": "src/hooks/useUndoRedo.ts",
+        "hash": "2462998036632944788"
+      },
+      {
+        "file": "src/hooks/useUnidades.ts",
+        "hash": "2956045167464710028"
+      },
+      {
+        "file": "src/lib/audit.ts",
+        "hash": "465195652179147708"
+      },
+      {
+        "file": "src/lib/calendar.ts",
+        "hash": "2555453992406459157"
+      },
+      {
+        "file": "src/lib/email/enviarRegistro.ts",
+        "hash": "8814273602683852027"
+      },
+      {
+        "file": "src/lib/email/rutasCorreo.ts",
+        "hash": "6904355134342879364"
+      },
+      {
+        "file": "src/lib/events.ts",
+        "hash": "12004012062314230559"
+      },
+      {
+        "file": "src/lib/exportUtils.ts",
+        "hash": "16692389912581277898"
+      },
+      {
+        "file": "src/lib/gamificacion.ts",
+        "hash": "14386188157638816958"
+      },
+      {
+        "file": "src/lib/plugins.ts",
+        "hash": "651997749757364231"
+      },
+      {
+        "file": "src/lib/qr.ts",
+        "hash": "6330839519095691147"
+      },
+      {
+        "file": "src/lib/roles.ts",
+        "hash": "18314045175392078779"
+      },
+      {
+        "file": "src/lib/search/semantic.ts",
+        "hash": "884849799442041395"
+      },
+      {
+        "file": "src/lib/secureSQLite.ts",
+        "hash": "9190791330216357169"
+      },
+      {
+        "file": "src/lib/storage/dropbox.ts",
+        "hash": "12305875276548688331"
+      },
+      {
+        "file": "src/lib/storage/google-drive.ts",
+        "hash": "3214029639862744606"
+      },
+      {
+        "file": "src/lib/storage/index.ts",
+        "hash": "12035862752156343957"
+      },
+      {
+        "file": "src/lib/tracing-edge.ts",
+        "hash": "10312781489268241596"
+      },
+      {
+        "file": "src/lib/tracing.ts",
+        "hash": "8736458471074306435"
+      },
+      {
+        "file": "src/lib/utils.ts",
+        "hash": "6695693307667111243"
+      },
+      {
+        "file": "src/lib/uuid.ts",
+        "hash": "1810912446443670326"
+      },
+      {
+        "file": "src/lib/validators/material.ts",
+        "hash": "10426231816126423275"
+      },
+      {
+        "file": "src/lib/verifyModel.ts",
+        "hash": "9934094761293311191"
+      },
+      {
+        "file": "src/lib/visualAI.ts",
+        "hash": "10965885943778980235"
+      },
+      {
+        "file": "src/middleware.ts",
+        "hash": "16981817592232255816"
+      },
+      {
+        "file": "src/templates/email/confirmacion.html.ts",
+        "hash": "5800948720214598743"
+      },
+      {
+        "file": "src/templates/email/registro.html.ts",
+        "hash": "6844284349530036869"
+      },
+      {
+        "file": "src/types/app.ts",
+        "hash": "15733991246485821040"
+      },
+      {
+        "file": "src/types/chat.ts",
+        "hash": "16384387767271844312"
+      },
+      {
+        "file": "src/types/panel.ts",
+        "hash": "6758786462880754795"
+      },
+      {
+        "file": "src/types/unidad-detalle.ts",
+        "hash": "7260299529353597220"
+      },
+      {
+        "file": "src/types/usuario.ts",
+        "hash": "2883071609453053455"
+      },
+      {
+        "file": "tests/adminUsuarios.test.ts",
+        "hash": "3112983939213972427"
+      },
+      {
+        "file": "tests/adminUsuariosUpdate.test.ts",
+        "hash": "7504434456100803102"
+      },
+      {
+        "file": "tests/appInfo.test.ts",
+        "hash": "2671327084251647236"
+      },
+      {
+        "file": "tests/appUrl.test.ts",
+        "hash": "3558399078119931487"
+      },
+      {
+        "file": "tests/appUrlHead.test.ts",
+        "hash": "15152857672510964236"
+      },
+      {
+        "file": "tests/buildMobile.test.ts",
+        "hash": "6677904936736453839"
+      },
+      {
+        "file": "tests/buildMobileUpdate.test.ts",
+        "hash": "2762859467864212967"
+      },
+      {
+        "file": "tests/buildProgressReconnect.test.ts",
+        "hash": "15987967113350619088"
+      },
+      {
+        "file": "tests/crdt.test.ts",
+        "hash": "12337119530199248116"
+      },
+      {
+        "file": "tests/login.test.ts",
+        "hash": "5964686406221371616"
+      },
+      {
+        "file": "tests/materialesValidation.test.ts",
+        "hash": "5402628851761203609"
+      },
+      {
+        "file": "tests/registro.test.ts",
+        "hash": "514712471987488598"
+      },
+      {
+        "file": "tests/security/almacenes.test.ts",
+        "hash": "13187155316909537126"
+      },
+      {
+        "file": "tests/useMateriales.test.ts",
+        "hash": "1200289959030972618"
+      },
+      {
+        "file": "tests/useSession.test.ts",
+        "hash": "8950344036427123861"
+      },
+      {
+        "file": "tests/uuid.test.ts",
+        "hash": "17367524254278545"
+      },
+      {
+        "file": "tsconfig.base.json",
+        "hash": "14940672091626667540"
+      },
+      {
+        "file": "tsconfig.json",
+        "hash": "8931448055763686224"
+      },
+      {
+        "file": "vitest.config.ts",
+        "hash": "12271430384004207265"
+      },
+      {
+        "file": "vitest.setup.ts",
+        "hash": "3490764605761213192"
+      },
+      {
+        "file": "workspace.json",
+        "hash": "1327874166128514807"
+      }
+    ]
+  }
+}
