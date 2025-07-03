@@ -16,5 +16,18 @@ jobs:
       - run: nx affected -t build --prod
       - run: next build && next export -o dist
       - run: capgo upload --appId honeylabs ./dist
+      - run: tar -czf patch.tgz dist
+      - uses: sigstore/cosign-installer@v3
+      - name: sign patch
+        run: cosign sign-blob --yes --key ${{ secrets.COSIGN_PRIVATE_KEY }} patch.tgz > patch.tgz.sig
+      - name: generate sbom
+        run: npx @cyclonedx/bom --output-file cyclonedx-ota.json
+      - name: upload ota artifacts
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            patch.tgz
+            patch.tgz.sig
+            cyclonedx-ota.json
       - run: node scripts/update-status.js ${{ github.run_id }} 1
 

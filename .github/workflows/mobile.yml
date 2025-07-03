@@ -44,12 +44,19 @@ jobs:
         run: |
           cosign verify --key ${{ secrets.COSIGN_PUBLIC_KEY }} android/app/build/outputs/apk/release/app-release.apk
           cosign verify --key ${{ secrets.COSIGN_PUBLIC_KEY }} cyclonedx.json
-      - name: upload provenance
+      - name: upload provenance artifact
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: provenance
           path: |
+            build-provenance.json
+            cyclonedx.json
+      - name: attach provenance to release
+        if: success()
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
             build-provenance.json
             cyclonedx.json
       - name: calc sha
