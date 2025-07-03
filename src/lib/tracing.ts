@@ -8,7 +8,8 @@ let initialized = false;
 
 export async function setupTracing() {
   if (initialized || typeof window === 'undefined') return;
-  const { WebTracerProvider, BatchSpanProcessor } = await import('@opentelemetry/sdk-trace-web');
+  const { WebTracerProvider } = await import('@opentelemetry/sdk-trace-web');
+  const { BatchSpanProcessor } = await import('@opentelemetry/sdk-trace-base');
   const exporter = new OTLPTraceExporter({ url: process.env.NEXT_PUBLIC_OTEL_EXPORTER_URL });
   const provider = new WebTracerProvider();
   provider.addSpanProcessor(new BatchSpanProcessor(exporter));

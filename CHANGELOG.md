@@ -1,3 +1,6 @@
+## 0.2.256
+- Corregimos import de BatchSpanProcessor en `setupTracing` para evitar undefined en navegador.
+
 ## 0.2.255
 - Añadimos columna JSON `estado` a tablas de historial para evitar errores en consultas.
 
