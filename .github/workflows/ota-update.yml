@@ -1,0 +1,20 @@
+name: OTA Update
+
+on:
+  repository_dispatch:
+    types: [ota]
+
+jobs:
+  ota:
+    runs-on: ubuntu-latest
+    env:
+      NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+      - run: pnpm i
+      - run: nx affected -t build --prod
+      - run: next build && next export -o dist
+      - run: capgo upload --appId honeylabs ./dist
+      - run: node scripts/update-status.js ${{ github.run_id }} 1
+
