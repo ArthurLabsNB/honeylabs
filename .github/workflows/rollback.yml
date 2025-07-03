@@ -1,0 +1,27 @@
+name: rollback
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+      - run: pnpm i
+      - id: sentry
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: honeylabs
+          SENTRY_PROJECT: honeylabs
+        run: |
+          rate=$(npx sentry-cli stats --json | node -e "const d=require('fs').readFileSync(0,'utf8');console.log(JSON.parse(d).error_rate||0)")
+          echo "error_rate=$rate" >> $GITHUB_OUTPUT
+      - name: rollback if needed
+        if: ${{ steps.sentry.outputs.error_rate >= 0.5 }}
+        run: |
+          capgo promote --channel prev-stable
+          node scripts/update-app-info.js $(jq -r '.sha256' lib/app-info.json) $(jq -r '.version' lib/app-info.json)

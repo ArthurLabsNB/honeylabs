@@ -50,6 +50,16 @@ export default function AppPage() {
     },
   });
 
+  const { data: canDownload } = useQuery({
+    queryKey: ['app-url-valid', info?.version],
+    queryFn: async ({ signal }) => {
+      const res = await apiFetch(API_APP_URL, { method: 'HEAD', signal })
+      return res.ok
+    },
+    enabled: !!info,
+    refetchInterval: 60_000,
+  })
+
   const buildMutation = useMutation({
     mutationFn: startBuild,
     onMutate: () => {
@@ -137,15 +147,17 @@ export default function AppPage() {
         Versión actual: <span className="font-mono">{info.version}</span>
       </p>
       <p className="break-all font-mono text-sm">SHA-256: {info.sha256}</p>
-      <a
-        href={info.url}
-        download
-        rel="noopener"
-        onClick={handleDownload}
-        className="inline-block px-4 py-2 bg-accent-500 text-black rounded"
-      >
-        Descargar
-      </a>
+      {canDownload && (
+        <a
+          href={info.url}
+          download
+          rel="noopener"
+          onClick={handleDownload}
+          className="inline-block px-4 py-2 bg-accent-500 text-black rounded"
+        >
+          Descargar
+        </a>
+      )}
       {isAdminUser(usuario) && (
         <button
           type="button"
