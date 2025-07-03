@@ -5,7 +5,7 @@ import path from 'path'
 import { POST } from '../src/app/api/build-mobile/update/route'
 
 const appInfoPath = path.join(process.cwd(), 'lib', 'app-info.json')
-const buildStatusPath = path.join(process.cwd(), 'lib', 'build-status.json')
+const buildStatusPath = path.join(process.cwd(), 'public', 'build-status.json')
 
 let infoBackup: string | null = null
 let statusBackup: string | null = null
