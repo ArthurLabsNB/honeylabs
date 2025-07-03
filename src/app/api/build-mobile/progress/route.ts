@@ -3,6 +3,7 @@ export const runtime = 'nodejs'
 import { NextResponse } from 'next/server'
 import { env } from 'process'
 import { sseStream } from '@lib/sseStream'
+import { readBuildStatus } from '@lib/buildStatus'
 
 
 export async function GET() {
@@ -10,9 +11,15 @@ export async function GET() {
   const token = env.GITHUB_TOKEN
   const stream = sseStream(async ({ send, close, signal }) => {
     if (!repo || !token) {
-      send({ error: 'github_not_configured' })
-      close()
-      return
+      const sendStatus = async () => {
+        const status = await readBuildStatus()
+        send(status)
+        if (!status.building) close()
+      }
+      await sendStatus()
+      const timer = setInterval(sendStatus, 2000)
+      signal.addEventListener('abort', () => clearInterval(timer))
+      return () => clearInterval(timer)
     }
     const fetchProgress = async () => {
       if (signal.aborted) return
