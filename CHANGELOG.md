@@ -1,3 +1,6 @@
+## 0.2.265
+- Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
+
 ## 0.2.260
 - Añadimos workflow `native-build.yml` con verificación y firma de APK.
 - Configuramos `android/app/build.gradle` para firmar en modo release.
