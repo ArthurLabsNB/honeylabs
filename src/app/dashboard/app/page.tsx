@@ -10,9 +10,14 @@ import { AppInfo, appInfoSchema } from "@/types/app";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useBuildProgress from "@/hooks/useBuildProgress";
 import { useToast } from "@/components/Toast";
+import { isAdminUser } from "@lib/permisos";
 
-async function startBuild() {
-  const res = await apiFetch(API_BUILD_MOBILE, { method: "POST" });
+async function startBuild(commit: string) {
+  const res = await apiFetch(API_BUILD_MOBILE, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ type: "auto", commit }),
+  });
   if (!res.ok) {
     throw new ApiError("start_failed");
   }
@@ -112,7 +117,15 @@ export default function AppPage() {
     return (
       <div className="p-4 space-y-4" aria-busy="true" aria-live="polite">
         <h1 className="text-2xl font-bold">App</h1>
-        <p>Generando APK... {Math.round(info.progress * 100)}%</p>
+        <div className="space-y-2">
+          <div className="w-full h-2 bg-zinc-200 rounded overflow-hidden">
+            <div
+              className="h-full bg-accent-500"
+              style={{ width: `${info.progress * 100}%` }}
+            />
+          </div>
+          <p>Generando APK... {Math.round(info.progress * 100)}%</p>
+        </div>
         <Spinner />
       </div>
     );
@@ -133,10 +146,10 @@ export default function AppPage() {
       >
         Descargar
       </a>
-      {usuario?.tipoCuenta === "admin" && (
+      {isAdminUser(usuario) && (
         <button
           type="button"
-          onClick={() => buildMutation.mutate()}
+          onClick={() => buildMutation.mutate(info.sha256)}
           disabled={info?.building || buildMutation.isLoading}
           className="ml-4 px-4 py-2 bg-accent-500 rounded hover:brightness-110 disabled:opacity-70"
         >
@@ -146,7 +159,7 @@ export default function AppPage() {
               <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
             </span>
           ) : (
-            "Generar nueva versión"
+            "Generar versión"
           )}
         </button>
       )}
