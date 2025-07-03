@@ -1,0 +1,13 @@
+ignoredBuiltDependencies:
+  - '@parcel/watcher'
+  - '@prisma/client'
+  - '@prisma/engines'
+  - '@tailwindcss/oxide'
+  - '@vercel/speed-insights'
+  - core-js
+  - esbuild
+  - nx
+  - prisma
+  - protobufjs
+  - sharp
+  - unrs-resolver
