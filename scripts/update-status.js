@@ -5,7 +5,7 @@ async function main() {
   const [runId, pct] = process.argv.slice(2)
   const progress = Math.max(0, Math.min(1, parseFloat(pct || '0')))
   const building = progress < 1
-  const file = path.join(process.cwd(), 'lib', 'build-status.json')
+  const file = path.join(process.cwd(), 'public', 'build-status.json')
   await fs.writeFile(file, JSON.stringify({ building, progress }))
 
   const token = process.env.GITHUB_TOKEN

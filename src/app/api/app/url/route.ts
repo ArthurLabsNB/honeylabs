@@ -26,6 +26,9 @@ export async function HEAD() {
     const { url } = JSON.parse(raw) as { url: string }
     const res = await fetch(url, { method: 'HEAD' })
     if (res.ok) return new Response(null)
+    if (!res.ok && process.env.AWS_APK_URL) {
+      return NextResponse.json({ url: process.env.AWS_APK_URL })
+    }
     if (
       res.status === 403 &&
       process.env.AWS_S3_BUCKET &&
@@ -61,6 +64,9 @@ export async function HEAD() {
     }
     return new Response(null, { status: res.status })
   } catch {
+    if (process.env.AWS_APK_URL) {
+      return NextResponse.json({ url: process.env.AWS_APK_URL })
+    }
     return new Response(null, { status: 500 })
   }
 }
