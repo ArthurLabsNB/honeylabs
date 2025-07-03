@@ -2,21 +2,14 @@ export const runtime = 'nodejs'
 
 import { NextResponse } from 'next/server'
 import { events } from '@/lib/events'
-import { ReadableStream } from 'stream/web'
+import { sseStream } from '@lib/sseStream'
 
 export async function GET() {
-  const stream = new ReadableStream({
-    start(controller) {
-      const send = (data: any) => {
-        controller.enqueue(`data: ${JSON.stringify(data)}\n\n`)
-      }
-      events.on('event', send)
-      const keep = setInterval(() => controller.enqueue(':keepalive\n\n'), 15000)
-      return () => {
-        clearInterval(keep)
-        events.off('event', send)
-      }
-    },
+  const stream = sseStream(({ send, signal }) => {
+    const sendEvent = (data: any) => send(data)
+    events.on('event', sendEvent)
+    signal.addEventListener('abort', () => events.off('event', sendEvent))
+    return () => events.off('event', sendEvent)
   })
   return new NextResponse(stream, {
     headers: {
