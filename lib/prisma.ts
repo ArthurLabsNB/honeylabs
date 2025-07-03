@@ -6,9 +6,7 @@ export function resolveDatabaseUrl() {
   let url = process.env.DATABASE_URL
   if (!url) return undefined
 
-  if (url.startsWith('prisma+postgres://')) {
-    url = url.replace('prisma+postgres://', 'prisma+postgresql://')
-  } else if (url.startsWith('postgres://')) {
+  if (url.startsWith('postgres://')) {
     url = url.replace('postgres://', 'postgresql://')
   }
 

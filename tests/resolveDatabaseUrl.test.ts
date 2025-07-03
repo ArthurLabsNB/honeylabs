@@ -11,7 +11,7 @@ describe('resolveDatabaseUrl', () => {
 
   it('corrige prefijo prisma+postgres', () => {
     process.env.DATABASE_URL = 'prisma+postgres://example'
-    expect(resolveDatabaseUrl()).toBe('prisma+postgresql://example')
+    expect(resolveDatabaseUrl()).toBe('prisma+postgres://example')
   })
 
   it('agrega prisma+ con data proxy', () => {
