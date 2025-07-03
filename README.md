@@ -70,15 +70,15 @@ Clona el repositorio y ejecuta los siguientes comandos:
 ```sh
 git clone https://github.com/ArthurLabsNB/honeylabs.git
 cd honeylabs
-npm install
-npm install -D prisma 
-npm install prisma --save-dev
-npx prisma migrate dev
-npx prisma migrate deploy
+pnpm install
+pnpm prisma migrate dev
+DATABASE_URL=$DIRECT_DB_URL pnpm prisma migrate deploy
 vercel --prod
 ```
 
-Configura las variables de entorno copiando `.env.example` a `.env` y ajustando los valores necesarios.
+Configura las variables de entorno copiando `.env.example` a `.env`.
+Debes definir `DATABASE_URL` con la URL de Prisma Accelerate y
+`DIRECT_DB_URL` con la conexión directa usada en las migraciones.
 
 ---
 
@@ -87,7 +87,7 @@ Configura las variables de entorno copiando `.env.example` a `.env` y ajustando 
 Para iniciar el entorno de desarrollo:
 
 ```sh
-npm run dev
+pnpm dev
 ```
 
 La aplicación estará disponible en [honeylabs.vercel.app] por el momento hasta que se tenga un host fijo.

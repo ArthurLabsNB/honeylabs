@@ -3,9 +3,11 @@
   "version": "0.2.265",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "gen:dev": "prisma generate",
+    "prisma:gen:prod": "prisma generate --data-proxy",
+    "dev": "pnpm gen:dev && next dev",
     "postinstall": "prisma generate",
-    "build": "next build",
+    "build": "pnpm prisma:gen:prod && next build",
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run",
