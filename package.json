@@ -1,6 +1,7 @@
 {
   "name": "honeylabs",
   "version": "0.2.267",
+  "packageManager": "pnpm@8.15.4",
   "private": true,
   "scripts": {
     "gen:dev": "prisma generate",
@@ -15,6 +16,7 @@
     "nx": "nx"
   },
   "dependencies": {
+    
     "@capacitor/core": "^7.4.0",
     "@capgo/capacitor-updater": "^7.6.0",
     "@dnd-kit/core": "^6.3.1",
