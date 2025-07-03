@@ -14,4 +14,4 @@ jobs:
       - name: Migrate
         run: pnpm prisma migrate deploy
         env:
-          DATABASE_URL: ${{ secrets.DIRECT_DB_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
