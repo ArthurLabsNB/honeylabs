@@ -38,7 +38,7 @@ export async function GET() {
         controller.enqueue('data: {"progress":0,"building":false}\n\n')
       }
       await fetchProgress()
-      const timer = setInterval(fetchProgress, 5000)
+      const timer = setInterval(fetchProgress, 2000)
       return () => clearInterval(timer)
     },
   })

@@ -1,6 +1,6 @@
 {
   "name": "honeylabs",
-  "version": "0.2.258",
+  "version": "0.2.260",
   "private": true,
   "scripts": {
     "dev": "next dev",

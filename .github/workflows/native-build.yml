@@ -1,0 +1,37 @@
+name: Native Build
+on:
+  repository_dispatch:
+    types: [native]
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    env:
+      NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+    steps:
+      - name: create check
+        id: check
+        uses: ./.github/actions/create-check
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repo: ${{ github.repository }}
+          sha: ${{ github.sha }}
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+      - run: pnpm i
+      - run: pnpm build
+      - name: progress 20%
+        run: gh api -X PATCH /repos/$GITHUB_REPOSITORY/check-runs/${{ steps.check.outputs.id }} -f output='{"summary":"progress:0.2"}'
+      - run: pnpm cap sync android
+      - name: setup keystore
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/keystore.jks
+      - run: ./gradlew assembleRelease
+      - name: progress 80%
+        run: gh api -X PATCH /repos/$GITHUB_REPOSITORY/check-runs/${{ steps.check.outputs.id }} -f output='{"summary":"progress:0.8"}'
+      - run: apksigner verify android/app/build/outputs/apk/release/app-release.apk
+      - name: progress 100%
+        run: gh api -X PATCH /repos/$GITHUB_REPOSITORY/check-runs/${{ steps.check.outputs.id }} -f output='{"summary":"progress:1"}'
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: android/app/build/outputs/apk/release/app-release.apk
