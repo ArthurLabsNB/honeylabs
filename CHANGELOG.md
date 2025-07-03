@@ -1,3 +1,6 @@
+## 0.2.255
+- Añadimos columna JSON `estado` a tablas de historial para evitar errores en consultas.
+
 ## 0.2.253
 - Añadimos campo `reorderLevel` en materiales y validaciones con Zod.
 - Middleware de Prisma evita cantidades negativas.
