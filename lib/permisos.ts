@@ -1,8 +1,15 @@
-export function getMainRole(u: { rol?: string; roles?: { nombre?: string }[] } | null | undefined): string | undefined {
-  if (!u) return undefined;
-  if (u.rol) return String(u.rol);
-  if (u.roles && u.roles.length > 0 && u.roles[0]?.nombre) return String(u.roles[0].nombre);
-  return undefined;
+export function normalizeRol(rol?: string): string {
+  return (rol ?? '').trim().toLowerCase()
+}
+
+export function getMainRole(
+  u: { rol?: string; roles?: { nombre?: string }[] } | null | undefined,
+): string | undefined {
+  if (!u) return undefined
+  if (u.rol) return normalizeRol(String(u.rol))
+  if (u.roles && u.roles.length > 0 && u.roles[0]?.nombre)
+    return normalizeRol(String(u.roles[0].nombre))
+  return undefined
 }
 
 export function normalizeTipoCuenta(tipo?: string): string {
