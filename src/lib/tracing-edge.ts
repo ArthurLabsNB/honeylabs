@@ -6,8 +6,9 @@ let provider: BasicTracerProvider | null = null;
 export function initEdgeTracing(url: string) {
   if (provider) return;
   const exporter = new OTLPTraceExporter({ url });
-  provider = new BasicTracerProvider();
-  provider.addSpanProcessor(new BatchSpanProcessor(exporter));
+  provider = new BasicTracerProvider({
+    spanProcessors: [new BatchSpanProcessor(exporter)],
+  });
   provider.register();
 }
 
