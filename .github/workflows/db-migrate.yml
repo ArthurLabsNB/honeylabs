@@ -1,17 +1,32 @@
-name: Deploy DB Migrations
+name: Deploy DB Schema (Accelerate Compatible)
+
 on:
   workflow_dispatch:
   push:
     branches: [main]
 
 jobs:
-  migrate:
+  deploy-schema:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
-      - run: pnpm install
-      - name: Migrate
-        run: pnpm prisma migrate deploy
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8.15.4  # o la que estés usando
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Push schema to database (Prisma Accelerate)
+        run: pnpm prisma db push
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Generate Prisma Client
+        run: pnpm prisma generate
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
