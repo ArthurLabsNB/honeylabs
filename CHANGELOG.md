@@ -1,3 +1,8 @@
+## 0.2.260
+- Añadimos workflow `native-build.yml` con verificación y firma de APK.
+- Configuramos `android/app/build.gradle` para firmar en modo release.
+- Progreso SSE ahora se actualiza cada 2 s desde GitHub Checks.
+
 ## 0.2.258
 - Ocultamos el botón de generación salvo para administradores.
 - Enviamos `commit` y `type` al iniciar la compilación.
