@@ -2,15 +2,23 @@ import { PrismaClient } from '@prisma/client'
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient }
 
-function resolveDatabaseUrl() {
+export function resolveDatabaseUrl() {
   let url = process.env.DATABASE_URL
   if (!url) return undefined
+
+  if (url.startsWith('prisma+postgres://')) {
+    url = url.replace('prisma+postgres://', 'prisma+postgresql://')
+  } else if (url.startsWith('postgres://')) {
+    url = url.replace('postgres://', 'postgresql://')
+  }
+
   const useProxy = process.env.PRISMA_DATA_PROXY?.toLowerCase() === 'true'
   if (useProxy && !url.startsWith('prisma://') && !url.startsWith('prisma+')) {
-    if (url.startsWith('postgres://') || url.startsWith('postgresql://')) {
+    if (url.startsWith('postgresql://')) {
       url = `prisma+${url}`
     }
   }
+
   return url
 }
 
