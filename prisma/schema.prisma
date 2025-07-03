@@ -78,7 +78,6 @@ model Usuario {
   eventosCreados       EventoAlmacen[]        @relation("EventosCreados")
   historialAlmacenes   HistorialAlmacen[]
   historialLotes       HistorialLote[]
-  historialUnidades   HistorialUnidad[]
   incidenciasCreadas   Incidencia[]           @relation("IncidenciasCreadas")
   incidenciasResueltas Incidencia[]           @relation("IncidenciasResueltas")
   materiales           Material[]
@@ -300,13 +299,13 @@ model Material {
   observaciones       String?
   minimo              Float?
   maximo              Float?
-  reorderLevel        Int?
   fechaRegistro       DateTime             @default(now())
   fechaActualizacion  DateTime             @updatedAt
   almacenId           Int
   usuarioId           Int?
   codigoBarra         String?
   codigoQR            String?
+  reorderLevel        Int?
   archivos            ArchivoMaterial[]
   historialLotes      HistorialLote[]
   almacen             Almacen              @relation(fields: [almacenId], references: [id])
@@ -346,22 +345,10 @@ model HistorialLote {
   descripcion String?
   ubicacion   String?
   cantidad    Float?
-  estado      Json?
   fecha       DateTime @default(now())
   usuarioId   Int?
   material    Material @relation(fields: [materialId], references: [id])
   usuario     Usuario? @relation(fields: [usuarioId], references: [id])
-}
-
-model HistorialUnidad {
-  id          Int      @id @default(autoincrement())
-  unidadId    Int
-  descripcion String?
-  estado      Json?
-  fecha       DateTime @default(now())
-  usuarioId   Int?
-  unidad      MaterialUnidad @relation(fields: [unidadId], references: [id], onDelete: Cascade)
-  usuario     Usuario?       @relation(fields: [usuarioId], references: [id])
 }
 
 model MaterialUnidad {
@@ -401,7 +388,6 @@ model MaterialUnidad {
   imagen             Bytes?
   imagenNombre       String?
   archivos           ArchivoUnidad[]
-  historial          HistorialUnidad[]
   material           Material        @relation(fields: [materialId], references: [id])
 
   @@unique([materialId, nombre])
