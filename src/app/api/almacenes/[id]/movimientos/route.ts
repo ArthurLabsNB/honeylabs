@@ -3,7 +3,8 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@lib/prisma';
 import { getUsuarioFromSession } from '@lib/auth';
-import { hasManagePerms } from '@lib/permisos';
+import { hasManagePerms, hasPermission } from '@lib/permisos';
+import { logAudit } from '@/lib/audit';
 import * as logger from '@lib/logger'
 
 function getAlmacenIdFromRequest(req: NextRequest): number | null {
@@ -27,7 +28,11 @@ export async function POST(req: NextRequest) {
       where: { usuarioId: usuario.id, almacenId: id },
       select: { id: true },
     });
-    if (!pertenece && !hasManagePerms(usuario)) {
+    if (
+      !pertenece &&
+      !hasManagePerms(usuario) &&
+      !hasPermission(usuario, 'movimientos')
+    ) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
     }
     const { tipo, cantidad, descripcion, contexto } = await req.json();
@@ -39,16 +44,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Cantidad inválida' }, { status: 400 });
     }
 
-    await prisma.movimiento.create({
-      data: {
+    await prisma.$transaction(async (tx) => {
+      await tx.movimiento.create({
+        data: {
+          tipo,
+          cantidad: n,
+          descripcion: descripcion || undefined,
+          contexto: contexto ?? undefined,
+          almacenId: id,
+          usuarioId: usuario.id,
+        },
+      })
+      await logAudit(usuario.id, 'movimiento', 'almacen', {
         tipo,
         cantidad: n,
-        descripcion: descripcion || undefined,
-        contexto: contexto ?? undefined,
         almacenId: id,
-        usuarioId: usuario.id,
-      },
-    });
+      })
+    })
 
     return NextResponse.json({ success: true });
   } catch (err) {

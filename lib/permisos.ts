@@ -45,3 +45,14 @@ export function hasManagePerms(
 
   return false;
 }
+
+export function hasPermission(
+  u: { roles?: { permisos?: Record<string, any> }[] } | null | undefined,
+  permiso: string,
+): boolean {
+  if (!u) return false
+  for (const r of u.roles || []) {
+    if (r.permisos && (r.permisos as any)[permiso]) return true
+  }
+  return false
+}

@@ -1,7 +1,7 @@
 export const runtime = 'nodejs'
 
 import { NextResponse } from 'next/server'
-import { events } from '@lib/events'
+import { events } from '@/lib/events'
 import { ReadableStream } from 'stream/web'
 
 export async function GET() {
