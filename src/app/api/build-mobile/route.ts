@@ -5,7 +5,8 @@ import fs from 'fs/promises'
 import path from 'path'
 import { env } from 'process'
 import { getUsuarioFromSession } from '@lib/auth'
-import { hasManagePerms } from '@lib/permisos'
+import { isAdminUser } from '@lib/permisos'
+import { detectNativeChanges } from '@lib/mobile'
 import * as logger from '@lib/logger'
 
 let lastRun = 0
@@ -14,8 +15,11 @@ const buildStatusPath = path.join(process.cwd(), 'lib', 'build-status.json')
 
 export async function POST(req: NextRequest) {
   const usuario = await getUsuarioFromSession(req)
-  if (!usuario || !hasManagePerms(usuario)) {
-    return NextResponse.json({ error: 'no_autorizado' }, { status: 401 })
+  if (!usuario) {
+    return NextResponse.json({ error: 'no_autenticado' }, { status: 401 })
+  }
+  if (!isAdminUser(usuario)) {
+    return NextResponse.json({ error: 'no_autorizado' }, { status: 403 })
   }
   const csrf = req.headers.get('x-csrf-token')
   if (process.env.CSRF_TOKEN && csrf !== process.env.CSRF_TOKEN) {
@@ -24,12 +28,21 @@ export async function POST(req: NextRequest) {
   if (Date.now() - lastRun < 10000) {
     return NextResponse.json({ error: 'rate_limited' }, { status: 429 })
   }
+  try {
+    const prevRaw = await fs.readFile(buildStatusPath, 'utf8').catch(() => '{"building":false}')
+    const prev = JSON.parse(prevRaw) as { building: boolean }
+    if (prev.building) {
+      return NextResponse.json({ error: 'busy' }, { status: 429 })
+    }
+  } catch {}
   lastRun = Date.now()
   try {
     await fs.writeFile(buildStatusPath, JSON.stringify({ building: true, progress: 0 }))
     const repo = env.GITHUB_REPO
     const token = env.GITHUB_TOKEN
     if (repo && token) {
+      const native = await detectNativeChanges()
+      const eventType = native ? 'native' : 'ota'
       fetch(`https://api.github.com/repos/${repo}/dispatches`, {
         method: 'POST',
         headers: {
@@ -37,7 +50,7 @@ export async function POST(req: NextRequest) {
           'User-Agent': 'honeylabs-build',
           Accept: 'application/vnd.github+json',
         },
-        body: JSON.stringify({ event_type: 'mobile_build' }),
+        body: JSON.stringify({ event_type: eventType }),
       }).catch((err) => logger.error('[BUILD_MOBILE] dispatch error', err))
     }
     return NextResponse.json({ ok: true }, { status: 202 })

@@ -24,6 +24,9 @@ jobs:
       - uses: pnpm/action-setup@v3
       - run: pnpm i
       - run: pnpm build
+      - run: nx affected -t build --prod
+      - run: next build && next export -o dist
+      - run: capgo upload --appId honeylabs ./dist
       - run: pnpm cap sync android && pnpm cap build android --release
       - uses: sigstore/cosign-installer@v3
       - uses: anchore/sbom-action@v0
