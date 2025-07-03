@@ -12,7 +12,7 @@
 • Campo reorderLevel en materiales. ✔
 • Cron job que envía notificación push/email + widget dashboard.	✔ Evita quiebres de stock; automatiza reabastecimiento.
 5	Panel dashboard personalizable
-• Widgets independientes (React dynamic imports).
+• Widgets independientes (React dynamic imports). ✔
 • API /metrics y drag-and-drop para ordenar widgets.	✔ Usuarios ven KPIs clave a su medida; adopción y eficiencia.
 6	Gestión granular de roles (RBAC)
 • Tabla permissions, mapeo rol-permiso; UI para crear roles. ✔
@@ -23,19 +23,19 @@
 8	OTA con Capgo + canales canary/prod
 • Activa liveUpdates y rollout 10 % → 100 % si error < 0.5 %.	✔ Distribución de nuevas versiones sin reinstalar APK; menos fricción.
 9	Flujo de generación de APK con SLSA 3
-• Workflow firma con Cosign, produce SBOM CycloneDX y build-provenance.
+• Workflow firma con Cosign, produce SBOM CycloneDX y build-provenance. ✔
 • /api/build-mobile dispara Check Run y SSE lee progreso.	✔ Seguridad supply-chain al nivel de la industria; transparencia total.
 10	Auditoría de acciones críticas
-• Tabla audit_log (user, acción, entidad, payload, fecha).
+• Tabla audit_log (user, acción, entidad, payload, fecha). ✔
 • Página “Histórico” filtrable por módulo/usuario.	✔ Trazabilidad, cumplimiento y detección de uso indebido.
 11	UI móvil nativa-friendly
-• Reestiliza con Tailwind mobile-first: tarjetas, botones grandes.
+• Reestiliza con Tailwind mobile-first: tarjetas, botones grandes. ✔
 • Navegación bottom-tabs + gestos; cámara nativa para escaneo.	✔ Mejora usabilidad in-situ y sensación “app” real.
 12	Cifrado de base local
-• CapacitorSQLite con clave derivada del Android KeyStore.
+• CapacitorSQLite con clave derivada del Android KeyStore. ✔
 • SecureStorage para tokens.	✔ Protege credenciales y datos si el dispositivo se pierde.
 13	Edge JWT validation + presign STS 5 min
-• CloudFront Function valida token antes de servir descarga.
+• CloudFront Function valida token antes de servir descarga. ✔
 • /api/app/url usa getSignedUrl con rol mínimo.	✔ Descargas seguras; minimiza exposición de enlaces.
 14	Automated IA test generation
 • Acción Octomind/GPT-4o crea tests Playwright en cada PR.	✔ Cobertura crece sin esfuerzo; menos regresiones.

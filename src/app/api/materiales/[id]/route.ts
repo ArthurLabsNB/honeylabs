@@ -5,7 +5,7 @@ import prisma from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
-import { materialSchema } from '@lib/validators/material'
+import { materialSchema } from '@/lib/validators/material'
 import crypto from 'node:crypto'
 import * as logger from '@lib/logger'
 

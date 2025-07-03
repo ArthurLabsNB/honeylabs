@@ -370,7 +370,7 @@ export default function UserMenu({
             {usuario ? (
               <button
                 onClick={cerrarSesion}
-                className="w-full px-4 py-2 flex items-center gap-2 text-red-600 hover:bg-red-50 dark:hover:bg-zinc-800 dark:text-red-400 text-sm"
+                className="w-full px-4 py-3 flex items-center gap-2 text-red-600 hover:bg-red-50 dark:hover:bg-zinc-800 dark:text-red-400 text-base sm:text-sm"
                 tabIndex={open ? 0 : -1}
               >
                 <LogOut className="h-4 w-4" /> Cerrar sesión
@@ -378,7 +378,7 @@ export default function UserMenu({
             ) : (
               <Link
                 href="/login"
-                className="w-full px-4 py-2 flex items-center gap-2 text-amber-700 hover:bg-amber-50 dark:hover:bg-zinc-800 text-sm"
+                className="w-full px-4 py-3 flex items-center gap-2 text-amber-700 hover:bg-amber-50 dark:hover:bg-zinc-800 text-base sm:text-sm"
                 tabIndex={open ? 0 : -1}
               >
                 <LogIn className="h-4 w-4" /> Iniciar sesión
@@ -420,7 +420,7 @@ function MenuLink({
     <Link
       href={href}
       tabIndex={tabIndex}
-      className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-amber-50 dark:hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-amber-400 rounded-md"
+      className="flex items-center gap-2 px-4 py-3 text-base sm:text-sm hover:bg-amber-50 dark:hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-amber-400 rounded-md"
     >
       {icon}
       {label}

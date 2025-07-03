@@ -205,5 +205,17 @@
       "admin",
       "empresarial"
     ]
+  },
+  {
+    "key": "reportes",
+    "title": "Reportes",
+    "file": "ReportesWidget",
+    "category": "General",
+    "w": 2,
+    "h": 2,
+    "minW": 2,
+    "minH": 2,
+    "plans": ["Free", "Pro", "Empresarial", "Institucional"],
+    "tipos": ["individual", "empresarial", "institucional", "codigo", "admin"]
   }
 ]
