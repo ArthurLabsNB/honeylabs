@@ -6,6 +6,7 @@ const config: CapacitorConfig = {
   webDir: 'out',
   plugins: {
     Capgo: {
+      appId: 'honeylabs',
       liveUpdates: true,
       channel: 'prod',
     },
