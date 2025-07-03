@@ -4,7 +4,7 @@ import { setupTracing } from '@/lib/tracing';
 
 export default function TracingInit() {
   useEffect(() => {
-    setupTracing();
+    void setupTracing();
   }, []);
   return null;
 }
