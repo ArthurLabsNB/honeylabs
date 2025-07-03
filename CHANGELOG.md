@@ -3,6 +3,11 @@
 - Configuramos `android/app/build.gradle` para firmar en modo release.
 - Progreso SSE ahora se actualiza cada 2 s desde GitHub Checks.
 
+## 0.2.262
+- Verificamos descargas antes de mostrar el botón.
+- Ejecutamos `Updater.check()` al iniciar la app.
+- Añadimos workflow `rollback.yml` para revertir versiones con Sentry.
+
 ## 0.2.258
 - Ocultamos el botón de generación salvo para administradores.
 - Enviamos `commit` y `type` al iniciar la compilación.
