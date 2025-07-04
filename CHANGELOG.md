@@ -1,6 +1,12 @@
 ## 0.2.268
 - Validamos DATABASE_URL en workflows antes del build.
 
+## 0.2.269
+- Aceptamos valores de DATABASE_URL entre comillas en los workflows.
+
+## 0.2.270
+- Evitamos conectar a Prisma si DATABASE_URL no está definido durante el build.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 
