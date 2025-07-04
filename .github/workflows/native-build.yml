@@ -23,7 +23,8 @@ jobs:
         run: echo "${{ secrets.ENV_FILE }}" > .env
       - name: Validate DATABASE_URL
         run: |
-          if ! grep -q '^DATABASE_URL=prisma' .env; then
+          val=$(grep '^DATABASE_URL=' .env | head -n1 | cut -d= -f2- | sed 's/^"//' | sed 's/"$//')
+          if ! printf '%s' "$val" | grep -q '^prisma'; then
             echo 'DATABASE_URL debe iniciar con prisma://' >&2
             exit 1
           fi

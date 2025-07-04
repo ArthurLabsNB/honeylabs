@@ -20,15 +20,17 @@ export function resolveDatabaseUrl() {
   return url
 }
 
+const dbUrl = resolveDatabaseUrl()
+const logLevel =
+  process.env.NODE_ENV === 'development'
+    ? ['query', 'error', 'warn']
+    : ['error']
+
+const options = dbUrl ? { datasources: { db: { url: dbUrl } }, log: logLevel } : { log: logLevel }
+
 export const prisma =
   globalForPrisma.prisma ??
-  new PrismaClient({
-    datasources: { db: { url: resolveDatabaseUrl() } },
-    log:
-      process.env.NODE_ENV === 'development'
-        ? ['query', 'error', 'warn']
-        : ['error'],
-  })
+  new PrismaClient(options)
 
 prisma.$use(async (params, next) => {
   if (
@@ -46,7 +48,7 @@ prisma.$use(async (params, next) => {
   return next(params)
 })
 
-if (!globalForPrisma.prisma && !process.env.VITEST) {
+if (dbUrl && !globalForPrisma.prisma && !process.env.VITEST) {
   prisma.$connect().catch((e) =>
     console.error('Prisma connection error:', e),
   )
