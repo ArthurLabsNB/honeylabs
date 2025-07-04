@@ -25,6 +25,12 @@ jobs:
       - run: pnpm i
       - name: Setup environment
         run: echo "${{ secrets.ENV_FILE }}" > .env
+      - name: Validate DATABASE_URL
+        run: |
+          if ! grep -q '^DATABASE_URL=prisma' .env; then
+            echo 'DATABASE_URL debe iniciar con prisma://' >&2
+            exit 1
+          fi
       - run: pnpm build
       - run: nx affected -t build --prod
       - run: next build && next export -o dist
