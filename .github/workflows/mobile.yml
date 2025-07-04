@@ -23,6 +23,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v3
       - run: pnpm i
+      - name: Setup environment
+        run: echo "${{ secrets.ENV_FILE }}" > .env
       - run: pnpm build
       - run: nx affected -t build --prod
       - run: next build && next export -o dist
