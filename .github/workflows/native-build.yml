@@ -21,6 +21,12 @@ jobs:
       - run: pnpm i
       - name: Setup environment
         run: echo "${{ secrets.ENV_FILE }}" > .env
+      - name: Validate DATABASE_URL
+        run: |
+          if ! grep -q '^DATABASE_URL=prisma' .env; then
+            echo 'DATABASE_URL debe iniciar con prisma://' >&2
+            exit 1
+          fi
       - run: pnpm build
       - name: progress 20%
         run: gh api -X PATCH /repos/$GITHUB_REPOSITORY/check-runs/${{ steps.check.outputs.id }} -f output='{"summary":"progress:0.2"}'

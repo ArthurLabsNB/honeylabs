@@ -1,3 +1,6 @@
+## 0.2.268
+- Validamos DATABASE_URL en workflows antes del build.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 
