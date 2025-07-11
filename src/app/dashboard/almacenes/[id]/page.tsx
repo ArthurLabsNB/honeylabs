@@ -17,6 +17,7 @@ import { generarUUID } from "@/lib/uuid";
 import type { UnidadDetalle } from "@/types/unidad-detalle";
 import useUnidades from "@/hooks/useUnidades";
 import QuickInventoryModal from "./QuickInventoryModal";
+import { useTabStore } from "@/hooks/useTabs";
 
 interface Almacen {
   id: number;
@@ -59,6 +60,11 @@ export default function AlmacenPage() {
   const [unidadSel, setUnidadSel] = useState<UnidadDetalle | null>(null);
   const [historialBackup, setHistorialBackup] = useState<any | null>(null);
   const [showQuick, setShowQuick] = useState(false);
+  const { add } = useTabStore();
+  useEffect(() => {
+    if (!id) return;
+    add({ id: `almacen-${id}-materiales`, title: `Almacén ${id}`, type: 'materiales' });
+  }, [id, add]);
 
   const routerNav = useNextRouter();
   const selectedMaterial = historialBackup
