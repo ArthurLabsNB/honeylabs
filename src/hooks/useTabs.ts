@@ -7,7 +7,8 @@ export type TabType =
   | "unidades"
   | "auditorias"
   | "form-material"
-  | "form-unidad";
+  | "form-unidad"
+  | "blank";
 
 export interface Tab {
   id: string;
@@ -23,10 +24,15 @@ interface TabState {
   tabs: Tab[];
   activeId: string | null;
   add: (tab: Tab) => void;
+  addAfterActive: (tab: Tab) => void;
+  closeOthers: (id: string) => void;
   close: (id: string) => void;
   move: (from: number, to: number) => void;
   setActive: (id: string) => void;
   update: (id: string, data: Partial<Tab>) => void;
+  rename: (id: string, title: string) => void;
+  minimizeAll: () => void;
+  restoreAll: () => void;
 }
 
 function arrayMove<T>(arr: T[], from: number, to: number) {
@@ -43,6 +49,19 @@ export const useTabStore = create<TabState>()(
       activeId: null,
       add: (tab) =>
         set((state) => ({ tabs: [...state.tabs, tab], activeId: tab.id })),
+      addAfterActive: (tab) =>
+        set((state) => {
+          const idx = state.activeId
+            ? state.tabs.findIndex((t) => t.id === state.activeId)
+            : -1;
+          const pos = idx >= 0 ? idx + 1 : state.tabs.length;
+          const arr = state.tabs.slice();
+          arr.splice(pos, 0, tab);
+          arr.sort((a, b) => Number(b.pinned) - Number(a.pinned));
+          return { tabs: arr, activeId: tab.id };
+        }),
+      closeOthers: (id) =>
+        set((state) => ({ tabs: state.tabs.filter((t) => t.id === id), activeId: id })),
       close: (id) =>
         set((state) => ({
           tabs: state.tabs.filter((t) => t.id !== id),
@@ -54,6 +73,18 @@ export const useTabStore = create<TabState>()(
       update: (id, data) =>
         set((state) => ({
           tabs: state.tabs.map((t) => (t.id === id ? { ...t, ...data } : t)),
+        })),
+      rename: (id, title) =>
+        set((state) => ({
+          tabs: state.tabs.map((t) => (t.id === id ? { ...t, title } : t)),
+        })),
+      minimizeAll: () =>
+        set((state) => ({
+          tabs: state.tabs.map((t) => ({ ...t, minimized: true })),
+        })),
+      restoreAll: () =>
+        set((state) => ({
+          tabs: state.tabs.map((t) => ({ ...t, minimized: false, collapsed: false })),
         })),
     }),
     {

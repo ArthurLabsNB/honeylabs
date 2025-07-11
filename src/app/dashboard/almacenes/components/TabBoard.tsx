@@ -1,5 +1,7 @@
 "use client";
+import { useEffect } from "react";
 import { useTabStore, Tab } from "@/hooks/useTabs";
+import { generarUUID } from "@/lib/uuid";
 import DraggableTab from "./DraggableTab";
 import MaterialList from "./MaterialList";
 import MaterialForm from "./MaterialForm";
@@ -17,12 +19,18 @@ function TabContent({ tab }: { tab: Tab }) {
     case "auditorias":
       return <AuditoriasPanel material={null} almacenId={0} onSelectHistorial={() => {}} />;
     default:
-      return null;
+      return <div className="p-4 text-sm text-gray-400">Sin contenido</div>;
   }
 }
 
 export default function TabBoard() {
-  const { tabs, activeId, update } = useTabStore();
+  const { tabs, activeId, update, add } = useTabStore();
+
+  useEffect(() => {
+    if (tabs.length === 0) {
+      add({ id: generarUUID(), title: 'Nuevo', type: 'blank' });
+    }
+  }, [tabs.length, add]);
   return (
     <div className="flex flex-col h-full">
       <div className="flex gap-2 overflow-x-auto border-b border-[var(--dashboard-border)] py-1">

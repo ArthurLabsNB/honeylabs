@@ -85,7 +85,7 @@ export default function AlmacenDetailNavbar() {
 
   return (
     <header
-      className="flex items-center justify-between h-[3.5rem] min-h-[3.5rem] px-4 border-b border-[var(--dashboard-border)] bg-[var(--dashboard-navbar)] fixed left-0 right-0 z-30"
+      className="flex items-center justify-between h-[3.5rem] min-h-[3.5rem] px-4 md:px-6 border-b border-[var(--dashboard-border)] bg-[var(--dashboard-navbar)] fixed left-0 right-0 z-30"
       style={{ top: fullscreen ? 0 : NAVBAR_HEIGHT }}
     >
       <div className="flex items-center gap-3">
@@ -101,46 +101,48 @@ export default function AlmacenDetailNavbar() {
         className="bg-transparent text-center flex-1 mx-4 text-white text-lg font-semibold focus:outline-none"
       />
       <div className="flex items-center gap-2">
-        <button
-          onClick={() => window.dispatchEvent(new Event('quick-inventory'))}
-          className="p-2 hover:bg-white/10 rounded-lg"
-          title="Vista rápida"
-        >
-          <ClipboardList className="w-5 h-5" />
-        </button>
-        <button
-          onClick={() => router.push(`/dashboard/almacenes/${id}/scan`)}
-          className="p-2 hover:bg-white/10 rounded-lg"
-          title="Escanear"
-        >
-          <QrCode className="w-5 h-5" />
-        </button>
-        <button
-          onClick={() => {
-            const el = document.getElementById('busqueda-materiales') as HTMLInputElement | null
-            el?.focus()
-          }}
-          className="p-2 hover:bg-white/10 rounded-lg"
-          title="Buscar"
-        >
-          <Search className="w-5 h-5" />
-        </button>
-        <button
-          onClick={() => window.dispatchEvent(new Event('vaciar-materiales'))}
-          className="p-2 hover:bg-white/10 rounded-lg"
-          title="Vaciar"
-        >
-          <Trash2 className="w-5 h-5" />
-        </button>
-        {auditActive && (
+        <div className="flex items-center gap-1 mr-2">
           <button
-            onClick={() => window.dispatchEvent(new Event('audit-cancel'))}
+            onClick={() => window.dispatchEvent(new Event('quick-inventory'))}
             className="p-2 hover:bg-white/10 rounded-lg"
-            title="Salir de auditoría"
+            title="Vista rápida"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ClipboardList className="w-5 h-5" />
           </button>
-        )}
+          <button
+            onClick={() => router.push(`/dashboard/almacenes/${id}/scan`)}
+            className="p-2 hover:bg-white/10 rounded-lg"
+            title="Escanear"
+          >
+            <QrCode className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => {
+              const el = document.getElementById('busqueda-materiales') as HTMLInputElement | null
+              el?.focus()
+            }}
+            className="p-2 hover:bg-white/10 rounded-lg"
+            title="Buscar"
+          >
+            <Search className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => window.dispatchEvent(new Event('vaciar-materiales'))}
+            className="p-2 hover:bg-white/10 rounded-lg"
+            title="Vaciar"
+          >
+            <Trash2 className="w-5 h-5" />
+          </button>
+          {auditActive && (
+            <button
+              onClick={() => window.dispatchEvent(new Event('audit-cancel'))}
+              className="p-2 hover:bg-white/10 rounded-lg"
+              title="Salir de auditoría"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+          )}
+        </div>
         <TabsMenu />
         <AlmacenTools id={id as string} />
         <button
