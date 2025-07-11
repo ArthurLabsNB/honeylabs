@@ -8,6 +8,7 @@ import crypto from "node:crypto";
 import { getUsuarioFromSession } from "@lib/auth";
 import { hasManagePerms, normalizeTipoCuenta } from "@lib/permisos";
 import * as logger from '@lib/logger'
+import { logAudit } from '@/lib/audit'
 
 const MAX_IMAGE_MB = 5;
 const MAX_IMAGE_BYTES = MAX_IMAGE_MB * 1024 * 1024;
@@ -260,6 +261,8 @@ export async function POST(req: NextRequest) {
       await snapshot(tx, creado.id, usuario.id, 'Creación')
       return creado
   })
+
+  await logAudit(usuario.id, 'creacion', 'almacen', { almacenId: almacen.id })
 
   const resp = {
     ...almacen,

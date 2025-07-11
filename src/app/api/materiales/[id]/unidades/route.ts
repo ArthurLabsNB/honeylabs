@@ -6,6 +6,7 @@ import { Prisma } from '@prisma/client'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import * as logger from '@lib/logger'
+import { logAudit } from '@/lib/audit'
 
 async function snapshot(unidadId: number, usuarioId: number, descripcion: string) {
   const unidad = await prisma.materialUnidad.findUnique({
@@ -145,6 +146,7 @@ export async function POST(req: NextRequest) {
         select: { id: true, nombre: true, codigoQR: true },
       })
       await snapshot(creado.id, usuario.id, 'Creación')
+      await logAudit(usuario.id, 'creacion_unidad', 'material', { materialId, unidadId: creado.id })
       return NextResponse.json({ unidad: creado })
     } catch (e) {
       if (
