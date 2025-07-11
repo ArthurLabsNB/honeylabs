@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import AlmacenDetailNavbar from "../components/AlmacenDetailNavbar";
 import Spinner from "@/components/Spinner";
 import useSession from "@/hooks/useSession";
-import TabBoard from "../components/TabBoard";
+import CardBoard from "../components/CardBoard";
 import { DetalleUIProvider, useDetalleUI } from "../DetalleUI";
 
 function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
@@ -57,7 +57,7 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
           className="flex-1 overflow-y-auto bg-[var(--dashboard-bg)] text-[var(--dashboard-text)]"
           data-oid="fuuwox1"
         >
-          <TabBoard />
+          <CardBoard />
         </section>
         <button
           onClick={toggleCollapsed}
