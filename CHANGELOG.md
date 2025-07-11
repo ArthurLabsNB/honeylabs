@@ -14,6 +14,9 @@
 ## 0.3.1
 - Integramos sistema de pestañas persistentes con Zustand.
 
+## 0.4.0
+- Incluimos menú de tarjetas en el navbar de almacenes para añadir nuevas pestañas.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 
