@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import AlmacenDetailNavbar from "../components/AlmacenDetailNavbar";
 import Spinner from "@/components/Spinner";
 import useSession from "@/hooks/useSession";
+import TabBoard from "../components/TabBoard";
 
 function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
   const { fullscreen, setFullscreen } = useDashboardUI();
@@ -51,10 +52,10 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
       >
         <AlmacenDetailNavbar />
         <section
-          className="flex-1 p-4 overflow-y-auto bg-[var(--dashboard-bg)] text-[var(--dashboard-text)]"
+          className="flex-1 overflow-y-auto bg-[var(--dashboard-bg)] text-[var(--dashboard-text)]"
           data-oid="fuuwox1"
         >
-          {children}
+          <TabBoard />
         </section>
       </main>
     </div>

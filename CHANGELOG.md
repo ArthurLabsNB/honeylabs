@@ -11,6 +11,9 @@
 - Mejoramos la tarjeta de almacén con acciones en menú y descarga de QR.
 - Selectores y textos actualizados.
 
+## 0.3.1
+- Integramos sistema de pestañas persistentes con Zustand.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 
