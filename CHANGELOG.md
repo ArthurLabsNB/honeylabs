@@ -7,6 +7,10 @@
 ## 0.2.270
 - Evitamos conectar a Prisma si DATABASE_URL no está definido durante el build.
 
+## 0.3.0
+- Mejoramos la tarjeta de almacén con acciones en menú y descarga de QR.
+- Selectores y textos actualizados.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 

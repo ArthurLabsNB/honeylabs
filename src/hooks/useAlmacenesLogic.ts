@@ -149,6 +149,25 @@ export default function useAlmacenesLogic() {
     [almacenes],
   )
 
+  const duplicar = useCallback(
+    async (id: number) => {
+      try {
+        const res = await apiFetch(`/api/almacenes/${id}/duplicar`, { method: 'POST' })
+        const data = await jsonOrNull(res)
+        if (res.ok && data?.almacen) {
+          mutate()
+          toast.show('Almacén duplicado', 'success')
+          return data.almacen.id as number
+        }
+        toast.show(data?.error || 'Error al duplicar', 'error')
+      } catch {
+        toast.show('Error al duplicar', 'error')
+      }
+      return null
+    },
+    [mutate, toast],
+  )
+
   const toggleFavorito = useCallback((id: number) => {
     setFavoritos((prev) => {
       const exists = prev.includes(id)
@@ -175,6 +194,7 @@ export default function useAlmacenesLogic() {
     handleDragEnd,
     moveItem,
     eliminar,
+    duplicar,
     toggleFavorito,
   }
 }

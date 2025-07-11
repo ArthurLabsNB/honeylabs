@@ -64,7 +64,7 @@ export default function MaterialList({
         <select
           value={orden}
           onChange={(e) => setOrden(e.target.value as any)}
-          className="p-2 rounded-md bg-white/5"
+          className="dashboard-select"
         >
           <option value="nombre">Nombre</option>
           <option value="cantidad">Cantidad</option>
@@ -124,7 +124,7 @@ export default function MaterialList({
           onClick={onNuevo}
           className="flex-1 py-1 rounded-md bg-[var(--dashboard-accent)] text-black text-sm hover:bg-[var(--dashboard-accent-hover)]"
         >
-          Nuevo
+          Nuevo Material
         </button>
         <button
           onClick={onDuplicar}

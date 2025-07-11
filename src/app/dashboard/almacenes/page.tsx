@@ -25,6 +25,7 @@ export default function AlmacenesPage() {
     handleDragEnd,
     moveItem,
     eliminar,
+    duplicar,
     toggleFavorito,
   } = useAlmacenesLogic();
 
@@ -73,6 +74,12 @@ export default function AlmacenesPage() {
           almacenes={almacenes}
           favoritos={favoritos}
           onToggleFavorito={toggleFavorito}
+          onEdit={(id) => router.push(`/dashboard/almacenes/${id}/editar`)}
+          onDelete={eliminar}
+          onDuplicate={async (id) => {
+            const nuevo = await duplicar(id)
+            if (nuevo) router.push(`/dashboard/almacenes/${nuevo}`)
+          }}
           onOpen={(id) => router.push(`/dashboard/almacenes/${id}`)}
         />
       ) : (

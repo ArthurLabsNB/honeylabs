@@ -4,7 +4,8 @@ export const materialSchema = z.object({
   nombre: z.string().min(1),
   descripcion: z.string().optional(),
   cantidad: z.coerce.number().int().nonnegative(),
-  unidad: z.string().optional().nullable(),
+  unidad: z
+    .preprocess((v) => (v === '' ? null : v), z.string().optional().nullable()),
   lote: z.string().optional().nullable(),
   fechaCaducidad: z.coerce.date().optional().nullable(),
   ubicacion: z.string().optional().nullable(),

@@ -1,6 +1,6 @@
 {
   "name": "honeylabs",
-  "version": "0.2.270",
+  "version": "0.3.0",
   "packageManager": "pnpm@8.15.4",
   "private": true,
   "scripts": {

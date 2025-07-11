@@ -70,6 +70,10 @@ export default function MaterialForm({
         onChange(campo, Number(e.target.value));
         return;
       }
+      if (campo === 'unidad' || campo === 'estado') {
+        onChange(campo, e.target.value || null);
+        return;
+      }
       if (campo === 'miniatura') {
         onChange(campo, (e.target as HTMLInputElement).files?.[0] || null);
         return;
@@ -140,9 +144,9 @@ export default function MaterialForm({
         <label htmlFor="material-unidad" className="text-xs text-[var(--dashboard-muted)]">Unidad de medida base</label>
         <select
           id="material-unidad"
-          value={material.unidad ?? ""}
-          onChange={handle("unidad")}
-          className="dashboard-input w-full mt-1"
+          value={material.unidad ?? ''}
+          onChange={handle('unidad')}
+          className="dashboard-select w-full mt-1"
           disabled={readOnly}
         >
           <option value="">-</option>
@@ -199,7 +203,7 @@ export default function MaterialForm({
           id="material-estado"
           value={material.estado ?? ''}
           onChange={handle('estado')}
-          className="dashboard-input w-full mt-1"
+          className="dashboard-select w-full mt-1"
           disabled={readOnly}
         >
           <option value="">-</option>
