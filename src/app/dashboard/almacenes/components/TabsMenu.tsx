@@ -15,7 +15,7 @@ const options: Array<{ type: TabType; label: string }> = [
 export default function TabsMenu() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const { add } = useTabStore();
+  const { addAfterActive, minimizeAll, restoreAll, closeOthers, activeId } = useTabStore();
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -26,7 +26,7 @@ export default function TabsMenu() {
   }, []);
 
   const create = (type: TabType, label: string) => {
-    add({ id: generarUUID(), title: label, type });
+    addAfterActive({ id: generarUUID(), title: label, type });
     setOpen(false);
   };
 
@@ -50,6 +50,12 @@ export default function TabsMenu() {
               {opt.label}
             </button>
           ))}
+          <hr className="my-1 border-[var(--dashboard-border)]" />
+          <button onClick={minimizeAll} className="block w-full text-left px-3 py-2 hover:bg-white/5">Minimizar todas</button>
+          <button onClick={restoreAll} className="block w-full text-left px-3 py-2 hover:bg-white/5">Restaurar todas</button>
+          {activeId && (
+            <button onClick={() => closeOthers(activeId)} className="block w-full text-left px-3 py-2 hover:bg-white/5">Cerrar otras</button>
+          )}
         </div>
       )}
     </div>

@@ -31,4 +31,23 @@ describe('useTabStore', () => {
     store.move(1, 0)
     expect(useTabStore.getState().tabs[0].id).toBe('b')
   })
+
+  it('renames a tab', () => {
+    const store = useTabStore.getState()
+    store.add({ id: 'x', title: 'Old', type: 'materiales' })
+    store.rename('x', 'New')
+    expect(useTabStore.getState().tabs[0].title).toBe('New')
+  })
+
+  it('adds after active and closes others', () => {
+    const store = useTabStore.getState()
+    store.add({ id: 'a', title: 'A', type: 'materiales' })
+    store.addAfterActive({ id: 'b', title: 'B', type: 'unidades' })
+    const state = useTabStore.getState()
+    expect(state.tabs[1].id).toBe('b')
+    expect(state.activeId).toBe('b')
+    store.closeOthers('b')
+    expect(useTabStore.getState().tabs.length).toBe(1)
+    expect(useTabStore.getState().tabs[0].id).toBe('b')
+  })
 })
