@@ -36,6 +36,7 @@ export default function UnidadesPanel({
     }
     setValue('')
     onChange('unidad', v)
+    toast.show("Unidad agregada", "success")
   };
 
   const select = (u: UnidadAPI) => {
