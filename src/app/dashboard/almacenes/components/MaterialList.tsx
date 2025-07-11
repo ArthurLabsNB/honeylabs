@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
+import { useToast } from "@/components/Toast";
 import ImageModal from "@/components/ImageModal";
 import type { Material } from "./MaterialRow";
 
@@ -26,6 +27,7 @@ export default function MaterialList({
   onNuevo,
   onDuplicar,
 }: Props) {
+  const toast = useToast();
   const filtrados = useMemo(
     () =>
       materiales
@@ -121,7 +123,10 @@ export default function MaterialList({
       <p className="text-xs text-right">Total stock: {totalStock}</p>
       <div className="flex gap-2">
         <button
-          onClick={onNuevo}
+          onClick={() => {
+            onNuevo();
+            toast.show('Material creado', 'success');
+          }}
           className="flex-1 py-1 rounded-md bg-[var(--dashboard-accent)] text-black text-sm hover:bg-[var(--dashboard-accent-hover)]"
         >
           Nuevo Material

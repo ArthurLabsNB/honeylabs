@@ -6,9 +6,7 @@ import { generarUUID } from "@/lib/uuid";
 
 const options: Array<{ type: TabType; label: string }> = [
   { type: "materiales", label: "Materiales" },
-  { type: "form-material", label: "Formulario Material" },
   { type: "unidades", label: "Unidades" },
-  { type: "form-unidad", label: "Formulario Unidad" },
   { type: "auditorias", label: "Auditorías" },
 ];
 
@@ -25,10 +23,8 @@ export default function TabsMenu() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const formTypes = ["form-material", "form-unidad"];
   const create = (type: TabType, label: string) => {
-    const side = formTypes.includes(type) ? "right" : "left";
-    addAfterActive({ id: generarUUID(), title: label, type, side });
+    addAfterActive({ id: generarUUID(), title: label, type, side: "left" });
     setOpen(false);
   };
 

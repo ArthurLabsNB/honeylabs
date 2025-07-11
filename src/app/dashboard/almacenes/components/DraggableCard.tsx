@@ -53,6 +53,8 @@ export default function DraggableCard({ tab }: { tab: Tab }) {
   const { update, close, rename } = useTabStore();
   const prompt = usePrompt();
 
+  const stop = (e: React.PointerEvent) => e.stopPropagation();
+
   const pin = () => update(tab.id, { pinned: !tab.pinned });
   const toggle = () => update(tab.id, { collapsed: !tab.collapsed });
   const minimize = () => update(tab.id, { minimized: true });
@@ -67,23 +69,39 @@ export default function DraggableCard({ tab }: { tab: Tab }) {
       <div className="flex items-center justify-between mb-2 cursor-move" {...listeners}>
         <span className="font-semibold" onDoubleClick={toggle}>{tab.title}</span>
         <div className="flex items-center gap-1">
-          <button onClick={onRename} className="p-1 hover:bg-white/10 rounded" title="Renombrar">
+          <button onPointerDown={stop} onClick={onRename} className="p-1 hover:bg-white/10 rounded" title="Renombrar">
             <Pencil className="w-3 h-3" />
           </button>
-          <button onClick={pin} className="p-1 hover:bg-white/10 rounded" title="Fijar">
+          <button
+            onPointerDown={stop}
+            onClick={(e) => {
+              stop(e);
+              pin();
+            }}
+            className="p-1 hover:bg-white/10 rounded"
+            title="Fijar"
+          >
             {tab.pinned ? <Pin className="w-3 h-3" /> : <PinOff className="w-3 h-3" />}
           </button>
           {!tab.pinned && (
-            <button onClick={() => close(tab.id)} className="p-1 hover:bg-white/10 rounded" title="Cerrar">
+            <button
+              onPointerDown={stop}
+              onClick={(e) => {
+                stop(e);
+                close(tab.id);
+              }}
+              className="p-1 hover:bg-white/10 rounded"
+              title="Cerrar"
+            >
               <X className="w-3 h-3" />
             </button>
           )}
           {tab.minimized ? (
-            <button onClick={maximize} className="p-1 hover:bg-white/10 rounded" title="Maximizar">
+            <button onPointerDown={stop} onClick={maximize} className="p-1 hover:bg-white/10 rounded" title="Maximizar">
               <Maximize2 className="w-3 h-3" />
             </button>
           ) : (
-            <button onClick={minimize} className="p-1 hover:bg-white/10 rounded" title="Minimizar">
+            <button onPointerDown={stop} onClick={minimize} className="p-1 hover:bg-white/10 rounded" title="Minimizar">
               <Minimize2 className="w-3 h-3" />
             </button>
           )}

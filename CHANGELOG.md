@@ -22,6 +22,11 @@
 - Permitimos cambiar de columna arrastrando la tarjeta.
 - Los formularios ahora aparecen en la columna derecha de forma predeterminada.
 
+## 0.4.3
+- Quitamos formularios manuales del menú de tarjetas.
+- Indicamos cambios sin guardar en la barra de almacén.
+- Reparamos acciones de fijar y cerrar en tarjetas.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 
