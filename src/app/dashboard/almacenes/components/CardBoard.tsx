@@ -15,12 +15,12 @@ import DraggableCard from "./DraggableCard";
 import { useDetalleUI } from "../DetalleUI";
 
 export default function CardBoard() {
-  const { tabs, move, add } = useTabStore();
+  const { tabs, move, add, update } = useTabStore();
   const { collapsed } = useDetalleUI();
 
   useEffect(() => {
     if (tabs.length === 0) {
-      add({ id: generarUUID(), title: "Nuevo", type: "blank" });
+      add({ id: generarUUID(), title: "Nuevo", type: "blank", side: "left" });
     }
   }, [tabs.length, add]);
 
@@ -28,16 +28,19 @@ export default function CardBoard() {
 
   const handleDragEnd = (ev: DragEndEvent) => {
     const { active, over } = ev;
-    if (over && active.id !== over.id) {
-      const oldIndex = tabs.findIndex((t) => t.id === active.id);
-      const newIndex = tabs.findIndex((t) => t.id === over.id);
-      if (oldIndex >= 0 && newIndex >= 0) move(oldIndex, newIndex);
+    if (!over || active.id === over.id) return;
+    const oldIndex = tabs.findIndex((t) => t.id === active.id);
+    const newIndex = tabs.findIndex((t) => t.id === over.id);
+    if (oldIndex < 0 || newIndex < 0) return;
+    const overSide = tabs[newIndex].side ?? "left";
+    move(oldIndex, newIndex);
+    if ((tabs[oldIndex].side ?? "left") !== overSide) {
+      update(active.id, { side: overSide });
     }
   };
 
-  const formTypes = ["form-material", "form-unidad"];
-  const left = tabs.filter((t) => formTypes.includes(t.type));
-  const right = tabs.filter((t) => !formTypes.includes(t.type));
+  const left = tabs.filter((t) => (t.side ?? "left") === "left");
+  const right = tabs.filter((t) => (t.side ?? "left") === "right");
 
   return (
     <div className={`flex gap-4 transition-all duration-300 ${collapsed ? 'pt-0' : 'pt-2'}`}>\

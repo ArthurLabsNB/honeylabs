@@ -25,8 +25,10 @@ export default function TabsMenu() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  const formTypes = ["form-material", "form-unidad"];
   const create = (type: TabType, label: string) => {
-    addAfterActive({ id: generarUUID(), title: label, type });
+    const side = formTypes.includes(type) ? "right" : "left";
+    addAfterActive({ id: generarUUID(), title: label, type, side });
     setOpen(false);
   };
 
