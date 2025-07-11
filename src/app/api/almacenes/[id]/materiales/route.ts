@@ -8,6 +8,7 @@ import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import crypto from 'node:crypto'
 import * as logger from '@lib/logger'
+import { logAudit } from '@/lib/audit'
 
 async function snapshot(
   db: Prisma.TransactionClient | typeof prisma,
@@ -212,6 +213,8 @@ export async function POST(req: NextRequest) {
       return creado
     })
 
+    await logAudit(usuario.id, 'creacion_material', 'almacen', { almacenId, materialId: material.id })
+
     const res = NextResponse.json({ material })
     logger.info(req, `Material ${material.id} creado`)
     return res
@@ -237,6 +240,7 @@ export async function DELETE(req: NextRequest) {
     await prisma.materialUnidad.deleteMany({ where: { material: { almacenId } } })
     await prisma.archivoMaterial.deleteMany({ where: { material: { almacenId } } })
     await prisma.material.deleteMany({ where: { almacenId } })
+    await logAudit(usuario.id, 'eliminacion_materiales', 'almacen', { almacenId })
     return NextResponse.json({ success: true })
   } catch (err) {
     logger.error('DELETE /api/almacenes/[id]/materiales', err)

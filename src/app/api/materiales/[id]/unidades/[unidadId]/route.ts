@@ -6,6 +6,7 @@ import { Prisma } from '@prisma/client'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import * as logger from '@lib/logger'
+import { logAudit } from '@/lib/audit'
 
 async function snapshot(unidadId: number, usuarioId: number, descripcion: string) {
   const unidad = await prisma.materialUnidad.findUnique({
@@ -146,6 +147,7 @@ export async function PUT(req: NextRequest) {
         select: { id: true, nombre: true, codigoQR: true },
       })
       await snapshot(actualizado.id, usuario.id, 'Modificación')
+      await logAudit(usuario.id, 'modificacion_unidad', 'material', { materialId, unidadId })
       return NextResponse.json({ unidad: actualizado })
     } catch (e) {
       if (
@@ -183,6 +185,7 @@ export async function DELETE(req: NextRequest) {
     }
     await snapshot(unidadId, usuario.id, 'Eliminación')
     await prisma.materialUnidad.delete({ where: { id: unidadId } })
+    await logAudit(usuario.id, 'eliminacion_unidad', 'material', { materialId, unidadId })
     return NextResponse.json({ success: true })
   } catch (err) {
     logger.error('DELETE /api/materiales/[id]/unidades/[unidadId]', err)

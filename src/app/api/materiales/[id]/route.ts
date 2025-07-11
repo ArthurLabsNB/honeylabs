@@ -8,6 +8,7 @@ import { hasManagePerms } from '@lib/permisos'
 import { materialSchema } from '@/lib/validators/material'
 import crypto from 'node:crypto'
 import * as logger from '@lib/logger'
+import { logAudit } from '@/lib/audit'
 
 async function snapshot(
   db: Prisma.TransactionClient | typeof prisma,
@@ -162,6 +163,8 @@ export async function PUT(req: NextRequest) {
       await snapshot(tx, id, usuario.id, 'Modificación')
       return upd
     })
+
+    await logAudit(usuario.id, 'modificacion_material', 'material', { materialId: id })
     return NextResponse.json({ material: actualizado })
   } catch (err) {
     logger.error('PUT /api/materiales/[id]', err)
@@ -193,6 +196,7 @@ export async function DELETE(req: NextRequest) {
       await tx.archivoMaterial.deleteMany({ where: { materialId: id } })
       await tx.material.delete({ where: { id } })
     })
+    await logAudit(usuario.id, 'eliminacion_material', 'material', { materialId: id })
     return NextResponse.json({ success: true })
   } catch (err) {
     logger.error('DELETE /api/materiales/[id]', err)
