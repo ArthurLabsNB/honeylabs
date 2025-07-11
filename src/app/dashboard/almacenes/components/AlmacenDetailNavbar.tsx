@@ -1,5 +1,5 @@
 "use client";
-import { ArrowLeft, Save, Search, ClipboardList, Trash2, QrCode } from "lucide-react";
+import { ArrowLeft, Save, Search, ClipboardList, Trash2, QrCode, ChevronUp, ChevronDown } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -9,6 +9,7 @@ import AlmacenTools from "./AlmacenTools";
 import TabsMenu from "./TabsMenu";
 import { jsonOrNull } from "@lib/http";
 import { useDashboardUI } from "../../ui";
+import { useDetalleUI } from "../DetalleUI";
 import { NAVBAR_HEIGHT } from "../../constants";
 import { useToast } from "@/components/Toast";
 
@@ -17,6 +18,7 @@ export default function AlmacenDetailNavbar() {
   const { id } = useParams();
   const { fullscreen } = useDashboardUI();
   const { usuario } = useSession();
+  const { collapsed, toggleCollapsed } = useDetalleUI();
   const toast = useToast();
   const [auditActive, setAuditActive] = useState(false);
   const [nombre, setNombre] = useState("");
@@ -85,7 +87,7 @@ export default function AlmacenDetailNavbar() {
 
   return (
     <header
-      className="flex items-center justify-between h-[3.5rem] min-h-[3.5rem] px-4 md:px-6 border-b border-[var(--dashboard-border)] bg-[var(--dashboard-navbar)] fixed left-0 right-0 z-30"
+      className={`flex items-center justify-between h-[3.5rem] min-h-[3.5rem] px-4 md:px-6 border-b border-[var(--dashboard-border)] bg-[var(--dashboard-navbar)] fixed left-0 right-0 z-30 transition-transform duration-300 ${collapsed ? '-translate-y-full' : 'translate-y-0'}`}
       style={{ top: fullscreen ? 0 : NAVBAR_HEIGHT }}
     >
       <div className="flex items-center gap-3">
@@ -155,6 +157,9 @@ export default function AlmacenDetailNavbar() {
         {usuario && (
           <UserMenu usuario={usuario} />
         )}
+        <button onClick={toggleCollapsed} className="p-2 hover:bg-white/10 rounded-lg ml-2" title={collapsed ? 'Expandir barra' : 'Ocultar barra'}>
+          {collapsed ? <ChevronDown className="w-5 h-5" /> : <ChevronUp className="w-5 h-5" />}
+        </button>
       </div>
     </header>
   );

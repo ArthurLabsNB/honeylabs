@@ -7,6 +7,7 @@ import MaterialList from "./MaterialList";
 import MaterialForm from "./MaterialForm";
 import UnidadesPanel from "../[id]/UnidadesPanel";
 import AuditoriasPanel from "../[id]/AuditoriasPanel";
+import { useDetalleUI } from "../DetalleUI";
 
 function TabContent({ tab }: { tab: Tab }) {
   switch (tab.type) {
@@ -25,6 +26,7 @@ function TabContent({ tab }: { tab: Tab }) {
 
 export default function TabBoard() {
   const { tabs, activeId, update, add } = useTabStore();
+  const { collapsed } = useDetalleUI();
 
   useEffect(() => {
     if (tabs.length === 0) {
@@ -33,7 +35,9 @@ export default function TabBoard() {
   }, [tabs.length, add]);
   return (
     <div className="flex flex-col h-full">
-      <div className="flex gap-2 overflow-x-auto border-b border-[var(--dashboard-border)] py-1">
+      <div
+        className={`flex gap-2 overflow-x-auto border-b border-[var(--dashboard-border)] py-1 transition-all duration-300 ${collapsed ? 'h-0 overflow-hidden py-0 border-b-0' : ''}`}
+      >
         {tabs.map((tab, i) => (
           <DraggableTab key={tab.id} tab={tab} index={i} />
         ))}
