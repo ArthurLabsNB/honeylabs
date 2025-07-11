@@ -6,6 +6,7 @@ import Image from "next/image";
 import useSession from "@/hooks/useSession";
 import UserMenu from "@/components/UserMenu";
 import AlmacenTools from "./AlmacenTools";
+import TabsMenu from "./TabsMenu";
 import { jsonOrNull } from "@lib/http";
 import { useDashboardUI } from "../../ui";
 import { NAVBAR_HEIGHT } from "../../constants";
@@ -140,6 +141,7 @@ export default function AlmacenDetailNavbar() {
             <ArrowLeft className="w-5 h-5" />
           </button>
         )}
+        <TabsMenu />
         <AlmacenTools id={id as string} />
         <button
           onClick={guardar}
