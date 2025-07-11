@@ -234,7 +234,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           id="unidad-estado"
           value={unidad.estado ?? ''}
           onChange={handle('estado')}
-          className="dashboard-input w-full mt-1"
+          className="dashboard-select w-full mt-1"
         >
           <option value="">-</option>
           <option value="pendiente">pendiente</option>

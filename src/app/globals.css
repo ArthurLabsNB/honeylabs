@@ -359,6 +359,20 @@ html, body {
   border-color: var(--dashboard-accent);
 }
 
+/* Selects con estilo HoneyLabs */
+.dashboard-select {
+  @apply rounded-md px-4 py-2 bg-white/5;
+  color: var(--dashboard-text);
+  border: 1.5px solid var(--dashboard-border);
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.dashboard-select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--dashboard-accent);
+  border-color: var(--dashboard-accent);
+}
+
 /* --------- TARJETAS --------- */
 .dashboard-card {
   @apply p-4 rounded-md border transition shadow-sm hover:bg-white/5;
