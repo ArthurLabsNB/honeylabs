@@ -63,8 +63,8 @@ export default function DraggableCard({ tab }: { tab: Tab }) {
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="dashboard-card cursor-move">
-      <div className="flex items-center justify-between mb-2">
+    <div ref={setNodeRef} style={style} {...attributes} className="dashboard-card resize overflow-auto">
+      <div className="flex items-center justify-between mb-2 cursor-move" {...listeners}>
         <span className="font-semibold" onDoubleClick={toggle}>{tab.title}</span>
         <div className="flex items-center gap-1">
           <button onClick={onRename} className="p-1 hover:bg-white/10 rounded" title="Renombrar">

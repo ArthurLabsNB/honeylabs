@@ -63,7 +63,7 @@ export default function AlmacenPage() {
   const { add } = useTabStore();
   useEffect(() => {
     if (!id) return;
-    add({ id: `almacen-${id}-materiales`, title: `Almacén ${id}`, type: 'materiales' });
+    add({ id: `almacen-${id}-materiales`, title: `Almacén ${id}`, type: 'materiales', side: 'left' });
   }, [id, add]);
 
   const routerNav = useNextRouter();

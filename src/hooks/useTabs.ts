@@ -14,6 +14,7 @@ export interface Tab {
   id: string;
   title: string;
   type: TabType;
+  side?: "left" | "right";
   pinned?: boolean;
   collapsed?: boolean;
   minimized?: boolean;

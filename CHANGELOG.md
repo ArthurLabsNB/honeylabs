@@ -17,6 +17,11 @@
 ## 0.4.0
 - Incluimos menú de tarjetas en el navbar de almacenes para añadir nuevas pestañas.
 
+## 0.4.2
+- Movimos el handle de arrastre a la cabecera de cada tarjeta.
+- Permitimos cambiar de columna arrastrando la tarjeta.
+- Los formularios ahora aparecen en la columna derecha de forma predeterminada.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 
