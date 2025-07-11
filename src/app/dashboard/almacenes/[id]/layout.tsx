@@ -6,11 +6,13 @@ import AlmacenDetailNavbar from "../components/AlmacenDetailNavbar";
 import Spinner from "@/components/Spinner";
 import useSession from "@/hooks/useSession";
 import TabBoard from "../components/TabBoard";
+import { DetalleUIProvider, useDetalleUI } from "../DetalleUI";
 
 function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
   const { fullscreen, setFullscreen } = useDashboardUI();
   const router = useRouter();
   const { usuario, loading } = useSession();
+  const { collapsed, toggleCollapsed } = useDetalleUI();
 
 
   useEffect(() => {
@@ -47,7 +49,7 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
     >
       <main
         className="flex flex-col min-h-screen transition-all duration-300"
-        style={{ paddingTop: 56 }}
+        style={{ paddingTop: collapsed ? 0 : 56 }}
         data-oid="9d4tqvn"
       >
         <AlmacenDetailNavbar />
@@ -57,6 +59,16 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
         >
           <TabBoard />
         </section>
+        <button
+          onClick={toggleCollapsed}
+          className="fixed top-1 right-1 z-40 p-1 rounded-md bg-[var(--dashboard-sidebar)] hover:bg-white/10"
+        >
+          {collapsed ? (
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          ) : (
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+          )}
+        </button>
       </main>
     </div>
   );
@@ -67,5 +79,9 @@ export default function AlmacenLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <ProtectedAlmacen data-oid="vzd1u8v">{children}</ProtectedAlmacen>;
+  return (
+    <DetalleUIProvider>
+      <ProtectedAlmacen data-oid="vzd1u8v">{children}</ProtectedAlmacen>
+    </DetalleUIProvider>
+  );
 }
