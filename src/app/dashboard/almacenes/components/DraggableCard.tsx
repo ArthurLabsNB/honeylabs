@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Pencil, Pin, PinOff, Minimize2, Maximize2, X } from "lucide-react";
@@ -9,27 +9,41 @@ import MaterialList from "./MaterialList";
 import MaterialForm from "./MaterialForm";
 import UnidadesPanel from "../[id]/UnidadesPanel";
 import AuditoriasPanel from "../[id]/AuditoriasPanel";
+import { useBoard } from "../board/BoardProvider";
 
 function CardContent({ tab }: { tab: Tab }) {
+  const { materiales, selectedId, setSelectedId } = useBoard();
+  const selected = materiales.find((m) => m.id === selectedId) || null;
   switch (tab.type) {
-    case "materiales":
+    case "materiales": {
+      const [busqueda, setBusqueda] = React.useState("");
+      const [orden, setOrden] = React.useState<"nombre" | "cantidad">("nombre");
       return (
         <MaterialList
-          materiales={[]}
-          selectedId={null}
-          onSeleccion={() => {}}
-          busqueda=""
-          setBusqueda={() => {}}
-          orden="nombre"
-          setOrden={() => {}}
+          materiales={materiales}
+          selectedId={selectedId}
+          onSeleccion={setSelectedId}
+          busqueda={busqueda}
+          setBusqueda={setBusqueda}
+          orden={orden}
+          setOrden={setOrden}
           onNuevo={() => {}}
           onDuplicar={() => {}}
+        />
+      );
+    }
+    case "unidades":
+      return (
+        <UnidadesPanel
+          material={selected}
+          onChange={() => {}}
+          onSelect={() => {}}
         />
       );
     case "form-material":
       return (
         <MaterialForm
-          material={null}
+          material={selected}
           onChange={() => {}}
           onGuardar={() => {}}
           onCancelar={() => {}}
@@ -37,10 +51,14 @@ function CardContent({ tab }: { tab: Tab }) {
           onEliminar={() => {}}
         />
       );
-    case "unidades":
-      return <UnidadesPanel material={null} onChange={() => {}} onSelect={() => {}} />;
     case "auditorias":
-      return <AuditoriasPanel material={null} almacenId={0} onSelectHistorial={() => {}} />;
+      return (
+        <AuditoriasPanel
+          material={selected}
+          almacenId={0}
+          onSelectHistorial={() => {}}
+        />
+      );
     default:
       return <div className="p-4 text-sm text-gray-400">Sin contenido</div>;
   }

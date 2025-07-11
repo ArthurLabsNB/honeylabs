@@ -13,6 +13,14 @@ import { useTabStore, Tab } from "@/hooks/useTabs";
 import { generarUUID } from "@/lib/uuid";
 import DraggableCard from "./DraggableCard";
 import { useDetalleUI } from "../DetalleUI";
+import { useDroppable } from "@dnd-kit/core";
+
+function Column({ id, children }: { id: string; children: React.ReactNode }) {
+  const { setNodeRef, isOver } = useDroppable({ id });
+  return (
+    <div ref={setNodeRef} className={`flex-1 space-y-2 ${isOver ? 'bg-white/5' : ''}`}>{children}</div>
+  );
+}
 
 export default function CardBoard() {
   const { tabs, move, add, update } = useTabStore();
@@ -28,11 +36,18 @@ export default function CardBoard() {
 
   const handleDragEnd = (ev: DragEndEvent) => {
     const { active, over } = ev;
-    if (!over || active.id === over.id) return;
+    if (!over) return;
     const oldIndex = tabs.findIndex((t) => t.id === active.id);
-    const newIndex = tabs.findIndex((t) => t.id === over.id);
-    if (oldIndex < 0 || newIndex < 0) return;
-    const overSide = tabs[newIndex].side ?? "left";
+    if (oldIndex < 0) return;
+    let newIndex = tabs.findIndex((t) => t.id === over.id);
+    let overSide: "left" | "right";
+    if (over.id === "left" || over.id === "right") {
+      overSide = over.id;
+      const leftCount = tabs.filter((t) => (t.side ?? "left") === "left").length;
+      newIndex = overSide === "left" ? leftCount : tabs.length;
+    } else {
+      overSide = tabs[newIndex]?.side ?? "left";
+    }
     move(oldIndex, newIndex);
     if ((tabs[oldIndex].side ?? "left") !== overSide) {
       update(active.id, { side: overSide });
@@ -45,20 +60,20 @@ export default function CardBoard() {
   return (
     <div className={`flex gap-4 transition-all duration-300 ${collapsed ? 'pt-0' : 'pt-2'}`}>\
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <div className="flex-1 space-y-2">
+        <Column id="left">
           <SortableContext items={left.map((t) => t.id)} strategy={verticalListSortingStrategy}>
             {left.map((tab) => (
               <DraggableCard key={tab.id} tab={tab} />
             ))}
           </SortableContext>
-        </div>
-        <div className="flex-1 space-y-2">
+        </Column>
+        <Column id="right">
           <SortableContext items={right.map((t) => t.id)} strategy={verticalListSortingStrategy}>
             {right.map((tab) => (
               <DraggableCard key={tab.id} tab={tab} />
             ))}
           </SortableContext>
-        </div>
+        </Column>
       </DndContext>
     </div>
   );
