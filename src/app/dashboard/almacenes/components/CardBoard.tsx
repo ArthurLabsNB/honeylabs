@@ -35,14 +35,23 @@ export default function CardBoard() {
   }, [tabs.length, add]);
 
   useEffect(() => {
-    useTabStore.persist.rehydrate();
-    apiFetch("/api/dashboard/layout")
-      .then(jsonOrNull)
-      .then((d) => {
-        if (Array.isArray(d?.tabs)) setTabs(d.tabs as Tab[]);
-      })
-      .catch(() => {});
-  }, [setTabs]);
+    useTabStore.persist
+      .rehydrate()
+      .then(() =>
+        apiFetch("/api/dashboard/layout")
+          .then(jsonOrNull)
+          .then((d) => {
+            if (
+              Array.isArray(d?.tabs) &&
+              useTabStore.getState().tabs.length === 0
+            ) {
+              setTabs(d.tabs as Tab[])
+            }
+          })
+          .catch(() => {})
+      )
+      .catch(() => {})
+  }, [setTabs])
 
   useEffect(() => {
     apiFetch("/api/dashboard/layout", {

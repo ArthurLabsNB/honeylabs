@@ -234,6 +234,8 @@ export default function AlmacenPage() {
 
   const eliminar = async () => {
     if (!selectedId) return
+    const ok = await toast.confirm('¿Eliminar material?')
+    if (!ok) return
     const m = materiales.find((mat) => mat.id === selectedId)
     if (m?.dbId) {
       const res = await eliminarMaterial(m.dbId)
