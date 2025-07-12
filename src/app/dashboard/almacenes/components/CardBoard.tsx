@@ -10,6 +10,8 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useTabStore, Tab } from "@/hooks/useTabs";
+import { apiFetch } from "@/lib/api";
+import { jsonOrNull } from "@/lib/http";
 import { generarUUID } from "@/lib/uuid";
 import DraggableCard from "./DraggableCard";
 import { useDetalleUI } from "../DetalleUI";
@@ -23,7 +25,7 @@ function Column({ id, children }: { id: string; children: React.ReactNode }) {
 }
 
 export default function CardBoard() {
-  const { tabs, move, add, update } = useTabStore();
+  const { tabs, move, add, update, setTabs } = useTabStore();
   const { collapsed } = useDetalleUI();
 
   useEffect(() => {
@@ -31,6 +33,24 @@ export default function CardBoard() {
       add({ id: generarUUID(), title: "Nuevo", type: "blank", side: "left" });
     }
   }, [tabs.length, add]);
+
+  useEffect(() => {
+    useTabStore.persist.rehydrate();
+    apiFetch("/api/dashboard/layout")
+      .then(jsonOrNull)
+      .then((d) => {
+        if (Array.isArray(d?.tabs)) setTabs(d.tabs as Tab[]);
+      })
+      .catch(() => {});
+  }, [setTabs]);
+
+  useEffect(() => {
+    apiFetch("/api/dashboard/layout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tabs }),
+    }).catch(() => {});
+  }, [tabs]);
 
   const sensors = useSensors(useSensor(PointerSensor));
 

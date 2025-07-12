@@ -24,6 +24,7 @@ export interface Tab {
 interface TabState {
   tabs: Tab[];
   activeId: string | null;
+  setTabs: (tabs: Tab[]) => void;
   add: (tab: Tab) => void;
   addAfterActive: (tab: Tab) => void;
   closeOthers: (id: string) => void;
@@ -48,6 +49,7 @@ export const useTabStore = create<TabState>()(
     (set, get) => ({
       tabs: [],
       activeId: null,
+      setTabs: (tabs) => set({ tabs }),
       add: (tab) =>
         set((state) => ({ tabs: [...state.tabs, tab], activeId: tab.id })),
       addAfterActive: (tab) =>

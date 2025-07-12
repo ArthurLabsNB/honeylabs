@@ -27,6 +27,10 @@
 - Indicamos cambios sin guardar en la barra de almacén.
 - Reparamos acciones de fijar y cerrar en tarjetas.
 
+## 0.4.5
+- Sincronizamos la posición de tarjetas en almacenes usando `/api/dashboard/layout`.
+- Cargamos automáticamente las tarjetas guardadas al iniciar sesión.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 
