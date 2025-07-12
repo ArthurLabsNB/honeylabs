@@ -8,20 +8,38 @@ interface BoardState {
   materiales: Material[];
   selectedId: string | null;
   setSelectedId: (id: string | null) => void;
+  crear: (m: Material) => Promise<any>;
+  actualizar: (m: Material) => Promise<any>;
+  eliminar: (id: number) => Promise<any>;
+  mutate: () => void;
 }
 
 const Context = createContext<BoardState>({
   materiales: [],
   selectedId: null,
   setSelectedId: () => {},
+  crear: async () => ({}),
+  actualizar: async () => ({}),
+  eliminar: async () => ({}),
+  mutate: () => {},
 });
 
 export function BoardProvider({ children }: { children: React.ReactNode }) {
   const { id } = useParams();
-  const { materiales } = useMateriales(id as string);
+  const { materiales, crear, actualizar, eliminar, mutate } = useMateriales(id as string);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   return (
-    <Context.Provider value={{ materiales, selectedId, setSelectedId }}>
+    <Context.Provider
+      value={{
+        materiales,
+        selectedId,
+        setSelectedId,
+        crear,
+        actualizar,
+        eliminar,
+        mutate,
+      }}
+    >
       {children}
     </Context.Provider>
   );

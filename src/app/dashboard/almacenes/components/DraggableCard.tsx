@@ -10,9 +10,22 @@ import MaterialForm from "./MaterialForm";
 import UnidadesPanel from "../[id]/UnidadesPanel";
 import AuditoriasPanel from "../[id]/AuditoriasPanel";
 import { useBoard } from "../board/BoardProvider";
+import { generarUUID } from "@/lib/uuid";
 
 function CardContent({ tab }: { tab: Tab }) {
   const { materiales, selectedId, setSelectedId } = useBoard();
+  const { addAfterActive, tabs, setActive } = useTabStore();
+  const openMaterial = (id: string) => {
+    setSelectedId(id);
+    const ensure = (type: Tab["type"], title: string, side: "left" | "right") => {
+      const existing = tabs.find((t) => t.type === type);
+      if (existing) setActive(existing.id);
+      else
+        addAfterActive({ id: generarUUID(), title, type: type as any, side });
+    };
+    ensure("unidades", "Unidades", "right");
+    ensure("form-material", "Material", "left");
+  };
   const selected = materiales.find((m) => m.id === selectedId) || null;
   switch (tab.type) {
     case "materiales": {
@@ -22,7 +35,7 @@ function CardContent({ tab }: { tab: Tab }) {
         <MaterialList
           materiales={materiales}
           selectedId={selectedId}
-          onSeleccion={setSelectedId}
+          onSeleccion={openMaterial}
           busqueda={busqueda}
           setBusqueda={setBusqueda}
           orden={orden}
