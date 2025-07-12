@@ -31,6 +31,9 @@
 - Sincronizamos la posición de tarjetas en almacenes usando `/api/dashboard/layout`.
 - Cargamos automáticamente las tarjetas guardadas al iniciar sesión.
 
+## 0.4.6
+- Corrigimos importaciones en `CardBoard` para respetar alias de la raíz.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 
