@@ -33,17 +33,16 @@ export default function MaterialForm({
 }: Props) {
   const toast = useToast();
   const [preview, setPreview] = useState<string | null>(null);
-  if (!material)
-    return (
-      <p className="text-sm text-[var(--dashboard-muted)]">Selecciona o crea un material.</p>
-    );
-
-  const { unidades } = useUnidades(material.dbId);
+  const { unidades } = useUnidades(material?.dbId);
   const {
     archivos: archivosPreviosHook,
     eliminar,
     mutate,
-  } = useArchivosMaterial(material.dbId);
+  } = useArchivosMaterial(material?.dbId);
+  if (!material)
+    return (
+      <p className="text-sm text-[var(--dashboard-muted)]">Selecciona o crea un material.</p>
+    );
   const archivosPrevios = readOnly && Array.isArray(material.archivos)
     ? (material.archivos as any[]).map((a, i) => ({ ...a, id: i }))
     : archivosPreviosHook;
