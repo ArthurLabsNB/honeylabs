@@ -76,7 +76,7 @@ export async function GET(req: NextRequest) {
 
     const materiales = await prisma.material.findMany({
       where: { almacenId },
-      orderBy: { id: 'asc' },
+      orderBy: { id: 'desc' },
       select: {
         id: true,
         nombre: true,
@@ -208,6 +208,11 @@ export async function POST(req: NextRequest) {
           usuario: { connect: { id: usuario.id } },
         },
         select: { id: true, nombre: true, miniaturaNombre: true },
+      })
+      await tx.usuarioAlmacen.upsert({
+        where: { usuarioId_almacenId: { usuarioId: usuario.id, almacenId } },
+        update: {},
+        create: { usuarioId: usuario.id, almacenId, rolEnAlmacen: 'creador' },
       })
       await snapshot(tx, creado.id, usuario.id, 'Creación')
       return creado

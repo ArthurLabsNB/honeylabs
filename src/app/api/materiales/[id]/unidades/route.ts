@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
     }
     const unidades = await prisma.materialUnidad.findMany({
       where: { materialId },
-      orderBy: { id: 'asc' },
+      orderBy: { id: 'desc' },
       select: { id: true, nombre: true, codigoQR: true },
     })
     return NextResponse.json({ unidades })
