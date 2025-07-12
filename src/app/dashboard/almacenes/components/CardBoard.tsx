@@ -10,8 +10,8 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useTabStore, Tab } from "@/hooks/useTabs";
-import { apiFetch } from "@/lib/api";
-import { jsonOrNull } from "@/lib/http";
+import { apiFetch } from "@lib/api";
+import { jsonOrNull } from "@lib/http";
 import { generarUUID } from "@/lib/uuid";
 import DraggableCard from "./DraggableCard";
 import { useDetalleUI } from "../DetalleUI";
