@@ -45,7 +45,8 @@ export default function UnidadesPanel({
   };
 
   const remove = async (id: number) => {
-    await eliminar(id);
+    const ok = await toast.confirm('¿Eliminar unidad?')
+    if (ok) await eliminar(id)
   };
 
   const filtrados = useMemo(

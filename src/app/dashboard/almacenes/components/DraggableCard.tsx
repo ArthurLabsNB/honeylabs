@@ -5,15 +5,19 @@ import { CSS } from "@dnd-kit/utilities";
 import { Pencil, Pin, PinOff, Minimize2, Maximize2, X } from "lucide-react";
 import { useTabStore, Tab } from "@/hooks/useTabs";
 import { usePrompt } from "@/hooks/usePrompt";
+import { useToast } from "@/components/Toast";
 import MaterialList from "./MaterialList";
 import MaterialForm from "./MaterialForm";
+import type { Material } from "./MaterialRow";
 import UnidadesPanel from "../[id]/UnidadesPanel";
 import AuditoriasPanel from "../[id]/AuditoriasPanel";
 import { useBoard } from "../board/BoardProvider";
 import { generarUUID } from "@/lib/uuid";
 
 function CardContent({ tab }: { tab: Tab }) {
-  const { materiales, selectedId, setSelectedId } = useBoard();
+  const { materiales, selectedId, setSelectedId, crear, mutate, eliminar } =
+    useBoard();
+  const toast = useToast();
   const { addAfterActive, tabs, setActive } = useTabStore();
   const openMaterial = (id: string) => {
     setSelectedId(id);
@@ -40,7 +44,17 @@ function CardContent({ tab }: { tab: Tab }) {
           setBusqueda={setBusqueda}
           orden={orden}
           setOrden={setOrden}
-          onNuevo={() => {}}
+          onNuevo={async () => {
+            const nuevo = {
+              id: generarUUID(),
+              nombre: 'Nuevo',
+              cantidad: 0,
+              lote: '',
+            } as Material
+            const res = await crear(nuevo)
+            const mid = res?.material?.id
+            if (mid) openMaterial(String(mid))
+          }}
           onDuplicar={() => {}}
         />
       );
@@ -59,9 +73,16 @@ function CardContent({ tab }: { tab: Tab }) {
           material={selected}
           onChange={() => {}}
           onGuardar={() => {}}
-          onCancelar={() => {}}
+          onCancelar={() => setSelectedId(null)}
           onDuplicar={() => {}}
-          onEliminar={() => {}}
+          onEliminar={async () => {
+            if (!selected?.dbId) return
+            const ok = await toast.confirm('¿Eliminar material?')
+            if (!ok) return
+            await eliminar(selected.dbId)
+            mutate()
+            setSelectedId(null)
+          }}
         />
       );
     case "auditorias":
