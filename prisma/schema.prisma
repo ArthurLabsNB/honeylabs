@@ -78,6 +78,7 @@ model Usuario {
   eventosCreados       EventoAlmacen[]        @relation("EventosCreados")
   historialAlmacenes   HistorialAlmacen[]
   historialLotes       HistorialLote[]
+  historialUnidades    HistorialUnidad[]
   incidenciasCreadas   Incidencia[]           @relation("IncidenciasCreadas")
   incidenciasResueltas Incidencia[]           @relation("IncidenciasResueltas")
   materiales           Material[]
