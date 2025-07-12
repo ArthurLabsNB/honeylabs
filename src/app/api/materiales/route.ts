@@ -80,7 +80,7 @@ export async function GET(req: NextRequest) {
     const materiales = await prisma.material.findMany({
       where,
       take,
-      orderBy: { id: 'asc' },
+      orderBy: { id: 'desc' },
       select: MATERIAL_SELECT,
     })
 

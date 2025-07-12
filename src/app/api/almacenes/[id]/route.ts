@@ -114,7 +114,7 @@ export async function GET(req: NextRequest) {
 
     const materiales = await prisma.material.findMany({
       where: { almacenId: id },
-      orderBy: { id: 'asc' },
+      orderBy: { id: 'desc' },
       select: {
         id: true,
         nombre: true,

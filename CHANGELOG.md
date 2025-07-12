@@ -44,6 +44,10 @@
 ## 0.4.9
 - Agregamos la relación `historialUnidades` al modelo `Usuario` para que Prisma valide correctamente.
 
+## 0.4.10
+- Ajustamos consultas de materiales para ordenar por creación descendente.
+- Asociamos al usuario con el almacén al crear un material.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 
