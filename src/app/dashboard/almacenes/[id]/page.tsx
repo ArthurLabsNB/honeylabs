@@ -130,7 +130,10 @@ export default function AlmacenPage() {
     delete (rest as any).nombre
     const res = await actualizarUnidad({ id: uid, nombre: nombreMaterial, ...rest })
     if (res?.error) toast.show(res.error, 'error')
-    else toast.show('Guardado', 'success')
+    else {
+      toast.show('Guardado', 'success')
+      updateDirty(false)
+    }
     setPanel('material')
   };
 
@@ -354,11 +357,15 @@ export default function AlmacenPage() {
             <UnidadForm
               key={unidadSel?.id ?? 'unidad'}
               unidad={unidadSel}
-              onChange={(campo, valor) =>
+              onChange={(campo, valor) => {
                 setUnidadSel((d) => (d ? { ...d, [campo]: valor } : d))
-              }
+                updateDirty(true)
+              }}
               onGuardar={guardarUnidad}
-              onCancelar={() => setPanel('material')}
+              onCancelar={() => {
+                setPanel('material')
+                updateDirty(false)
+              }}
             />
           )}
         </section>
@@ -380,8 +387,14 @@ export default function AlmacenPage() {
             materiales={materiales}
             selectedId={selectedId}
             onSeleccion={(idSel) => {
-              setHistorialBackup(null);
-              setSelectedId(idSel);
+              if (dirty) {
+                toast.show('Guarda o cancela los cambios antes', 'error')
+                return
+              }
+              setHistorialBackup(null)
+              setSelectedId(idSel)
+              setPanel('material')
+              updateDirty(false)
             }}
             busqueda={busqueda}
             setBusqueda={setBusqueda}
@@ -417,10 +430,15 @@ export default function AlmacenPage() {
                 selectedId && actualizar(selectedId, campo, valor)
               }
               onSelect={async (u) => {
+                if (dirty) {
+                  toast.show('Guarda o cancela los cambios antes', 'error')
+                  return
+                }
                 const info = await obtener(u.id)
                 if (info) {
                   setUnidadSel({ nombreMaterial: u.nombre, ...info })
                   setPanel('unidad')
+                  updateDirty(false)
                 }
               }}
             />
