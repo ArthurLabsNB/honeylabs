@@ -60,7 +60,6 @@ export const useTabStore = create<TabState>()(
           const pos = idx >= 0 ? idx + 1 : state.tabs.length;
           const arr = state.tabs.slice();
           arr.splice(pos, 0, tab);
-          arr.sort((a, b) => Number(b.pinned) - Number(a.pinned));
           return { tabs: arr, activeId: tab.id };
         }),
       closeOthers: (id) =>

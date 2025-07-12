@@ -37,6 +37,10 @@
 ## 0.4.7
 - Abrimos automáticamente las tarjetas de Unidades y formulario al seleccionar un material.
 
+## 0.4.8
+- Añadimos modelo `HistorialUnidad` en Prisma y campo `estado` a `HistorialLote`.
+- Removimos el reordenamiento automático de pestañas al agregar nuevas.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 
