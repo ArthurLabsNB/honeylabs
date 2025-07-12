@@ -34,6 +34,9 @@
 ## 0.4.6
 - Corrigimos importaciones en `CardBoard` para respetar alias de la raíz.
 
+## 0.4.7
+- Abrimos automáticamente las tarjetas de Unidades y formulario al seleccionar un material.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 
