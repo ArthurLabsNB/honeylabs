@@ -41,6 +41,9 @@
 - Añadimos modelo `HistorialUnidad` en Prisma y campo `estado` a `HistorialLote`.
 - Removimos el reordenamiento automático de pestañas al agregar nuevas.
 
+## 0.4.9
+- Agregamos la relación `historialUnidades` al modelo `Usuario` para que Prisma valide correctamente.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 
