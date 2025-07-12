@@ -110,6 +110,9 @@ export default function AlmacenPage() {
       toast.show(res.error, 'error')
       return
     }
+    if (!m.dbId && res?.material?.id) {
+      setSelectedId(String(res.material.id))
+    }
     toast.show('Guardado', 'success')
     updateDirty(false)
   };
