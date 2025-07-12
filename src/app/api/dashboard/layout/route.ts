@@ -10,7 +10,8 @@ export async function GET() {
     const usuario = await getUsuarioFromSession();
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     const prefs = usuario.preferencias ? JSON.parse(usuario.preferencias) : {};
-    return NextResponse.json(prefs.dashboardLayout || { widgets: [], layout: [] });
+    const layout = prefs.dashboardLayout || { tabs: [], layout: [] };
+    return NextResponse.json(layout);
   } catch (err) {
     logger.error('GET /api/dashboard/layout', err);
     return NextResponse.json({ error: 'Error' }, { status: 500 });
