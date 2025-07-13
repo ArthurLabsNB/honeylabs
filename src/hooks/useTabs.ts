@@ -8,8 +8,7 @@ export type TabType =
   | "auditorias"
   | "form-material"
   | "form-unidad"
-  | "form-auditoria"
-  | "blank";
+  | "form-auditoria";
 
 export interface Tab {
   id: string;

@@ -91,13 +91,14 @@ function CardContent({ tab }: { tab: Tab }) {
           onNuevo={async () => {
             const nuevo = {
               id: generarUUID(),
-              nombre: 'Nuevo',
+              nombre: `Material ${Date.now()}`,
               cantidad: 0,
               lote: '',
-            } as Material
-            const res = await crear(nuevo)
-            const mid = res?.material?.id
-            if (mid) openMaterial(String(mid))
+            } as Material;
+            const res = await crear(nuevo);
+            const mid = res?.material?.id;
+            if (mid) openMaterial(String(mid));
+            return res;
           }}
           onDuplicar={() => {}}
         />
