@@ -1,43 +1,81 @@
-#	Acción prioritaria	Impacto inmediato
-1	Validación dura + transacciones en inventario
-• Añade Zod + Prisma middleware en todas las mutaciones de stock. ✔
-• Usa prisma.$transaction para altas/bajas y préstamos.	✔ Elimina cantidades negativas, inconsistencias y errores de concurrencia.
-2	Modo offline-first & sincronización CRDT
-• Implementa cache local (IndexedDB ↔ SQLite) con Yjs/Automerge. ✔
-• Cola de mutaciones + reconciliación en servidor.	✔ La app sigue operando sin red; cero conflictos al volver online.
-3	Multi-almacén y ubicaciones internas
-• Extiende modelos: warehouse, location, transfer. ✔
-• UI: selector de almacén, movimientos entre ubicaciones.	✔ Escala a múltiples laboratorios/bodegas; trazabilidad real.
-4	Alertas de stock & punto de pedido
-• Campo reorderLevel en materiales. ✔
-• Cron job que envía notificación push/email + widget dashboard.	✔ Evita quiebres de stock; automatiza reabastecimiento.
-5	Panel dashboard personalizable
-• Widgets independientes (React dynamic imports). ✔
-• API /metrics y drag-and-drop para ordenar widgets.	✔ Usuarios ven KPIs clave a su medida; adopción y eficiencia.
-6	Gestión granular de roles (RBAC)
-• Tabla permissions, mapeo rol-permiso; UI para crear roles. ✔
-• Middleware hasPermission() en cada endpoint.	✔ Cumplimiento y seguridad a nivel de acción/pantalla.
-7	Notificaciones en tiempo real (WebSocket/push)
-• Servicio events → envía “stock bajo”, “incidencia asignada”, “build listo”. ✔
-• Toast en web, push en móvil (FCM).	✔ Usuarios reaccionan al instante; flujo de trabajo proactivo.
-8	OTA con Capgo + canales canary/prod
-• Activa liveUpdates y rollout 10 % → 100 % si error < 0.5 %.	✔ Distribución de nuevas versiones sin reinstalar APK; menos fricción.
-9	Flujo de generación de APK con SLSA 3
-• Workflow firma con Cosign, produce SBOM CycloneDX y build-provenance. ✔
-• /api/build-mobile dispara Check Run y SSE lee progreso.	✔ Seguridad supply-chain al nivel de la industria; transparencia total.
-10	Auditoría de acciones críticas
-• Tabla audit_log (user, acción, entidad, payload, fecha). ✔
-• Página “Histórico” filtrable por módulo/usuario.	✔ Trazabilidad, cumplimiento y detección de uso indebido.
-11	UI móvil nativa-friendly
-• Reestiliza con Tailwind mobile-first: tarjetas, botones grandes. ✔
-• Navegación bottom-tabs + gestos; cámara nativa para escaneo.	✔ Mejora usabilidad in-situ y sensación “app” real.
-12	Cifrado de base local
-• CapacitorSQLite con clave derivada del Android KeyStore. ✔
-• SecureStorage para tokens.	✔ Protege credenciales y datos si el dispositivo se pierde.
-13	Edge JWT validation + presign STS 5 min
-• CloudFront Function valida token antes de servir descarga. ✔
-• /api/app/url usa getSignedUrl con rol mínimo.	✔ Descargas seguras; minimiza exposición de enlaces.
-14	Automated IA test generation
-• Acción Octomind/GPT-4o crea tests Playwright en cada PR.	✔ Cobertura crece sin esfuerzo; menos regresiones.
-15	On-device rollback (OTA & cache)/ restore-APK
-• Si falla checksum, reinstala versión cacheada prev-stable.apk.	✔ Alta resiliencia; el usuario nunca queda bloqueado.
+Arreglar la seleccion y formularios de Material y Unidad
+
+Eliminar la tarjeta “Nuevo” vacía
+
+Suprime la tarjeta placeholder y reemplázala por un botón flotante “＋ Añadir tarjeta” con tooltip contextual.
+
+Valida en el backend para impedir que se cree una entrada vacía en caso de llamadas directas a la API.
+
+Corregir el error al seleccionar material o unidad
+
+Añade control de errores con boundaries React y logging centralizado (e.g. Sentry) para rastrear trazas completas.
+
+Persistir y restaurar el orden de tarjetas
+
+Guarda el layout (posición + tamaño) en localStorage para respuesta instantánea y sincronízalo mediante WebSocket-Prisma al salir del tablero.
+
+Usa onbeforeunload para un guardado exprés y reconciliación de conflictos por timestamp del cliente.
+
+Sistema de pestañas (“boards” dentro de un almacén)
+
+Cada almacén contiene un TabGroup persistente con CRUD de pestañas; guarda su orden igualmente en la BD.
+
+Implementa lazy-loading por pestaña para optimizar el first paint.
+
+Permite duplicar pestañas y mover tarjetas entre ellas vía drag-and-drop con animaciones de framer-motion.
+
+Render de pestañas debajo del navbar de almacenes
+
+Usa un StickyTabBar con scroll horizontal y auto-ocultamiento; tamaño de tab adaptativo y tooltips al hacer overflow.
+
+Agrega un marcador visual de pestaña activa con transición suave y accesibilidad ARIA.
+
+Formulario reactivo material → unidad
+
+El formulario principal se monta con el material seleccionado; al elegir una unidad, reutiliza el mismo componente y sólo actualiza el formState vía React Hook Form.
+
+Añade breadcrumbs Material / Unidad para navegación rápida y botón de “volver al material”.
+
+Movimiento de tarjetas ultrasuave y adaptable
+
+Integra react-grid-layout con breakpoints; la tarjeta se auto-redimensiona al detectar colisiones.
+
+Activa “shadow preview” durante el drag para mostrar la posición destino antes de soltar.
+
+Menús contextuales (clic derecho)
+
+Navbar de almacenes: Renombrar, Duplicar almacén, Exportar CSV, Configuración de permisos, Historial de auditorías.
+
+Tarjetas: Editar, Clonar, Fijar en todas las pestañas, Exportar a PDF, Ver historial de cambios.
+
+Pestañas: Renombrar, Duplicar, Mover a otro almacén, Ordenar tarjetas por…, Limpiar pestaña.
+
+Iconografía y controles de la tarjeta
+
+Incrementa iconos a 1.25 rem; usa lucide-react para consistencia.
+
+Anima acciones (borrar, minimizar, fijar, ampliar) con scale(0.95) y opacity transiciones de 150 ms.
+
+Añade “doble clic para editar” en la cabecera de la tarjeta.
+
+Board expandible e infinito
+
+Implementa zoom con rueda del ratón (⌘/Ctrl + scroll) y pan con clic medio.
+
+Virtualiza el DOM con react-virtual para renderizar sólo las tarjetas en viewport y mantener FPS altos.
+
+Espacio de trabajo sin límites
+
+Usa un Canvas absolute‐position con coordenadas BigInt y gestiona offsets en estado global para evitar overflow.
+
+Añade minimapa flotante para orientación rápida dentro del board infinito.
+
+Toggle que muestra una cuadrícula ligera; las tarjetas se alinean cuando el usuario mantiene ⇧ mientras arrastra.
+
+Selección múltiple y atajos de teclado
+
+Con ⇧ / ⌘ + clic se permite agrupar tarjetas para mover, clonar o borrar en lote.
+
+Atajos: N nueva tarjeta, T nueva pestaña, ⌘ + ← / → cambiar pestaña, ⌘ + S guardar layout.
+
+Mejora el NavBar del almacen: 
