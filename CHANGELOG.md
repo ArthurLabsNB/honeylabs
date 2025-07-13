@@ -63,6 +63,9 @@
 ## 0.4.15
 - Limpiamos el filtro de búsqueda al crear un material nuevo en la vista de almacén.
 
+## 0.4.16
+- Corregimos el orden de hooks en `MaterialForm` para evitar errores de renderizado.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 
