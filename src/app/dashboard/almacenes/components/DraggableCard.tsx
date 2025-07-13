@@ -11,6 +11,8 @@ import MaterialFormTab from "./tabs/MaterialFormTab";
 import AuditoriasTab from "./tabs/AuditoriasTab";
 import UnidadFormTab from "./tabs/UnidadFormTab";
 import AuditoriaFormTab from "./tabs/AuditoriaFormTab";
+import BoardTab from "./tabs/BoardTab";
+import UrlTab from "./tabs/UrlTab";
 
 function CardBody({ tab }: { tab: Tab }) {
   switch (tab.type) {
@@ -26,6 +28,10 @@ function CardBody({ tab }: { tab: Tab }) {
       return <UnidadFormTab tabId={tab.id} />;
     case "form-auditoria":
       return <AuditoriaFormTab tabId={tab.id} />;
+    case "board":
+      return <BoardTab />;
+    case "url":
+      return <UrlTab />;
     default:
       return <div className="p-4 text-sm text-gray-400">Sin contenido</div>;
   }
