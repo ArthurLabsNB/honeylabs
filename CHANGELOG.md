@@ -74,6 +74,10 @@
 - Simplificamos la vista de almacén eliminando código duplicado.
 - `ProtectedAlmacen` ahora renderiza el contenido de la página junto al tablero.
 
+## 0.4.20
+- Ajustamos el orden de hooks en `DraggableCard` para evitar accesos antes de la inicialización.
+- Registramos acciones de tarjetas con `logDebug` para facilitar la depuración.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 

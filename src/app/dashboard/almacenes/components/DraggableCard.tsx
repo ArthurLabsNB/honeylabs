@@ -10,6 +10,7 @@ import MaterialList from "./MaterialList";
 import MaterialForm from "./MaterialForm";
 import UnidadForm from "./UnidadForm";
 import AuditoriaForm from "./AuditoriaForm";
+import { debug as logDebug } from "@lib/logger";
 import type { Material } from "./MaterialRow";
 import UnidadesPanel from "../[id]/UnidadesPanel";
 import AuditoriasPanel from "../[id]/AuditoriasPanel";
@@ -32,8 +33,10 @@ function CardContent({ tab }: { tab: Tab }) {
   } = useBoard();
   const toast = useToast();
   const { addAfterActive, tabs, setActive } = useTabStore();
+  const selected = materiales.find((m) => m.id === selectedId) || null;
   const { obtener, actualizar } = useUnidades(selected?.dbId);
   const openMaterial = (id: string | null) => {
+    logDebug('openMaterial', { id });
     if (!id) return;
     setSelectedId(id);
     const ensure = (type: Tab["type"], title: string, side: "left" | "right") => {
@@ -46,22 +49,26 @@ function CardContent({ tab }: { tab: Tab }) {
     ensure("form-material", "Material", "left");
   };
   const openUnidad = async (u: any) => {
+    logDebug('openUnidad', { id: u?.id });
     if (!u?.id) return;
     const info = await obtener(u.id);
-    if (info) {
-      setUnidadSel({ nombreMaterial: u.nombre, ...info });
-      const existing = tabs.find((t) => t.type === "form-unidad");
-      if (existing) setActive(existing.id);
-      else
-        addAfterActive({
-          id: generarUUID(),
-          title: "Unidad",
-          type: "form-unidad",
-          side: "left",
-        });
+    if (!info) {
+      logDebug('openUnidad: no encontrado', { id: u.id });
+      return;
     }
+    setUnidadSel({ nombreMaterial: u.nombre, ...info });
+    const existing = tabs.find((t) => t.type === "form-unidad");
+    if (existing) setActive(existing.id);
+    else
+      addAfterActive({
+        id: generarUUID(),
+        title: "Unidad",
+        type: "form-unidad",
+        side: "left",
+      });
   };
   const openAuditoria = (entry: any) => {
+    logDebug('openAuditoria', { id: entry?.id });
     if (!entry?.id) return;
     setAuditoriaSel(entry.id);
     const existing = tabs.find((t) => t.type === "form-auditoria");
@@ -74,7 +81,6 @@ function CardContent({ tab }: { tab: Tab }) {
         side: "left",
       });
   };
-  const selected = materiales.find((m) => m.id === selectedId) || null;
   switch (tab.type) {
     case "materiales": {
       const [busqueda, setBusqueda] = React.useState("");
@@ -122,8 +128,12 @@ function CardContent({ tab }: { tab: Tab }) {
           onCancelar={() => setSelectedId(null)}
           onDuplicar={() => {}}
           onEliminar={async () => {
-            if (!selected?.dbId) return
+            if (!selected?.dbId) {
+              logDebug('onEliminar sin dbId', { selected })
+              return
+            }
             const ok = await toast.confirm('¿Eliminar material?')
+            logDebug('confirm eliminar', { ok })
             if (!ok) return
             await eliminar(selected.dbId)
             mutate()
