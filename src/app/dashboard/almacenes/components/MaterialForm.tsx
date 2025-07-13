@@ -31,10 +31,7 @@ export default function MaterialForm({
   readOnly = false,
   historialInfo,
 }: Props) {
-  if (!material)
-    return (
-      <p className="text-sm text-[var(--dashboard-muted)]">Selecciona o crea un material.</p>
-    );
+  if (!material) return null;
 
   const toast = useToast();
   const [preview, setPreview] = useState<string | null>(null);

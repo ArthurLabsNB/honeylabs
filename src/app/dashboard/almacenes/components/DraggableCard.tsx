@@ -19,7 +19,8 @@ function CardContent({ tab }: { tab: Tab }) {
     useBoard();
   const toast = useToast();
   const { addAfterActive, tabs, setActive } = useTabStore();
-  const openMaterial = (id: string) => {
+  const openMaterial = (id: string | null) => {
+    if (!id) return;
     setSelectedId(id);
     const ensure = (type: Tab["type"], title: string, side: "left" | "right") => {
       const existing = tabs.find((t) => t.type === type);
@@ -68,6 +69,7 @@ function CardContent({ tab }: { tab: Tab }) {
         />
       );
     case "form-material":
+      if (!selected) return null;
       return (
         <MaterialForm
           material={selected}
