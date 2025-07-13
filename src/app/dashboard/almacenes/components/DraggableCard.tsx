@@ -8,17 +8,31 @@ import { usePrompt } from "@/hooks/usePrompt";
 import { useToast } from "@/components/Toast";
 import MaterialList from "./MaterialList";
 import MaterialForm from "./MaterialForm";
+import UnidadForm from "./UnidadForm";
+import AuditoriaForm from "./AuditoriaForm";
 import type { Material } from "./MaterialRow";
 import UnidadesPanel from "../[id]/UnidadesPanel";
 import AuditoriasPanel from "../[id]/AuditoriasPanel";
 import { useBoard } from "../board/BoardProvider";
 import { generarUUID } from "@/lib/uuid";
+import useUnidades from "@/hooks/useUnidades";
 
 function CardContent({ tab }: { tab: Tab }) {
-  const { materiales, selectedId, setSelectedId, crear, mutate, eliminar } =
-    useBoard();
+  const {
+    materiales,
+    selectedId,
+    setSelectedId,
+    unidadSel,
+    setUnidadSel,
+    auditoriaSel,
+    setAuditoriaSel,
+    crear,
+    mutate,
+    eliminar,
+  } = useBoard();
   const toast = useToast();
   const { addAfterActive, tabs, setActive } = useTabStore();
+  const { obtener, actualizar } = useUnidades(selected?.dbId);
   const openMaterial = (id: string | null) => {
     if (!id) return;
     setSelectedId(id);
@@ -30,6 +44,35 @@ function CardContent({ tab }: { tab: Tab }) {
     };
     ensure("unidades", "Unidades", "right");
     ensure("form-material", "Material", "left");
+  };
+  const openUnidad = async (u: any) => {
+    if (!u?.id) return;
+    const info = await obtener(u.id);
+    if (info) {
+      setUnidadSel({ nombreMaterial: u.nombre, ...info });
+      const existing = tabs.find((t) => t.type === "form-unidad");
+      if (existing) setActive(existing.id);
+      else
+        addAfterActive({
+          id: generarUUID(),
+          title: "Unidad",
+          type: "form-unidad",
+          side: "left",
+        });
+    }
+  };
+  const openAuditoria = (entry: any) => {
+    if (!entry?.id) return;
+    setAuditoriaSel(entry.id);
+    const existing = tabs.find((t) => t.type === "form-auditoria");
+    if (existing) setActive(existing.id);
+    else
+      addAfterActive({
+        id: generarUUID(),
+        title: "Auditoría",
+        type: "form-auditoria",
+        side: "left",
+      });
   };
   const selected = materiales.find((m) => m.id === selectedId) || null;
   switch (tab.type) {
@@ -65,7 +108,7 @@ function CardContent({ tab }: { tab: Tab }) {
         <UnidadesPanel
           material={selected}
           onChange={() => {}}
-          onSelect={() => {}}
+          onSelect={openUnidad}
         />
       );
     case "form-material":
@@ -92,7 +135,36 @@ function CardContent({ tab }: { tab: Tab }) {
         <AuditoriasPanel
           material={selected}
           almacenId={0}
-          onSelectHistorial={() => {}}
+          onSelectHistorial={openAuditoria}
+        />
+      );
+    case "form-unidad":
+      return (
+        <UnidadForm
+          unidad={unidadSel}
+          onChange={(campo, valor) =>
+            setUnidadSel((u) => (u ? { ...u, [campo]: valor } : u))
+          }
+          onGuardar={async () => {
+            if (!unidadSel) return;
+            await actualizar(unidadSel as any);
+            setUnidadSel(null);
+            useTabStore.getState().close(tab.id);
+          }}
+          onCancelar={() => {
+            setUnidadSel(null);
+            useTabStore.getState().close(tab.id);
+          }}
+        />
+      );
+    case "form-auditoria":
+      return (
+        <AuditoriaForm
+          auditoriaId={auditoriaSel}
+          onClose={() => {
+            setAuditoriaSel(null);
+            useTabStore.getState().close(tab.id);
+          }}
         />
       );
     default:
