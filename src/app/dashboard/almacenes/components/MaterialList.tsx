@@ -12,7 +12,7 @@ interface Props {
   setBusqueda: (v: string) => void;
   orden: "nombre" | "cantidad";
   setOrden: (v: "nombre" | "cantidad") => void;
-  onNuevo: () => void;
+  onNuevo: () => Promise<any>;
   onDuplicar: () => void;
 }
 
@@ -123,9 +123,10 @@ export default function MaterialList({
       <p className="text-xs text-right">Total stock: {totalStock}</p>
       <div className="flex gap-2">
         <button
-          onClick={() => {
-            onNuevo();
-            toast.show('Material creado', 'success');
+          onClick={async () => {
+            const res = await onNuevo();
+            if (res?.error) toast.show(res.error, 'error');
+            else toast.show('Material creado', 'success');
           }}
           className="flex-1 py-1 rounded-md bg-[var(--dashboard-accent)] text-black text-sm hover:bg-[var(--dashboard-accent-hover)]"
         >
