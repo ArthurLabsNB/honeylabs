@@ -56,8 +56,29 @@ export async function GET(req: NextRequest) {
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
     }
-    const unidad = await prisma.materialUnidad.findUnique({ where: { id: unidadId } })
-    if (!unidad) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
+    const unidadDb = await prisma.materialUnidad.findUnique({
+      where: { id: unidadId },
+      include: {
+        archivos: {
+          select: { id: true, nombre: true, archivoNombre: true, archivo: true, fecha: true },
+        },
+      },
+    })
+    if (!unidadDb) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
+
+    const unidad = {
+      ...unidadDb,
+      imagen: unidadDb.imagen
+        ? Buffer.from(unidadDb.imagen as Buffer).toString('base64')
+        : null,
+      archivos: unidadDb.archivos.map(a => ({
+        id: a.id,
+        nombre: a.nombre,
+        archivoNombre: a.archivoNombre,
+        fecha: a.fecha,
+        archivo: a.archivo ? Buffer.from(a.archivo as Buffer).toString('base64') : null,
+      })),
+    }
     return NextResponse.json({ unidad })
   } catch (err) {
     logger.error('GET /api/materiales/[id]/unidades/[unidadId]', err)

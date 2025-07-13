@@ -54,6 +54,13 @@ export interface Unidad {
   observaciones?: string
   imagen?: string | null
   imagenNombre?: string | null
+  archivos?: {
+    id: number
+    nombre: string
+    archivoNombre: string
+    fecha?: string
+    archivo: string | null
+  }[]
   [clave: string]: any
 }
 
@@ -183,6 +190,12 @@ export default function useUnidades(materialId?: number | string) {
             ;(unidad as any)[f] = d.toISOString().slice(0, 10)
           }
         }
+      }
+      if (Array.isArray(unidad.archivos)) {
+        unidad.archivos = unidad.archivos.map(a => ({
+          ...a,
+          fecha: a.fecha ? new Date(a.fecha).toISOString() : a.fecha,
+        }))
       }
     }
     return unidad
