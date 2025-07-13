@@ -83,6 +83,10 @@
 - Centralizamos eventos de UI en `ui-events.ts`.
 - Añadimos cancelación de peticiones y estados de carga en almacenes.
 
+## 0.4.24
+- Mostramos una barra de pestañas reordenable bajo el navbar de almacenes.
+- Reutilizamos `DraggableTab` con `@dnd-kit` para arrastrar pestañas.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 
