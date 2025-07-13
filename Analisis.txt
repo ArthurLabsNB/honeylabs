@@ -1,4 +1,4 @@
-Arreglar la seleccion y formularios de Material y Unidad
+Arreglar la seleccion y formularios de Material y Unidad (Hecho)
 
 Eliminar la tarjeta “Nuevo” vacía (Hecho)
 
@@ -6,9 +6,9 @@ Suprime la tarjeta placeholder y reemplázala por un botón flotante “＋ Aña
 
 Valida en el backend para impedir que se cree una entrada vacía en caso de llamadas directas a la API. (Hecho)
 
-Corregir el error al seleccionar material o unidad
+Corregir el error al seleccionar material o unidad (Hecho)
 
-Añade control de errores con boundaries React y logging centralizado (e.g. Sentry) para rastrear trazas completas.
+Añade control de errores con boundaries React y logging centralizado (e.g. Sentry) para rastrear trazas completas. (Hecho)
 
 Persistir y restaurar el orden de tarjetas
 
@@ -34,7 +34,7 @@ Formulario reactivo material → unidad
 
 El formulario principal se monta con el material seleccionado; al elegir una unidad, reutiliza el mismo componente y sólo actualiza el formState vía React Hook Form.
 
-Añade breadcrumbs Material / Unidad para navegación rápida y botón de “volver al material”.
+Añade breadcrumbs Material / Unidad para navegación rápida y botón de “volver al material”. (Hecho)
 
 Movimiento de tarjetas ultrasuave y adaptable
 
