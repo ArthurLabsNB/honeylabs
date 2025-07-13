@@ -2,6 +2,10 @@
 import { Menu, Settings, Download, FileText, Lock, RefreshCcw } from "lucide-react";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
+import {
+  GESTIONAR_PERMISOS_EVENT,
+  SINCRONIZAR_ALMACEN_EVENT,
+} from "@/lib/ui-events";
 
 export default function AlmacenTools({ id }: { id: string | number }) {
   const [open, setOpen] = useState(false);
@@ -34,10 +38,20 @@ export default function AlmacenTools({ id }: { id: string | number }) {
           <button className="w-full text-left px-3 py-2 text-sm hover:bg-white/5" onClick={() => window.open(`/api/reportes?id=${id}`, '_blank')}>
             <FileText className="w-4 h-4 inline mr-2" /> Generar reporte
           </button>
-          <button className="w-full text-left px-3 py-2 text-sm hover:bg-white/5" onClick={() => window.dispatchEvent(new Event('gestionar-permisos'))}>
+          <button
+            className="w-full text-left px-3 py-2 text-sm hover:bg-white/5"
+            onClick={() =>
+              window.dispatchEvent(new Event(GESTIONAR_PERMISOS_EVENT))
+            }
+          >
             <Lock className="w-4 h-4 inline mr-2" /> Gestionar permisos
           </button>
-          <button className="w-full text-left px-3 py-2 text-sm hover:bg-white/5" onClick={() => window.dispatchEvent(new Event('sincronizar-almacen'))}>
+          <button
+            className="w-full text-left px-3 py-2 text-sm hover:bg-white/5"
+            onClick={() =>
+              window.dispatchEvent(new Event(SINCRONIZAR_ALMACEN_EVENT))
+            }
+          >
             <RefreshCcw className="w-4 h-4 inline mr-2" /> Sincronizar
           </button>
           <button className="w-full text-left px-3 py-2 text-sm hover:bg-white/5">

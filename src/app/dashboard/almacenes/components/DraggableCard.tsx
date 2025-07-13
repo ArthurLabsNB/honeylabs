@@ -1,187 +1,36 @@
 "use client";
-import React, { useRef } from "react";
+import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Pencil, Pin, PinOff, Minimize2, Maximize2, X } from "lucide-react";
 import { useTabStore, Tab } from "@/hooks/useTabs";
 import { usePrompt } from "@/hooks/usePrompt";
-import { useToast } from "@/components/Toast";
-import MaterialList from "./MaterialList";
-import MaterialForm from "./MaterialForm";
-import UnidadForm from "./UnidadForm";
-import AuditoriaForm from "./AuditoriaForm";
-import { debug as logDebug } from "@lib/logger";
-import type { Material } from "./MaterialRow";
-import UnidadesPanel from "../[id]/UnidadesPanel";
-import AuditoriasPanel from "../[id]/AuditoriasPanel";
-import { useBoard } from "../board/BoardProvider";
-import { generarUUID } from "@/lib/uuid";
-import useUnidades from "@/hooks/useUnidades";
+import MaterialesTab from "./tabs/MaterialesTab";
+import UnidadesTab from "./tabs/UnidadesTab";
+import MaterialFormTab from "./tabs/MaterialFormTab";
+import AuditoriasTab from "./tabs/AuditoriasTab";
+import UnidadFormTab from "./tabs/UnidadFormTab";
+import AuditoriaFormTab from "./tabs/AuditoriaFormTab";
 
-function CardContent({ tab }: { tab: Tab }) {
-  const {
-    materiales,
-    selectedId,
-    setSelectedId,
-    unidadSel,
-    setUnidadSel,
-    auditoriaSel,
-    setAuditoriaSel,
-    crear,
-    mutate,
-    eliminar,
-  } = useBoard();
-  const toast = useToast();
-  const { addAfterActive, tabs, setActive } = useTabStore();
-  const selected = materiales.find((m) => m.id === selectedId) || null;
-  const { obtener, actualizar } = useUnidades(selected?.dbId);
-  const openMaterial = (id: string | null) => {
-    logDebug('openMaterial', { id });
-    if (!id) return;
-    setSelectedId(id);
-    const ensure = (type: Tab["type"], title: string, side: "left" | "right") => {
-      const existing = tabs.find((t) => t.type === type);
-      if (existing) setActive(existing.id);
-      else
-        addAfterActive({ id: generarUUID(), title, type: type as any, side });
-    };
-    ensure("unidades", "Unidades", "right");
-    ensure("form-material", "Material", "left");
-  };
-  const openUnidad = async (u: any) => {
-    logDebug('openUnidad', { id: u?.id });
-    if (!u?.id) return;
-    const info = await obtener(u.id);
-    if (!info) {
-      logDebug('openUnidad: no encontrado', { id: u.id });
-      return;
-    }
-    setUnidadSel({ nombreMaterial: u.nombre, ...info });
-    const existing = tabs.find((t) => t.type === "form-unidad");
-    if (existing) setActive(existing.id);
-    else
-      addAfterActive({
-        id: generarUUID(),
-        title: "Unidad",
-        type: "form-unidad",
-        side: "left",
-      });
-  };
-  const openAuditoria = (entry: any) => {
-    logDebug('openAuditoria', { id: entry?.id });
-    if (!entry?.id) return;
-    setAuditoriaSel(entry.id);
-    const existing = tabs.find((t) => t.type === "form-auditoria");
-    if (existing) setActive(existing.id);
-    else
-      addAfterActive({
-        id: generarUUID(),
-        title: "Auditoría",
-        type: "form-auditoria",
-        side: "left",
-      });
-  };
+function CardBody({ tab }: { tab: Tab }) {
   switch (tab.type) {
-    case "materiales": {
-      const [busqueda, setBusqueda] = React.useState("");
-      const [orden, setOrden] = React.useState<"nombre" | "cantidad">("nombre");
-      return (
-        <MaterialList
-          materiales={materiales}
-          selectedId={selectedId}
-          onSeleccion={openMaterial}
-          busqueda={busqueda}
-          setBusqueda={setBusqueda}
-          orden={orden}
-          setOrden={setOrden}
-          onNuevo={async () => {
-            const nuevo = {
-              id: generarUUID(),
-              nombre: `Material ${Date.now()}`,
-              cantidad: 0,
-              lote: '',
-            } as Material;
-            const res = await crear(nuevo);
-            const mid = res?.material?.id;
-            if (mid) openMaterial(String(mid));
-            return res;
-          }}
-          onDuplicar={() => {}}
-        />
-      );
-    }
+    case "materiales":
+      return <MaterialesTab />;
     case "unidades":
-      return (
-        <UnidadesPanel
-          material={selected}
-          onChange={() => {}}
-          onSelect={openUnidad}
-        />
-      );
+      return <UnidadesTab />;
     case "form-material":
-      if (!selected) return null;
-      return (
-        <MaterialForm
-          material={selected}
-          onChange={() => {}}
-          onGuardar={() => {}}
-          onCancelar={() => setSelectedId(null)}
-          onDuplicar={() => {}}
-          onEliminar={async () => {
-            if (!selected?.dbId) {
-              logDebug('onEliminar sin dbId', { selected })
-              return
-            }
-            const ok = await toast.confirm('¿Eliminar material?')
-            logDebug('confirm eliminar', { ok })
-            if (!ok) return
-            await eliminar(selected.dbId)
-            mutate()
-            setSelectedId(null)
-          }}
-        />
-      );
+      return <MaterialFormTab tabId={tab.id} />;
     case "auditorias":
-      return (
-        <AuditoriasPanel
-          material={selected}
-          almacenId={0}
-          onSelectHistorial={openAuditoria}
-        />
-      );
+      return <AuditoriasTab />;
     case "form-unidad":
-      return (
-        <UnidadForm
-          unidad={unidadSel}
-          onChange={(campo, valor) =>
-            setUnidadSel((u) => (u ? { ...u, [campo]: valor } : u))
-          }
-          onGuardar={async () => {
-            if (!unidadSel) return;
-            await actualizar(unidadSel as any);
-            setUnidadSel(null);
-            useTabStore.getState().close(tab.id);
-          }}
-          onCancelar={() => {
-            setUnidadSel(null);
-            useTabStore.getState().close(tab.id);
-          }}
-        />
-      );
+      return <UnidadFormTab tabId={tab.id} />;
     case "form-auditoria":
-      return (
-        <AuditoriaForm
-          auditoriaId={auditoriaSel}
-          onClose={() => {
-            setAuditoriaSel(null);
-            useTabStore.getState().close(tab.id);
-          }}
-        />
-      );
+      return <AuditoriaFormTab tabId={tab.id} />;
     default:
       return <div className="p-4 text-sm text-gray-400">Sin contenido</div>;
   }
 }
+
 
 export default function DraggableCard({ tab }: { tab: Tab }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: tab.id });
@@ -244,7 +93,7 @@ export default function DraggableCard({ tab }: { tab: Tab }) {
           )}
         </div>
       </div>
-      {!tab.minimized && !tab.collapsed && <CardContent tab={tab} />}
+      {!tab.minimized && !tab.collapsed && <CardBody tab={tab} />}
     </div>
   );
 }
