@@ -6,6 +6,7 @@ import AlmacenDetailNavbar from "../components/AlmacenDetailNavbar";
 import Spinner from "@/components/Spinner";
 import useSession from "@/hooks/useSession";
 import CardBoard from "../components/CardBoard";
+import TabBar from "../components/TabBar";
 import { BoardProvider } from "../board/BoardProvider";
 import { DetalleUIProvider, useDetalleUI } from "../DetalleUI";
 
@@ -54,6 +55,7 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
         data-oid="9d4tqvn"
       >
         <AlmacenDetailNavbar />
+        <TabBar />
         <section
           className="flex-1 overflow-y-auto bg-[var(--dashboard-bg)] text-[var(--dashboard-text)]"
           data-oid="fuuwox1"

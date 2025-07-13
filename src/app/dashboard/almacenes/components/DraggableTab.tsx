@@ -4,7 +4,13 @@ import { Pencil, Pin, PinOff, Minimize2, Maximize2, X } from "lucide-react";
 import { useTabStore, Tab } from "@/hooks/useTabs";
 import { usePrompt } from "@/hooks/usePrompt";
 
-export default function DraggableTab({ tab, index }: { tab: Tab; index: number }) {
+interface Props {
+  tab: Tab;
+  index: number;
+  draggable?: boolean;
+}
+
+export default function DraggableTab({ tab, index, draggable = true }: Props) {
   const { activeId, setActive, move, update, close, rename } = useTabStore();
   const prompt = usePrompt();
   const ref = useRef<HTMLDivElement>(null);
@@ -33,10 +39,10 @@ export default function DraggableTab({ tab, index }: { tab: Tab; index: number }
   return (
     <div
       ref={ref}
-      draggable
-      onDragStart={onDragStart}
-      onDrop={onDrop}
-      onDragOver={(e) => e.preventDefault()}
+      draggable={draggable}
+      onDragStart={draggable ? onDragStart : undefined}
+      onDrop={draggable ? onDrop : undefined}
+      onDragOver={draggable ? (e) => e.preventDefault() : undefined}
       onClick={() => setActive(tab.id)}
       onDoubleClick={toggle}
       onContextMenu={popout}
