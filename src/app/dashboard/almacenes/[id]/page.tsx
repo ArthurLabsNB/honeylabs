@@ -11,6 +11,8 @@ import MaterialForm from "../components/MaterialForm";
 import MaterialList from "../components/MaterialList";
 import UnidadesPanel from "./UnidadesPanel";
 import UnidadForm from "../components/UnidadForm";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import AuditoriasPanel from "./AuditoriasPanel";
 import ExportNavbar from "../components/ExportNavbar";
 import { generarUUID } from "@/lib/uuid";
@@ -323,54 +325,61 @@ export default function AlmacenPage() {
 
       <div className="flex flex-col md:flex-row gap-4 h-full">
         <section className="p-4 border-white/10 overflow-y-auto md:w-1/2 border-r">
-          {panel === 'material' && (
-            <>
-              {historialBackup && (
-                <>
-                  <ExportNavbar material={selectedMaterial} />
-                  <p className="text-xs mb-2 text-[var(--dashboard-muted)]">
-                    Vista de respaldo del movimiento: {historialBackup.descripcion ?? ''} -{' '}
-                    {new Date(historialBackup.fecha).toLocaleString()}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={cancelar}
-                    className="mb-2 px-2 py-1 rounded bg-white/10 text-sm"
-                  >
-                    Volver
-                  </button>
-                </>
-              )}
-              <MaterialForm
-                key={historialBackup ? 'hist' : selectedId ?? 'new'}
-                material={selectedMaterial}
-                onChange={(campo, valor) =>
-                  selectedId && actualizar(selectedId, campo, valor)
-                }
-                onGuardar={guardar}
-                onCancelar={cancelar}
-                onDuplicar={duplicar}
-                onEliminar={eliminar}
-                readOnly={Boolean(historialBackup)}
-                historialInfo={historialBackup ?? undefined}
+          <Breadcrumbs
+            material={selectedMaterial}
+            unidad={panel === 'unidad' ? unidadSel : null}
+            onBack={() => setPanel('material')}
+          />
+          <ErrorBoundary>
+            {panel === 'material' && (
+              <>
+                {historialBackup && (
+                  <>
+                    <ExportNavbar material={selectedMaterial} />
+                    <p className="text-xs mb-2 text-[var(--dashboard-muted)]">
+                      Vista de respaldo del movimiento: {historialBackup.descripcion ?? ''} -{' '}
+                      {new Date(historialBackup.fecha).toLocaleString()}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={cancelar}
+                      className="mb-2 px-2 py-1 rounded bg-white/10 text-sm"
+                    >
+                      Volver
+                    </button>
+                  </>
+                )}
+                <MaterialForm
+                  key={historialBackup ? 'hist' : selectedId ?? 'new'}
+                  material={selectedMaterial}
+                  onChange={(campo, valor) =>
+                    selectedId && actualizar(selectedId, campo, valor)
+                  }
+                  onGuardar={guardar}
+                  onCancelar={cancelar}
+                  onDuplicar={duplicar}
+                  onEliminar={eliminar}
+                  readOnly={Boolean(historialBackup)}
+                  historialInfo={historialBackup ?? undefined}
+                />
+              </>
+            )}
+            {panel === 'unidad' && (
+              <UnidadForm
+                key={unidadSel?.id ?? 'unidad'}
+                unidad={unidadSel}
+                onChange={(campo, valor) => {
+                  setUnidadSel((d) => (d ? { ...d, [campo]: valor } : d))
+                  updateDirty(true)
+                }}
+                onGuardar={guardarUnidad}
+                onCancelar={() => {
+                  setPanel('material')
+                  updateDirty(false)
+                }}
               />
-            </>
-          )}
-          {panel === 'unidad' && (
-            <UnidadForm
-              key={unidadSel?.id ?? 'unidad'}
-              unidad={unidadSel}
-              onChange={(campo, valor) => {
-                setUnidadSel((d) => (d ? { ...d, [campo]: valor } : d))
-                updateDirty(true)
-              }}
-              onGuardar={guardarUnidad}
-              onCancelar={() => {
-                setPanel('material')
-                updateDirty(false)
-              }}
-            />
-          )}
+            )}
+          </ErrorBoundary>
         </section>
         {historialBackup ? (
           <section className="p-4 space-y-4 overflow-y-auto md:w-1/2">
@@ -395,6 +404,7 @@ export default function AlmacenPage() {
                 return
               }
               setHistorialBackup(null)
+              setUnidadSel(null)
               setSelectedId(idSel)
               setPanel('material')
               updateDirty(false)
