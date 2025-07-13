@@ -60,6 +60,9 @@
 - Eliminamos la tarjeta inicial de placeholder y añadimos un botón flotante para crear nuevas tarjetas.
 - Validamos en la API de materiales que el nombre no esté vacío ni sea "Nuevo".
 
+## 0.4.15
+- Limpiamos el filtro de búsqueda al crear un material nuevo en la vista de almacén.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 
