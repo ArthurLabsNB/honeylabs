@@ -182,6 +182,10 @@ export async function POST(req: NextRequest) {
       reorderLevel,
     } = parsed.data
 
+    if (!nombre.trim() || nombre.trim().toLowerCase() === 'nuevo') {
+      return NextResponse.json({ error: 'Nombre inválido' }, { status: 400 })
+    }
+
     miniaturaNombre = parsed.data.miniaturaNombre ?? miniaturaNombre
 
     const material = await prisma.$transaction(async (tx) => {

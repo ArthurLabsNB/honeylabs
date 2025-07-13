@@ -1,10 +1,10 @@
 Arreglar la seleccion y formularios de Material y Unidad
 
-Eliminar la tarjeta “Nuevo” vacía
+Eliminar la tarjeta “Nuevo” vacía (Hecho)
 
-Suprime la tarjeta placeholder y reemplázala por un botón flotante “＋ Añadir tarjeta” con tooltip contextual.
+Suprime la tarjeta placeholder y reemplázala por un botón flotante “＋ Añadir tarjeta” con tooltip contextual. (Hecho)
 
-Valida en el backend para impedir que se cree una entrada vacía en caso de llamadas directas a la API.
+Valida en el backend para impedir que se cree una entrada vacía en caso de llamadas directas a la API. (Hecho)
 
 Corregir el error al seleccionar material o unidad
 

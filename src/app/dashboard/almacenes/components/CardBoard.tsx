@@ -12,8 +12,8 @@ import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { useTabStore, Tab } from "@/hooks/useTabs";
 import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
-import { generarUUID } from "@/lib/uuid";
 import DraggableCard from "./DraggableCard";
+import AddTabButton from "./AddTabButton";
 import { useDetalleUI } from "../DetalleUI";
 import { useDroppable } from "@dnd-kit/core";
 
@@ -25,14 +25,8 @@ function Column({ id, children }: { id: string; children: React.ReactNode }) {
 }
 
 export default function CardBoard() {
-  const { tabs, move, add, update, setTabs } = useTabStore();
+  const { tabs, move, update, setTabs } = useTabStore();
   const { collapsed } = useDetalleUI();
-
-  useEffect(() => {
-    if (tabs.length === 0) {
-      add({ id: generarUUID(), title: "Nuevo", type: "blank", side: "left" });
-    }
-  }, [tabs.length, add]);
 
   useEffect(() => {
     useTabStore.persist
@@ -104,6 +98,7 @@ export default function CardBoard() {
           </SortableContext>
         </Column>
       </DndContext>
+      <AddTabButton />
     </div>
   );
 }
