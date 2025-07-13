@@ -100,6 +100,7 @@ model Usuario {
   plan                 Plan?                  @relation(fields: [planId], references: [id])
   almacenes            UsuarioAlmacen[]
   roles                Rol[]                  @relation("RolToUsuario")
+  auditLogs            AuditLog[]
 }
 
 model BitacoraCambioPerfil {
@@ -518,4 +519,14 @@ enum PrioridadAlerta {
   ALTA
   MEDIA
   BAJA
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  usuarioId Int?
+  accion    String
+  entidad   String
+  payload   Json?
+  fecha     DateTime @default(now())
+  usuario   Usuario? @relation(fields: [usuarioId], references: [id])
 }

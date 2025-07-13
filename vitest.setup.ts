@@ -16,6 +16,11 @@ class PrismaClient {
   usuarioAlmacen = {
     findFirst: () => Promise.resolve(),
   }
+  material = {
+    findMany: () => Promise.resolve(),
+  }
+  $transaction = (cb: any) => cb(this)
+  $executeRawUnsafe = () => Promise.resolve()
   $use() {}
   $connect() {}
 }

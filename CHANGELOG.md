@@ -53,6 +53,9 @@
 - Permitimos crear y borrar materiales desde la nueva tarjeta.
 - Solicitamos confirmación al eliminar materiales o unidades.
 
+## 0.4.12
+- Creamos tabla `AuditLog` y ajustamos inserción con Prisma.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 
