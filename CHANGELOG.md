@@ -70,6 +70,10 @@
 - No renderizamos la tarjeta de material sin una selección válida.
 - Validamos el identificador al abrir nuevas tarjetas.
 
+## 0.4.18
+- Simplificamos la vista de almacén eliminando código duplicado.
+- `ProtectedAlmacen` ahora renderiza el contenido de la página junto al tablero.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 
