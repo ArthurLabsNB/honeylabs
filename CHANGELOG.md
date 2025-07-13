@@ -66,6 +66,10 @@
 ## 0.4.16
 - Corregimos el orden de hooks en `MaterialForm` para evitar errores de renderizado.
 
+## 0.4.17
+- No renderizamos la tarjeta de material sin una selección válida.
+- Validamos el identificador al abrir nuevas tarjetas.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 
