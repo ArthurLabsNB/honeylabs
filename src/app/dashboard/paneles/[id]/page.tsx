@@ -15,6 +15,7 @@ import Minimap from "../components/Minimap";
 import ContextMenu from "../components/ContextMenu";
 import usePanelSync from "@/hooks/usePanelSync";
 import useSubboards from "@/hooks/useSubboards";
+import useLayoutPersistence from "@/hooks/useLayoutPersistence";
 import { buildMenu, MenuAction } from "../contextMenu";
 import GalleryPanel from "../components/GalleryPanel";
 import FileDropZone from "../components/FileDropZone";
@@ -149,6 +150,13 @@ export default function PanelPage() {
     useSubboards(panelId, widgets, layout, setWidgets, setLayout)
 
   usePanelSync(panelId, widgets, layout, setWidgets, setLayout)
+  const { save: saveLayout } = useLayoutPersistence(
+    panelId,
+    widgets,
+    layout,
+    setWidgets,
+    setLayout,
+  )
 
   useEffect(() => {
     if (!openChat || !usuario || !panelId) return
@@ -197,6 +205,17 @@ export default function PanelPage() {
       window.removeEventListener('online', handleOn);
     };
   }, [panelId, saveCurrentSub]);
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      saveLayout();
+      saveCurrentSub();
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [saveLayout, saveCurrentSub]);
 
 
   // 2. Cargar catálogo y componentes de widgets
@@ -313,6 +332,7 @@ export default function PanelPage() {
   useEffect(() => {
     return () => {
       saveCurrentSub()
+      saveLayout()
     }
   }, [])
 
