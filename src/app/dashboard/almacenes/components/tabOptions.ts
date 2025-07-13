@@ -4,4 +4,6 @@ export const tabOptions: Array<{ type: TabType; label: string }> = [
   { type: "materiales", label: "Materiales" },
   { type: "unidades", label: "Unidades" },
   { type: "auditorias", label: "Auditorías" },
+  { type: "board", label: "Tablero" },
+  { type: "url", label: "URL" },
 ];

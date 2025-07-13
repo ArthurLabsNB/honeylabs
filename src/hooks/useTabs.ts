@@ -6,6 +6,8 @@ export type TabType =
   | "materiales"
   | "unidades"
   | "auditorias"
+  | "board"
+  | "url"
   | "form-material"
   | "form-unidad"
   | "form-auditoria";
