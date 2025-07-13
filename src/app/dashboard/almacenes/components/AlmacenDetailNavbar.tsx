@@ -8,6 +8,7 @@ import UserMenu from "@/components/UserMenu";
 import AlmacenTools from "./AlmacenTools";
 import TabsMenu from "./TabsMenu";
 import { jsonOrNull } from "@lib/http";
+import { apiFetch } from "@lib/api";
 import { useDashboardUI } from "../../ui";
 import { useDetalleUI } from "../DetalleUI";
 import { NAVBAR_HEIGHT } from "../../constants";
@@ -51,7 +52,7 @@ export default function AlmacenDetailNavbar() {
   }, []);
 
   useEffect(() => {
-    fetch(`/api/almacenes/${id}`)
+    apiFetch(`/api/almacenes/${id}`)
       .then(jsonOrNull)
       .then((d) => {
         if (d?.almacen?.nombre) {
@@ -67,7 +68,7 @@ export default function AlmacenDetailNavbar() {
   const guardar = async () => {
     if (!cambios) return;
     setGuardando(true);
-    const res = await fetch(`/api/almacenes/${id}`, {
+    const res = await apiFetch(`/api/almacenes/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nombre }),

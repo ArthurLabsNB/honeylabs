@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { apiFetch } from "@lib/api";
 import Image from "next/image";
 import clsx from "clsx";
 
@@ -277,7 +278,7 @@ function KpiSection() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/metrics")
+    apiFetch("/api/metrics")
       .then(r => r.json())
       .then(d => setData(d || null))
       .catch(() =>

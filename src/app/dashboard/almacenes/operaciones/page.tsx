@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
 import useSession from "@/hooks/useSession";
 import { useToast } from "@/components/Toast";
+import { apiFetch } from "@lib/api";
 
 interface Almacen { id: number; nombre: string }
 
@@ -20,7 +21,7 @@ export default function OperacionesPage() {
     if (!usuario) return;
     const ctrl = new AbortController();
     setLoadingAlmacenes(true);
-    fetch(`/api/almacenes?usuarioId=${usuario.id}`, { signal: ctrl.signal })
+    apiFetch(`/api/almacenes?usuarioId=${usuario.id}`, { signal: ctrl.signal })
       .then(jsonOrNull)
       .then((d) => setAlmacenes(d.almacenes || []))
       .catch(() => toast.show('Error al cargar', 'error'))
@@ -33,7 +34,7 @@ export default function OperacionesPage() {
     if (!cantidad || cantidad <= 0)
       return toast.show("Ingresa una cantidad válida", "error");
     setLoading(true);
-    const res = await fetch(`/api/almacenes/${almacenId}/movimientos`, {
+    const res = await apiFetch(`/api/almacenes/${almacenId}/movimientos`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ tipo, cantidad, contexto: { modulo: 'stock' } }),

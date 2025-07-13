@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
+import { apiFetch } from "@lib/api";
 import { X } from "lucide-react";
 
 // Utilidad para pintar colores según prioridad
@@ -28,7 +29,7 @@ export default function AlertasWidget({ usuario }: { usuario: any }) {
     if (!usuario) return;
     setLoading(true);
     setErr(null);
-    fetch(`/api/alertas?usuarioId=${usuario.id}`)
+    apiFetch(`/api/alertas?usuarioId=${usuario.id}`)
       .then(async (res) => {
         if (!res.ok) throw new Error("Error consultando alertas");
         const data = await jsonOrNull(res);

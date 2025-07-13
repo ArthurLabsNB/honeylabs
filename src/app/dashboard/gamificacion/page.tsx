@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { apiFetch } from "@lib/api";
 
 interface Logro {
   id: number;
@@ -13,7 +14,7 @@ export default function GamificacionPage() {
   const [completados, setCompletados] = useState<number[]>([]);
 
   useEffect(() => {
-    fetch("/api/gamificacion")
+    apiFetch("/api/gamificacion")
       .then((r) => r.json())
       .then((d) => setLogros(d.logros || []));
     try {

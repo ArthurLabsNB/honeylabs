@@ -5,6 +5,7 @@ import * as XLSX from 'xlsx'
 import JSZip from 'jszip'
 import { XMLParser } from 'fast-xml-parser'
 import YAML from 'yaml'
+import { apiFetch } from '@lib/api'
 
 export type Row = Record<string, any>
 
@@ -86,13 +87,13 @@ export const triggerDownload = (blob: Blob, filename: string) => {
 }
 
 export const fetchExport = async (tipo: string, formato: string): Promise<Blob> => {
-  const res = await fetch(`/api/archivos/export?tipo=${tipo}&formato=${formato}`)
+  const res = await apiFetch(`/api/archivos/export?tipo=${tipo}&formato=${formato}`)
   if (!res.ok) throw new Error('Export failed')
   return res.blob()
 }
 
 export const postImport = async (tipo: string, registros: Row[]) =>
-  fetch('/api/archivos/import', {
+  apiFetch('/api/archivos/import', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ tipo, registros }),

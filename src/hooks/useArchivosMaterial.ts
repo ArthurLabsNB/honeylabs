@@ -1,5 +1,6 @@
 import useSWR from 'swr'
 import fetcher from '@lib/swrFetcher'
+import { apiFetch } from '@lib/api'
 
 export interface ArchivoInfo {
   id: number
@@ -16,7 +17,7 @@ export default function useArchivosMaterial(materialId?: number) {
 
   const eliminar = async (archivoId: number) => {
     if (!url) return
-    await fetch(`/api/materiales/${id}/archivos/${archivoId}`, { method: 'DELETE' })
+    await apiFetch(`/api/materiales/${id}/archivos/${archivoId}`, { method: 'DELETE' })
     mutate()
   }
 
