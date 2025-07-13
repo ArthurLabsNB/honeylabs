@@ -1,8 +1,9 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { Plus } from "lucide-react";
-import { useTabStore } from "@/hooks/useTabs";
+import { useTabStore, type TabType } from "@/hooks/useTabs";
 import { generarUUID } from "@/lib/uuid";
+import { tabOptions } from "./tabOptions";
 
 export default function AddTabButton() {
   const { addAfterActive } = useTabStore();
@@ -19,10 +20,10 @@ export default function AddTabButton() {
     return () => document.removeEventListener("click", onClick);
   }, []);
 
-  const create = (type: "materiales" | "unidades" | "auditorias") => {
+  const create = (type: TabType, label: string) => {
     addAfterActive({
       id: generarUUID(),
-      title: type.charAt(0).toUpperCase() + type.slice(1),
+      title: label,
       type,
       side: "left",
     });
@@ -43,9 +44,9 @@ export default function AddTabButton() {
       </button>
       {open && (
         <div className="absolute bottom-14 right-0 mb-2 w-40 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 shadow-lg p-1 space-y-1">
-          <MenuItem label="Materiales" onClick={() => create("materiales")}/>
-          <MenuItem label="Unidades" onClick={() => create("unidades")}/>
-          <MenuItem label="Auditorias" onClick={() => create("auditorias")}/>
+          {tabOptions.map(opt => (
+            <MenuItem key={opt.type} label={opt.label} onClick={() => create(opt.type, opt.label)} />
+          ))}
         </div>
       )}
     </div>
