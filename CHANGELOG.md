@@ -56,6 +56,10 @@
 ## 0.4.12
 - Creamos tabla `AuditLog` y ajustamos inserción con Prisma.
 
+## 0.4.13
+- Eliminamos la tarjeta inicial de placeholder y añadimos un botón flotante para crear nuevas tarjetas.
+- Validamos en la API de materiales que el nombre no esté vacío ni sea "Nuevo".
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 
