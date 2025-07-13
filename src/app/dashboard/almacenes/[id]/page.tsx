@@ -431,6 +431,7 @@ export default function AlmacenPage() {
                   archivos: [],
                 },
               ])
+              setBusqueda('')
               setSelectedId(nuevoId)
               updateDirty(true)
             }}
