@@ -33,8 +33,13 @@ function CardBody({ tab }: { tab: Tab }) {
 
 
 export default function DraggableCard({ tab }: { tab: Tab }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: tab.id });
-  const style = { transform: CSS.Transform.toString(transform), transition } as React.CSSProperties;
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: tab.id });
+  const style = {
+    transform: `${CSS.Transform.toString(transform)}${isDragging ? ' scale(1.05)' : ''}`,
+    transition,
+    zIndex: isDragging ? 50 : undefined,
+    boxShadow: isDragging ? '0 10px 15px rgba(0,0,0,0.3)' : undefined,
+  } as React.CSSProperties;
 
   const { update, close, rename } = useTabStore();
   const prompt = usePrompt();

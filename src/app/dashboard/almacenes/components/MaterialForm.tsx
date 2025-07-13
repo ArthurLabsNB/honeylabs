@@ -2,6 +2,7 @@
 import { ChangeEvent, useCallback, useState } from "react";
 import { useToast } from "@/components/Toast";
 import ImageModal from "@/components/ImageModal";
+import useObjectUrl from "@/hooks/useObjectUrl";
 
 const MAX_FILE_MB = 20;
 import type { Material } from "./MaterialRow";
@@ -9,6 +10,19 @@ import MaterialCodes from "./MaterialCodes";
 import { generarUUID } from "@/lib/uuid";
 import useUnidades from "@/hooks/useUnidades";
 import useArchivosMaterial from "@/hooks/useArchivosMaterial";
+
+function FileThumb({ file, onClick }: { file: File; onClick: (url: string) => void }) {
+  const url = useObjectUrl(file);
+  if (!url || !file.type.startsWith('image/')) return null;
+  return (
+    <img
+      src={url}
+      alt="preview"
+      className="w-12 h-12 object-cover rounded cursor-pointer"
+      onClick={() => onClick(url)}
+    />
+  );
+}
 
 interface Props {
   material: Material | null;
@@ -41,6 +55,15 @@ export default function MaterialForm({
     eliminar,
     mutate,
   } = useArchivosMaterial(material.dbId);
+  const miniaturaFileUrl = useObjectUrl(
+    material.miniatura instanceof File ? material.miniatura : undefined,
+  );
+  const miniaturaSrc =
+    material.miniatura instanceof File
+      ? miniaturaFileUrl
+      : typeof material.miniatura === 'string'
+        ? material.miniatura
+        : (material.miniaturaUrl as string | null);
   const archivosPrevios = readOnly && Array.isArray(material.archivos)
     ? (material.archivos as any[]).map((a, i) => ({ ...a, id: i }))
     : archivosPreviosHook;
@@ -250,27 +273,13 @@ export default function MaterialForm({
           className="dashboard-input w-full mt-1"
           disabled={readOnly}
         />
-        {(material.miniatura || material.miniaturaUrl) && (
+        {miniaturaSrc && (
           <div className="mt-2 flex items-start gap-2">
             <img
-              src={
-                material.miniatura instanceof File
-                  ? URL.createObjectURL(material.miniatura)
-                  : typeof material.miniatura === 'string'
-                    ? material.miniatura
-                    : (material.miniaturaUrl as string)
-              }
+              src={miniaturaSrc}
               alt="miniatura"
               className="w-32 h-32 object-cover rounded cursor-pointer"
-              onClick={() =>
-                setPreview(
-                  material.miniatura instanceof File
-                    ? URL.createObjectURL(material.miniatura)
-                    : typeof material.miniatura === 'string'
-                      ? material.miniatura
-                      : (material.miniaturaUrl as string)
-                )
-              }
+              onClick={() => setPreview(miniaturaSrc)}
             />
             <button
               type="button"
@@ -289,12 +298,7 @@ export default function MaterialForm({
           {material.archivos?.map((f, i) => (
             <div key={i} className="flex items-center gap-2">
               {f.type.startsWith('image/') && (
-                <img
-                  src={URL.createObjectURL(f)}
-                  alt="preview"
-                  className="w-12 h-12 object-cover rounded cursor-pointer"
-                  onClick={() => setPreview(URL.createObjectURL(f))}
-                />
+                <FileThumb file={f} onClick={(u) => setPreview(u)} />
               )}
               <input
                 type="file"

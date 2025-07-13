@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import { useToast } from "@/components/Toast";
 import ImageModal from "@/components/ImageModal";
+import useObjectUrl from "@/hooks/useObjectUrl";
 import type { Material } from "./MaterialRow";
 
 interface Props {
@@ -53,6 +54,23 @@ export default function MaterialList({
 
   const [preview, setPreview] = useState<string | null>(null);
 
+  function Miniatura({ m }: { m: Material }) {
+    const url = useObjectUrl(m.miniatura instanceof File ? m.miniatura : undefined);
+    const src = m.miniatura instanceof File ? url : (typeof m.miniatura === 'string' ? m.miniatura : m.miniaturaUrl as string | null);
+    if (!src) return null;
+    return (
+      <img
+        src={src}
+        className="w-32 h-32 object-cover rounded cursor-pointer"
+        alt="miniatura"
+        onClick={(e) => {
+          e.stopPropagation();
+          setPreview(src);
+        }}
+      />
+    );
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex gap-2">
@@ -88,25 +106,7 @@ export default function MaterialList({
               onClick={() => onSeleccion(m.id)}
               className={`dashboard-card w-full text-left flex items-center gap-4 ${m.id === selectedId ? 'border-[var(--dashboard-accent)]' : 'hover:border-[var(--dashboard-accent)]'}`}
             >
-              {(m.miniatura || m.miniaturaUrl) && (
-                <img
-                  src={
-                    m.miniatura
-                      ? URL.createObjectURL(m.miniatura)
-                      : (m.miniaturaUrl as string)
-                  }
-                  className="w-32 h-32 object-cover rounded cursor-pointer"
-                  alt="miniatura"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setPreview(
-                      m.miniatura
-                        ? URL.createObjectURL(m.miniatura)
-                        : (m.miniaturaUrl as string)
-                    );
-                  }}
-                />
-              )}
+              {(m.miniatura || m.miniaturaUrl) && <Miniatura m={m} />}
               <div className="flex flex-col flex-1">
                 <span className="font-semibold">{m.nombre}</span>
                 <span className="text-xs">
