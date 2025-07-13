@@ -60,6 +60,7 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
         >
           <BoardProvider>
             <CardBoard />
+            {children}
           </BoardProvider>
         </section>
         <button
