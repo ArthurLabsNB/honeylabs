@@ -4,14 +4,22 @@ import { useParams } from "next/navigation";
 import QuickInventoryModal from "./QuickInventoryModal";
 import { jsonOrNull } from "@lib/http";
 
+const EVENT = "quick-inventory";
+
+interface Inventory {
+  entradas: number;
+  salidas: number;
+  inventario: number;
+}
+
 export default function AlmacenPage() {
-  const { id } = useParams();
-  const [inv, setInv] = useState<{ entradas: number; salidas: number; inventario: number } | null>(null);
-  const [show, setShow] = useState(false);
+  const { id } = useParams<{ id: string }>();
+  const [inv, setInv] = useState<Inventory | null>(null);
 
   useEffect(() => {
-    const handler = () => {
-      fetch(`/api/almacenes/${id}`)
+    const ctrl = new AbortController();
+    const fetchInv = () =>
+      fetch(`/api/almacenes/${id}`, { signal: ctrl.signal })
         .then(jsonOrNull)
         .then((d) => {
           if (d?.almacen) {
@@ -20,14 +28,18 @@ export default function AlmacenPage() {
               salidas: d.almacen.salidas ?? 0,
               inventario: d.almacen.inventario ?? 0,
             });
-            setShow(true);
           }
         })
-        .catch(() => {});
+        .catch((err) => {
+          if (err.name !== "AbortError") console.error(err);
+        });
+
+    window.addEventListener(EVENT, fetchInv);
+    return () => {
+      ctrl.abort();
+      window.removeEventListener(EVENT, fetchInv);
     };
-    window.addEventListener("quick-inventory", handler);
-    return () => window.removeEventListener("quick-inventory", handler);
   }, [id]);
 
-  return show && inv ? <QuickInventoryModal data={inv} onClose={() => setShow(false)} /> : null;
+  return inv && <QuickInventoryModal data={inv} onClose={() => setInv(null)} />;
 }
