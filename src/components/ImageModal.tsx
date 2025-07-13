@@ -10,6 +10,14 @@ export default function ImageModal({ src, alt, onClose }: { src: string; alt?: s
     return () => window.removeEventListener("keydown", handler);
   }, [onClose]);
 
+  useEffect(() => {
+    return () => {
+      if (src.startsWith('blob:')) {
+        URL.revokeObjectURL(src);
+      }
+    };
+  }, [src]);
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
