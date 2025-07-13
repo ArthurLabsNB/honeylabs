@@ -6,6 +6,7 @@ import useMovimientos from "@/hooks/useMovimientos";
 import useHistorialAlmacen from "@/hooks/useHistorialAlmacen";
 import useHistorialUnidad from "@/hooks/useHistorialUnidad";
 import { useState, useMemo } from "react";
+import { apiFetch } from "@lib/api";
 import Link from "next/link";
 import {
   PlusIcon,
@@ -125,7 +126,7 @@ export default function HistorialMovimientosPanel({ material, almacenId, unidadI
     const [pref, real] = id.split('-');
     if (pref === 'h') {
       try {
-        const res = await fetch(`/api/historial/material/${real}`);
+        const res = await apiFetch(`/api/historial/material/${real}`);
         const data = await res.json();
         if (data.entry?.estado) {
           setDetalle({ ...data.entry, id });
@@ -150,7 +151,7 @@ export default function HistorialMovimientosPanel({ material, almacenId, unidadI
       }
     } else if (pref === 'hu') {
       try {
-        const res = await fetch(`/api/historial/unidad/${real}`);
+        const res = await apiFetch(`/api/historial/unidad/${real}`);
         const data = await res.json();
         if (data.entry?.estado) {
           setDetalle({ ...data.entry, id });

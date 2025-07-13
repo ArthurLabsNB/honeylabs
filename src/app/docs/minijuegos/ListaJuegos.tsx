@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import type { Juego } from "./PanelMinijuegos";
+import { apiFetch } from "@lib/api";
 
 interface Props {
   onPlay: (juego: Juego) => void;
@@ -10,13 +11,13 @@ export default function ListaJuegos({ onPlay }: Props) {
   const [juegos, setJuegos] = useState<Juego[]>([]);
 
   useEffect(() => {
-    fetch("/api/minijuegos")
+    apiFetch("/api/minijuegos")
       .then((r) => r.json())
       .then((d) => setJuegos(d.juegos || []));
   }, []);
 
   async function eliminar(id: number) {
-    const res = await fetch(`/api/minijuegos/${id}`, { method: "DELETE" });
+    const res = await apiFetch(`/api/minijuegos/${id}`, { method: "DELETE" });
     if (res.ok) setJuegos((j) => j.filter((x) => x.id !== id));
   }
 

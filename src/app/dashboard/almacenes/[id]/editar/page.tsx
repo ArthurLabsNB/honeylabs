@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
+import { apiFetch } from "@lib/api";
 import { useParams, useRouter } from "next/navigation";
 import { useToast } from "@/components/Toast";
 import Spinner from "@/components/Spinner";
@@ -16,7 +17,7 @@ export default function EditarAlmacenPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/almacenes/${id}`)
+    apiFetch(`/api/almacenes/${id}`)
       .then(jsonOrNull)
       .then((d) => {
         if (d.almacen) {
@@ -44,7 +45,7 @@ export default function EditarAlmacenPage() {
         body = JSON.stringify({ nombre, descripcion, imagenUrl });
         headers = { 'Content-Type': 'application/json' };
       }
-      const res = await fetch(`/api/almacenes/${id}`, {
+      const res = await apiFetch(`/api/almacenes/${id}`, {
         method: 'PUT',
         body,
         headers,

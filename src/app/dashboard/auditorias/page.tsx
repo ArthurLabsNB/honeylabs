@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Spinner from "@/components/Spinner";
 import useAuditorias from "@/hooks/useAuditorias";
+import { apiFetch } from "@lib/api";
 
 export default function AuditoriasPage() {
   const router = useRouter();
@@ -110,7 +111,7 @@ export default function AuditoriasPage() {
             className={`dashboard-card space-y-1 ${activo === a.id ? 'border-[var(--dashboard-accent)]' : 'hover:border-[var(--dashboard-accent)]'}`}
             onClick={async () => {
               setActivo(a.id);
-              const res = await fetch(`/api/auditorias/${a.id}`);
+              const res = await apiFetch(`/api/auditorias/${a.id}`);
               if (res.ok) {
                 const d = await res.json();
                 setDetalle(d.auditoria);

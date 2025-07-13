@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Spinner from "@/components/Spinner";
+import { apiFetch } from "@lib/api";
 
 interface Evento {
   id: number;
@@ -18,7 +19,7 @@ export default function TimelinePage() {
   const [activo, setActivo] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch("/api/auditorias")
+    apiFetch("/api/auditorias")
       .then((r) => r.json())
       .then((d) => {
         setEventos(d.auditorias || []);

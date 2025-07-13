@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { apiFetch } from "@lib/api";
 
 interface Props {
   onUpload: () => void;
@@ -18,7 +19,7 @@ export default function SubirRomForm({ onUpload }: Props) {
     form.append("nombre", nombre);
     form.append("plataforma", plataforma);
     form.append("archivo", archivo);
-    const res = await fetch("/api/minijuegos/upload", { method: "POST", body: form });
+    const res = await apiFetch("/api/minijuegos/upload", { method: "POST", body: form });
     if (res.ok) {
       setNombre("");
       setArchivo(null);

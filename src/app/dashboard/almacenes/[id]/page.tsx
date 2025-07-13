@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import QuickInventoryModal from "./QuickInventoryModal";
 import { jsonOrNull } from "@lib/http";
+import { apiFetch } from "@lib/api";
 import { QUICK_INVENTORY_EVENT } from "@/lib/ui-events";
 
 interface Inventory {
@@ -18,7 +19,7 @@ export default function AlmacenPage() {
   useEffect(() => {
     const ctrl = new AbortController();
     const fetchInv = () =>
-      fetch(`/api/almacenes/${id}`, { signal: ctrl.signal })
+      apiFetch(`/api/almacenes/${id}`, { signal: ctrl.signal })
         .then(jsonOrNull)
         .then((d) => {
           if (d?.almacen) {

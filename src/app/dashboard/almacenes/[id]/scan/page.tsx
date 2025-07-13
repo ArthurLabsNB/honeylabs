@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import { useParams } from "next/navigation";
 import { decodeQR } from "@/lib/qr";
+import { apiFetch } from "@lib/api";
 
 export default function ScanAlmacenPage() {
   const { id } = useParams()
@@ -30,7 +31,7 @@ export default function ScanAlmacenPage() {
 
   useEffect(() => {
     if (!codigo) return
-    fetch('/api/qr/importar', {
+    apiFetch('/api/qr/importar', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ codigo }),
@@ -51,7 +52,7 @@ export default function ScanAlmacenPage() {
     if (!obj) return
     Object.entries(original).forEach(([k, v]) => {
       if (k !== 'id' && obj[k] != null && obj[k] !== v) {
-        fetch('/api/discrepancias', {
+        apiFetch('/api/discrepancias', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -91,13 +92,13 @@ export default function ScanAlmacenPage() {
     form.append('observaciones', observaciones)
     form.append('categoria', 'verificacion')
     archivos.forEach(a => form.append('archivos', a))
-    const res = await fetch('/api/reportes', {
+    const res = await apiFetch('/api/reportes', {
       method: 'POST',
       body: form,
     })
     if (res.ok) {
       const json = await res.json()
-      await fetch('/api/auditorias', {
+      await apiFetch('/api/auditorias', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ reporteId: json.reporte.id }),
@@ -123,7 +124,7 @@ export default function ScanAlmacenPage() {
       url = `/api/materiales/${mid}/unidades/${objetoId}`
     }
     if (!url) return
-    await fetch(url, {
+    await apiFetch(url, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -135,7 +136,7 @@ export default function ScanAlmacenPage() {
     if (!info?.tipo || info.tipo !== 'material') return
     const objetoId = info.material?.id
     if (!objetoId) return
-    const res = await fetch(`/api/materiales/${objetoId}/ajuste`, {
+    const res = await apiFetch(`/api/materiales/${objetoId}/ajuste`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ cantidad: Number(nuevoStock) })
@@ -152,7 +153,7 @@ export default function ScanAlmacenPage() {
     const uid = info.unidad?.id
     const mid = info.material?.id
     if (!uid || !mid) return
-    await fetch(`/api/materiales/${mid}/unidades/${uid}`, {
+    await apiFetch(`/api/materiales/${mid}/unidades/${uid}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ estado: 'confirmado' })

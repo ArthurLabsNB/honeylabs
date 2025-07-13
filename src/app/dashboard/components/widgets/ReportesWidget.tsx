@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
+import { apiFetch } from "@lib/api";
 
 interface Reporte {
   id: number;
@@ -13,7 +14,7 @@ export default function ReportesWidget() {
   const [items, setItems] = useState<Reporte[]>([]);
 
   useEffect(() => {
-    fetch("/api/reportes")
+    apiFetch("/api/reportes")
       .then((r) => jsonOrNull(r))
       .then((d) => setItems(d?.reportes?.slice(0, 3) || []))
       .catch(() => {});

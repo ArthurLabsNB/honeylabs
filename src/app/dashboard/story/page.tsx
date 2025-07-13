@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Spinner from "@/components/Spinner";
+import { apiFetch } from "@lib/api";
 
 interface Slide {
   id: string;
@@ -13,7 +14,7 @@ export default function StoryPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/paneles/story")
+    apiFetch("/api/paneles/story")
       .then((r) => r.ok ? r.json() : { slides: [] })
       .then((d) => {
         setSlides(d.slides || []);
