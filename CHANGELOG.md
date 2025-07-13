@@ -78,6 +78,11 @@
 - Ajustamos el orden de hooks en `DraggableCard` para evitar accesos antes de la inicialización.
 - Registramos acciones de tarjetas con `logDebug` para facilitar la depuración.
 
+## 0.4.21
+- Refactorizamos `DraggableCard` en componentes independientes.
+- Centralizamos eventos de UI en `ui-events.ts`.
+- Añadimos cancelación de peticiones y estados de carga en almacenes.
+
 ## 0.2.265
 - Creamos tabla `HistorialUnidad` faltante para prevenir errores en migraciones.
 

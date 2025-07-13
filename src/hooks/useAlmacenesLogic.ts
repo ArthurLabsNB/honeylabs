@@ -86,7 +86,8 @@ export default function useAlmacenesLogic() {
 
   useEffect(() => {
     if (!usuario) return
-    apiFetch('/api/preferences')
+    const ctrl = new AbortController()
+    apiFetch('/api/preferences', { signal: ctrl.signal })
       .then(jsonOrNull)
       .then((prefs) => {
         if (prefs && Array.isArray(prefs.favoritosAlmacenes)) {
@@ -94,6 +95,7 @@ export default function useAlmacenesLogic() {
         }
       })
       .catch(() => {})
+    return () => ctrl.abort()
   }, [usuario])
 
   const eliminar = useCallback(

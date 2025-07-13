@@ -12,6 +12,14 @@ import { useDashboardUI } from "../../ui";
 import { useDetalleUI } from "../DetalleUI";
 import { NAVBAR_HEIGHT } from "../../constants";
 import { useToast } from "@/components/Toast";
+import {
+  QUICK_INVENTORY_EVENT,
+  VACIA_MATERIALES_EVENT,
+  AUDIT_CANCEL_EVENT,
+  AUDIT_PREVIEW_EVENT,
+  ALMACEN_DIRTY_EVENT,
+  ALMACEN_SAVE_EVENT,
+} from "@/lib/ui-events";
 
 export default function AlmacenDetailNavbar() {
   const router = useRouter();
@@ -30,16 +38,16 @@ export default function AlmacenDetailNavbar() {
     const handler = (e: Event) => {
       setDirty((e as CustomEvent<boolean>).detail);
     };
-    window.addEventListener('almacen-dirty', handler as EventListener);
-    return () => window.removeEventListener('almacen-dirty', handler as EventListener);
+    window.addEventListener(ALMACEN_DIRTY_EVENT, handler as EventListener);
+    return () => window.removeEventListener(ALMACEN_DIRTY_EVENT, handler as EventListener);
   }, []);
 
   useEffect(() => {
     const handler = (e: Event) => {
       setAuditActive((e as CustomEvent<boolean>).detail);
     };
-    window.addEventListener('audit-preview', handler as EventListener);
-    return () => window.removeEventListener('audit-preview', handler as EventListener);
+    window.addEventListener(AUDIT_PREVIEW_EVENT, handler as EventListener);
+    return () => window.removeEventListener(AUDIT_PREVIEW_EVENT, handler as EventListener);
   }, []);
 
   useEffect(() => {
@@ -67,7 +75,7 @@ export default function AlmacenDetailNavbar() {
     if (res.ok) {
       setOriginal(nombre);
       toast.show("Almacén actualizado", "success");
-      window.dispatchEvent(new Event('almacen-save'));
+      window.dispatchEvent(new Event(ALMACEN_SAVE_EVENT));
     } else {
       toast.show("Error al guardar", "error");
     }
@@ -105,7 +113,9 @@ export default function AlmacenDetailNavbar() {
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-1 mr-2">
           <button
-            onClick={() => window.dispatchEvent(new Event('quick-inventory'))}
+            onClick={() =>
+              window.dispatchEvent(new Event(QUICK_INVENTORY_EVENT))
+            }
             className="p-2 hover:bg-white/10 rounded-lg"
             title="Vista rápida"
           >
@@ -129,7 +139,9 @@ export default function AlmacenDetailNavbar() {
             <Search className="w-5 h-5" />
           </button>
           <button
-            onClick={() => window.dispatchEvent(new Event('vaciar-materiales'))}
+            onClick={() =>
+              window.dispatchEvent(new Event(VACIA_MATERIALES_EVENT))
+            }
             className="p-2 hover:bg-white/10 rounded-lg"
             title="Vaciar"
           >
@@ -137,7 +149,9 @@ export default function AlmacenDetailNavbar() {
           </button>
           {auditActive && (
             <button
-              onClick={() => window.dispatchEvent(new Event('audit-cancel'))}
+            onClick={() =>
+              window.dispatchEvent(new Event(AUDIT_CANCEL_EVENT))
+            }
               className="p-2 hover:bg-white/10 rounded-lg"
               title="Salir de auditoría"
             >

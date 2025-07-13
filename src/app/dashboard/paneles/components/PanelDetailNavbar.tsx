@@ -3,6 +3,7 @@ import { ArrowLeft, Download, Share2, LogOut } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, useRef, useCallback } from "react";
+import { FOCUS_SEARCH_EVENT } from "@/lib/ui-events";
 import { useParams, useRouter } from "next/navigation";
 import useSession from "@/hooks/useSession";
 import { apiFetch } from "@lib/api";
@@ -77,8 +78,8 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
 
   useEffect(() => {
     const focus = () => searchRef.current?.focus();
-    document.addEventListener('focus-search', focus);
-    return () => document.removeEventListener('focus-search', focus);
+    document.addEventListener(FOCUS_SEARCH_EVENT, focus);
+    return () => document.removeEventListener(FOCUS_SEARCH_EVENT, focus);
   }, []);
 
   useEffect(() => {

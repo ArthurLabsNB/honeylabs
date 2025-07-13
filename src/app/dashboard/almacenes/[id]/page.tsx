@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import QuickInventoryModal from "./QuickInventoryModal";
 import { jsonOrNull } from "@lib/http";
-
-const EVENT = "quick-inventory";
+import { QUICK_INVENTORY_EVENT } from "@/lib/ui-events";
 
 interface Inventory {
   entradas: number;
@@ -34,10 +33,10 @@ export default function AlmacenPage() {
           if (err.name !== "AbortError") console.error(err);
         });
 
-    window.addEventListener(EVENT, fetchInv);
+    window.addEventListener(QUICK_INVENTORY_EVENT, fetchInv as EventListener);
     return () => {
       ctrl.abort();
-      window.removeEventListener(EVENT, fetchInv);
+      window.removeEventListener(QUICK_INVENTORY_EVENT, fetchInv as EventListener);
     };
   }, [id]);
 

@@ -14,13 +14,19 @@ export default function OperacionesPage() {
   const [tipo, setTipo] = useState<"entrada" | "salida">("entrada");
   const [cantidad, setCantidad] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [loadingAlmacenes, setLoadingAlmacenes] = useState(false);
 
   useEffect(() => {
     if (!usuario) return;
-    fetch(`/api/almacenes?usuarioId=${usuario.id}`)
+    const ctrl = new AbortController();
+    setLoadingAlmacenes(true);
+    fetch(`/api/almacenes?usuarioId=${usuario.id}`, { signal: ctrl.signal })
       .then(jsonOrNull)
-      .then((d) => setAlmacenes(d.almacenes || []));
-  }, [usuario]);
+      .then((d) => setAlmacenes(d.almacenes || []))
+      .catch(() => toast.show('Error al cargar', 'error'))
+      .finally(() => setLoadingAlmacenes(false));
+    return () => ctrl.abort();
+  }, [usuario, toast]);
 
   const registrar = async () => {
     if (!almacenId) return toast.show("Selecciona un almacén", "error");
@@ -57,6 +63,7 @@ export default function OperacionesPage() {
           </option>
         ))}
       </select>
+      {loadingAlmacenes && <p className="text-sm">Cargando almacenes...</p>}
       <div className="flex items-center gap-2">
         <select
           value={tipo}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback, useReducer } from "react";
+import { FOCUS_SEARCH_EVENT } from "@/lib/ui-events";
 import { nanoid } from "nanoid";
 import { jsonOrNull } from "@lib/http";
 import { apiFetch } from "@lib/api";
@@ -674,7 +675,7 @@ const handleMenu = (action: MenuAction, id?: string) => {
       if (id) switchSubboard(id);
       break;
     case MenuAction.Search:
-      document.dispatchEvent(new Event('focus-search'));
+      document.dispatchEvent(new Event(FOCUS_SEARCH_EVENT));
       break;
     case MenuAction.InsertTemplate:
       insertTemplate();

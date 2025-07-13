@@ -36,8 +36,7 @@ export default function CardBoard() {
           .then(jsonOrNull)
           .then((d) => {
             if (
-              Array.isArray(d?.tabs) &&
-              useTabStore.getState().tabs.length === 0
+              Array.isArray(d?.tabs) && tabs.length === 0
             ) {
               setTabs(d.tabs as Tab[])
             }
