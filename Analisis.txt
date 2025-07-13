@@ -10,11 +10,11 @@ Corregir el error al seleccionar material o unidad (Hecho)
 
 Añade control de errores con boundaries React y logging centralizado (e.g. Sentry) para rastrear trazas completas. (Hecho)
 
-Persistir y restaurar el orden de tarjetas
+Persistir y restaurar el orden de tarjetas (Hecho)
 
-Guarda el layout (posición + tamaño) en localStorage para respuesta instantánea y sincronízalo mediante WebSocket-Prisma al salir del tablero.
+Guarda el layout (posición + tamaño) en localStorage para respuesta instantánea y sincronízalo mediante WebSocket-Prisma al salir del tablero. (Hecho)
 
-Usa onbeforeunload para un guardado exprés y reconciliación de conflictos por timestamp del cliente.
+Usa onbeforeunload para un guardado exprés y reconciliación de conflictos por timestamp del cliente. (Hecho)
 
 Sistema de pestañas (“boards” dentro de un almacén)
 

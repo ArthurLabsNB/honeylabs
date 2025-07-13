@@ -37,7 +37,7 @@ describe('materiales orden y asociacion', () => {
     })
 
     const form = new FormData()
-    form.set('nombre', 'nuevo')
+    form.set('nombre', 'nuevo123')
     form.set('cantidad', '1')
     const req = new NextRequest('http://localhost/api/almacenes/2/materiales', {
       method: 'POST',
