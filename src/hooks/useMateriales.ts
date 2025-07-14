@@ -4,6 +4,7 @@ import { jsonOrNull } from '@lib/http'
 import { useMemo } from 'react'
 import { generarUUID } from '@/lib/uuid'
 import { apiFetch } from '@lib/api'
+import { parseId } from '@/lib/parseId'
 import type { Material } from '@/app/dashboard/almacenes/components/MaterialRow'
 
 
@@ -12,8 +13,8 @@ const EMPTY_MATERIALS: Material[] = []
 const genId = () => generarUUID()
 
 export default function useMateriales(almacenId?: number | string) {
-  const id = Number(almacenId)
-  const url = !Number.isNaN(id) ? `/api/almacenes/${id}/materiales` : null
+  const id = parseId(almacenId)
+  const url = id ? `/api/almacenes/${id}/materiales` : null
 
   const { data, error, isLoading, mutate } = useSWR(url, fetcher, {
     refreshInterval: 10000,

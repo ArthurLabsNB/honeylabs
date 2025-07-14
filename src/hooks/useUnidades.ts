@@ -2,6 +2,7 @@ import useSWR from 'swr'
 import { jsonOrNull } from '@lib/http'
 import fetcher from '@lib/swrFetcher'
 import { apiFetch } from '@lib/api'
+import { parseId } from '@/lib/parseId'
 
 const fileToBase64 = (file: File) =>
   new Promise<string>((resolve, reject) => {
@@ -66,8 +67,8 @@ export interface Unidad {
 
 
 export default function useUnidades(materialId?: number | string) {
-  const id = Number(materialId)
-  const url = !Number.isNaN(id) && id > 0 ? `/api/materiales/${id}/unidades` : null
+  const id = parseId(materialId)
+  const url = id ? `/api/materiales/${id}/unidades` : null
 
   const { data, error, isLoading, mutate } = useSWR(url, fetcher)
 
