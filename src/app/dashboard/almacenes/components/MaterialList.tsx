@@ -106,7 +106,7 @@ export default function MaterialList({
             <button
               type="button"
               onClick={() => onSeleccion(m.id)}
-              className={`dashboard-card w-full text-left flex items-center gap-4 ${m.id === selectedId ? 'border-[var(--dashboard-accent)]' : 'hover:border-[var(--dashboard-accent)]'}`}
+              className={`dashboard-card no-drag w-full text-left flex items-center gap-4 ${m.id === selectedId ? 'border-[var(--dashboard-accent)]' : 'hover:border-[var(--dashboard-accent)]'}`}
             >
               {(m.miniatura || m.miniaturaUrl) && <Miniatura m={m} />}
               <div className="flex flex-col flex-1">

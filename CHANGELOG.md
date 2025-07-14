@@ -1,3 +1,8 @@
+## 0.6.3
+
+### Cambios
+ - Añadimos clase `no-drag` a cada material para asegurar selección en tarjetas.
+
 ## 0.6.2
 
 - Ajustamos la separación límite entre el tablero de tarjetas y la barra de pestañas.
