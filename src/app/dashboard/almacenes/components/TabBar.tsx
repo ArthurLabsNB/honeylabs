@@ -103,8 +103,8 @@ export default function TabBar() {
       ? '0'
       : NAVBAR_HEIGHT
     : fullscreen
-      ? '3.5rem'
-      : `calc(${NAVBAR_HEIGHT} + 3.5rem)`;
+      ? TABBAR_HEIGHT
+      : `calc(${NAVBAR_HEIGHT} + ${TABBAR_HEIGHT})`;
 
   return (
     <div
