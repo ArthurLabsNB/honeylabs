@@ -108,7 +108,7 @@ export default function TabBar() {
 
   return (
     <div
-      className="fixed z-20 w-full overflow-x-auto whitespace-nowrap border-b border-[var(--dashboard-border)] bg-[var(--dashboard-card)]/80 backdrop-blur shadow-sm transition-all"
+      className="fixed z-20 w-full overflow-x-auto whitespace-nowrap border-b border-[var(--dashboard-border)] bg-[color:var(--dashboard-card)/0.8] backdrop-blur shadow-sm transition-all"
       style={{ top, height: 'var(--tabbar-height)' } as React.CSSProperties}
       role="tablist"
     >
@@ -122,7 +122,7 @@ export default function TabBar() {
           items={boards.map((t) => t.id)}
           strategy={horizontalListSortingStrategy}
         >
-          <div className="flex gap-2 px-2 py-1">
+          <div className="flex gap-2 px-3 py-1">
             {boards.map((tab, idx) => (
               <Fragment key={tab.id}>
                 {dropIndex === idx && <DropIndicator />}
