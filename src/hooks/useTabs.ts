@@ -2,6 +2,20 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+const raf =
+  typeof globalThis.requestAnimationFrame === 'function'
+    ? globalThis.requestAnimationFrame
+    : (cb: FrameRequestCallback) => {
+        cb(Date.now())
+        return 0
+      }
+const caf =
+  typeof globalThis.cancelAnimationFrame === 'function'
+    ? globalThis.cancelAnimationFrame
+    : () => {}
+
+let frame: number | undefined
+
 export type TabType =
   | "materiales"
   | "unidades"
@@ -75,8 +89,13 @@ export const useTabStore = create<TabState>()(
           tabs: state.tabs.filter((t) => t.id !== id),
           activeId: state.activeId === id ? null : state.activeId,
         })),
-      move: (from, to) =>
-        set((state) => ({ tabs: arrayMove(state.tabs, from, to) })),
+      move: (from, to) => {
+        if (frame) caf(frame)
+        frame = raf(() => {
+          set((state) => ({ tabs: arrayMove(state.tabs, from, to) }))
+          frame = 0
+        })
+      },
       setActive: (id) => set({ activeId: id }),
       update: (id, data) =>
         set((state) => ({

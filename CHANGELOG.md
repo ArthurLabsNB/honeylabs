@@ -1,6 +1,9 @@
 ## 0.5.1
 - Permitimos definir destino en tarjetas URL o Tablero al crearlas.
 
+## 0.5.3
+- Mejoramos la organización y accesibilidad de tableros y tarjetas.
+
 ## 0.5.0
 - Soporte para nuevas pestañas de tablero y URL.
 

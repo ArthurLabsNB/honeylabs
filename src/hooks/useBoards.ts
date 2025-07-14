@@ -2,6 +2,20 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { generarUUID } from '@/lib/uuid'
 
+const raf =
+  typeof globalThis.requestAnimationFrame === 'function'
+    ? globalThis.requestAnimationFrame
+    : (cb: FrameRequestCallback) => {
+        cb(Date.now())
+        return 0
+      }
+const caf =
+  typeof globalThis.cancelAnimationFrame === 'function'
+    ? globalThis.cancelAnimationFrame
+    : () => {}
+
+let frame: number | undefined
+
 export interface Board {
   id: string
   title: string
@@ -32,13 +46,18 @@ export const useBoardStore = create<BoardState>()(
           set((s) => ({
             boards: s.boards.map((t) => (t.id === id ? { ...t, title } : t)),
           })),
-        move: (from, to) =>
-          set((s) => {
-            const arr = s.boards.slice()
-            const [it] = arr.splice(from, 1)
-            arr.splice(to, 0, it)
-            return { boards: arr }
-          }),
+        move: (from, to) => {
+          if (frame) caf(frame)
+          frame = raf(() => {
+            set((s) => {
+              const arr = s.boards.slice()
+              const [it] = arr.splice(from, 1)
+              arr.splice(to, 0, it)
+              return { boards: arr }
+            })
+            frame = 0
+          })
+        },
         remove: (id) =>
           set((s) => {
             const boards = s.boards.filter((b) => b.id !== id)
