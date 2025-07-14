@@ -26,10 +26,10 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
     <header
       ref={navRef}
       className="dashboard-navbar flex items-center px-8 py-2 justify-between fixed top-0 left-0 right-0 z-20 shadow bg-[var(--dashboard-navbar)]"
-      style={{ minHeight: "70px", width: "100%" }}
+      style={{ minHeight: '70px', width: '100%' }}
       data-oid="z5vbw0i"
     >
-      <div className="flex gap-4 items-center relative" data-oid="ikd.5r1">
+      <div className="dashboard-group flex gap-4 items-center" data-oid="ikd.5r1">
         <button
           onClick={() => toggleSidebar()}
           className="p-3 rounded-lg hover:bg-white/15 hover:backdrop-blur-sm transition"
@@ -55,15 +55,15 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
             data-oid="5.tu7zt"
           />
         </Link>
+      </div>
+      <div className="dashboard-group hidden md:block" data-oid="search">
         <input
           type="search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar..."
-          className="hidden md:block bg-transparent border rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-[var(--dashboard-accent)]"
+          className="bg-transparent border rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-[var(--dashboard-accent)]"
         />
-
-        
       </div>
 
       <div className="flex items-center gap-3" data-oid="x5cdysc">
