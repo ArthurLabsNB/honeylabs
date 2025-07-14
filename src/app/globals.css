@@ -23,6 +23,8 @@
   --dashboard-glass: rgba(255,255,255,0.11);
   --dashboard-widget-glow: 0 8px 24px 0 #ffe06630;
   --dashboard-widget-resize: #ffe066cc;
+  --tab-hover-bg: rgba(255, 255, 255, 0.15);
+  --tab-shadow: 0 1px 4px #0003;
 
   /* Layout variables */
   --sidebar-width: clamp(12rem, 15vw, 14rem);
@@ -50,6 +52,8 @@
     --dashboard-table-row: #23232B;
     --dashboard-table-hover: #1A1A1D;
     --dashboard-shadow: 0 2px 18px #0008;
+    --tab-hover-bg: rgba(255, 255, 255, 0.15);
+    --tab-shadow: 0 1px 4px #0003;
   }
 }
 

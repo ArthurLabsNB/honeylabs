@@ -18,11 +18,12 @@ export default function BoardTab({ tab }: { tab: Board }) {
   return (
     <div
       onClick={() => setActive(tab.id)}
-      className={`px-3 py-1 rounded-md cursor-pointer select-none flex items-center gap-1 text-sm whitespace-nowrap transition-colors ${
+      className={`px-4 py-1 rounded-lg cursor-pointer select-none flex items-center gap-2 text-sm whitespace-nowrap transition-colors ${
         activeId === tab.id
           ? "bg-[var(--dashboard-accent)] text-black"
-          : "bg-[var(--dashboard-sidebar)] text-white hover:bg-white/10"
+          : "bg-[var(--dashboard-sidebar)] text-white hover:bg-[var(--tab-hover-bg)]"
       }`}
+      style={{ boxShadow: 'var(--tab-shadow)' }}
     >
       <span className="px-1">{tab.title}</span>
       <button
@@ -30,7 +31,7 @@ export default function BoardTab({ tab }: { tab: Board }) {
           e.stopPropagation();
           onRename();
         }}
-        className="p-1 hover:bg-white/20 rounded"
+        className="p-1 rounded hover:bg-[var(--tab-hover-bg)]"
         title="Renombrar"
       >
         <Pencil className="w-3 h-3" />
@@ -40,7 +41,7 @@ export default function BoardTab({ tab }: { tab: Board }) {
           e.stopPropagation();
           onDuplicate();
         }}
-        className="p-1 hover:bg-white/20 rounded"
+        className="p-1 rounded hover:bg-[var(--tab-hover-bg)]"
         title="Duplicar"
       >
         <Copy className="w-3 h-3" />
@@ -50,7 +51,7 @@ export default function BoardTab({ tab }: { tab: Board }) {
           e.stopPropagation();
           onRemove();
         }}
-        className="p-1 hover:bg-white/20 rounded"
+        className="p-1 rounded hover:bg-[var(--tab-hover-bg)]"
         title="Eliminar"
       >
         <X className="w-3 h-3" />
