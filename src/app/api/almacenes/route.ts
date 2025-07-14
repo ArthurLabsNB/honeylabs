@@ -52,10 +52,18 @@ async function snapshot(
 
 export async function GET(req: NextRequest) {
   try {
-    const usuarioId = req.nextUrl.searchParams.get("usuarioId");
-    const where = usuarioId
-      ? { usuarios: { some: { usuarioId: Number(usuarioId) } } }
-      : {};
+    const usuario = await getUsuarioFromSession(req);
+    if (!usuario) {
+      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
+    }
+
+    const usuarioIdParam = req.nextUrl.searchParams.get('usuarioId');
+    const targetId = usuarioIdParam ? Number(usuarioIdParam) : usuario.id;
+    if (usuarioIdParam && targetId !== usuario.id && !hasManagePerms(usuario)) {
+      return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
+    }
+
+    const where = { usuarios: { some: { usuarioId: targetId } } };
 
     const data = await prisma.almacen.findMany({
       take: 20,
@@ -115,9 +123,9 @@ export async function GET(req: NextRequest) {
     }
 
     let orden: number[] = []
-    if (usuarioId) {
+    if (targetId) {
       const prefsUser = await prisma.usuario.findUnique({
-        where: { id: Number(usuarioId) },
+        where: { id: targetId },
         select: { preferencias: true },
       })
       if (prefsUser?.preferencias) {
