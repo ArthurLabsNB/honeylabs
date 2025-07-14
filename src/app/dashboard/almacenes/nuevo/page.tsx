@@ -1,31 +1,46 @@
 "use client";
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import { useToast } from "@/components/Toast";
 import { jsonOrNull } from "@lib/http";
 import { apiFetch } from "@lib/api";
 import { useRouter } from "next/navigation";
 
 export default function NuevoAlmacenPage() {
-  const [nombre, setNombre] = useState("");
-  const [descripcion, setDescripcion] = useState("");
-  const [funciones, setFunciones] = useState("");
-  const [permisos, setPermisos] = useState("");
-  const [imagen, setImagen] = useState<File | null>(null);
+  interface FormState {
+    nombre: string;
+    descripcion: string;
+    funciones: string;
+    permisos: string;
+    imagen: File | null;
+  }
+
+  const [form, dispatch] = useReducer(
+    (s: FormState, a: Partial<FormState>) => ({ ...s, ...a }),
+    {
+      nombre: "",
+      descripcion: "",
+      funciones: "",
+      permisos: "",
+      imagen: null,
+    },
+  );
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const toast = useToast();
 
   const crear = async () => {
-    if (!nombre.trim()) return toast.show("Nombre requerido", "error");
+    if (!form.nombre.trim()) return toast.show("Nombre requerido", "error");
+    if (form.imagen && form.imagen.size > 2 * 1024 * 1024)
+      return toast.show("Imagen demasiado grande", "error");
     setLoading(true);
     try {
-      const form = new FormData();
-      form.append('nombre', nombre);
-      form.append('descripcion', descripcion);
-      form.append('funciones', funciones);
-      form.append('permisosPredeterminados', permisos);
-      if (imagen) form.append('imagen', imagen);
-      const res = await apiFetch('/api/almacenes', { method: 'POST', body: form });
+      const fd = new FormData();
+      fd.append('nombre', form.nombre);
+      fd.append('descripcion', form.descripcion);
+      fd.append('funciones', form.funciones);
+      fd.append('permisosPredeterminados', form.permisos);
+      if (form.imagen) fd.append('imagen', form.imagen);
+      const res = await apiFetch('/api/almacenes', { method: 'POST', body: fd });
       const data = await jsonOrNull(res);
       if (res.ok) {
         toast.show("Almacén creado", "success");
@@ -49,49 +64,49 @@ export default function NuevoAlmacenPage() {
         <input
           className="border p-2 rounded w-full"
           placeholder="Nombre"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
+          value={form.nombre}
+          onChange={(e) => dispatch({ nombre: e.target.value })}
           data-oid="er6:8k."
         />
 
         <textarea
           className="border p-2 rounded w-full"
           placeholder="Descripción"
-          value={descripcion}
-          onChange={(e) => setDescripcion(e.target.value)}
+          value={form.descripcion}
+          onChange={(e) => dispatch({ descripcion: e.target.value })}
           data-oid="cbiio_3"
         />
 
         <textarea
           className="border p-2 rounded w-full"
           placeholder="Funciones (opcional)"
-          value={funciones}
-          onChange={(e) => setFunciones(e.target.value)}
+          value={form.funciones}
+          onChange={(e) => dispatch({ funciones: e.target.value })}
         />
 
         <input
           className="border p-2 rounded w-full"
           placeholder="Permisos predeterminados"
-          value={permisos}
-          onChange={(e) => setPermisos(e.target.value)}
+          value={form.permisos}
+          onChange={(e) => dispatch({ permisos: e.target.value })}
         />
 
         <input
           type="file"
           accept="image/*"
           className="border p-2 rounded w-full"
-          onChange={(e) => setImagen(e.target.files?.[0] || null)}
+          onChange={(e) => dispatch({ imagen: e.target.files?.[0] || null })}
         />
-        {imagen && (
+        {form.imagen && (
           <div className="mt-2 flex items-start gap-2">
             <img
-              src={URL.createObjectURL(imagen)}
+              src={URL.createObjectURL(form.imagen)}
               alt="preview"
               className="w-24 h-24 object-cover rounded"
             />
             <button
               type="button"
-              onClick={() => setImagen(null)}
+              onClick={() => dispatch({ imagen: null })}
               className="px-2 py-1 bg-red-600 text-white text-xs rounded"
             >
               Quitar

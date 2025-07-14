@@ -127,8 +127,13 @@ export default function HistorialMovimientosPanel({ material, almacenId, unidadI
     if (pref === 'h') {
       try {
         const res = await apiFetch(`/api/historial/material/${real}`);
-        const data = await res.json();
-        if (data.entry?.estado) {
+        let data: any = null;
+        if (res.headers.get('content-type')?.includes('json')) {
+          try {
+            data = await res.json();
+          } catch {}
+        }
+        if (data?.entry?.estado) {
           setDetalle({ ...data.entry, id });
           onSelectHistorial && onSelectHistorial(data.entry);
         } else {
@@ -152,8 +157,13 @@ export default function HistorialMovimientosPanel({ material, almacenId, unidadI
     } else if (pref === 'hu') {
       try {
         const res = await apiFetch(`/api/historial/unidad/${real}`);
-        const data = await res.json();
-        if (data.entry?.estado) {
+        let data: any = null;
+        if (res.headers.get('content-type')?.includes('json')) {
+          try {
+            data = await res.json();
+          } catch {}
+        }
+        if (data?.entry?.estado) {
           setDetalle({ ...data.entry, id });
           onSelectHistorial && onSelectHistorial(data.entry);
         } else {

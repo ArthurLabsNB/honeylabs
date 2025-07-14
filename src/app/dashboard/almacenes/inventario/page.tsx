@@ -12,7 +12,7 @@ export default function InventarioPage() {
   const [almacenId, setAlmacenId] = useState<number | null>(null);
   const {
     materiales,
-    loading: loadingMateriales,
+    isLoading: loadingMateriales,
   } = useMateriales(almacenId ?? undefined);
   const [busqueda, setBusqueda] = useState("");
   const [orden, setOrden] = useState<"nombre" | "cantidad">("nombre");

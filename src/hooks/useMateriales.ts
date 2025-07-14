@@ -123,7 +123,7 @@ export default function useMateriales(almacenId?: number | string) {
 
   return {
     materiales: mats ?? EMPTY_MATERIALS,
-    loading: isLoading,
+    isLoading,
     error,
     mutate,
     crear,
