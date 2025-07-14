@@ -125,3 +125,13 @@ export const useTabStore = create<TabState>()(
     },
   ),
 );
+
+let hydrated = false
+export function ensureTabsHydrated() {
+  if (typeof window !== 'undefined' && !hydrated) {
+    hydrated = true
+    useTabStore.persist.rehydrate()
+  }
+}
+
+ensureTabsHydrated()
