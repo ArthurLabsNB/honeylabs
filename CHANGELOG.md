@@ -1,5 +1,6 @@
 ## 0.6.2
-- Centralizamos validación de IDs con `parseId` y actualizamos hooks.
+
+- Ajustamos la separación límite entre el tablero de tarjetas y la barra de pestañas.
 
 ## 0.6.1
 - Incrementamos la separación entre el tablero de tarjetas y la barra de pestañas.
