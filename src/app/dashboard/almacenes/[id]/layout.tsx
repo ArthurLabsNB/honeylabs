@@ -7,7 +7,7 @@ import Spinner from "@/components/Spinner";
 import useSession from "@/hooks/useSession";
 import CardBoard from "../components/CardBoard";
 import TabBar from "../components/TabBar";
-import { TABBAR_HEIGHT, NAVBAR_HEIGHT } from "../../constants";
+import { NAVBAR_HEIGHT } from "../../constants";
 import { BoardProvider } from "../board/BoardProvider";
 import { DetalleUIProvider, useDetalleUI } from "../DetalleUI";
 
@@ -56,7 +56,6 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
           paddingTop: `calc(${fullscreen ? '0' : NAVBAR_HEIGHT} + ${
             collapsed ? '0' : NAVBAR_HEIGHT
           } + var(--tabbar-height))`,
-          '--tabbar-height': TABBAR_HEIGHT,
         } as React.CSSProperties}
         data-oid="9d4tqvn"
       >

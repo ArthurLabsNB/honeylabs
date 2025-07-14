@@ -109,7 +109,7 @@ export default function TabBar() {
   return (
     <div
       className="fixed z-20 w-full overflow-x-auto whitespace-nowrap border-b border-[var(--dashboard-border)] bg-[var(--dashboard-card)]/80 backdrop-blur shadow-sm transition-all"
-      style={{ top, height: 'var(--tabbar-height)', '--tabbar-height': TABBAR_HEIGHT } as React.CSSProperties}
+      style={{ top, height: 'var(--tabbar-height)' } as React.CSSProperties}
       role="tablist"
     >
       <DndContext
