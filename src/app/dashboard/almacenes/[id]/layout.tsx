@@ -55,7 +55,7 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
         style={{
           paddingTop: `calc(${fullscreen ? '0' : NAVBAR_HEIGHT} + ${
             collapsed ? '0' : NAVBAR_HEIGHT
-          } + var(--tabbar-height))`,
+          } + var(--tabbar-height) + var(--tabbar-gap))`,
         } as React.CSSProperties}
         data-oid="9d4tqvn"
       >

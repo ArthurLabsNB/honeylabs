@@ -96,7 +96,7 @@ export default function CardBoard() {
 
   return (
     <div
-      className={`flex gap-4 transition-all duration-300 ${collapsed ? 'pt-0' : 'pt-2'} mt-[var(--tabbar-height)]`}
+      className={`flex gap-4 transition-all duration-300 ${collapsed ? 'pt-0' : 'pt-2'} mt-[calc(var(--tabbar-height)+var(--tabbar-gap))]`}
     >
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <Column id="left">
