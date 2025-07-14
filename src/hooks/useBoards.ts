@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { generarUUID } from '@/lib/uuid'
 
 export interface Board {
   id: string
@@ -13,27 +14,51 @@ interface BoardState {
   setActive: (id: string) => void
   rename: (id: string, title: string) => void
   move: (from: number, to: number) => void
+  remove: (id: string) => void
+  duplicate: (id: string) => void
 }
 
 export const useBoardStore = create<BoardState>()(
   persist(
-    (set) => ({
-      boards: [],
-      activeId: null,
-      add: (b) =>
-        set((s) => ({ boards: [...s.boards, b], activeId: b.id })),
-      setActive: (id) => set({ activeId: id }),
-      rename: (id, title) =>
-        set((s) => ({ boards: s.boards.map((t) => (t.id === id ? { ...t, title } : t)) })),
-      move: (from, to) =>
-        set((s) => {
-          const arr = s.boards.slice();
-          const [it] = arr.splice(from, 1);
-          arr.splice(to, 0, it);
-          return { boards: arr };
-        }),
-    }),
+    (set) => {
+      const first: Board = { id: generarUUID(), title: 'New Tab' }
+      return {
+        boards: [first],
+        activeId: first.id,
+        add: (b) =>
+          set((s) => ({ boards: [...s.boards, b], activeId: b.id })),
+        setActive: (id) => set({ activeId: id }),
+        rename: (id, title) =>
+          set((s) => ({
+            boards: s.boards.map((t) => (t.id === id ? { ...t, title } : t)),
+          })),
+        move: (from, to) =>
+          set((s) => {
+            const arr = s.boards.slice()
+            const [it] = arr.splice(from, 1)
+            arr.splice(to, 0, it)
+            return { boards: arr }
+          }),
+        remove: (id) =>
+          set((s) => {
+            const boards = s.boards.filter((b) => b.id !== id)
+            return {
+              boards,
+              activeId: s.activeId === id ? boards[0]?.id ?? null : s.activeId,
+            }
+          }),
+        duplicate: (id) =>
+          set((s) => {
+            const original = s.boards.find((b) => b.id === id)
+            if (!original) return s
+            const copy: Board = { ...original, id: generarUUID() }
+            return {
+              boards: [...s.boards, copy],
+              activeId: copy.id,
+            }
+          }),
+      }
+    },
     { name: 'honey-boards', skipHydration: true }
   )
 )
-
