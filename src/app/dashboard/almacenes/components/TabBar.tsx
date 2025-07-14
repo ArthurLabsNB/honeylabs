@@ -1,6 +1,10 @@
 "use client";
 import BoardTab from "./BoardTab";
 import { useBoardStore, type Board } from "@/hooks/useBoards";
+import { useEffect } from "react";
+import { generarUUID } from "@/lib/uuid";
+import { useDetalleUI } from "../DetalleUI";
+import { NAVBAR_HEIGHT } from "../../constants";
 import AddBoardButton from "./AddBoardButton";
 import {
   DndContext,
@@ -30,8 +34,22 @@ function SortableItem({ tab, index }: { tab: Board; index: number }) {
 }
 
 export default function TabBar() {
-  const { boards, move } = useBoardStore();
+  const { boards, move, add } = useBoardStore();
+  const { collapsed } = useDetalleUI();
   const sensors = useSensors(useSensor(PointerSensor));
+
+  useEffect(() => {
+    useBoardStore.persist
+      .rehydrate()
+      .then(() => {
+        const state = useBoardStore.getState();
+        if (state.boards.length === 0) {
+          const id = generarUUID();
+          add({ id, title: 'New Tab' });
+        }
+      })
+      .catch(() => {});
+  }, [add]);
 
   const handleDragEnd = (ev: DragEndEvent) => {
     const { active, over } = ev;
@@ -42,7 +60,10 @@ export default function TabBar() {
   };
 
   return (
-    <div className="overflow-x-auto whitespace-nowrap border-b border-[var(--dashboard-border)] bg-[var(--dashboard-navbar)]">
+    <div
+      className="overflow-x-auto whitespace-nowrap border-b border-[var(--dashboard-border)] bg-[var(--dashboard-navbar)] sticky z-20"
+      style={{ top: collapsed ? 0 : NAVBAR_HEIGHT }}
+    >
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
         <SortableContext items={boards.map((t) => t.id)} strategy={horizontalListSortingStrategy}>
           <div className="flex gap-2 px-2 py-1">
