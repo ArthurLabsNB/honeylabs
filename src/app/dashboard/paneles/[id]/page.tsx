@@ -877,6 +877,7 @@ const viewHist = () => {
         rowHeight={gridSize}
         width={1600}
         isResizable={!readOnly}
+        resizeHandles={['se','sw','ne','nw']}
         isDraggable={!readOnly}
         preventCollision={false}
         compactType={null}
@@ -894,7 +895,7 @@ const viewHist = () => {
         draggableHandle=".dashboard-widget-card"
         margin={[Math.round(gridSize / 5), Math.round(gridSize / 5)]}
         data-oid="hxrbk.e"
-        style={{ minHeight: "100vh" }}
+        style={{ minHeight: "calc(100vh - var(--tabbar-height))" }}
       >
         {visible.map((key) => {
           const Widget = componentes[key];

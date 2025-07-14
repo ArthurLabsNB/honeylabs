@@ -54,7 +54,7 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
         className="flex flex-col min-h-screen transition-all duration-300"
         style={{
           paddingTop: `calc(${fullscreen ? '0' : NAVBAR_HEIGHT} + ${
-            collapsed ? '0rem' : '3.5rem'
+            collapsed ? '0' : NAVBAR_HEIGHT
           } + var(--tabbar-height))`,
           '--tabbar-height': TABBAR_HEIGHT,
         } as React.CSSProperties}
