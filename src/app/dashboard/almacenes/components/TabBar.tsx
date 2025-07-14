@@ -29,7 +29,7 @@ function DropIndicator() {
   return <div className="w-px bg-blue-500 h-full" />;
 }
 
-function SortableItem({ tab, index }: { tab: Board; index: number }) {
+function SortableItem({ tab }: { tab: Board }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: tab.id });
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -37,7 +37,7 @@ function SortableItem({ tab, index }: { tab: Board; index: number }) {
   } as React.CSSProperties;
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="touch-none">
-      <BoardTab tab={tab} index={index} />
+      <BoardTab tab={tab} />
     </div>
   );
 }
@@ -100,7 +100,7 @@ export default function TabBar() {
 
   return (
     <div
-      className="fixed z-20 w-full overflow-x-auto whitespace-nowrap border-b border-[var(--dashboard-border)] bg-[var(--dashboard-card)] shadow-sm transition-all"
+      className="sticky z-20 w-full overflow-x-auto whitespace-nowrap border-b border-[var(--dashboard-border)] bg-[var(--dashboard-card)]/80 backdrop-blur shadow-sm transition-all"
       style={{ top, height: 'var(--tabbar-height)', '--tabbar-height': TABBAR_HEIGHT } as React.CSSProperties}
       role="tablist"
     >
@@ -118,7 +118,7 @@ export default function TabBar() {
             {boards.map((tab, idx) => (
               <Fragment key={tab.id}>
                 {dropIndex === idx && <DropIndicator />}
-                <SortableItem tab={tab} index={idx} />
+                <SortableItem tab={tab} />
               </Fragment>
             ))}
             {dropIndex === boards.length && <DropIndicator />}
