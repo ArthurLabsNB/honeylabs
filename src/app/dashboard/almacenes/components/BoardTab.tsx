@@ -38,13 +38,34 @@ export default function BoardTab({ tab, index }: { tab: Board; index: number }) 
       }`}
     >
       <span className="px-1">{tab.title}</span>
-      <button onClick={onRename} className="p-1 hover:bg-white/20 rounded" title="Renombrar">
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onRename();
+        }}
+        className="p-1 hover:bg-white/20 rounded"
+        title="Renombrar"
+      >
         <Pencil className="w-3 h-3" />
       </button>
-      <button onClick={onDuplicate} className="p-1 hover:bg-white/20 rounded" title="Duplicar">
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onDuplicate();
+        }}
+        className="p-1 hover:bg-white/20 rounded"
+        title="Duplicar"
+      >
         <Copy className="w-3 h-3" />
       </button>
-      <button onClick={onRemove} className="p-1 hover:bg-white/20 rounded" title="Eliminar">
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onRemove();
+        }}
+        className="p-1 hover:bg-white/20 rounded"
+        title="Eliminar"
+      >
         <X className="w-3 h-3" />
       </button>
     </div>

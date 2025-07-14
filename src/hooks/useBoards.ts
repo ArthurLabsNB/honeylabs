@@ -81,3 +81,12 @@ export const useBoardStore = create<BoardState>()(
     { name: 'honey-boards', skipHydration: true }
   )
 )
+
+let hasHydrated = false
+export function ensureBoardsHydrated() {
+  if (typeof window !== 'undefined' && !hasHydrated) {
+    hasHydrated = true
+    useBoardStore.persist.rehydrate()
+  }
+}
+ensureBoardsHydrated()
