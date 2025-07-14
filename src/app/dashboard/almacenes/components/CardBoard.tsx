@@ -25,7 +25,7 @@ function Column({ id, children }: { id: string; children: React.ReactNode }) {
 }
 
 export default function CardBoard() {
-  const { tabs, move, update, setTabs } = useTabStore();
+  const { tabs: cards, move, update, setTabs } = useTabStore();
   const { collapsed } = useDetalleUI();
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function CardBoard() {
           .then(jsonOrNull)
           .then((d) => {
             if (
-              Array.isArray(d?.tabs) && tabs.length === 0
+              Array.isArray(d?.tabs) && cards.length === 0
             ) {
               setTabs(d.tabs as Tab[])
             }
@@ -50,34 +50,34 @@ export default function CardBoard() {
     apiFetch("/api/dashboard/layout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ tabs }),
+      body: JSON.stringify({ tabs: cards }),
     }).catch(() => {});
-  }, [tabs]);
+  }, [cards]);
 
   const sensors = useSensors(useSensor(PointerSensor));
 
   const handleDragEnd = (ev: DragEndEvent) => {
     const { active, over } = ev;
     if (!over) return;
-    const oldIndex = tabs.findIndex((t) => t.id === active.id);
+    const oldIndex = cards.findIndex((t) => t.id === active.id);
     if (oldIndex < 0) return;
-    let newIndex = tabs.findIndex((t) => t.id === over.id);
+    let newIndex = cards.findIndex((t) => t.id === over.id);
     let overSide: "left" | "right";
     if (over.id === "left" || over.id === "right") {
       overSide = over.id;
-      const leftCount = tabs.filter((t) => (t.side ?? "left") === "left").length;
-      newIndex = overSide === "left" ? leftCount : tabs.length;
+      const leftCount = cards.filter((t) => (t.side ?? "left") === "left").length;
+      newIndex = overSide === "left" ? leftCount : cards.length;
     } else {
-      overSide = tabs[newIndex]?.side ?? "left";
+      overSide = cards[newIndex]?.side ?? "left";
     }
     move(oldIndex, newIndex);
-    if ((tabs[oldIndex].side ?? "left") !== overSide) {
+    if ((cards[oldIndex].side ?? "left") !== overSide) {
       update(active.id, { side: overSide });
     }
   };
 
-  const left = tabs.filter((t) => (t.side ?? "left") === "left");
-  const right = tabs.filter((t) => (t.side ?? "left") === "right");
+  const left = cards.filter((t) => (t.side ?? "left") === "left");
+  const right = cards.filter((t) => (t.side ?? "left") === "right");
 
   return (
     <div className={`flex gap-4 transition-all duration-300 ${collapsed ? 'pt-0' : 'pt-2'}`}>\

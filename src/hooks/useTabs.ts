@@ -16,6 +16,10 @@ export interface Tab {
   id: string;
   title: string;
   type: TabType;
+  /** URL de destino para tarjetas de tipo "url" */
+  url?: string;
+  /** Identificador de tablero para tarjetas de tipo "board" */
+  board?: string;
   side?: "left" | "right";
   pinned?: boolean;
   collapsed?: boolean;
