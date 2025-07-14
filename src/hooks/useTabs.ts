@@ -39,6 +39,10 @@ export interface Tab {
   collapsed?: boolean;
   minimized?: boolean;
   popout?: boolean;
+  x?: number;
+  y?: number;
+  w?: number;
+  h?: number;
 }
 
 interface TabState {

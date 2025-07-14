@@ -1,19 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import {
-  DndContext,
-  PointerSensor,
-  KeyboardSensor,
-  useSensor,
-  useSensors,
-  closestCenter,
-  DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  sortableKeyboardCoordinates,
-} from "@dnd-kit/sortable";
+import GridLayout, { Layout } from "react-grid-layout";
 import { useTabStore, Tab } from "@/hooks/useTabs";
 import { useBoardStore } from "@/hooks/useBoards";
 import { apiFetch } from "@lib/api";
@@ -21,17 +8,10 @@ import { jsonOrNull } from "@lib/http";
 import DraggableCard from "./DraggableCard";
 import AddCardButton from "./AddCardButton";
 import { useDetalleUI } from "../DetalleUI";
-import { useDroppable } from "@dnd-kit/core";
-
-function Column({ id, children }: { id: string; children: React.ReactNode }) {
-  const { setNodeRef, isOver } = useDroppable({ id });
-  return (
-    <div ref={setNodeRef} className={`flex-1 space-y-2 ${isOver ? 'bg-white/5' : ''}`}>{children}</div>
-  );
-}
+import useCardLayout from "@/hooks/useCardLayout";
 
 export default function CardBoard() {
-  const { tabs: cards, move, update, setTabs } = useTabStore();
+  const { tabs: cards, setTabs } = useTabStore();
   const { activeId: boardId, boards, setActive } = useBoardStore();
   const { collapsed } = useDetalleUI();
 
@@ -65,55 +45,42 @@ export default function CardBoard() {
     }).catch(() => {});
   }, [cards]);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
-  );
-
-  const handleDragEnd = (ev: DragEndEvent) => {
-    const { active, over } = ev;
-    if (!over) return;
-    const oldIndex = cards.findIndex((t) => t.id === active.id);
-    if (oldIndex < 0) return;
-    let newIndex = cards.findIndex((t) => t.id === over.id);
-    let overSide: "left" | "right";
-    if (over.id === "left" || over.id === "right") {
-      overSide = over.id;
-      const leftCount = cards.filter((t) => (t.side ?? "left") === "left").length;
-      newIndex = overSide === "left" ? leftCount : cards.length;
-    } else {
-      overSide = cards[newIndex]?.side ?? "left";
-    }
-    move(oldIndex, newIndex);
-    if ((cards[oldIndex].side ?? "left") !== overSide) {
-      update(active.id, { side: overSide });
-    }
-  };
-
   const current = cards.filter((t) => t.boardId === boardId);
-  const left = current.filter((t) => (t.side ?? "left") === "left");
-  const right = current.filter((t) => (t.side ?? "left") === "right");
+
+  const layout: Layout[] = (() => {
+    let leftY = 0;
+    let rightY = 0;
+    return current.map(t => {
+      const x = typeof t.x === 'number' ? t.x : (t.side === 'right' ? 1 : 0);
+      const y = typeof t.y === 'number'
+        ? t.y
+        : (t.side === 'right' ? rightY++ : leftY++);
+      return { i: t.id, x, y, w: t.w ?? 1, h: t.h ?? 1 };
+    });
+  })();
+
+  const { onLayoutChange } = useCardLayout(boardId, cards, setTabs);
 
   return (
     <div
-      className={`flex gap-4 transition-all duration-300 ${collapsed ? 'pt-0' : 'pt-2'} mt-[calc(var(--tabbar-height)+var(--tabbar-gap))]`}
+      className={`transition-all duration-300 ${collapsed ? 'pt-0' : 'pt-2'} mt-[calc(var(--tabbar-height)+var(--tabbar-gap))]`}
     >
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <Column id="left">
-          <SortableContext items={left.map((t) => t.id)} strategy={verticalListSortingStrategy}>
-            {left.map((tab) => (
-              <DraggableCard key={tab.id} tab={tab} />
-            ))}
-          </SortableContext>
-        </Column>
-        <Column id="right">
-          <SortableContext items={right.map((t) => t.id)} strategy={verticalListSortingStrategy}>
-            {right.map((tab) => (
-              <DraggableCard key={tab.id} tab={tab} />
-            ))}
-          </SortableContext>
-        </Column>
-      </DndContext>
+      <GridLayout
+        layout={layout}
+        cols={2}
+        rowHeight={150}
+        width={800}
+        onLayoutChange={onLayoutChange}
+        draggableHandle=".cursor-move"
+        compactType={null}
+        preventCollision
+      >
+        {current.map(tab => (
+          <div key={tab.id}>
+            <DraggableCard tab={tab} grid />
+          </div>
+        ))}
+      </GridLayout>
       <AddCardButton />
     </div>
   );

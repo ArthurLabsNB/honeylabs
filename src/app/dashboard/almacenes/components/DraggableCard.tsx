@@ -3,6 +3,7 @@ import React from "react";
 import { Resizable } from "react-resizable";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { motion } from "framer-motion";
 import { Pencil, Pin, PinOff, Minimize2, Maximize2, X } from "lucide-react";
 import { useTabStore, Tab } from "@/hooks/useTabs";
 import { usePrompt } from "@/hooks/usePrompt";
@@ -39,14 +40,20 @@ function CardBody({ tab }: { tab: Tab }) {
 }
 
 
-export default function DraggableCard({ tab }: { tab: Tab }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: tab.id });
-  const style = {
-    transform: `${CSS.Transform.toString(transform)}${isDragging ? ' scale(1.05)' : ''}`,
-    transition,
-    zIndex: isDragging ? 50 : undefined,
-    boxShadow: isDragging ? '0 10px 15px rgba(0,0,0,0.3)' : undefined,
-  } as React.CSSProperties;
+interface Props { tab: Tab; grid?: boolean }
+
+export default function DraggableCard({ tab, grid = false }: Props) {
+  const sortable = !grid;
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    sortable ? useSortable({ id: tab.id }) : ({} as any);
+  const style = sortable
+    ? ({
+        transform: `${CSS.Transform.toString(transform)}${isDragging ? ' scale(1.05)' : ''}`,
+        transition,
+        zIndex: isDragging ? 50 : undefined,
+        boxShadow: isDragging ? '0 10px 15px rgba(0,0,0,0.3)' : undefined,
+      } as React.CSSProperties)
+    : undefined;
 
   const { update, close, rename } = useTabStore();
   const prompt = usePrompt();
@@ -62,10 +69,15 @@ export default function DraggableCard({ tab }: { tab: Tab }) {
     if (name) rename(tab.id, name);
   };
 
-  return (
-    <Resizable resizeHandles={['se', 'sw', 'ne', 'nw']}>
-      <div ref={setNodeRef} style={style} {...attributes} className="dashboard-card overflow-auto">
-        <div className="flex items-center justify-between mb-2 cursor-move" {...listeners}>
+  const content = (
+      <motion.div
+        ref={sortable ? setNodeRef : undefined}
+        style={style}
+        {...(sortable ? attributes : {})}
+        className="dashboard-card overflow-auto"
+        whileDrag={sortable ? { scale: 1.05 } : undefined}
+      >
+        <div className="flex items-center justify-between mb-2 cursor-move" {...(sortable ? listeners : {})}>
         <span className="font-semibold" onDoubleClick={toggle}>{tab.title}</span>
         <div className="flex items-center gap-1">
           <button onPointerDown={stop} onClick={onRename} className="p-1 hover:bg-white/10 rounded" title="Renombrar">
@@ -107,7 +119,8 @@ export default function DraggableCard({ tab }: { tab: Tab }) {
         </div>
       </div>
         {!tab.minimized && !tab.collapsed && <CardBody tab={tab} />}
-      </div>
-    </Resizable>
+      </motion.div>
   );
+
+  return sortable ? <Resizable resizeHandles={['se', 'sw', 'ne', 'nw']}>{content}</Resizable> : content;
 }
