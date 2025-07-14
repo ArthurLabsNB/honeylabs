@@ -29,7 +29,7 @@ function CardBody({ tab }: { tab: Tab }) {
     case "form-auditoria":
       return <AuditoriaFormTab tabId={tab.id} />;
     case "board":
-      return <BoardCard board={tab.board} />;
+      return <BoardCard board={tab.boardId} />;
     case "url":
       return <UrlCard url={tab.url} />;
     default:

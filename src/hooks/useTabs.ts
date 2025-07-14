@@ -18,8 +18,8 @@ export interface Tab {
   type: TabType;
   /** URL de destino para tarjetas de tipo "url" */
   url?: string;
-  /** Identificador de tablero para tarjetas de tipo "board" */
-  board?: string;
+  /** Identificador del tablero que contiene la tarjeta */
+  boardId?: string;
   side?: "left" | "right";
   pinned?: boolean;
   collapsed?: boolean;
