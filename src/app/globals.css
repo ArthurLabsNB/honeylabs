@@ -258,6 +258,12 @@ html, body {
   top: 4px;
   cursor: ne-resize;
 }
+/* Ocultamos las asas superiores para evitar conflictos con
+   los botones de la cabecera */
+.react-resizable-handle-nw,
+.react-resizable-handle-ne {
+  display: none;
+}
 .react-resizable-handle::after {
   content: "";
   display: block;
