@@ -7,6 +7,7 @@ import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import * as logger from '@lib/logger'
 import { logAudit } from '@/lib/audit'
+import { registrarAuditoria } from '@lib/reporter'
 
 async function snapshot(unidadId: number, usuarioId: number, descripcion: string) {
   const unidad = await prisma.materialUnidad.findUnique({
@@ -147,7 +148,16 @@ export async function POST(req: NextRequest) {
       })
       await snapshot(creado.id, usuario.id, 'Creación')
       await logAudit(usuario.id, 'creacion_unidad', 'material', { materialId, unidadId: creado.id })
-      return NextResponse.json({ unidad: creado })
+
+      const auditoria = await registrarAuditoria(
+        req,
+        'unidad',
+        creado.id,
+        'creacion',
+        data,
+      )
+
+      return NextResponse.json({ unidad: creado, auditoria })
     } catch (e) {
       if (
         e instanceof Prisma.PrismaClientKnownRequestError &&

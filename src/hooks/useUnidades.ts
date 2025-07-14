@@ -3,6 +3,7 @@ import { jsonOrNull } from '@lib/http'
 import fetcher from '@lib/swrFetcher'
 import { apiFetch } from '@lib/api'
 import { parseId } from '@/lib/parseId'
+import { AUDIT_PREVIEW_EVENT } from '@/lib/ui-events'
 
 const fileToBase64 = (file: File) =>
   new Promise<string>((resolve, reject) => {
@@ -117,6 +118,9 @@ export default function useUnidades(materialId?: number | string) {
       }
       mutate()
       registrar(`Entrada - ${datos.nombre} (unidad ${unidad?.id ?? ''})`)
+      if (result?.auditoria?.id) {
+        window.dispatchEvent(new CustomEvent(AUDIT_PREVIEW_EVENT, { detail: true }))
+      }
     }
     return result
   }
@@ -151,6 +155,9 @@ export default function useUnidades(materialId?: number | string) {
       }
       mutate()
       registrar(`Modificacion - ${payload.nombre ?? ''} (unidad ${uid})`)
+      if (result?.auditoria?.id) {
+        window.dispatchEvent(new CustomEvent(AUDIT_PREVIEW_EVENT, { detail: true }))
+      }
     }
     return result
   }
@@ -166,6 +173,9 @@ export default function useUnidades(materialId?: number | string) {
     if (res.ok) {
       mutate()
       registrar(`Eliminacion - unidad ${unidadId}`)
+      if (result?.auditoria?.id) {
+        window.dispatchEvent(new CustomEvent(AUDIT_PREVIEW_EVENT, { detail: true }))
+      }
     }
     return result
   }

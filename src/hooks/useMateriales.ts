@@ -5,6 +5,7 @@ import { useMemo } from 'react'
 import { generarUUID } from '@/lib/uuid'
 import { apiFetch } from '@lib/api'
 import { parseId } from '@/lib/parseId'
+import { AUDIT_PREVIEW_EVENT } from '@/lib/ui-events'
 import type { Material } from '@/app/dashboard/almacenes/components/MaterialRow'
 
 
@@ -57,6 +58,9 @@ export default function useMateriales(almacenId?: number | string) {
         )
       }
       mutate()
+      if (data?.auditoria?.id) {
+        window.dispatchEvent(new CustomEvent(AUDIT_PREVIEW_EVENT, { detail: true }))
+      }
     }
     return data
   }
@@ -96,6 +100,9 @@ export default function useMateriales(almacenId?: number | string) {
         )
       }
       mutate()
+      if (data?.auditoria?.id) {
+        window.dispatchEvent(new CustomEvent(AUDIT_PREVIEW_EVENT, { detail: true }))
+      }
     }
     return data
   }
@@ -103,7 +110,12 @@ export default function useMateriales(almacenId?: number | string) {
   const eliminar = async (materialId: number) => {
     const res = await apiFetch(`/api/materiales/${materialId}`, { method: 'DELETE' })
     const data = await jsonOrNull(res)
-    if (res.ok) mutate()
+    if (res.ok) {
+      mutate()
+      if (data?.auditoria?.id) {
+        window.dispatchEvent(new CustomEvent(AUDIT_PREVIEW_EVENT, { detail: true }))
+      }
+    }
     return data
   }
 

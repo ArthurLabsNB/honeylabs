@@ -9,6 +9,7 @@ import { hasManagePerms } from '@lib/permisos'
 import crypto from 'node:crypto'
 import * as logger from '@lib/logger'
 import { logAudit } from '@/lib/audit'
+import { registrarAuditoria } from '@lib/reporter'
 
 async function snapshot(
   db: Prisma.TransactionClient | typeof prisma,
@@ -130,6 +131,8 @@ export async function POST(req: NextRequest) {
     let miniaturaBuffer: Buffer | null = null
     let datos: any = {}
 
+    let reportFiles: File[] = []
+
     if (req.headers.get('content-type')?.includes('multipart/form-data')) {
       const formData = await req.formData()
       datos = {
@@ -150,6 +153,7 @@ export async function POST(req: NextRequest) {
         reorderLevel: formData.get('reorderLevel'),
         miniaturaNombre: undefined,
       }
+      reportFiles = formData.getAll('archivos') as File[]
       const archivo = formData.get('miniatura') as File | null
       if (archivo) {
         const buffer = Buffer.from(await archivo.arrayBuffer())
@@ -157,6 +161,7 @@ export async function POST(req: NextRequest) {
         miniaturaNombre = nombreArchivo
         miniaturaBuffer = buffer
         datos.miniaturaNombre = nombreArchivo
+        reportFiles.push(archivo)
       }
     } else {
       datos = await req.json()
@@ -224,7 +229,16 @@ export async function POST(req: NextRequest) {
 
     await logAudit(usuario.id, 'creacion_material', 'almacen', { almacenId, materialId: material.id })
 
-    const res = NextResponse.json({ material })
+    const auditoria = await registrarAuditoria(
+      req,
+      'material',
+      material.id,
+      'creacion',
+      parsed.data,
+      reportFiles,
+    )
+
+    const res = NextResponse.json({ material, auditoria })
     logger.info(req, `Material ${material.id} creado`)
     return res
   } catch (err) {
@@ -250,7 +264,16 @@ export async function DELETE(req: NextRequest) {
     await prisma.archivoMaterial.deleteMany({ where: { material: { almacenId } } })
     await prisma.material.deleteMany({ where: { almacenId } })
     await logAudit(usuario.id, 'eliminacion_materiales', 'almacen', { almacenId })
-    return NextResponse.json({ success: true })
+
+    const auditoria = await registrarAuditoria(
+      req,
+      'almacen',
+      almacenId,
+      'eliminacion',
+      { accion: 'vaciar_materiales' },
+    )
+
+    return NextResponse.json({ success: true, auditoria })
   } catch (err) {
     logger.error('DELETE /api/almacenes/[id]/materiales', err)
     return NextResponse.json({ error: 'Error al vaciar' }, { status: 500 })
