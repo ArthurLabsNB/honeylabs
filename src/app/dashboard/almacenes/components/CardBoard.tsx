@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import GridLayout, { Layout } from "react-grid-layout";
 import { useTabStore, Tab } from "@/hooks/useTabs";
 import { useBoardStore } from "@/hooks/useBoards";
@@ -9,11 +9,15 @@ import DraggableCard from "./DraggableCard";
 import AddCardButton from "./AddCardButton";
 import { useDetalleUI } from "../DetalleUI";
 import useCardLayout from "@/hooks/useCardLayout";
+import useElementSize from "@/hooks/useElementSize";
 
 export default function CardBoard() {
   const { tabs: cards, setTabs } = useTabStore();
   const { activeId: boardId, boards, setActive } = useBoardStore();
   const { collapsed } = useDetalleUI();
+
+  const containerRef = useRef<HTMLDivElement>(null)
+  const { width } = useElementSize(containerRef)
 
   useEffect(() => {
     useTabStore.persist
@@ -47,6 +51,10 @@ export default function CardBoard() {
 
   const current = cards.filter((t) => t.boardId === boardId);
 
+  const cols = width < 640 ? 1 : 2
+  const rowHeight = width < 640 ? 140 : 150
+
+
   const layout: Layout[] = (() => {
     let leftY = 0;
     let rightY = 0;
@@ -63,13 +71,14 @@ export default function CardBoard() {
 
   return (
     <div
+      ref={containerRef}
       className={`transition-all duration-300 ${collapsed ? 'pt-0' : 'pt-2'} mt-[calc(var(--tabbar-height)+var(--tabbar-gap))]`}
     >
       <GridLayout
         layout={layout}
-        cols={2}
-        rowHeight={150}
-        width={800}
+        cols={cols}
+        rowHeight={rowHeight}
+        width={width || 800}
         onLayoutChange={onLayoutChange}
         draggableHandle=".cursor-move"
         compactType={null}
