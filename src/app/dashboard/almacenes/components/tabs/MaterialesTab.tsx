@@ -11,9 +11,10 @@ export default function MaterialesTab() {
     materiales,
     selectedId,
     setSelectedId,
+    setUnidadSel,
     crear,
   } = useBoard()
-  const { ensureTab } = useTabHelpers()
+  const { ensureTab, openForm } = useTabHelpers()
   const [busqueda, setBusqueda] = useState('')
   const [orden, setOrden] = useState<'nombre' | 'cantidad'>('nombre')
 
@@ -21,10 +22,11 @@ export default function MaterialesTab() {
     (id: string | null) => {
       if (!id) return
       setSelectedId(id)
+      setUnidadSel(null)
       ensureTab('unidades', 'Unidades', 'right')
-      ensureTab('form-material', 'Material', 'left')
+      openForm('form-material', 'Material')
     },
-    [ensureTab, setSelectedId]
+    [ensureTab, openForm, setSelectedId, setUnidadSel]
   )
 
   return (
