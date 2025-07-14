@@ -13,6 +13,7 @@ import MaterialFormTab from "./tabs/MaterialFormTab";
 import AuditoriasTab from "./tabs/AuditoriasTab";
 import UnidadFormTab from "./tabs/UnidadFormTab";
 import AuditoriaFormTab from "./tabs/AuditoriaFormTab";
+import NotasTab from "./tabs/NotasTab";
 import BoardCard from "./BoardCard";
 import UrlCard from "./UrlCard";
 
@@ -30,6 +31,8 @@ function CardBody({ tab }: { tab: Tab }) {
       return <UnidadFormTab tabId={tab.id} />;
     case "form-auditoria":
       return <AuditoriaFormTab tabId={tab.id} />;
+    case "notas":
+      return <NotasTab tabId={tab.id} />;
     case "board":
       return <BoardCard board={tab.boardId} />;
     case "url":

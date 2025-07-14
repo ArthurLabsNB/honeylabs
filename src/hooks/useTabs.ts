@@ -20,6 +20,7 @@ export type TabType =
   | "materiales"
   | "unidades"
   | "auditorias"
+  | "notas"
   | "board"
   | "url"
   | "form-material"
