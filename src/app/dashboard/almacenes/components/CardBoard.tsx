@@ -49,7 +49,8 @@ export default function CardBoard() {
     }).catch(() => {});
   }, [cards]);
 
-  const current = cards.filter((t) => t.boardId === boardId);
+  const safeCards = Array.isArray(cards) ? cards : []
+  const current = safeCards.filter((t) => t.boardId === boardId)
 
   const cols = width < 640 ? 1 : 2
   const rowHeight = width < 640 ? 140 : 150
@@ -67,7 +68,7 @@ export default function CardBoard() {
     });
   })();
 
-  const { onLayoutChange } = useCardLayout(boardId, cards, setTabs);
+  const { onLayoutChange } = useCardLayout(boardId, safeCards, setTabs);
 
   return (
     <div
