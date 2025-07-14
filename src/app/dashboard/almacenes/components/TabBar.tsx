@@ -21,7 +21,9 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { restrictToHorizontalAxis, snapCenterToCursor } from "@dnd-kit/modifiers";
 import { useAnnouncement } from "@dnd-kit/accessibility";
-import { NAVBAR_HEIGHT } from "../../constants";
+import { NAVBAR_HEIGHT, TABBAR_HEIGHT } from "../../constants";
+import { useDashboardUI } from "../../ui";
+import { useDetalleUI } from "../DetalleUI";
 
 function DropIndicator() {
   return <div className="w-px bg-blue-500 h-full" />;
@@ -43,6 +45,8 @@ function SortableItem({ tab, index }: { tab: Board; index: number }) {
 export default function TabBar() {
   const { boards, move } = useBoardStore();
   const { announce } = useAnnouncement();
+  const { fullscreen } = useDashboardUI();
+  const { collapsed } = useDetalleUI();
   const boardsRef = useRef(boards);
   useEffect(() => {
     boardsRef.current = boards;
@@ -86,10 +90,18 @@ export default function TabBar() {
     updateDropIndex(null);
   };
 
+  const top = collapsed
+    ? fullscreen
+      ? '0'
+      : NAVBAR_HEIGHT
+    : fullscreen
+      ? '3.5rem'
+      : `calc(${NAVBAR_HEIGHT} + 3.5rem)`;
+
   return (
     <div
-      className="sticky z-20 overflow-x-auto whitespace-nowrap border-b border-[var(--dashboard-border)] bg-[var(--dashboard-navbar)]"
-      style={{ top: `calc(${NAVBAR_HEIGHT} + 3.5rem)` }}
+      className="fixed z-20 w-full overflow-x-auto whitespace-nowrap border-b border-[var(--dashboard-border)] bg-[var(--dashboard-card)] shadow-sm transition-all"
+      style={{ top, height: 'var(--tabbar-height)', '--tabbar-height': TABBAR_HEIGHT } as React.CSSProperties}
       role="tablist"
     >
       <DndContext

@@ -7,6 +7,7 @@ import Spinner from "@/components/Spinner";
 import useSession from "@/hooks/useSession";
 import CardBoard from "../components/CardBoard";
 import TabBar from "../components/TabBar";
+import { TABBAR_HEIGHT, NAVBAR_HEIGHT } from "../../constants";
 import { BoardProvider } from "../board/BoardProvider";
 import { DetalleUIProvider, useDetalleUI } from "../DetalleUI";
 
@@ -51,7 +52,12 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
     >
       <main
         className="flex flex-col min-h-screen transition-all duration-300"
-        style={{ paddingTop: collapsed ? 0 : 56 }}
+        style={{
+          paddingTop: `calc(${fullscreen ? '0' : NAVBAR_HEIGHT} + ${
+            collapsed ? '0rem' : '3.5rem'
+          } + var(--tabbar-height))`,
+          '--tabbar-height': TABBAR_HEIGHT,
+        } as React.CSSProperties}
         data-oid="9d4tqvn"
       >
         <AlmacenDetailNavbar />
