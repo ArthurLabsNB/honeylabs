@@ -16,6 +16,10 @@ const caf =
 
 let frame: number | undefined
 
+function toArray<T>(val: unknown): T[] {
+  return Array.isArray(val) ? (val as T[]) : []
+}
+
 export type TabType =
   | "materiales"
   | "unidades"
@@ -76,47 +80,45 @@ export const useTabStore = create<TabState>()(
       activeId: null,
       setTabs: (tabs) => set({ tabs }),
       add: (tab) =>
-        set((state) => ({ tabs: [...state.tabs, tab], activeId: tab.id })),
+        set((state) => ({ tabs: [...toArray(state.tabs), tab], activeId: tab.id })),
       addAfterActive: (tab) =>
         set((state) => {
-          const idx = state.activeId
-            ? state.tabs.findIndex((t) => t.id === state.activeId)
-            : -1;
-          const pos = idx >= 0 ? idx + 1 : state.tabs.length;
-          const arr = state.tabs.slice();
-          arr.splice(pos, 0, tab);
-          return { tabs: arr, activeId: tab.id };
+          const arr = toArray(state.tabs)
+          const idx = state.activeId ? arr.findIndex((t) => t.id === state.activeId) : -1
+          const pos = idx >= 0 ? idx + 1 : arr.length
+          arr.splice(pos, 0, tab)
+          return { tabs: arr, activeId: tab.id }
         }),
       closeOthers: (id) =>
-        set((state) => ({ tabs: state.tabs.filter((t) => t.id === id), activeId: id })),
+        set((state) => ({ tabs: toArray(state.tabs).filter((t) => t.id === id), activeId: id })),
       close: (id) =>
         set((state) => ({
-          tabs: state.tabs.filter((t) => t.id !== id),
+          tabs: toArray(state.tabs).filter((t) => t.id !== id),
           activeId: state.activeId === id ? null : state.activeId,
         })),
       move: (from, to) => {
         if (frame) caf(frame)
         frame = raf(() => {
-          set((state) => ({ tabs: arrayMove(state.tabs, from, to) }))
+          set((state) => ({ tabs: arrayMove(toArray(state.tabs), from, to) }))
           frame = 0
         })
       },
       setActive: (id) => set({ activeId: id }),
       update: (id, data) =>
         set((state) => ({
-          tabs: state.tabs.map((t) => (t.id === id ? { ...t, ...data } : t)),
+          tabs: toArray(state.tabs).map((t) => (t.id === id ? { ...t, ...data } : t)),
         })),
       rename: (id, title) =>
         set((state) => ({
-          tabs: state.tabs.map((t) => (t.id === id ? { ...t, title } : t)),
+          tabs: toArray(state.tabs).map((t) => (t.id === id ? { ...t, title } : t)),
         })),
       minimizeAll: () =>
         set((state) => ({
-          tabs: state.tabs.map((t) => ({ ...t, minimized: true })),
+          tabs: toArray(state.tabs).map((t) => ({ ...t, minimized: true })),
         })),
       restoreAll: () =>
         set((state) => ({
-          tabs: state.tabs.map((t) => ({ ...t, minimized: false, collapsed: false })),
+          tabs: toArray(state.tabs).map((t) => ({ ...t, minimized: false, collapsed: false })),
         })),
     }),
     {

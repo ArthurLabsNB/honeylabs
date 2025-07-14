@@ -50,4 +50,12 @@ describe('useTabStore', () => {
     expect(useTabStore.getState().tabs.length).toBe(1)
     expect(useTabStore.getState().tabs[0].id).toBe('b')
   })
+
+  it('handles invalid stored tabs', () => {
+    useTabStore.setState({ tabs: {} as any, activeId: null } as any)
+    useTabStore.getState().addAfterActive({ id: '1', title: 'T', type: 'materiales' })
+    const state = useTabStore.getState()
+    expect(Array.isArray(state.tabs)).toBe(true)
+    expect(state.tabs.length).toBe(1)
+  })
 })
