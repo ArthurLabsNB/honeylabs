@@ -90,6 +90,7 @@ export default function MaterialList({
           <option value="cantidad">Cantidad</option>
         </select>
         <button
+          type="button"
           onClick={() => {
             setBusqueda('');
             setOrden('nombre');
@@ -103,6 +104,7 @@ export default function MaterialList({
         {filtrados.map((m) => (
           <li key={m.id}>
             <button
+              type="button"
               onClick={() => onSeleccion(m.id)}
               className={`dashboard-card w-full text-left flex items-center gap-4 ${m.id === selectedId ? 'border-[var(--dashboard-accent)]' : 'hover:border-[var(--dashboard-accent)]'}`}
             >
@@ -123,6 +125,7 @@ export default function MaterialList({
       <p className="text-xs text-right">Total stock: {totalStock}</p>
       <div className="flex gap-2">
         <button
+          type="button"
           onClick={async () => {
             const res = await onNuevo();
             if (res?.error) toast.show(res.error, 'error');
@@ -133,6 +136,7 @@ export default function MaterialList({
           Nuevo Material
         </button>
         <button
+          type="button"
           onClick={onDuplicar}
           disabled={selectedId === null}
           className="flex-1 py-1 rounded-md bg-white/10 text-white text-sm disabled:opacity-50"
