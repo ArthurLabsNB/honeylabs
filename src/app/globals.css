@@ -33,7 +33,7 @@
   --sidebar-gap: clamp(0.5rem, 1vw, 0.75rem);
   --navbar-height: clamp(3.5rem, 5vh, 4.375rem);
   --tabbar-height: 3rem;
-  --tabbar-gap: 0.75rem;
+  --tabbar-gap: 1rem;
 
   font-size: clamp(15px, 1vw, 16px);
 }
