@@ -1,3 +1,6 @@
+## 0.6.1
+- Incrementamos la separación entre el tablero de tarjetas y la barra de pestañas.
+
 ## 0.5.1
 - Permitimos definir destino en tarjetas URL o Tablero al crearlas.
 

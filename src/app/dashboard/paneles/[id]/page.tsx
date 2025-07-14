@@ -895,7 +895,7 @@ const viewHist = () => {
         draggableHandle=".dashboard-widget-card"
         margin={[Math.round(gridSize / 5), Math.round(gridSize / 5)]}
         data-oid="hxrbk.e"
-        style={{ minHeight: "calc(100vh - var(--tabbar-height))" }}
+        style={{ minHeight: "calc(100vh - var(--tabbar-height) - var(--tabbar-gap))" }}
       >
         {visible.map((key) => {
           const Widget = componentes[key];
