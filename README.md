@@ -71,6 +71,8 @@ Clona el repositorio y ejecuta los siguientes comandos:
 git clone https://github.com/ArthurLabsNB/honeylabs.git
 cd honeylabs
 pnpm install
+# Este paso instala dependencias esenciales como `@dnd-kit/modifiers`.
+# Sin ellas, Next.js mostrará errores de "Module not found" al compilar.
 pnpm prisma migrate dev
 DATABASE_URL=$DIRECT_DB_URL pnpm prisma migrate deploy
 vercel --prod
