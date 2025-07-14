@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { Resizable } from "react-resizable";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Pencil, Pin, PinOff, Minimize2, Maximize2, X } from "lucide-react";
@@ -62,8 +63,9 @@ export default function DraggableCard({ tab }: { tab: Tab }) {
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} className="dashboard-card resize overflow-auto">
-      <div className="flex items-center justify-between mb-2 cursor-move" {...listeners}>
+    <Resizable resizeHandles={['se', 'sw', 'ne', 'nw']}>
+      <div ref={setNodeRef} style={style} {...attributes} className="dashboard-card overflow-auto">
+        <div className="flex items-center justify-between mb-2 cursor-move" {...listeners}>
         <span className="font-semibold" onDoubleClick={toggle}>{tab.title}</span>
         <div className="flex items-center gap-1">
           <button onPointerDown={stop} onClick={onRename} className="p-1 hover:bg-white/10 rounded" title="Renombrar">
@@ -104,7 +106,8 @@ export default function DraggableCard({ tab }: { tab: Tab }) {
           )}
         </div>
       </div>
-      {!tab.minimized && !tab.collapsed && <CardBody tab={tab} />}
-    </div>
+        {!tab.minimized && !tab.collapsed && <CardBody tab={tab} />}
+      </div>
+    </Resizable>
   );
 }

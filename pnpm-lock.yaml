@@ -309,6 +309,9 @@ importers:
       '@types/react-grid-layout':
         specifier: ^1.3.5
         version: 1.3.5
+      '@types/react-resizable':
+        specifier: ^3.0.8
+        version: 3.0.8
       autoprefixer:
         specifier: ^10.4.21
         version: 10.4.21(postcss@8.5.5)
@@ -5525,6 +5528,12 @@ packages:
     dependencies:
       '@types/react': 19.1.8
     dev: false
+
+  /@types/react-resizable@3.0.8:
+    resolution: {integrity: sha512-Pcvt2eGA7KNXldt1hkhVhAgZ8hK41m0mp89mFgQi7LAAEZiaLgm4fHJ5zbJZ/4m2LVaAyYrrRRv1LHDcrGQanA==}
+    dependencies:
+      '@types/react': 19.1.8
+    dev: true
 
   /@types/react@19.1.8:
     resolution: {integrity: sha512-AwAfQ2Wa5bCx9WP8nZL2uMZWod7J7/JSplxbTmBQ5ms6QpqNYm672H0Vu9ZVKVngQ+ii4R/byguVEUZQyeg44g==}

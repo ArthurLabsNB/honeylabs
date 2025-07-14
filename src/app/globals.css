@@ -404,7 +404,6 @@ html, body {
   background: var(--dashboard-card);
   border-color: var(--dashboard-border);
   box-shadow: var(--dashboard-shadow);
-  resize: both;
   overflow: auto;
 }
 .dashboard-card:hover {
