@@ -1,6 +1,9 @@
 ## 0.5.0
 - Soporte para nuevas pestañas de tablero y URL.
 
+## 0.6.0
+- Tarjetas BoardCard y UrlCard permiten definir destino al crearse.
+
 ## 0.2.268
 - Validamos DATABASE_URL en workflows antes del build.
 

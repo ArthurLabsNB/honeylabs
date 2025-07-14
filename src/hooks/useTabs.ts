@@ -16,6 +16,8 @@ export interface Tab {
   id: string;
   title: string;
   type: TabType;
+  url?: string;
+  board?: string;
   side?: "left" | "right";
   pinned?: boolean;
   collapsed?: boolean;

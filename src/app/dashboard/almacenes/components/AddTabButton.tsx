@@ -2,11 +2,13 @@
 import { useState, useRef, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { useTabStore, type TabType } from "@/hooks/useTabs";
+import { usePrompt } from "@/hooks/usePrompt";
 import { generarUUID } from "@/lib/uuid";
 import { tabOptions } from "./tabOptions";
 
 export default function AddTabButton() {
   const { addAfterActive } = useTabStore();
+  const prompt = usePrompt();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -20,11 +22,22 @@ export default function AddTabButton() {
     return () => document.removeEventListener("click", onClick);
   }, []);
 
-  const create = (type: TabType, label: string) => {
+  const create = async (type: TabType, label: string) => {
+    let url: string | undefined;
+    let board: string | undefined;
+    if (type === "url") {
+      url = await prompt("URL de destino");
+      if (!url) return;
+    } else if (type === "board") {
+      board = await prompt("Tablero destino");
+      if (!board) return;
+    }
     addAfterActive({
       id: generarUUID(),
       title: label,
       type,
+      url,
+      board,
       side: "left",
     });
     setOpen(false);
