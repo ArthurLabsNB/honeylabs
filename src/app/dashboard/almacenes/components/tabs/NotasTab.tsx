@@ -89,7 +89,7 @@ export default function NotasTab({ tabId }: { tabId: string }) {
           className="flex-1 px-2 py-1 rounded text-black"
           placeholder="/imagen /url /postit"
         />
-        <button onClick={handleCommand} className="px-3 py-1 bg-white/20 rounded">
+        <button onClick={handleCommand} className="no-drag px-3 py-1 bg-white/20 rounded">
           Añadir
         </button>
       </div>
@@ -133,7 +133,7 @@ export default function NotasTab({ tabId }: { tabId: string }) {
               key={s.id}
               value={s.text}
               onChange={e => updateSticky(s.id, e.target.value)}
-              className="bg-yellow-200 text-black p-2 rounded w-32 h-32 resize-none"
+              className="no-drag bg-yellow-200 text-black p-2 rounded w-32 h-32 resize-none"
             />
           ))}
         </div>

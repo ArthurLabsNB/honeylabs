@@ -24,7 +24,7 @@ export default function AuditoriaForm({ auditoriaId, onClose }: Props) {
       {auditoria.observaciones && <div>{auditoria.observaciones}</div>}
       {auditoria.usuario?.nombre && <div>Usuario: {auditoria.usuario.nombre}</div>}
       <div>{new Date(auditoria.fecha).toLocaleString()}</div>
-      <button onClick={onClose} className="px-2 py-1 rounded bg-white/10 text-xs">
+      <button onClick={onClose} className="no-drag px-2 py-1 rounded bg-white/10 text-xs">
         Cerrar
       </button>
     </div>
