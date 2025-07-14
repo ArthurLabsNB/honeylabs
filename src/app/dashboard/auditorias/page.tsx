@@ -113,8 +113,12 @@ export default function AuditoriasPage() {
               setActivo(a.id);
               const res = await apiFetch(`/api/auditorias/${a.id}`);
               if (res.ok) {
-                const d = await res.json();
-                setDetalle(d.auditoria);
+                try {
+                  if (res.headers.get('content-type')?.includes('json')) {
+                    const d = await res.json();
+                    setDetalle(d.auditoria);
+                  }
+                } catch {}
               }
             }}
           >

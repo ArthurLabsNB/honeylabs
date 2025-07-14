@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState, useMemo } from "react";
+import { createContext, useContext, useState, useMemo, useCallback, useEffect } from "react";
 import { useParams } from "next/navigation";
 import type { Material } from "../components/MaterialRow";
 import type { UnidadDetalle } from "@/types/unidad-detalle";
@@ -13,51 +13,60 @@ interface BoardState {
   setUnidadSel: (u: UnidadDetalle | null) => void;
   auditoriaSel: number | null;
   setAuditoriaSel: (id: number | null) => void;
+  isLoading: boolean;
+  error: any;
   crear: (m: Material) => Promise<any>;
   actualizar: (m: Material) => Promise<any>;
   eliminar: (id: number) => Promise<any>;
   mutate: () => void;
 }
 
-const Context = createContext<BoardState>({
-  materiales: [],
-  selectedId: null,
-  setSelectedId: () => {},
-  unidadSel: null,
-  setUnidadSel: () => {},
-  auditoriaSel: null,
-  setAuditoriaSel: () => {},
-  crear: async () => ({}),
-  actualizar: async () => ({}),
-  eliminar: async () => ({}),
-  mutate: () => {},
-});
+const Context = createContext<BoardState | null>(null);
 
 export function BoardProvider({ children }: { children: React.ReactNode }) {
   const { id } = useParams();
-  const { materiales, crear, actualizar, eliminar, mutate } = useMateriales(id as string);
+  const { materiales, isLoading, error, crear, actualizar, eliminar, mutate } =
+    useMateriales(id as string);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [unidadSel, setUnidadSel] = useState<UnidadDetalle | null>(null);
   const [auditoriaSel, setAuditoriaSel] = useState<number | null>(null);
+
+  const setSelId = useCallback((v: string | null) => setSelectedId(v), []);
+  const setUni = useCallback((v: UnidadDetalle | null) => setUnidadSel(v), []);
+  const setAud = useCallback((v: number | null) => setAuditoriaSel(v), []);
+
+  useEffect(() => {
+    setSelId(null);
+    setUni(null);
+    setAud(null);
+  }, [id, setSelId, setUni, setAud]);
+
   const value = useMemo(
     () => ({
       materiales,
       selectedId,
-      setSelectedId,
+      setSelectedId: setSelId,
       unidadSel,
-      setUnidadSel,
+      setUnidadSel: setUni,
       auditoriaSel,
-      setAuditoriaSel,
+      setAuditoriaSel: setAud,
+      isLoading,
+      error,
       crear,
       actualizar,
       eliminar,
       mutate,
     }),
-    [materiales, selectedId, unidadSel, auditoriaSel, crear, actualizar, eliminar]
+    [materiales, selectedId, unidadSel, auditoriaSel, crear, actualizar, eliminar, isLoading, error, mutate, setSelId, setUni, setAud]
   );
+
+  if (!id) return <>{children}</>;
+
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
 
 export function useBoard() {
-  return useContext(Context);
+  const ctx = useContext(Context);
+  if (!ctx) throw new Error('BoardProvider missing');
+  return ctx;
 }
