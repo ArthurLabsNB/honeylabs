@@ -95,7 +95,9 @@ export default function CardBoard() {
   const right = current.filter((t) => (t.side ?? "left") === "right");
 
   return (
-    <div className={`flex gap-4 transition-all duration-300 ${collapsed ? 'pt-0' : 'pt-2'}`}>\
+    <div
+      className={`flex gap-4 transition-all duration-300 ${collapsed ? 'pt-0' : 'pt-2'} mt-[var(--tabbar-height)]`}
+    >
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <Column id="left">
           <SortableContext items={left.map((t) => t.id)} strategy={verticalListSortingStrategy}>

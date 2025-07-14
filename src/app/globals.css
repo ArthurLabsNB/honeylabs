@@ -30,6 +30,7 @@
   --tools-sidebar-width: clamp(10rem, 12vw, 11rem);
   --sidebar-gap: clamp(0.5rem, 1vw, 0.75rem);
   --navbar-height: clamp(3.5rem, 5vh, 4.375rem);
+  --tabbar-height: 3rem;
 
   font-size: clamp(15px, 1vw, 16px);
 }
