@@ -1,7 +1,7 @@
 "use client";
 import BoardTab from "./BoardTab";
 import { useBoardStore, type Board } from "@/hooks/useBoards";
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState, Fragment, useRef } from "react";
 import AddBoardButton from "./AddBoardButton";
 import {
   DndContext,
@@ -16,11 +16,12 @@ import {
   SortableContext,
   useSortable,
   horizontalListSortingStrategy,
-  arrayMove,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { restrictToHorizontalAxis, snapCenterToCursor } from "@dnd-kit/modifiers";
+import { useAnnouncement } from "@dnd-kit/accessibility";
+import { NAVBAR_HEIGHT } from "../../constants";
 
 function DropIndicator() {
   return <div className="w-px bg-blue-500 h-full" />;
@@ -41,40 +42,55 @@ function SortableItem({ tab, index }: { tab: Board; index: number }) {
 
 export default function TabBar() {
   const { boards, move } = useBoardStore();
+  const { announce } = useAnnouncement();
+  const boardsRef = useRef(boards);
   useEffect(() => {
-    useBoardStore.persist.rehydrate();
-  }, []);
+    boardsRef.current = boards;
+  }, [boards]);
+  const dropIndexRef = useRef<number | null>(null);
+  const [dropIndex, setDropIndex] = useState<number | null>(null);
+  const updateDropIndex = (idx: number | null) => {
+    if (dropIndexRef.current !== idx) {
+      dropIndexRef.current = idx;
+      setDropIndex(idx);
+    }
+  };
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
-  const [dropIndex, setDropIndex] = useState<number | null>(null);
+  const getIndices = (activeId: string, overId: string) => {
+    const oldIndex = boardsRef.current.findIndex((t) => t.id === activeId);
+    const overIndex = boardsRef.current.findIndex((t) => t.id === overId);
+    return { oldIndex, overIndex };
+  };
 
   const handleDragOver = (ev: DragOverEvent) => {
     const { active, over } = ev;
     if (!over) return;
-    const oldIndex = boards.findIndex((t) => t.id === active.id);
-    const overIndex = boards.findIndex((t) => t.id === over.id);
+    const { oldIndex, overIndex } = getIndices(active.id, over.id);
     if (oldIndex === -1 || overIndex === -1) return;
-    const arr = arrayMove(boards, oldIndex, overIndex);
-    const newIndex = arr.findIndex((t) => t.id === active.id);
-    setDropIndex(newIndex);
+    const newIdx = overIndex + (overIndex < oldIndex ? 0 : 1);
+    updateDropIndex(newIdx);
   };
 
   const handleDragEnd = (ev: DragEndEvent) => {
     const { active, over } = ev;
     if (!over || active.id === over.id) return;
-    const oldIndex = boards.findIndex((t) => t.id === active.id);
-    const newIndex = boards.findIndex((t) => t.id === over.id);
-    if (oldIndex !== -1 && newIndex !== -1) move(oldIndex, newIndex);
-    setDropIndex(null);
+    const { oldIndex, overIndex } = getIndices(active.id, over.id);
+    if (oldIndex !== -1 && overIndex !== -1) {
+      move(oldIndex, overIndex);
+      announce("pestaña movida");
+    }
+    updateDropIndex(null);
   };
 
   return (
     <div
       className="sticky z-20 overflow-x-auto whitespace-nowrap border-b border-[var(--dashboard-border)] bg-[var(--dashboard-navbar)]"
-      style={{ top: `calc(var(--navbar-height) + 3.5rem)` }}
+      style={{ top: `calc(${NAVBAR_HEIGHT} + 3.5rem)` }}
+      role="tablist"
     >
       <DndContext
         sensors={sensors}

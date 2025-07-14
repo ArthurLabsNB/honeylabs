@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useMemo } from "react";
 import { useParams } from "next/navigation";
 import type { Material } from "../components/MaterialRow";
 import type { UnidadDetalle } from "@/types/unidad-detalle";
@@ -39,25 +39,23 @@ export function BoardProvider({ children }: { children: React.ReactNode }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [unidadSel, setUnidadSel] = useState<UnidadDetalle | null>(null);
   const [auditoriaSel, setAuditoriaSel] = useState<number | null>(null);
-  return (
-    <Context.Provider
-      value={{
-        materiales,
-        selectedId,
-        setSelectedId,
-        unidadSel,
-        setUnidadSel,
-        auditoriaSel,
-        setAuditoriaSel,
-        crear,
-        actualizar,
-        eliminar,
-        mutate,
-      }}
-    >
-      {children}
-    </Context.Provider>
+  const value = useMemo(
+    () => ({
+      materiales,
+      selectedId,
+      setSelectedId,
+      unidadSel,
+      setUnidadSel,
+      auditoriaSel,
+      setAuditoriaSel,
+      crear,
+      actualizar,
+      eliminar,
+      mutate,
+    }),
+    [materiales, selectedId, unidadSel, auditoriaSel, crear, actualizar, eliminar]
   );
+  return <Context.Provider value={value}>{children}</Context.Provider>;
 }
 
 export function useBoard() {
