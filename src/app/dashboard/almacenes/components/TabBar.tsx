@@ -1,6 +1,7 @@
 "use client";
 import BoardTab from "./BoardTab";
 import { useBoardStore, type Board } from "@/hooks/useBoards";
+import { useEffect } from "react";
 import AddBoardButton from "./AddBoardButton";
 import {
   DndContext,
@@ -31,6 +32,9 @@ function SortableItem({ tab, index }: { tab: Board; index: number }) {
 
 export default function TabBar() {
   const { boards, move } = useBoardStore();
+  useEffect(() => {
+    useBoardStore.persist.rehydrate();
+  }, []);
   const sensors = useSensors(useSensor(PointerSensor));
 
   const handleDragEnd = (ev: DragEndEvent) => {
@@ -42,7 +46,10 @@ export default function TabBar() {
   };
 
   return (
-    <div className="overflow-x-auto whitespace-nowrap border-b border-[var(--dashboard-border)] bg-[var(--dashboard-navbar)]">
+    <div
+      className="sticky z-20 overflow-x-auto whitespace-nowrap border-b border-[var(--dashboard-border)] bg-[var(--dashboard-navbar)]"
+      style={{ top: `calc(var(--navbar-height) + 3.5rem)` }}
+    >
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
         <SortableContext items={boards.map((t) => t.id)} strategy={horizontalListSortingStrategy}>
           <div className="flex gap-2 px-2 py-1">
