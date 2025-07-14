@@ -80,10 +80,12 @@ export default function DraggableCard({ tab, grid = false }: Props) {
         className="dashboard-card overflow-auto"
         whileDrag={sortable ? { scale: 1.05 } : undefined}
       >
-        <div className="flex items-center justify-between mb-2 cursor-move" {...(sortable ? listeners : {})}>
-        <span className="font-semibold" onDoubleClick={toggle}>{tab.title}</span>
+      <div className="flex items-center justify-between mb-2">
+        <div className="drag-handle cursor-move" {...(sortable ? listeners : {})}>
+          <span className="font-semibold" onDoubleClick={toggle}>{tab.title}</span>
+        </div>
         <div className="flex items-center gap-1">
-          <button onPointerDown={stop} onClick={onRename} className="p-1 hover:bg-white/10 rounded" title="Renombrar">
+          <button onPointerDown={stop} onClick={onRename} className="no-drag p-1 hover:bg-white/10 rounded" title="Renombrar">
             <Pencil className="w-3 h-3" />
           </button>
           <button
@@ -92,7 +94,7 @@ export default function DraggableCard({ tab, grid = false }: Props) {
               stop(e);
               pin();
             }}
-            className="p-1 hover:bg-white/10 rounded"
+            className="no-drag p-1 hover:bg-white/10 rounded"
             title="Fijar"
           >
             {tab.pinned ? <Pin className="w-3 h-3" /> : <PinOff className="w-3 h-3" />}
@@ -104,18 +106,18 @@ export default function DraggableCard({ tab, grid = false }: Props) {
                 stop(e);
                 close(tab.id);
               }}
-              className="p-1 hover:bg-white/10 rounded"
+              className="no-drag p-1 hover:bg-white/10 rounded"
               title="Cerrar"
             >
               <X className="w-3 h-3" />
             </button>
           )}
           {tab.minimized ? (
-            <button onPointerDown={stop} onClick={maximize} className="p-1 hover:bg-white/10 rounded" title="Maximizar">
+            <button onPointerDown={stop} onClick={maximize} className="no-drag p-1 hover:bg-white/10 rounded" title="Maximizar">
               <Maximize2 className="w-3 h-3" />
             </button>
           ) : (
-            <button onPointerDown={stop} onClick={minimize} className="p-1 hover:bg-white/10 rounded" title="Minimizar">
+            <button onPointerDown={stop} onClick={minimize} className="no-drag p-1 hover:bg-white/10 rounded" title="Minimizar">
               <Minimize2 className="w-3 h-3" />
             </button>
           )}

@@ -82,7 +82,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           onChange={handle('nombreMaterial')}
           autoFocus
           required
-          className="dashboard-input w-full mt-1"
+          className="dashboard-input no-drag w-full mt-1"
         />
         {!nombreValido && (
           <p className="text-xs text-red-500">Requerido</p>
@@ -94,7 +94,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           id="unidad-internoId"
           value={unidad.internoId ?? ""}
           onChange={handle("internoId")}
-          className="dashboard-input w-full mt-1"
+          className="dashboard-input no-drag w-full mt-1"
         />
         </div>
         <div>
@@ -103,7 +103,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           id="unidad-serie"
           value={unidad.serie ?? ""}
           onChange={handle("serie")}
-          className="dashboard-input w-full mt-1"
+          className="dashboard-input no-drag w-full mt-1"
         />
         </div>
         <div className="grid grid-cols-2 gap-2">
@@ -113,7 +113,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
               id="unidad-codigoBarra"
               value={unidad.codigoBarra ?? ""}
               onChange={handle("codigoBarra")}
-              className="dashboard-input w-full mt-1"
+              className="dashboard-input no-drag w-full mt-1"
             />
           </div>
           <div>
@@ -122,7 +122,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
             id="unidad-codigoQR"
             value={unidad.codigoQR ?? ""}
             onChange={handle("codigoQR")}
-            className="dashboard-input w-full mt-1"
+            className="dashboard-input no-drag w-full mt-1"
           />
           <MaterialCodes
             value={unidad.codigoQR || ''}
@@ -136,7 +136,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           id="unidad-lote"
           value={unidad.lote ?? ""}
           onChange={handle("lote")}
-          className="dashboard-input w-full mt-1"
+          className="dashboard-input no-drag w-full mt-1"
         />
         </div>
       </section>
@@ -149,7 +149,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           id="unidad-medida"
           value={unidad.unidadMedida ?? ""}
           onChange={handle("unidadMedida")}
-          className="dashboard-input w-full mt-1"
+          className="dashboard-input no-drag w-full mt-1"
         />
         </div>
         <div className="grid grid-cols-2 gap-2">
@@ -160,7 +160,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
               type="number"
               value={unidad.peso ?? ""}
               onChange={handle("peso")}
-              className="dashboard-input w-full mt-1"
+              className="dashboard-input no-drag w-full mt-1"
             />
           </div>
           <div>
@@ -170,7 +170,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
               type="number"
               value={unidad.volumen ?? ""}
               onChange={handle("volumen")}
-              className="dashboard-input w-full mt-1"
+              className="dashboard-input no-drag w-full mt-1"
             />
           </div>
         </div>
@@ -182,7 +182,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
               type="number"
               value={unidad.alto ?? ""}
               onChange={handle("alto")}
-              className="dashboard-input w-full mt-1"
+              className="dashboard-input no-drag w-full mt-1"
             />
           </div>
           <div>
@@ -192,7 +192,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
               type="number"
               value={unidad.largo ?? ""}
               onChange={handle("largo")}
-              className="dashboard-input w-full mt-1"
+              className="dashboard-input no-drag w-full mt-1"
             />
           </div>
           <div>
@@ -202,7 +202,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
               type="number"
               value={unidad.ancho ?? ""}
               onChange={handle("ancho")}
-              className="dashboard-input w-full mt-1"
+              className="dashboard-input no-drag w-full mt-1"
             />
           </div>
         </div>
@@ -212,7 +212,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           id="unidad-color"
           value={unidad.color ?? ""}
           onChange={handle("color")}
-          className="dashboard-input w-full mt-1"
+          className="dashboard-input no-drag w-full mt-1"
         />
         </div>
         <div>
@@ -221,7 +221,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           id="unidad-temperatura"
           value={unidad.temperatura ?? ""}
           onChange={handle("temperatura")}
-          className="dashboard-input w-full mt-1"
+          className="dashboard-input no-drag w-full mt-1"
         />
         </div>
       </section>
@@ -234,7 +234,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           id="unidad-estado"
           value={unidad.estado ?? ''}
           onChange={handle('estado')}
-          className="dashboard-select w-full mt-1"
+          className="dashboard-select no-drag w-full mt-1"
         >
           <option value="">-</option>
           <option value="pendiente">pendiente</option>
@@ -248,7 +248,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           id="unidad-ubicacionExacta"
           value={unidad.ubicacionExacta ?? ""}
           onChange={handle("ubicacionExacta")}
-          className="dashboard-input w-full mt-1"
+          className="dashboard-input no-drag w-full mt-1"
         />
         </div>
         <div className="grid grid-cols-2 gap-2">
@@ -258,7 +258,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
               id="unidad-area"
               value={unidad.area ?? ""}
               onChange={handle("area")}
-              className="dashboard-input w-full mt-1"
+              className="dashboard-input no-drag w-full mt-1"
             />
           </div>
           <div>
@@ -267,7 +267,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
               id="unidad-subcategoria"
               value={unidad.subcategoria ?? ""}
               onChange={handle("subcategoria")}
-              className="dashboard-input w-full mt-1"
+              className="dashboard-input no-drag w-full mt-1"
             />
           </div>
         </div>
@@ -277,7 +277,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           id="unidad-riesgo"
           value={unidad.riesgo ?? ""}
           onChange={handle("riesgo")}
-          className="dashboard-input w-full mt-1"
+          className="dashboard-input no-drag w-full mt-1"
         />
         </div>
         <div className="flex items-center gap-2">
@@ -295,7 +295,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           id="unidad-asignadoA"
           value={unidad.asignadoA ?? ""}
           onChange={handle("asignadoA")}
-          className="dashboard-input w-full mt-1"
+          className="dashboard-input no-drag w-full mt-1"
         />
         </div>
       </section>
@@ -309,7 +309,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
               type="date"
               value={unidad.fechaIngreso ?? ""}
               onChange={handle("fechaIngreso")}
-              className="dashboard-input w-full mt-1"
+              className="dashboard-input no-drag w-full mt-1"
             />
           </div>
           <div>
@@ -318,7 +318,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
               type="date"
               value={unidad.fechaModificacion ?? ""}
               onChange={handle("fechaModificacion")}
-              className="dashboard-input w-full mt-1"
+              className="dashboard-input no-drag w-full mt-1"
             />
           </div>
           <div>
@@ -327,7 +327,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
               type="date"
               value={unidad.fechaCaducidad ?? ""}
               onChange={handle("fechaCaducidad")}
-              className="dashboard-input w-full mt-1"
+              className="dashboard-input no-drag w-full mt-1"
             />
           </div>
           <div>
@@ -336,7 +336,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
               type="date"
               value={unidad.fechaInspeccion ?? ""}
               onChange={handle("fechaInspeccion")}
-              className="dashboard-input w-full mt-1"
+              className="dashboard-input no-drag w-full mt-1"
             />
           </div>
           <div>
@@ -345,7 +345,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
               type="date"
               value={unidad.fechaBaja ?? ""}
               onChange={handle("fechaBaja")}
-              className="dashboard-input w-full mt-1"
+              className="dashboard-input no-drag w-full mt-1"
             />
           </div>
         </div>
@@ -360,7 +360,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
               id="unidad-responsableIngreso"
               value={unidad.responsableIngreso ?? ""}
               onChange={handle("responsableIngreso")}
-              className="dashboard-input w-full mt-1"
+              className="dashboard-input no-drag w-full mt-1"
             />
           </div>
           <div>
@@ -369,7 +369,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
               id="unidad-modificadoPor"
               value={unidad.modificadoPor ?? ""}
               onChange={handle("modificadoPor")}
-              className="dashboard-input w-full mt-1"
+              className="dashboard-input no-drag w-full mt-1"
             />
           </div>
         </div>
@@ -379,7 +379,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           id="unidad-proyecto"
           value={unidad.proyecto ?? ""}
           onChange={handle("proyecto")}
-          className="dashboard-input w-full mt-1"
+          className="dashboard-input no-drag w-full mt-1"
         />
         </div>
         <div>
@@ -388,7 +388,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           id="unidad-observaciones"
           value={unidad.observaciones ?? ""}
           onChange={handle("observaciones")}
-          className="dashboard-input w-full mt-1"
+          className="dashboard-input no-drag w-full mt-1"
         />
         </div>
       </section>
@@ -401,7 +401,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
             id="unidad-imagen"
             type="file"
             onChange={handleFile('imagen')}
-            className="dashboard-input w-full mt-1"
+            className="dashboard-input no-drag w-full mt-1"
           />
           {(unidad.imagen || unidad.imagenUrl) && (
             <div className="mt-2 flex items-start gap-2">
@@ -442,7 +442,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
                   type="file"
                   data-index={i}
                   onChange={handleFile('archivos')}
-                  className="dashboard-input flex-1"
+                  className="dashboard-input no-drag flex-1"
                 />
                 <span className="flex-1 truncate text-xs">{f.name}</span>
                 <button
@@ -461,7 +461,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
                 type="file"
                 data-index={unidad.archivos?.length || 0}
                 onChange={handleFile('archivos')}
-                className="dashboard-input w-full"
+                className="dashboard-input no-drag w-full"
               />
             )}
           </div>

@@ -84,7 +84,7 @@ export default function MaterialList({
         <select
           value={orden}
           onChange={(e) => setOrden(e.target.value as any)}
-          className="dashboard-select"
+          className="dashboard-select no-drag"
         >
           <option value="nombre">Nombre</option>
           <option value="cantidad">Cantidad</option>

@@ -81,7 +81,8 @@ export default function CardBoard() {
         rowHeight={rowHeight}
         width={width || 800}
         onLayoutChange={onLayoutChange}
-        draggableHandle=".cursor-move"
+        draggableHandle=".drag-handle"
+        draggableCancel=".no-drag"
         compactType={null}
         preventCollision
       >

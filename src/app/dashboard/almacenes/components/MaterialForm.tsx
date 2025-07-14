@@ -125,14 +125,14 @@ export default function MaterialForm({
         <label htmlFor="material-nombre" className="text-xs text-[var(--dashboard-muted)] flex items-center gap-1">
           Nombre
           {readOnly && historialInfo && (
-            <button type="button" onClick={mostrarHistorial('nombre')} className="text-[var(--dashboard-muted)]">🕓</button>
+            <button type="button" onClick={mostrarHistorial('nombre')} className="no-drag text-[var(--dashboard-muted)]">🕓</button>
           )}
         </label>
         <input
           id="material-nombre"
           value={material.nombre ?? ""}
           onChange={handle("nombre")}
-          className="dashboard-input w-full mt-1"
+          className="dashboard-input no-drag w-full mt-1"
           readOnly={readOnly}
         />
       </div>
@@ -140,14 +140,14 @@ export default function MaterialForm({
         <label htmlFor="material-descripcion" className="text-xs text-[var(--dashboard-muted)] flex items-center gap-1">
           Descripción
           {readOnly && historialInfo && (
-            <button type="button" onClick={mostrarHistorial('descripcion')} className="text-[var(--dashboard-muted)]">🕓</button>
+            <button type="button" onClick={mostrarHistorial('descripcion')} className="no-drag text-[var(--dashboard-muted)]">🕓</button>
           )}
         </label>
         <textarea
           id="material-descripcion"
           value={material.descripcion ?? ""}
           onChange={handle("descripcion")}
-          className="dashboard-input w-full mt-1"
+          className="dashboard-input no-drag w-full mt-1"
           readOnly={readOnly}
         />
       </div>
@@ -157,7 +157,7 @@ export default function MaterialForm({
           id="material-num-unidades"
           value={unidades.length}
           readOnly
-          className="dashboard-input w-full mt-1"
+          className="dashboard-input no-drag w-full mt-1"
         />
       </div>
       <div>
@@ -166,7 +166,7 @@ export default function MaterialForm({
           id="material-unidad"
           value={material.unidad ?? ''}
           onChange={handle('unidad')}
-          className="dashboard-select w-full mt-1"
+          className="dashboard-select no-drag w-full mt-1"
           disabled={readOnly}
         >
           <option value="">-</option>
@@ -184,14 +184,14 @@ export default function MaterialForm({
         <label htmlFor="material-ubicacion" className="text-xs text-[var(--dashboard-muted)] flex items-center gap-1">
           Ubicación
           {readOnly && historialInfo && (
-            <button type="button" onClick={mostrarHistorial('ubicacion')} className="text-[var(--dashboard-muted)]">🕓</button>
+            <button type="button" onClick={mostrarHistorial('ubicacion')} className="no-drag text-[var(--dashboard-muted)]">🕓</button>
           )}
         </label>
         <input
           id="material-ubicacion"
           value={material.ubicacion ?? ""}
           onChange={handle("ubicacion")}
-          className="dashboard-input w-full mt-1"
+          className="dashboard-input no-drag w-full mt-1"
           readOnly={readOnly}
         />
       </div>
@@ -202,7 +202,7 @@ export default function MaterialForm({
             id="material-codigo-barra"
             value={material.codigoBarra ?? ""}
             onChange={handle("codigoBarra")}
-            className="dashboard-input w-full mt-1"
+            className="dashboard-input no-drag w-full mt-1"
             readOnly={readOnly}
           />
         </div>
@@ -212,7 +212,7 @@ export default function MaterialForm({
             id="material-codigo-qr"
             value={material.codigoQR ?? ""}
             onChange={handle("codigoQR")}
-            className="dashboard-input w-full mt-1"
+            className="dashboard-input no-drag w-full mt-1"
             readOnly={readOnly}
           />
         </div>
@@ -223,7 +223,7 @@ export default function MaterialForm({
           id="material-estado"
           value={material.estado ?? ''}
           onChange={handle('estado')}
-          className="dashboard-select w-full mt-1"
+          className="dashboard-select no-drag w-full mt-1"
           disabled={readOnly}
         >
           <option value="">-</option>
@@ -240,7 +240,7 @@ export default function MaterialForm({
             type="number"
             value={material.minimo ?? ""}
             onChange={handle("minimo")}
-            className="dashboard-input w-full mt-1"
+            className="dashboard-input no-drag w-full mt-1"
           />
         </div>
         <div>
@@ -249,7 +249,7 @@ export default function MaterialForm({
             type="number"
             value={material.maximo ?? ""}
             onChange={handle("maximo")}
-            className="dashboard-input w-full mt-1"
+            className="dashboard-input no-drag w-full mt-1"
           />
         </div>
       </div>
@@ -260,7 +260,7 @@ export default function MaterialForm({
           id="material-observaciones"
           value={material.observaciones ?? ""}
           onChange={handle("observaciones")}
-          className="dashboard-input w-full mt-1"
+          className="dashboard-input no-drag w-full mt-1"
           readOnly={readOnly}
         />
       </div>
@@ -270,7 +270,7 @@ export default function MaterialForm({
           id="material-miniatura"
           type="file"
           onChange={handle("miniatura") as any}
-          className="dashboard-input w-full mt-1"
+          className="dashboard-input no-drag w-full mt-1"
           disabled={readOnly}
         />
         {miniaturaSrc && (
@@ -304,7 +304,7 @@ export default function MaterialForm({
                 type="file"
                 data-index={i}
                 onChange={handle('archivos') as any}
-                className="dashboard-input flex-1"
+                className="dashboard-input no-drag flex-1"
                 disabled={readOnly}
               />
               <span className="flex-1 truncate text-xs">{f.name}</span>
@@ -325,7 +325,7 @@ export default function MaterialForm({
               type="file"
               data-index={material.archivos?.length || 0}
               onChange={handle('archivos') as any}
-              className="dashboard-input w-full"
+              className="dashboard-input no-drag w-full"
             />
           )}
         </div>

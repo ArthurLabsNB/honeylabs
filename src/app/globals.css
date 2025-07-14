@@ -231,6 +231,13 @@ html, body {
   cursor: grabbing;
   opacity: 0.95;
 }
+
+.drag-handle {
+  @apply cursor-move;
+}
+.no-drag {
+  /* marcador para cancelar arrastre */
+}
 .react-grid-placeholder {
   background: rgba(255, 255, 255, 0.06);
   border: 2px dashed var(--dashboard-accent);
