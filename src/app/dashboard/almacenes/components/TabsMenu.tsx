@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { useTabStore, type TabType, type Tab } from "@/hooks/useTabs";
+import { useBoardStore } from "@/hooks/useBoards";
 import { generarUUID } from "@/lib/uuid";
 import { tabOptions } from "./tabOptions";
 import { usePrompt } from "@/hooks/usePrompt";
@@ -10,6 +11,7 @@ export default function TabsMenu() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const { addAfterActive, minimizeAll, restoreAll, closeOthers, activeId } = useTabStore();
+  const { activeId: boardId } = useBoardStore();
   const prompt = usePrompt();
 
   useEffect(() => {
@@ -23,7 +25,7 @@ export default function TabsMenu() {
   const create = async (type: TabType, label: string) => {
     const id = generarUUID();
     let title = label;
-    const extra: Partial<Tab> = {};
+    const extra: Partial<Tab> = { boardId };
     if (type === "url") {
       const url = await prompt("URL de destino");
       if (!url) return;
@@ -32,7 +34,7 @@ export default function TabsMenu() {
     } else if (type === "board") {
       const board = await prompt("Tablero destino");
       if (!board) return;
-      extra.board = board;
+      extra.boardId = board;
       title = board;
     }
     addAfterActive({ id, title, type, side: "left", ...extra });

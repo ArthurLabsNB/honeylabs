@@ -10,10 +10,11 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useTabStore, Tab } from "@/hooks/useTabs";
+import { useBoardStore } from "@/hooks/useBoards";
 import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
 import DraggableCard from "./DraggableCard";
-import AddTabButton from "./AddTabButton";
+import AddCardButton from "./AddCardButton";
 import { useDetalleUI } from "../DetalleUI";
 import { useDroppable } from "@dnd-kit/core";
 
@@ -26,6 +27,7 @@ function Column({ id, children }: { id: string; children: React.ReactNode }) {
 
 export default function CardBoard() {
   const { tabs: cards, move, update, setTabs } = useTabStore();
+  const { activeId: boardId, boards, setActive } = useBoardStore();
   const { collapsed } = useDetalleUI();
 
   useEffect(() => {
@@ -45,6 +47,10 @@ export default function CardBoard() {
       )
       .catch(() => {})
   }, [setTabs])
+
+  useEffect(() => {
+    if (!boardId && boards.length > 0) setActive(boards[0].id)
+  }, [boardId, boards, setActive])
 
   useEffect(() => {
     apiFetch("/api/dashboard/layout", {
@@ -76,8 +82,9 @@ export default function CardBoard() {
     }
   };
 
-  const left = cards.filter((t) => (t.side ?? "left") === "left");
-  const right = cards.filter((t) => (t.side ?? "left") === "right");
+  const current = cards.filter((t) => t.boardId === boardId);
+  const left = current.filter((t) => (t.side ?? "left") === "left");
+  const right = current.filter((t) => (t.side ?? "left") === "right");
 
   return (
     <div className={`flex gap-4 transition-all duration-300 ${collapsed ? 'pt-0' : 'pt-2'}`}>\
@@ -97,7 +104,7 @@ export default function CardBoard() {
           </SortableContext>
         </Column>
       </DndContext>
-      <AddTabButton />
+      <AddCardButton />
     </div>
   );
 }
