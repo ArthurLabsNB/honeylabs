@@ -9,7 +9,7 @@ export default function UnidadesTab() {
   const { materiales, selectedId, setUnidadSel } = useBoard()
   const selected = materiales.find(m => m.id === selectedId) || null
   const { obtener } = useUnidades(selected?.dbId)
-  const { ensureTab } = useTabHelpers()
+  const { openForm } = useTabHelpers()
 
   const openUnidad = useCallback(
     async (u: any) => {
@@ -17,9 +17,9 @@ export default function UnidadesTab() {
       const info = await obtener(u.id)
       if (!info) return
       setUnidadSel({ nombreMaterial: u.nombre, ...info })
-      ensureTab('form-unidad', 'Unidad', 'left')
+      openForm('form-unidad', 'Unidad')
     },
-    [obtener, setUnidadSel, ensureTab]
+    [obtener, setUnidadSel, openForm]
   )
 
   return (
