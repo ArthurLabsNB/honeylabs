@@ -50,6 +50,7 @@ Actualmente se están implementando las funcionalidades principales. Se aceptan 
 - Reporte y seguimiento de incidencias
 - Panel de control intuitivo
 - Notificaciones y alertas
+- Auditoría automática de operaciones
 
 ---
 
