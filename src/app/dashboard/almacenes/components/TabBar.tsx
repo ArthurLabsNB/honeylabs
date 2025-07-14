@@ -29,21 +29,29 @@ function DropIndicator() {
   return <div className="w-px bg-blue-500 h-full" />;
 }
 
-function SortableItem({ tab }: { tab: Board }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: tab.id });
+function SortableItem({ tab, active }: { tab: Board; active: boolean }) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: tab.id,
+    disabled: !active,
+  });
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
   } as React.CSSProperties;
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="touch-none">
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...(active ? { ...attributes, ...listeners } : {})}
+      className="touch-none"
+    >
       <BoardTab tab={tab} />
     </div>
   );
 }
 
 export default function TabBar() {
-  const { boards, move } = useBoardStore();
+  const { boards, move, activeId } = useBoardStore();
   const { announce } = useAnnouncement();
   const { fullscreen } = useDashboardUI();
   const { collapsed } = useDetalleUI();
@@ -60,7 +68,7 @@ export default function TabBar() {
     }
   };
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
@@ -100,7 +108,7 @@ export default function TabBar() {
 
   return (
     <div
-      className="sticky z-20 w-full overflow-x-auto whitespace-nowrap border-b border-[var(--dashboard-border)] bg-[var(--dashboard-card)]/80 backdrop-blur shadow-sm transition-all"
+      className="fixed z-20 w-full overflow-x-auto whitespace-nowrap border-b border-[var(--dashboard-border)] bg-[var(--dashboard-card)]/80 backdrop-blur shadow-sm transition-all"
       style={{ top, height: 'var(--tabbar-height)', '--tabbar-height': TABBAR_HEIGHT } as React.CSSProperties}
       role="tablist"
     >
@@ -118,7 +126,7 @@ export default function TabBar() {
             {boards.map((tab, idx) => (
               <Fragment key={tab.id}>
                 {dropIndex === idx && <DropIndicator />}
-                <SortableItem tab={tab} />
+                <SortableItem tab={tab} active={tab.id === activeId} />
               </Fragment>
             ))}
             {dropIndex === boards.length && <DropIndicator />}
