@@ -75,8 +75,7 @@ export default function CardBoard() {
         onLayoutChange={onLayoutChange}
         draggableHandle=".drag-handle"
         draggableCancel=".no-drag"
-        compactType={null}
-        preventCollision
+        compactType="vertical"
       >
         {current.map(tab => (
           <div key={tab.id}>
