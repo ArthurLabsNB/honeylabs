@@ -5,6 +5,7 @@ import type { Material } from '../MaterialRow'
 import { useBoard } from '../../board/BoardProvider'
 import { useTabHelpers } from '@/hooks/useTabHelpers'
 import { generarUUID } from '@/lib/uuid'
+import { openMaterial as doOpenMaterial } from '../../utils/openMaterial'
 
 export default function MaterialesTab() {
   const {
@@ -19,13 +20,13 @@ export default function MaterialesTab() {
   const [orden, setOrden] = useState<'nombre' | 'cantidad'>('nombre')
 
   const openMaterial = useCallback(
-    (id: string | null) => {
-      if (!id) return
-      setSelectedId(id)
-      setUnidadSel(null)
-      ensureTab('unidades', 'Unidades', 'right')
-      openForm('form-material', 'Material')
-    },
+    (id: string | null) =>
+      doOpenMaterial(id, {
+        setSelectedId,
+        setUnidadSel,
+        ensureTab,
+        openForm,
+      }),
     [ensureTab, openForm, setSelectedId, setUnidadSel]
   )
 
