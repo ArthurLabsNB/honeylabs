@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import MaterialList from '../MaterialList'
 import type { Material } from '../MaterialRow'
 import { useBoard } from '../../board/BoardProvider'
@@ -18,6 +18,19 @@ export default function MaterialesTab() {
   const { ensureTab, openForm } = useTabHelpers()
   const [busqueda, setBusqueda] = useState('')
   const [orden, setOrden] = useState<'nombre' | 'cantidad'>('nombre')
+  const nameCounter = useRef(0)
+
+  useEffect(() => {
+    const max = materiales.reduce((acc, m) => {
+      const match = /Material New (\d+)/.exec(m.nombre)
+      if (match) {
+        const n = Number(match[1])
+        return n > acc ? n : acc
+      }
+      return acc
+    }, 0)
+    if (max > nameCounter.current) nameCounter.current = max
+  }, [materiales])
 
   const openMaterial = useCallback(
     (id: string | null) =>
@@ -40,13 +53,15 @@ export default function MaterialesTab() {
       orden={orden}
       setOrden={setOrden}
       onNuevo={async () => {
+        const nombre = `Material New ${nameCounter.current + 1}`
         const nuevo = {
           id: generarUUID(),
-          nombre: `Material ${Date.now()}`,
+          nombre,
           cantidad: 0,
           lote: '',
         } as Material
         const res = await crear(nuevo)
+        nameCounter.current += 1
         const mid = res?.material?.id
         if (mid) openMaterial(String(mid))
         return res
