@@ -1,3 +1,7 @@
+## 0.6.7
+
+- Manejo de errores de red en formularios de materiales y unidades.
+
 ## 0.6.3
 
 - Eliminamos la función de minimizar tarjetas y pestañas.
