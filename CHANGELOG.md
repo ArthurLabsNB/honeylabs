@@ -7,6 +7,9 @@
 ## 0.8.2
 - Extraemos `useCreateTab` para unificar la creación de tarjetas.
 
+## 0.8.3
+- Corregimos el margen superior del tablero para que las tarjetas no se superpongan con la barra de pestañas.
+
 ## 0.7.1
 - Evitamos que las tarjetas de formularios se abran colapsadas y ajustamos su tamaño por defecto.
 

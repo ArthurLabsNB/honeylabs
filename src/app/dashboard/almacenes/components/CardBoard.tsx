@@ -63,7 +63,8 @@ export default function CardBoard() {
   return (
     <div
       ref={containerRef}
-      className={`transition-all duration-300 min-h-screen pb-10 border-t border-[var(--dashboard-border)] ${collapsed ? 'pt-0' : 'pt-2'} mt-[calc(${TABBAR_HEIGHT}+${TABBAR_GAP})]`}
+      className={`transition-all duration-300 min-h-screen pb-10 border-t border-[var(--dashboard-border)] ${collapsed ? 'pt-0' : 'pt-2'}`}
+      style={{ marginTop: `calc(${TABBAR_HEIGHT} + ${TABBAR_GAP})` }}
     >
       <GridLayout
         layout={layout}
