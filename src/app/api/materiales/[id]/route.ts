@@ -166,14 +166,14 @@ export async function PUT(req: NextRequest) {
     })
 
     await logAudit(usuario.id, 'modificacion_material', 'material', { materialId: id })
-    const auditoria = await registrarAuditoria(
+    const { auditoria, error: auditError } = await registrarAuditoria(
       req,
       'material',
       id,
       'modificacion',
       datos,
     )
-    return NextResponse.json({ material: actualizado, auditoria })
+    return NextResponse.json({ material: actualizado, auditoria, auditError })
   } catch (err) {
     logger.error('PUT /api/materiales/[id]', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
@@ -205,14 +205,14 @@ export async function DELETE(req: NextRequest) {
       await tx.material.delete({ where: { id } })
     })
     await logAudit(usuario.id, 'eliminacion_material', 'material', { materialId: id })
-    const auditoria = await registrarAuditoria(
+    const { auditoria, error: auditError } = await registrarAuditoria(
       req,
       'material',
       id,
       'eliminacion',
       {},
     )
-    return NextResponse.json({ success: true, auditoria })
+    return NextResponse.json({ success: true, auditoria, auditError })
   } catch (err) {
     logger.error('DELETE /api/materiales/[id]', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })

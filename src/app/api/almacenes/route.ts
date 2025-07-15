@@ -273,7 +273,7 @@ export async function POST(req: NextRequest) {
 
   await logAudit(usuario.id, 'creacion', 'almacen', { almacenId: almacen.id })
 
-  const auditoria = await registrarAuditoria(
+  const { auditoria, error: auditError } = await registrarAuditoria(
     req,
     'almacen',
     almacen.id,
@@ -287,7 +287,7 @@ export async function POST(req: NextRequest) {
       ? `/api/almacenes/foto?nombre=${encodeURIComponent(imagenNombre)}`
       : almacen.imagenUrl,
   }
-  return NextResponse.json({ almacen: resp, auditoria })
+  return NextResponse.json({ almacen: resp, auditoria, auditError })
   } catch (err) {
     logger.error('POST /api/almacenes', err);
     return NextResponse.json(

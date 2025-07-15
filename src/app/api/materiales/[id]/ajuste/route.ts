@@ -49,7 +49,7 @@ export async function PATCH(req: NextRequest) {
       }
     })
 
-    const auditoria = await registrarAuditoria(
+    const { auditoria, error: auditError } = await registrarAuditoria(
       req,
       'material',
       id,
@@ -67,7 +67,7 @@ export async function PATCH(req: NextRequest) {
         }
       })
     }
-    return NextResponse.json({ success: true, auditoria })
+    return NextResponse.json({ success: true, auditoria, auditError })
   } catch (err) {
     logger.error('PATCH /api/materiales/[id]/ajuste', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })

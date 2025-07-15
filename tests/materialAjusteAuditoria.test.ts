@@ -20,7 +20,7 @@ describe('PATCH /api/materiales/[id]/ajuste', () => {
       alerta: { create: vi.fn() },
     }
     vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
-    const registrarAuditoria = vi.fn().mockResolvedValue({ id: 9 })
+    const registrarAuditoria = vi.fn().mockResolvedValue({ auditoria: { id: 9 } })
     vi.doMock('../lib/reporter', () => ({ registrarAuditoria }))
     const { PATCH } = await import('../src/app/api/materiales/[id]/ajuste/route')
     const req = new NextRequest('http://localhost/api/materiales/5/ajuste', {

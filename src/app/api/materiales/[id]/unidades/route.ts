@@ -149,7 +149,7 @@ export async function POST(req: NextRequest) {
       await snapshot(creado.id, usuario.id, 'Creación')
       await logAudit(usuario.id, 'creacion_unidad', 'material', { materialId, unidadId: creado.id })
 
-      const auditoria = await registrarAuditoria(
+      const { auditoria, error: auditError } = await registrarAuditoria(
         req,
         'unidad',
         creado.id,
@@ -157,7 +157,7 @@ export async function POST(req: NextRequest) {
         data,
       )
 
-      return NextResponse.json({ unidad: creado, auditoria })
+      return NextResponse.json({ unidad: creado, auditoria, auditError })
     } catch (e) {
       if (
         e instanceof Prisma.PrismaClientKnownRequestError &&

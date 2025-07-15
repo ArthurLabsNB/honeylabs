@@ -171,7 +171,7 @@ export async function PUT(req: NextRequest) {
       await snapshot(actualizado.id, usuario.id, 'Modificación')
       await logAudit(usuario.id, 'modificacion_unidad', 'material', { materialId, unidadId })
 
-      const auditoria = await registrarAuditoria(
+      const { auditoria, error: auditError } = await registrarAuditoria(
         req,
         'unidad',
         unidadId,
@@ -179,7 +179,7 @@ export async function PUT(req: NextRequest) {
         data,
       )
 
-      return NextResponse.json({ unidad: actualizado, auditoria })
+      return NextResponse.json({ unidad: actualizado, auditoria, auditError })
     } catch (e) {
       if (
         e instanceof Prisma.PrismaClientKnownRequestError &&
@@ -218,7 +218,7 @@ export async function DELETE(req: NextRequest) {
     await prisma.materialUnidad.delete({ where: { id: unidadId } })
     await logAudit(usuario.id, 'eliminacion_unidad', 'material', { materialId, unidadId })
 
-    const auditoria = await registrarAuditoria(
+    const { auditoria, error: auditError } = await registrarAuditoria(
       req,
       'unidad',
       unidadId,
@@ -226,7 +226,7 @@ export async function DELETE(req: NextRequest) {
       {},
     )
 
-    return NextResponse.json({ success: true, auditoria })
+    return NextResponse.json({ success: true, auditoria, auditError })
   } catch (err) {
     logger.error('DELETE /api/materiales/[id]/unidades/[unidadId]', err)
     if (process.env.NODE_ENV === 'development') console.error(err)

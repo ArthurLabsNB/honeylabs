@@ -196,14 +196,14 @@ export async function DELETE(req: NextRequest) {
 
   await logAudit(usuario.id, 'eliminacion', 'almacen', { almacenId: id })
 
-  const auditoria = await registrarAuditoria(
+  const { auditoria, error: auditError } = await registrarAuditoria(
     req,
     'almacen',
     id,
     'eliminacion',
     {},
   )
-    return NextResponse.json({ success: true, auditoria });
+    return NextResponse.json({ success: true, auditoria, auditError });
   } catch (err) {
     logger.error('DELETE /api/almacenes/[id]', err);
     return NextResponse.json({ error: 'Error al eliminar' }, { status: 500 });
@@ -284,7 +284,7 @@ export async function PUT(req: NextRequest) {
 
   await logAudit(usuario.id, 'modificacion', 'almacen', { almacenId: id })
 
-  const auditoria = await registrarAuditoria(
+  const { auditoria, error: auditError } = await registrarAuditoria(
     req,
     'almacen',
     id,
@@ -298,7 +298,7 @@ export async function PUT(req: NextRequest) {
       ? `/api/almacenes/foto?nombre=${encodeURIComponent(almacen.imagenNombre)}`
       : almacen.imagenUrl,
   }
-  return NextResponse.json({ almacen: resp, auditoria })
+  return NextResponse.json({ almacen: resp, auditoria, auditError })
   } catch (err) {
     logger.error('PUT /api/almacenes/[id]', err);
     return NextResponse.json({ error: 'Error al actualizar' }, { status: 500 });

@@ -17,7 +17,7 @@ describe('POST /api/almacenes', () => {
     const prismaMock = { $transaction: vi.fn().mockImplementation(async (cb:any)=> cb(tx)) }
     vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
     vi.doMock('../src/lib/audit', () => ({ logAudit: vi.fn() }))
-    const registrarAuditoria = vi.fn().mockResolvedValue({ id: 9 })
+    const registrarAuditoria = vi.fn().mockResolvedValue({ auditoria: { id: 9 } })
     vi.doMock('../lib/reporter', () => ({ registrarAuditoria }))
     const { POST } = await import('../src/app/api/almacenes/route')
     const body = JSON.stringify({ nombre: 'A', descripcion: '', funciones: '', permisosPredeterminados: '' })
@@ -45,7 +45,7 @@ describe('PUT /api/almacenes/[id]', () => {
     const prismaMock = { usuarioAlmacen: { findFirst: vi.fn().mockResolvedValue({ id: 1 }) }, $transaction: vi.fn().mockImplementation(async (cb:any)=> cb(tx)) }
     vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
     vi.doMock('../src/lib/audit', () => ({ logAudit: vi.fn() }))
-    const registrarAuditoria = vi.fn().mockResolvedValue({ id: 9 })
+    const registrarAuditoria = vi.fn().mockResolvedValue({ auditoria: { id: 9 } })
     vi.doMock('../lib/reporter', () => ({ registrarAuditoria }))
     const { PUT } = await import('../src/app/api/almacenes/[id]/route')
     const req = new NextRequest('http://localhost/api/almacenes/5', {
@@ -87,7 +87,7 @@ describe('DELETE /api/almacenes/[id]', () => {
     }
     vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
     vi.doMock('../src/lib/audit', () => ({ logAudit: vi.fn() }))
-    const registrarAuditoria = vi.fn().mockResolvedValue({ id: 9 })
+    const registrarAuditoria = vi.fn().mockResolvedValue({ auditoria: { id: 9 } })
     vi.doMock('../lib/reporter', () => ({ registrarAuditoria }))
     const { DELETE } = await import('../src/app/api/almacenes/[id]/route')
     const req = new NextRequest('http://localhost/api/almacenes/5', { method: 'DELETE' })
