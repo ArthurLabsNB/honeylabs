@@ -35,10 +35,9 @@ interface BoardState {
 export const useBoardStore = create<BoardState>()(
   persist(
     (set) => {
-      const first: Board = { id: generarUUID(), title: 'New Tab' }
       return {
-        boards: [first],
-        activeId: first.id,
+        boards: [],
+        activeId: null,
         add: (b) =>
           set((s) => ({ boards: [...s.boards, b], activeId: b.id })),
         setActive: (id) => set({ activeId: id }),

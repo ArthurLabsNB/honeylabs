@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect } from 'react';
 import type { Layout } from 'react-grid-layout';
+import { compactLayout } from '@lib/boardLayout';
 import type { Tab } from './useTabs';
 
 export function applyLayout(tabs: Tab[], layout: Layout[]) {
@@ -38,7 +39,7 @@ export default function useCardLayout(
           w: t.w ?? 1,
           h: t.h ?? 1,
         }));
-        localStorage.setItem(key, JSON.stringify(layout));
+        localStorage.setItem(key, JSON.stringify(compactLayout(layout)));
       }
     } catch {}
   }, [key, boardId, tabs, setTabs]);
@@ -55,8 +56,9 @@ export default function useCardLayout(
 
   const onLayoutChange = useCallback(
     (layout: Layout[]) => {
-      setTabs(applyLayout(tabs, layout));
-      save(layout);
+      const compacted = compactLayout(layout);
+      setTabs(applyLayout(tabs, compacted));
+      save(compacted);
     },
     [setTabs, save, tabs],
   );

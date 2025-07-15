@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { useTabStore, type TabType, type Tab } from "@/hooks/useTabs";
 import { useBoardStore } from "@/hooks/useBoards";
+import { useToast } from "@/components/Toast";
 import { generarUUID } from "@/lib/uuid";
 import { tabOptions } from "./tabOptions";
 import { usePrompt } from "@/hooks/usePrompt";
@@ -11,7 +12,8 @@ export default function TabsMenu() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const { addAfterActive, closeOthers, activeId } = useTabStore();
-  const { activeId: boardId } = useBoardStore();
+  const { activeId: boardId, boards } = useBoardStore();
+  const toast = useToast();
   const prompt = usePrompt();
 
   useEffect(() => {
@@ -23,6 +25,10 @@ export default function TabsMenu() {
   }, []);
 
   const create = async (type: TabType, label: string) => {
+    if (!boardId) {
+      toast.show("Crea una pestaña primero", "error");
+      return;
+    }
     const id = generarUUID();
     let title = label;
     const extra: Partial<Tab> = { boardId };
@@ -41,10 +47,17 @@ export default function TabsMenu() {
     setOpen(false);
   };
 
+  const disabled = !boardId || boards.length === 0;
   return (
     <div className="relative" ref={ref}>
       <button
-        onClick={() => setOpen(o => !o)}
+        onClick={() => {
+          if (disabled) {
+            toast.show("Crea una pestaña primero", "error");
+            return;
+          }
+          setOpen(o => !o);
+        }}
         className="p-2 hover:bg-white/10 rounded-lg"
         title="Agregar tarjeta"
       >

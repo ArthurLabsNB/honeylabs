@@ -17,6 +17,11 @@ afterEach(() => {
 })
 
 describe('useBoardStore', () => {
+  it('initializes empty', () => {
+    const state = useBoardStore.getState()
+    expect(state.boards.length).toBe(0)
+    expect(state.activeId).toBeNull()
+  })
   it('adds boards and sets active', () => {
     useBoardStore.getState().add({ id: '1', title: 'b1' })
     const state = useBoardStore.getState()
