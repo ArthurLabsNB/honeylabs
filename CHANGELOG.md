@@ -1,3 +1,7 @@
+## 0.6.8
+
+- Autonumeramos los nuevos materiales con un contador local.
+
 ## 0.6.7
 
 - Manejo de errores de red en formularios de materiales y unidades.
