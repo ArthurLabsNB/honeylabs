@@ -11,4 +11,10 @@ describe('DraggableCard', () => {
     const matches = html.match(/react-resizable-handle-(?:se|sw|ne|nw)/g) || []
     expect(matches.length).toBe(0)
   })
+
+  it('usa h-full en modo grid', () => {
+    const tab = { id: 't2', title: 'demo', type: 'test' } as Tab
+    const html = renderToStaticMarkup(<DraggableCard tab={tab} grid />)
+    expect(html.includes('h-full')).toBe(true)
+  })
 })
