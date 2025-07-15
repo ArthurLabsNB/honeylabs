@@ -7,6 +7,8 @@ import { getUsuarioFromSession } from "@lib/auth";
 import { hasManagePerms } from "@lib/permisos";
 import crypto from 'node:crypto';
 import * as logger from '@lib/logger'
+import { logAudit } from '@/lib/audit'
+import { registrarAuditoria } from '@lib/reporter'
 
 function getAlmacenId(req: NextRequest): number | null {
   const parts = req.nextUrl.pathname.split('/');
@@ -192,8 +194,16 @@ export async function DELETE(req: NextRequest) {
       await tx.almacen.delete({ where: { id } })
   })
 
-    await logAudit(usuario.id, 'eliminacion', 'almacen', { almacenId: id })
-    return NextResponse.json({ success: true });
+  await logAudit(usuario.id, 'eliminacion', 'almacen', { almacenId: id })
+
+  const auditoria = await registrarAuditoria(
+    req,
+    'almacen',
+    id,
+    'eliminacion',
+    {},
+  )
+    return NextResponse.json({ success: true, auditoria });
   } catch (err) {
     logger.error('DELETE /api/almacenes/[id]', err);
     return NextResponse.json({ error: 'Error al eliminar' }, { status: 500 });
@@ -274,13 +284,21 @@ export async function PUT(req: NextRequest) {
 
   await logAudit(usuario.id, 'modificacion', 'almacen', { almacenId: id })
 
+  const auditoria = await registrarAuditoria(
+    req,
+    'almacen',
+    id,
+    'modificacion',
+    { nombre, descripcion, imagenNombre },
+  )
+
   const resp = {
     ...almacen,
     imagenUrl: almacen.imagenNombre
       ? `/api/almacenes/foto?nombre=${encodeURIComponent(almacen.imagenNombre)}`
       : almacen.imagenUrl,
   }
-  return NextResponse.json({ almacen: resp })
+  return NextResponse.json({ almacen: resp, auditoria })
   } catch (err) {
     logger.error('PUT /api/almacenes/[id]', err);
     return NextResponse.json({ error: 'Error al actualizar' }, { status: 500 });

@@ -5,6 +5,7 @@ import prisma from '@lib/prisma'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import * as logger from '@lib/logger'
+import { registrarAuditoria } from '@lib/reporter'
 
 function getMaterialId(req: NextRequest): number | null {
   const parts = req.nextUrl.pathname.split('/')
@@ -47,6 +48,14 @@ export async function PATCH(req: NextRequest) {
         usuarioId: usuario.id
       }
     })
+
+    const auditoria = await registrarAuditoria(
+      req,
+      'material',
+      id,
+      'ajuste',
+      { cantidad },
+    )
     if (cantidad <= 0) {
       await prisma.alerta.create({
         data: {
@@ -58,7 +67,7 @@ export async function PATCH(req: NextRequest) {
         }
       })
     }
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ success: true, auditoria })
   } catch (err) {
     logger.error('PATCH /api/materiales/[id]/ajuste', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
