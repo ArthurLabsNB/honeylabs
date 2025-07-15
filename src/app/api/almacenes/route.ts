@@ -9,6 +9,7 @@ import { getUsuarioFromSession } from "@lib/auth";
 import { hasManagePerms, normalizeTipoCuenta } from "@lib/permisos";
 import * as logger from '@lib/logger'
 import { logAudit } from '@/lib/audit'
+import { registrarAuditoria } from '@lib/reporter'
 
 const MAX_IMAGE_MB = 5;
 const MAX_IMAGE_BYTES = MAX_IMAGE_MB * 1024 * 1024;
@@ -272,13 +273,21 @@ export async function POST(req: NextRequest) {
 
   await logAudit(usuario.id, 'creacion', 'almacen', { almacenId: almacen.id })
 
+  const auditoria = await registrarAuditoria(
+    req,
+    'almacen',
+    almacen.id,
+    'creacion',
+    { nombre, descripcion, funciones, permisosPredeterminados },
+  )
+
   const resp = {
     ...almacen,
     imagenUrl: imagenNombre
       ? `/api/almacenes/foto?nombre=${encodeURIComponent(imagenNombre)}`
       : almacen.imagenUrl,
   }
-  return NextResponse.json({ almacen: resp })
+  return NextResponse.json({ almacen: resp, auditoria })
   } catch (err) {
     logger.error('POST /api/almacenes', err);
     return NextResponse.json(
