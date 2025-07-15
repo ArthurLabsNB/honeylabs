@@ -248,54 +248,6 @@ html, body {
   box-shadow: inset 0 0 0 2px var(--dashboard-accent);
   transition: box-shadow 0.2s, background 0.2s;
 }
-.react-resizable-handle {
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  z-index: 20;
-  background: none;
-}
-.react-resizable-handle-se {
-  right: 2px;
-  bottom: 2px;
-  cursor: se-resize;
-}
-.react-resizable-handle-sw {
-  left: 2px;
-  bottom: 2px;
-  cursor: sw-resize;
-}
-.react-resizable-handle-nw {
-  left: 2px;
-  top: 2px;
-  cursor: nw-resize;
-}
-.react-resizable-handle-ne {
-  right: 2px;
-  top: 2px;
-  cursor: ne-resize;
-}
-/* Ocultamos las asas superiores para evitar conflictos con
-   los botones de la cabecera */
-.react-resizable-handle-nw,
-.react-resizable-handle-ne {
-  display: none;
-}
-.react-resizable-handle::after {
-  content: "";
-  display: block;
-  width: 16px; height: 16px;
-  border-right: 2.5px solid var(--dashboard-widget-resize);
-  border-bottom: 2.5px solid var(--dashboard-widget-resize);
-  opacity: 0.7;
-  border-radius: 4px;
-  margin: 0 0 2px 2px;
-  transition: opacity 0.17s;
-}
-.react-resizable-handle-sw::after { transform: rotate(90deg); }
-.react-resizable-handle-nw::after { transform: rotate(180deg); }
-.react-resizable-handle-ne::after { transform: rotate(270deg); }
-.react-resizable-handle:hover::after { opacity: 1; }
 
 .dashboard-widget-card {
   @apply rounded-xl shadow-lg p-5 border;
