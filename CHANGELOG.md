@@ -16,6 +16,10 @@
 ## 0.8.6
 - Aumentamos el contraste de los bordes del dashboard para que los separadores sean visibles en todos los temas.
 
+## 0.8.7
+- Validamos el ID seleccionado antes de llamar la API para duplicar o eliminar materiales.
+- Mostramos notificaciones de éxito o error al guardar o borrar materiales.
+
 ## 0.8.5
 - Registramos auditorías también al escanear códigos.
 - Mejoramos el manejo de errores al crear reportes y auditorías.

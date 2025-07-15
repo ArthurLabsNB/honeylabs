@@ -5,6 +5,7 @@ import { useTabStore } from '@/hooks/useTabs'
 import { useCallback, useEffect, useState } from 'react'
 import { generarUUID } from '@/lib/uuid'
 import { useToast } from '@/components/Toast'
+import { parseId } from '@/lib/parseId'
 
 export default function MaterialFormTab({ tabId }: { tabId: string }) {
   const { selectedId, materiales, setSelectedId, eliminar, mutate, crear, actualizar } = useBoard()
@@ -18,14 +19,20 @@ export default function MaterialFormTab({ tabId }: { tabId: string }) {
   }, [baseMat])
 
   const onEliminar = useCallback(async () => {
-    if (!draft?.dbId) return
-    const ok = confirm('¿Eliminar material?')
+    const id = parseId(draft?.dbId)
+    if (!id) {
+      toast.show('ID inválido', 'error')
+      return
+    }
+    const ok = await toast.confirm('¿Eliminar material?')
     if (!ok) return
-    await eliminar(draft.dbId)
+    const res = await eliminar(id)
+    if (res?.error) toast.show(res.error, 'error')
+    else toast.show('Material eliminado', 'success')
     mutate()
     setSelectedId(null)
     close(tabId)
-  }, [draft, eliminar, mutate, setSelectedId, close, tabId])
+  }, [draft, eliminar, mutate, setSelectedId, close, tabId, toast])
 
   if (!draft) return null
 

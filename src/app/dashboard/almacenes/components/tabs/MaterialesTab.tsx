@@ -7,6 +7,7 @@ import { useTabHelpers } from '@/hooks/useTabHelpers'
 import { generarUUID } from '@/lib/uuid'
 import { openMaterial as doOpenMaterial } from '../../utils/openMaterial'
 import { useToast } from '@/components/Toast'
+import { parseId } from '@/lib/parseId'
 
 export default function MaterialesTab() {
   const {
@@ -27,9 +28,14 @@ export default function MaterialesTab() {
 
   const removeMaterial = useCallback(
     async (id: number) => {
+      const valid = parseId(id)
+      if (!valid) {
+        toast.show('ID inválido', 'error')
+        return
+      }
       const ok = await toast.confirm('¿Eliminar material?')
       if (!ok) return
-      const res = await eliminar(id)
+      const res = await eliminar(valid)
       if (res?.error) toast.show(res.error, 'error')
       else toast.show('Material eliminado', 'success')
       mutate()
@@ -85,8 +91,12 @@ export default function MaterialesTab() {
         return res
       }}
       onDuplicar={async () => {
-        if (!selectedId) return
-        const res = await duplicar(Number(selectedId))
+        const id = parseId(selectedId)
+        if (!id) {
+          toast.show('ID inválido', 'error')
+          return
+        }
+        const res = await duplicar(id)
         if (res?.material?.id) {
           toast.show('Material duplicado', 'success')
           openMaterial(String(res.material.id))
