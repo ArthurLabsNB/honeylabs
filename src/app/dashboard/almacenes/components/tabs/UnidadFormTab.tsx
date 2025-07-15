@@ -7,7 +7,7 @@ import { useToast } from '@/components/Toast'
 
 export default function UnidadFormTab({ tabId }: { tabId: string }) {
   const { unidadSel, setUnidadSel, materiales, selectedId } = useBoard()
-  const { actualizar } = useUnidades(materiales.find(m => m.id === selectedId)?.dbId)
+  const { actualizar, mutate } = useUnidades(materiales.find(m => m.id === selectedId)?.dbId)
   const { close } = useTabStore()
   const toast = useToast()
 
@@ -18,6 +18,8 @@ export default function UnidadFormTab({ tabId }: { tabId: string }) {
       toast.show(res.error, 'error')
       return
     }
+    toast.show('Unidad guardada', 'success')
+    mutate()
     setUnidadSel(null)
     close(tabId)
   }
