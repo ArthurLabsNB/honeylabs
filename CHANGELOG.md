@@ -1,9 +1,12 @@
-## 0.6.9
-- Tableros sin pestañas iniciales; se requiere crear una antes de agregar tarjetas.
-- Compactamos el layout al mover tarjetas para evitar traslapes.
+## 0.6.11
+- Restauramos la posición de las tarjetas desde `localStorage` al montar el tablero.
 
 ## 0.6.10
 - Reiniciamos `x` y `y` al abrir formularios para que aparezcan tras las tarjetas existentes.
+
+## 0.6.9
+- Tableros sin pestañas iniciales; se requiere crear una antes de agregar tarjetas.
+- Compactamos el layout al mover tarjetas para evitar traslapes.
 
 ## 0.6.8
 
