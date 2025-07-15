@@ -16,12 +16,27 @@ export default function MaterialesTab() {
     setUnidadSel,
     crear,
     duplicar,
+    eliminar,
+    mutate,
   } = useBoard()
   const { ensureTab, openForm } = useTabHelpers()
   const toast = useToast()
   const [busqueda, setBusqueda] = useState('')
   const [orden, setOrden] = useState<'nombre' | 'cantidad'>('nombre')
   const nameCounter = useRef(0)
+
+  const removeMaterial = useCallback(
+    async (id: number) => {
+      const ok = await toast.confirm('¿Eliminar material?')
+      if (!ok) return
+      const res = await eliminar(id)
+      if (res?.error) toast.show(res.error, 'error')
+      else toast.show('Material eliminado', 'success')
+      mutate()
+      setSelectedId(null)
+    },
+    [eliminar, mutate, setSelectedId, toast],
+  )
 
   useEffect(() => {
     const max = materiales.reduce((acc, m) => {
@@ -79,6 +94,7 @@ export default function MaterialesTab() {
           toast.show(res?.error || 'Error al duplicar', 'error')
         }
       }}
+      onEliminar={removeMaterial}
     />
   )
 }
