@@ -3,6 +3,7 @@ import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 import { Pencil, Pin, PinOff, X } from "lucide-react";
 import { useTabStore, Tab } from "@/hooks/useTabs";
 import { usePrompt } from "@/hooks/usePrompt";
@@ -74,7 +75,7 @@ export default function DraggableCard({ tab, grid = false }: Props) {
         ref={sortable ? setNodeRef : undefined}
         style={style}
         {...(sortable ? attributes : {})}
-        className="dashboard-card overflow-auto"
+        className={cn("dashboard-card overflow-auto", grid && "h-full")}
         whileDrag={sortable ? { scale: 1.05 } : undefined}
       >
       <div className="flex items-center justify-between mb-2">

@@ -78,7 +78,7 @@ export default function CardBoard() {
         compactType="vertical"
       >
         {current.map(tab => (
-          <div key={tab.id}>
+          <div key={tab.id} className="h-full">
             <DraggableCard tab={tab} grid />
           </div>
         ))}
