@@ -68,6 +68,9 @@ describe('useTabHelpers', () => {
     const formsB1 = tabs.filter(t => t.boardId === 'b1')
     expect(formsB1.length).toBe(1)
     expect(formsB1[0].type).toBe('form-unidad')
+    expect(formsB1[0].side).toBe('left')
+    expect(formsB1[0].x).toBeUndefined()
+    expect(formsB1[0].y).toBeUndefined()
 
     mockBoardStore.add({ id: 'b2', title: 'B2' })
     mockBoardStore.setActive('b2')
@@ -75,5 +78,8 @@ describe('useTabHelpers', () => {
     openForm('form-material', 'Material')
     const formB2 = tabs.find(t => t.boardId === 'b2')
     expect(formB2).toBeTruthy()
+    expect(formB2?.side).toBe('left')
+    expect(formB2?.x).toBeUndefined()
+    expect(formB2?.y).toBeUndefined()
   })
 })

@@ -2,6 +2,9 @@
 - Tableros sin pestañas iniciales; se requiere crear una antes de agregar tarjetas.
 - Compactamos el layout al mover tarjetas para evitar traslapes.
 
+## 0.6.10
+- Reiniciamos `x` y `y` al abrir formularios para que aparezcan tras las tarjetas existentes.
+
 ## 0.6.8
 
 - Autonumeramos los nuevos materiales con un contador local.
