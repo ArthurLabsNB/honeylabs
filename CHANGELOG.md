@@ -13,6 +13,9 @@
 ## 0.8.4
 - Las tarjetas nuevas ahora se ubican tras la última y conservan su posición luego de recargar.
 
+## 0.8.6
+- Aumentamos el contraste de los bordes del dashboard para que los separadores sean visibles en todos los temas.
+
 ## 0.8.5
 - Registramos auditorías también al escanear códigos.
 - Mejoramos el manejo de errores al crear reportes y auditorías.

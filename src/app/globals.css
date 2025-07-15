@@ -16,7 +16,7 @@
   --dashboard-card: #23232B;
   --dashboard-accent: #ffe066;
   --dashboard-accent-hover: #fff3a1;
-  --dashboard-border: #2a2a33;
+  --dashboard-border: #3f3f46;
   --dashboard-text: #ececec;
   --dashboard-muted: #9ca3af;
   --dashboard-shadow: 0 2px 16px #0005;
@@ -47,7 +47,7 @@
     --dashboard-sidebar: #1A1A1D;
     --dashboard-navbar: #0D0B11;
     --dashboard-card: #23232B;
-    --dashboard-border: #23232B;
+    --dashboard-border: #3f3f46;
     --dashboard-table-bg: #23232B;
     --dashboard-table-row: #23232B;
     --dashboard-table-hover: #1A1A1D;
