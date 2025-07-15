@@ -9,6 +9,7 @@ import { materialSchema } from '@/lib/validators/material'
 import crypto from 'node:crypto'
 import * as logger from '@lib/logger'
 import { logAudit } from '@/lib/audit'
+import { registrarAuditoria } from '@lib/reporter'
 
 async function snapshot(
   db: Prisma.TransactionClient | typeof prisma,
@@ -165,7 +166,14 @@ export async function PUT(req: NextRequest) {
     })
 
     await logAudit(usuario.id, 'modificacion_material', 'material', { materialId: id })
-    return NextResponse.json({ material: actualizado })
+    const auditoria = await registrarAuditoria(
+      req,
+      'material',
+      id,
+      'modificacion',
+      datos,
+    )
+    return NextResponse.json({ material: actualizado, auditoria })
   } catch (err) {
     logger.error('PUT /api/materiales/[id]', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
@@ -197,7 +205,14 @@ export async function DELETE(req: NextRequest) {
       await tx.material.delete({ where: { id } })
     })
     await logAudit(usuario.id, 'eliminacion_material', 'material', { materialId: id })
-    return NextResponse.json({ success: true })
+    const auditoria = await registrarAuditoria(
+      req,
+      'material',
+      id,
+      'eliminacion',
+      {},
+    )
+    return NextResponse.json({ success: true, auditoria })
   } catch (err) {
     logger.error('DELETE /api/materiales/[id]', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
