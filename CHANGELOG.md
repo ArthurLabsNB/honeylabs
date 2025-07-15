@@ -12,6 +12,11 @@
 - Ajustamos estilo de la barra de pestañas con blur suave y sombra sutil.
 - Añadimos subrayado activo y bordes redondeados a cada pestaña.
 
+## 0.6.6
+
+- Compactamos el layout de tarjetas para reutilizar filas libres.
+- Habilitamos la compactación vertical automática en el tablero.
+
 ## 0.6.2
 
 - Ajustamos la separación límite entre el tablero de tarjetas y la barra de pestañas.
