@@ -1,3 +1,6 @@
+## 0.7.0
+- Permite borrar materiales desde la lista con confirmación.
+
 ## 0.6.12
 - Ajustamos la altura y el margen de la barra de pestañas para evitar traslapes.
 

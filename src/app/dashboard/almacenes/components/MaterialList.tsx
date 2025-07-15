@@ -15,6 +15,7 @@ interface Props {
   setOrden: (v: "nombre" | "cantidad") => void;
   onNuevo: () => Promise<any>;
   onDuplicar: () => void;
+  onEliminar: (id: number) => Promise<any>;
 }
 
 export default function MaterialList({
@@ -27,6 +28,7 @@ export default function MaterialList({
   setOrden,
   onNuevo,
   onDuplicar,
+  onEliminar,
 }: Props) {
   const toast = useToast();
   const filtrados = useMemo(
@@ -142,6 +144,16 @@ export default function MaterialList({
           className="flex-1 py-1 rounded-md bg-white/10 text-white text-sm disabled:opacity-50"
         >
           Duplicar
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            if (selectedId) onEliminar(Number(selectedId));
+          }}
+          disabled={selectedId === null}
+          className="flex-1 py-1 rounded-md bg-red-600 text-white text-sm disabled:opacity-50"
+        >
+          Eliminar
         </button>
       </div>
       {preview && (
