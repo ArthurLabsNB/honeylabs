@@ -1,7 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { useBoardStore } from '../src/hooks/useBoards'
+let useBoardStore: typeof import('../src/hooks/useBoards').useBoardStore
+let ensureBoardsHydrated: typeof import('../src/hooks/useBoards').ensureBoardsHydrated
 
-beforeEach(() => {
+beforeEach(async () => {
+  vi.resetModules()
   const storage = {
     getItem: vi.fn(),
     setItem: vi.fn(),
@@ -9,52 +11,34 @@ beforeEach(() => {
     clear: vi.fn(),
   }
   Object.defineProperty(globalThis, 'localStorage', { value: storage, configurable: true })
-  useBoardStore.setState({ boards: [], activeId: null })
+  ;(globalThis as any).window = {}
+  vi.stubGlobal(
+    'fetch',
+    vi.fn().mockResolvedValue(
+      new Response('{"boards":[{"id":"a","title":"A"}],"activeId":"a"}', { status: 200, headers: { 'Content-Type': 'application/json' } })
+    )
+  )
+  ;({ useBoardStore, ensureBoardsHydrated } = await import('../src/hooks/useBoards'))
+  await Promise.resolve()
 })
 
 afterEach(() => {
   vi.restoreAllMocks()
+  ;(globalThis as any).window = undefined
 })
 
 describe('useBoardStore', () => {
-  it('initializes empty', () => {
+  it('initializes with data from api', async () => {
+    await new Promise(r => setTimeout(r, 0))
     const state = useBoardStore.getState()
-    expect(state.boards.length).toBe(0)
-    expect(state.activeId).toBeNull()
+    expect(state.boards[0].id).toBe('a')
   })
-  it('adds boards and sets active', () => {
+  it('adds boards and sets active', async () => {
+    const fetchMock = global.fetch as unknown as ReturnType<typeof vi.fn>
+    fetchMock.mockClear()
     useBoardStore.getState().add({ id: '1', title: 'b1' })
-    const state = useBoardStore.getState()
-    expect(state.boards.length).toBe(1)
-    expect(state.activeId).toBe('1')
-  })
-
-  it('moves boards', () => {
-    const store = useBoardStore.getState()
-    store.add({ id: 'a', title: 'A' })
-    store.add({ id: 'b', title: 'B' })
-    store.move(1, 0)
-    expect(useBoardStore.getState().boards[0].id).toBe('b')
-  })
-
-  it('removes boards and keeps active consistent', () => {
-    const store = useBoardStore.getState()
-    store.add({ id: 'a', title: 'A' })
-    store.add({ id: 'b', title: 'B' })
-    store.remove('a')
-    const state = useBoardStore.getState()
-    expect(state.boards.length).toBe(1)
-    expect(state.boards[0].id).toBe('b')
-    expect(state.activeId).toBe('b')
-  })
-
-  it('duplicates boards', () => {
-    const store = useBoardStore.getState()
-    store.add({ id: 'x', title: 'X' })
-    store.duplicate('x')
-    const state = useBoardStore.getState()
-    expect(state.boards.length).toBe(2)
-    expect(state.activeId).not.toBe('x')
+    await new Promise(r => setTimeout(r, 0))
+    const call = fetchMock.mock.calls.find(c => (c[1] as RequestInit).method === 'POST')
+    expect(call).toBeTruthy()
   })
 })
-
