@@ -38,6 +38,7 @@ export default function MaterialFormTab({ tabId }: { tabId: string }) {
       toast.show(res.error, 'error')
       return
     }
+    toast.show('Material guardado', 'success')
     mutate()
     setSelectedId(null)
     close(tabId)
