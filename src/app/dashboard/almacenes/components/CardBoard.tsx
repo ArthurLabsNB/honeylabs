@@ -72,7 +72,7 @@ export default function CardBoard() {
   return (
     <div
       ref={containerRef}
-      className={`transition-all duration-300 ${collapsed ? 'pt-0' : 'pt-2'} mt-[calc(var(--tabbar-height)+var(--tabbar-gap))]`}
+      className={`transition-all duration-300 min-h-screen pb-10 ${collapsed ? 'pt-0' : 'pt-2'} mt-[calc(var(--tabbar-height)+var(--tabbar-gap))]`}
     >
       <GridLayout
         layout={layout}
