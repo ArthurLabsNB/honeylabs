@@ -55,18 +55,18 @@ describe('useCreateTab', () => {
   })
 
   it('crea tabs con layout por defecto', async () => {
-    const { create } = useCreateTab({ defaultLayout: { x: 0, y: 0, w: 1, h: 2 } })
+    const { create } = useCreateTab({ defaultLayout: { w: 1, h: 2 } })
     await create('unidades', 'Unid')
     expect(tabs[0]).toMatchObject({
       id: 'uid',
       title: 'Unid',
       type: 'unidades',
       boardId: 'b1',
-      x: 0,
-      y: 0,
       w: 1,
       h: 2,
     })
+    expect(tabs[0].x).toBeUndefined()
+    expect(tabs[0].y).toBeUndefined()
   })
 
   it('solicita datos adicionales para url', async () => {
