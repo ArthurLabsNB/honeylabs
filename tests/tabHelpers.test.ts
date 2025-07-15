@@ -67,8 +67,12 @@ describe('useTabHelpers', () => {
     openForm('form-unidad', 'Unidad')
     const formsB1 = tabs.filter(t => t.boardId === 'b1')
     expect(formsB1.length).toBe(1)
-    expect(formsB1[0].type).toBe('form-unidad')
-    expect(formsB1[0].side).toBe('left')
+    expect(formsB1[0]).toMatchObject({
+      type: 'form-unidad',
+      side: 'left',
+      collapsed: false,
+      h: 2,
+    })
     expect(formsB1[0].x).toBeUndefined()
     expect(formsB1[0].y).toBeUndefined()
 
@@ -78,7 +82,7 @@ describe('useTabHelpers', () => {
     openForm('form-material', 'Material')
     const formB2 = tabs.find(t => t.boardId === 'b2')
     expect(formB2).toBeTruthy()
-    expect(formB2?.side).toBe('left')
+    expect(formB2).toMatchObject({ side: 'left', collapsed: false, h: 2 })
     expect(formB2?.x).toBeUndefined()
     expect(formB2?.y).toBeUndefined()
   })
