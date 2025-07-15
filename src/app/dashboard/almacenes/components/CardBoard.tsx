@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 import GridLayout, { Layout } from "react-grid-layout";
 import { computeBoardLayout } from "@lib/boardLayout";
-import { CARD_DRAG_THRESHOLD } from "../../constants";
+import { CARD_DRAG_THRESHOLD, TABBAR_HEIGHT, TABBAR_GAP } from "../../constants";
 import { useTabStore, Tab } from "@/hooks/useTabs";
 import { useBoardStore } from "@/hooks/useBoards";
 import { apiFetch } from "@lib/api";
@@ -63,7 +63,7 @@ export default function CardBoard() {
   return (
     <div
       ref={containerRef}
-      className={`transition-all duration-300 min-h-screen pb-10 ${collapsed ? 'pt-0' : 'pt-2'} mt-[calc(var(--tabbar-height)+var(--tabbar-gap))]`}
+      className={`transition-all duration-300 min-h-screen pb-10 ${collapsed ? 'pt-0' : 'pt-2'} mt-[calc(${TABBAR_HEIGHT}+${TABBAR_GAP})]`}
     >
       <GridLayout
         layout={layout}

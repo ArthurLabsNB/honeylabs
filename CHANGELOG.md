@@ -1,3 +1,6 @@
+## 0.6.12
+- Ajustamos la altura y el margen de la barra de pestañas para evitar traslapes.
+
 ## 0.6.11
 - Restauramos la posición de las tarjetas desde `localStorage` al montar el tablero.
 

@@ -114,7 +114,7 @@ export default function TabBar() {
 
   return (
     <div
-      className="fixed z-20 w-full overflow-x-auto whitespace-nowrap border-b border-[var(--dashboard-border)] bg-[color:var(--dashboard-card)/0.8] backdrop-blur-sm shadow transition-all"
+      className="fixed z-20 w-full overflow-x-auto whitespace-nowrap border-b-2 border-[var(--dashboard-border)] bg-[color:var(--dashboard-card)/0.8] backdrop-blur-sm shadow transition-all"
       style={{ top, height: 'var(--tabbar-height)' } as React.CSSProperties}
       role="tablist"
     >
