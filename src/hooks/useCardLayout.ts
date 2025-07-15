@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import type { Layout } from 'react-grid-layout';
 import { compactLayout } from '@lib/boardLayout';
 import type { Tab } from './useTabs';
@@ -17,30 +17,38 @@ export default function useCardLayout(
   setTabs: (tabs: Tab[]) => void,
 ) {
   const key = boardId ? `card-layout-${boardId}` : null;
+  const loaded = useRef(false);
+
+  useEffect(() => {
+    loaded.current = false;
+  }, [boardId]);
 
   useEffect(() => {
     if (!key) return;
     const boardTabs = tabs.filter(t => t.boardId === boardId);
     if (boardTabs.length === 0) return;
-    const missing = boardTabs.some(t => typeof t.x !== 'number' || typeof t.y !== 'number');
     try {
-      if (missing) {
+      if (!loaded.current) {
+        loaded.current = true;
         const raw = localStorage.getItem(key);
-        if (!raw) return;
-        const data = JSON.parse(raw) as Layout[];
-        if (Array.isArray(data)) {
-          setTabs(prev => applyLayout(prev, data));
+        if (raw) {
+          const data = JSON.parse(raw) as Layout[];
+          if (Array.isArray(data)) {
+            const compacted = compactLayout(data);
+            setTabs(prev => applyLayout(prev, compacted));
+            return;
+          }
         }
-      } else {
-        const layout = boardTabs.map(t => ({
-          i: t.id,
-          x: t.x ?? 0,
-          y: t.y ?? 0,
-          w: t.w ?? 1,
-          h: t.h ?? 1,
-        }));
-        localStorage.setItem(key, JSON.stringify(compactLayout(layout)));
       }
+
+      const layout = boardTabs.map(t => ({
+        i: t.id,
+        x: t.x ?? 0,
+        y: t.y ?? 0,
+        w: t.w ?? 1,
+        h: t.h ?? 1,
+      }));
+      localStorage.setItem(key, JSON.stringify(compactLayout(layout)));
     } catch {}
   }, [key, boardId, tabs, setTabs]);
 
@@ -48,7 +56,7 @@ export default function useCardLayout(
     (layout: Layout[]) => {
       if (!key) return;
       try {
-        localStorage.setItem(key, JSON.stringify(layout));
+        localStorage.setItem(key, JSON.stringify(compactLayout(layout)));
       } catch {}
     },
     [key],
