@@ -1,20 +1,18 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { Plus } from "lucide-react";
-import { useTabStore, type TabType, type Tab } from "@/hooks/useTabs";
-import { useBoardStore } from "@/hooks/useBoards";
 import { useToast } from "@/components/Toast";
-import { generarUUID } from "@/lib/uuid";
 import { tabOptions } from "./tabOptions";
-import { usePrompt } from "@/hooks/usePrompt";
+import { useCreateTab } from "@/hooks/useCreateTab";
+import type { TabType } from "@/hooks/useTabs";
 
 export default function AddCardButton() {
-  const { addAfterActive } = useTabStore();
-  const { activeId: boardId, boards } = useBoardStore();
   const toast = useToast();
+  const { create: createHook, disabled } = useCreateTab({
+    defaultLayout: { x: 0, y: 0, w: 1, h: 2 },
+  });
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const prompt = usePrompt();
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
@@ -27,29 +25,9 @@ export default function AddCardButton() {
   }, []);
 
   const create = async (type: TabType, label: string) => {
-    if (!boardId) {
-      toast.show("Crea una pestaña primero", "error");
-      return;
-    }
-    const id = generarUUID();
-    let title = label;
-    const extra: Partial<Tab> = { boardId };
-    if (type === "url") {
-      const url = await prompt("URL de destino");
-      if (!url) return;
-      extra.url = url;
-      title = url;
-    } else if (type === "board") {
-      const board = await prompt("Tablero destino");
-      if (!board) return;
-      extra.boardId = board;
-      title = board;
-    }
-    addAfterActive({ id, title, type, side: "left", x: 0, y: 0, w: 1, h: 2, ...extra });
-    setOpen(false);
-  };
-
-  const disabled = !boardId || boards.length === 0;
+    await createHook(type, label)
+    setOpen(false)
+  }
   return (
     <div
       ref={ref}

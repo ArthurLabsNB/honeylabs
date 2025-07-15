@@ -1,20 +1,18 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { Plus } from "lucide-react";
-import { useTabStore, type TabType, type Tab } from "@/hooks/useTabs";
-import { useBoardStore } from "@/hooks/useBoards";
+import { useTabStore } from "@/hooks/useTabs";
 import { useToast } from "@/components/Toast";
-import { generarUUID } from "@/lib/uuid";
 import { tabOptions } from "./tabOptions";
-import { usePrompt } from "@/hooks/usePrompt";
+import { useCreateTab } from "@/hooks/useCreateTab";
+import type { TabType } from "@/hooks/useTabs";
 
 export default function TabsMenu() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const { addAfterActive, closeOthers, activeId } = useTabStore();
-  const { activeId: boardId, boards } = useBoardStore();
+  const { closeOthers, activeId } = useTabStore();
   const toast = useToast();
-  const prompt = usePrompt();
+  const { create: createHook, disabled } = useCreateTab();
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -25,29 +23,9 @@ export default function TabsMenu() {
   }, []);
 
   const create = async (type: TabType, label: string) => {
-    if (!boardId) {
-      toast.show("Crea una pestaña primero", "error");
-      return;
-    }
-    const id = generarUUID();
-    let title = label;
-    const extra: Partial<Tab> = { boardId };
-    if (type === "url") {
-      const url = await prompt("URL de destino");
-      if (!url) return;
-      extra.url = url;
-      title = url;
-    } else if (type === "board") {
-      const board = await prompt("Tablero destino");
-      if (!board) return;
-      extra.boardId = board;
-      title = board;
-    }
-    addAfterActive({ id, title, type, side: "left", ...extra });
-    setOpen(false);
-  };
-
-  const disabled = !boardId || boards.length === 0;
+    await createHook(type, label)
+    setOpen(false)
+  }
   return (
     <div className="relative" ref={ref}>
       <button
