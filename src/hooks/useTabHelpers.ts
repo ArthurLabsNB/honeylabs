@@ -22,10 +22,24 @@ export function useTabHelpers() {
         t => (t.type === 'form-material' || t.type === 'form-unidad') && t.boardId === activeId
       )
       if (form) {
-        update(form.id, { type, title, side: 'left' })
+        update(form.id, {
+          type,
+          title,
+          side: 'left',
+          x: undefined,
+          y: undefined,
+        })
         setActive(form.id)
       } else {
-        addAfterActive({ id: generarUUID(), title, type, side: 'left', boardId: activeId })
+        addAfterActive({
+          id: generarUUID(),
+          title,
+          type,
+          side: 'left',
+          boardId: activeId,
+          x: undefined,
+          y: undefined,
+        })
       }
     },
     [tabs, addAfterActive, setActive, update, activeId]
