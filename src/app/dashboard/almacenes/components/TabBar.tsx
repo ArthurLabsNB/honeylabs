@@ -21,7 +21,11 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { restrictToHorizontalAxis, snapCenterToCursor } from "@dnd-kit/modifiers";
 import { useAnnouncement } from "@dnd-kit/accessibility";
-import { NAVBAR_HEIGHT, TABBAR_HEIGHT } from "../../constants";
+import {
+  NAVBAR_HEIGHT,
+  TABBAR_HEIGHT,
+  POINTER_ACTIVATION_DISTANCE,
+} from "../../constants";
 import { useDashboardUI } from "../../ui";
 import { useDetalleUI } from "../DetalleUI";
 
@@ -68,7 +72,9 @@ export default function TabBar() {
     }
   };
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: POINTER_ACTIVATION_DISTANCE },
+    }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 

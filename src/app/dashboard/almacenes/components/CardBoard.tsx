@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import GridLayout, { Layout } from "react-grid-layout";
+import { CARD_DRAG_THRESHOLD } from "../../constants";
 import { useTabStore, Tab } from "@/hooks/useTabs";
 import { useBoardStore } from "@/hooks/useBoards";
 import { apiFetch } from "@lib/api";
@@ -78,6 +79,8 @@ export default function CardBoard() {
         cols={cols}
         rowHeight={rowHeight}
         width={width || 800}
+        useCSSTransforms
+        {...({ dragStartThreshold: CARD_DRAG_THRESHOLD } as any)}
         onLayoutChange={onLayoutChange}
         draggableHandle=".drag-handle"
         draggableCancel=".no-drag"

@@ -135,6 +135,7 @@ honeylabs/
 
 ## Parches
 * El menú de usuario ahora también se abre al hacer clic en el avatar del dashboard.
+* Ajustamos el tablero de tarjetas para usar `useCSSTransforms` y un umbral de arrastre de 8 px.
 
 
 ---
