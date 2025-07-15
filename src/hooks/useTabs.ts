@@ -42,7 +42,6 @@ export interface Tab {
   side?: "left" | "right";
   pinned?: boolean;
   collapsed?: boolean;
-  minimized?: boolean;
   popout?: boolean;
   x?: number;
   y?: number;
@@ -62,8 +61,6 @@ interface TabState {
   setActive: (id: string) => void;
   update: (id: string, data: Partial<Tab>) => void;
   rename: (id: string, title: string) => void;
-  minimizeAll: () => void;
-  restoreAll: () => void;
 }
 
 function arrayMove<T>(arr: T[], from: number, to: number) {
@@ -111,14 +108,6 @@ export const useTabStore = create<TabState>()(
       rename: (id, title) =>
         set((state) => ({
           tabs: toArray(state.tabs).map((t) => (t.id === id ? { ...t, title } : t)),
-        })),
-      minimizeAll: () =>
-        set((state) => ({
-          tabs: toArray(state.tabs).map((t) => ({ ...t, minimized: true })),
-        })),
-      restoreAll: () =>
-        set((state) => ({
-          tabs: toArray(state.tabs).map((t) => ({ ...t, minimized: false, collapsed: false })),
         })),
     }),
     {
