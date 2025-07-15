@@ -1,5 +1,43 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { computeBoardLayout, compactLayout } from '../lib/boardLayout'
+import { useTabStore } from '../src/hooks/useTabs'
+import { useBoardStore } from '../src/hooks/useBoards'
+import { useTabHelpers } from '../src/hooks/useTabHelpers'
+import type { Tab } from '../src/hooks/useTabs'
+import type { Board } from '../src/hooks/useBoards'
+
+vi.mock('react', () => ({ useCallback: (fn: any) => fn }))
+
+const tabs: Tab[] = []
+let activeBoard = 'b1'
+const boards: Board[] = [{ id: 'b1', title: 'B1' }]
+
+const mockTabStore = {
+  tabs,
+  addAfterActive: vi.fn((tab: Tab) => { tabs.push(tab) }),
+  setActive: vi.fn(),
+  update: vi.fn((id: string, data: Partial<Tab>) => {
+    const idx = tabs.findIndex(t => t.id === id)
+    if (idx >= 0) tabs[idx] = { ...tabs[idx], ...data }
+  }),
+  add: vi.fn((tab: Tab) => { tabs.push(tab); mockTabStore.setActive(tab.id) }),
+}
+
+const mockBoardStore = {
+  get activeId() { return activeBoard },
+  add: (b: Board) => { boards.push(b); activeBoard = b.id },
+  setActive: (id: string) => { activeBoard = id },
+}
+
+vi.mock('../src/hooks/useTabs', async () => {
+  const mod: any = await vi.importActual('../src/hooks/useTabs')
+  return { ...mod, useTabStore: () => mockTabStore }
+})
+
+vi.mock('../src/hooks/useBoards', async () => {
+  const mod: any = await vi.importActual('../src/hooks/useBoards')
+  return { ...mod, useBoardStore: () => mockBoardStore }
+})
 
 // ensures cards without explicit y use cumulative height
 
@@ -45,5 +83,44 @@ describe('computeBoardLayout', () => {
     const layout = computeBoardLayout(tabs)
     const byId = Object.fromEntries(layout.map(l => [l.i, l]))
     expect(byId.b.y).toBe(1)
+  })
+})
+
+describe('abrir unidad', () => {
+  beforeEach(() => {
+    const storage = {
+      getItem: vi.fn(),
+      setItem: vi.fn(),
+      removeItem: vi.fn(),
+      clear: vi.fn(),
+    }
+    Object.defineProperty(globalThis, 'localStorage', {
+      value: storage,
+      configurable: true,
+    })
+    tabs.length = 0
+    activeBoard = 'b1'
+    boards.length = 1
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  it('abre una unidad sin cerrar otras tarjetas', () => {
+    const { openForm } = useTabHelpers()
+    useTabStore().add({
+      id: 'm1',
+      title: 'Materiales',
+      type: 'materiales',
+      boardId: 'b1',
+      side: 'left',
+    })
+
+    openForm('form-unidad', 'Unidad')
+
+    const types = useTabStore().tabs.map(t => t.type)
+    expect(types).toContain('materiales')
+    expect(types).toContain('form-unidad')
   })
 })
