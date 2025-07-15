@@ -24,99 +24,111 @@ export default function useMateriales(almacenId?: number | string) {
 
   const crear = async (m: Material) => {
     if (Number.isNaN(id)) return { error: 'Sin almacén' }
-    const form = new FormData()
-    form.append('nombre', m.nombre)
-    if (m.descripcion) form.append('descripcion', m.descripcion)
-    form.append('cantidad', String(m.cantidad))
-    if (m.unidad) form.append('unidad', m.unidad)
-    if (m.lote) form.append('lote', m.lote)
-    if (m.fechaCaducidad) form.append('fechaCaducidad', m.fechaCaducidad)
-    if (m.ubicacion) form.append('ubicacion', m.ubicacion)
-    if (m.proveedor) form.append('proveedor', m.proveedor)
-    if (m.estado) form.append('estado', m.estado)
-    if (m.observaciones) form.append('observaciones', m.observaciones)
-    if (typeof m.minimo === 'number') form.append('minimo', String(m.minimo))
-    if (typeof m.maximo === 'number') form.append('maximo', String(m.maximo))
-    if (m.codigoBarra) form.append('codigoBarra', m.codigoBarra)
-    if (m.codigoQR) form.append('codigoQR', m.codigoQR)
-    if (m.miniatura) form.append('miniatura', m.miniatura)
-    const res = await apiFetch(`/api/almacenes/${id}/materiales`, { method: 'POST', body: form })
-    const data = await jsonOrNull(res)
-    if (res.ok) {
-      const materialId = data?.material?.id
-      if (materialId && m.archivos && m.archivos.length) {
-        await Promise.all(
-          m.archivos.map(async (file) => {
-            const fd = new FormData()
-            fd.append('nombre', file.name)
-            fd.append('archivo', file)
-            await apiFetch(`/api/materiales/${materialId}/archivos`, {
-              method: 'POST',
-              body: fd,
-            })
-          }),
-        )
+    try {
+      const form = new FormData()
+      form.append('nombre', m.nombre)
+      if (m.descripcion) form.append('descripcion', m.descripcion)
+      form.append('cantidad', String(m.cantidad))
+      if (m.unidad) form.append('unidad', m.unidad)
+      if (m.lote) form.append('lote', m.lote)
+      if (m.fechaCaducidad) form.append('fechaCaducidad', m.fechaCaducidad)
+      if (m.ubicacion) form.append('ubicacion', m.ubicacion)
+      if (m.proveedor) form.append('proveedor', m.proveedor)
+      if (m.estado) form.append('estado', m.estado)
+      if (m.observaciones) form.append('observaciones', m.observaciones)
+      if (typeof m.minimo === 'number') form.append('minimo', String(m.minimo))
+      if (typeof m.maximo === 'number') form.append('maximo', String(m.maximo))
+      if (m.codigoBarra) form.append('codigoBarra', m.codigoBarra)
+      if (m.codigoQR) form.append('codigoQR', m.codigoQR)
+      if (m.miniatura) form.append('miniatura', m.miniatura)
+      const res = await apiFetch(`/api/almacenes/${id}/materiales`, { method: 'POST', body: form })
+      const data = await jsonOrNull(res)
+      if (res.ok) {
+        const materialId = data?.material?.id
+        if (materialId && m.archivos && m.archivos.length) {
+          await Promise.all(
+            m.archivos.map(async (file) => {
+              const fd = new FormData()
+              fd.append('nombre', file.name)
+              fd.append('archivo', file)
+              await apiFetch(`/api/materiales/${materialId}/archivos`, {
+                method: 'POST',
+                body: fd,
+              })
+            }),
+          )
+        }
+        mutate()
+        if (data?.auditoria?.id) {
+          window.dispatchEvent(new CustomEvent(AUDIT_PREVIEW_EVENT, { detail: true }))
+        }
       }
-      mutate()
-      if (data?.auditoria?.id) {
-        window.dispatchEvent(new CustomEvent(AUDIT_PREVIEW_EVENT, { detail: true }))
-      }
+      return data
+    } catch {
+      return { error: 'Error de red' }
     }
-    return data
   }
 
   const actualizar = async (m: Material) => {
     if (!m.dbId) return { error: 'ID requerido' }
-    const form = new FormData()
-    form.append('nombre', m.nombre)
-    if (m.descripcion) form.append('descripcion', m.descripcion)
-    form.append('cantidad', String(m.cantidad))
-    if (m.unidad) form.append('unidad', m.unidad)
-    if (m.lote) form.append('lote', m.lote)
-    if (m.fechaCaducidad) form.append('fechaCaducidad', m.fechaCaducidad)
-    if (m.ubicacion) form.append('ubicacion', m.ubicacion)
-    if (m.proveedor) form.append('proveedor', m.proveedor)
-    if (m.estado) form.append('estado', m.estado)
-    if (m.observaciones) form.append('observaciones', m.observaciones)
-    if (typeof m.minimo === 'number') form.append('minimo', String(m.minimo))
-    if (typeof m.maximo === 'number') form.append('maximo', String(m.maximo))
-    if (m.codigoBarra) form.append('codigoBarra', m.codigoBarra)
-    if (m.codigoQR) form.append('codigoQR', m.codigoQR)
-    if (m.miniatura) form.append('miniatura', m.miniatura)
-    const res = await apiFetch(`/api/materiales/${m.dbId}`, { method: 'PUT', body: form })
-    const data = await jsonOrNull(res)
-    if (res.ok) {
-      if (m.archivos && m.archivos.length) {
-        await Promise.all(
-          m.archivos.map(async (file) => {
-            const fd = new FormData()
-            fd.append('nombre', file.name)
-            fd.append('archivo', file)
-            await apiFetch(`/api/materiales/${m.dbId}/archivos`, {
-              method: 'POST',
-              body: fd,
-            })
-          }),
-        )
+    try {
+      const form = new FormData()
+      form.append('nombre', m.nombre)
+      if (m.descripcion) form.append('descripcion', m.descripcion)
+      form.append('cantidad', String(m.cantidad))
+      if (m.unidad) form.append('unidad', m.unidad)
+      if (m.lote) form.append('lote', m.lote)
+      if (m.fechaCaducidad) form.append('fechaCaducidad', m.fechaCaducidad)
+      if (m.ubicacion) form.append('ubicacion', m.ubicacion)
+      if (m.proveedor) form.append('proveedor', m.proveedor)
+      if (m.estado) form.append('estado', m.estado)
+      if (m.observaciones) form.append('observaciones', m.observaciones)
+      if (typeof m.minimo === 'number') form.append('minimo', String(m.minimo))
+      if (typeof m.maximo === 'number') form.append('maximo', String(m.maximo))
+      if (m.codigoBarra) form.append('codigoBarra', m.codigoBarra)
+      if (m.codigoQR) form.append('codigoQR', m.codigoQR)
+      if (m.miniatura) form.append('miniatura', m.miniatura)
+      const res = await apiFetch(`/api/materiales/${m.dbId}`, { method: 'PUT', body: form })
+      const data = await jsonOrNull(res)
+      if (res.ok) {
+        if (m.archivos && m.archivos.length) {
+          await Promise.all(
+            m.archivos.map(async (file) => {
+              const fd = new FormData()
+              fd.append('nombre', file.name)
+              fd.append('archivo', file)
+              await apiFetch(`/api/materiales/${m.dbId}/archivos`, {
+                method: 'POST',
+                body: fd,
+              })
+            }),
+          )
+        }
+        mutate()
+        if (data?.auditoria?.id) {
+          window.dispatchEvent(new CustomEvent(AUDIT_PREVIEW_EVENT, { detail: true }))
+        }
       }
-      mutate()
-      if (data?.auditoria?.id) {
-        window.dispatchEvent(new CustomEvent(AUDIT_PREVIEW_EVENT, { detail: true }))
-      }
+      return data
+    } catch {
+      return { error: 'Error de red' }
     }
-    return data
   }
 
   const eliminar = async (materialId: number) => {
-    const res = await apiFetch(`/api/materiales/${materialId}`, { method: 'DELETE' })
-    const data = await jsonOrNull(res)
-    if (res.ok) {
-      mutate()
-      if (data?.auditoria?.id) {
-        window.dispatchEvent(new CustomEvent(AUDIT_PREVIEW_EVENT, { detail: true }))
+    try {
+      const res = await apiFetch(`/api/materiales/${materialId}`, { method: 'DELETE' })
+      const data = await jsonOrNull(res)
+      if (res.ok) {
+        mutate()
+        if (data?.auditoria?.id) {
+          window.dispatchEvent(new CustomEvent(AUDIT_PREVIEW_EVENT, { detail: true }))
+        }
       }
+      return data
+    } catch {
+      return { error: 'Error de red' }
     }
-    return data
   }
 
   const mats = useMemo(

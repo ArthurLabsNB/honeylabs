@@ -4,11 +4,13 @@ import { useBoard } from '../../board/BoardProvider'
 import { useTabStore } from '@/hooks/useTabs'
 import { useCallback, useEffect, useState } from 'react'
 import { generarUUID } from '@/lib/uuid'
+import { useToast } from '@/components/Toast'
 
 export default function MaterialFormTab({ tabId }: { tabId: string }) {
   const { selectedId, materiales, setSelectedId, eliminar, mutate, crear, actualizar } = useBoard()
   const baseMat = materiales.find(m => m.id === selectedId) || null
   const { close } = useTabStore()
+  const toast = useToast()
   const [draft, setDraft] = useState(baseMat)
 
   useEffect(() => {
@@ -29,12 +31,17 @@ export default function MaterialFormTab({ tabId }: { tabId: string }) {
 
   const guardar = useCallback(async () => {
     if (!draft) return
-    if (draft.dbId) await actualizar(draft as any)
-    else await crear({ ...draft, id: generarUUID() } as any)
+    const res = draft.dbId
+      ? await actualizar(draft as any)
+      : await crear({ ...draft, id: generarUUID() } as any)
+    if (res?.error) {
+      toast.show(res.error, 'error')
+      return
+    }
     mutate()
     setSelectedId(null)
     close(tabId)
-  }, [draft, actualizar, crear, mutate, setSelectedId, close, tabId])
+  }, [draft, actualizar, crear, mutate, setSelectedId, close, tabId, toast])
 
   const duplicar = useCallback(async () => {
     if (!draft) return
