@@ -7,6 +7,11 @@
 - Aplicamos siempre el layout del servidor al hidratar las tarjetas.
 - Sincronizamos `localStorage` con el servidor al cambiar de tablero.
 
+## 0.6.5
+
+- Ajustamos estilo de la barra de pestañas con blur suave y sombra sutil.
+- Añadimos subrayado activo y bordes redondeados a cada pestaña.
+
 ## 0.6.2
 
 - Ajustamos la separación límite entre el tablero de tarjetas y la barra de pestañas.
