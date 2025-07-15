@@ -16,13 +16,13 @@ export default function BoardTab({ tab }: { tab: Board }) {
   const onRemove = () => remove(tab.id);
 
   return (
-    <div
-      onClick={() => setActive(tab.id)}
-      className={`relative px-4 py-1 rounded-lg cursor-pointer select-none flex items-center gap-2 text-sm whitespace-nowrap transition-colors after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-full after:rounded-b-md after:bg-[var(--dashboard-accent)] after:transition-transform after:duration-300 ${
-        activeId === tab.id
-          ? "bg-[var(--dashboard-accent)] text-black after:scale-x-100"
-          : "bg-[var(--dashboard-sidebar)] text-white hover:bg-[var(--tab-hover-bg)] after:scale-x-0"
-      }`}
+      <div
+        onClick={() => setActive(tab.id)}
+        className={`relative px-5 py-2 rounded-lg cursor-pointer select-none flex items-center gap-2 text-base whitespace-nowrap transition-colors after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-full after:rounded-b-md after:bg-[var(--dashboard-accent)] after:transition-transform after:duration-300 ${
+          activeId === tab.id
+            ? "bg-[var(--dashboard-accent)] text-black after:scale-x-100"
+            : "bg-[var(--dashboard-sidebar)] text-white hover:bg-[var(--tab-hover-bg)] after:scale-x-0"
+        }`}
       style={{ boxShadow: 'var(--tab-shadow)' }}
     >
       <span className="px-1">{tab.title}</span>
