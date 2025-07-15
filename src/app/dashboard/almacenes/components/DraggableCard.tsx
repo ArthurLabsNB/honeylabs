@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { Resizable } from "react-resizable";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { motion } from "framer-motion";
@@ -116,5 +115,5 @@ export default function DraggableCard({ tab, grid = false }: Props) {
       </motion.div>
   );
 
-  return sortable ? <Resizable resizeHandles={['se', 'sw', 'ne', 'nw']}>{content}</Resizable> : content;
+  return content;
 }
