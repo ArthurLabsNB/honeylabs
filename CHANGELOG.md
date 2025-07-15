@@ -1,6 +1,9 @@
 ## 0.8.0
 - Persistimos tableros del dashboard en servidor y los sincronizamos al iniciar.
 
+## 0.8.1
+- Limitamos el desplazamiento de tarjetas dentro del tablero y añadimos una línea divisora bajo la barra de pestañas.
+
 ## 0.7.1
 - Evitamos que las tarjetas de formularios se abran colapsadas y ajustamos su tamaño por defecto.
 

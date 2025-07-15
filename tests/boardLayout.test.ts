@@ -46,4 +46,15 @@ describe('computeBoardLayout', () => {
     const byId = Object.fromEntries(layout.map(l => [l.i, l]))
     expect(byId.b.y).toBe(1)
   })
+
+  it('normaliza posiciones negativas', () => {
+    const tabs = [
+      { id: 'a', boardId: 'x', side: 'left', y: -2 } as any,
+      { id: 'b', boardId: 'x', side: 'left', y: 0 } as any,
+    ]
+    const layout = computeBoardLayout(tabs)
+    const byId = Object.fromEntries(layout.map(l => [l.i, l]))
+    expect(byId.a.y).toBe(0)
+    expect(byId.b.y).toBe(1)
+  })
 })

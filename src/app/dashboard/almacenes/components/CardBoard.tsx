@@ -63,13 +63,15 @@ export default function CardBoard() {
   return (
     <div
       ref={containerRef}
-      className={`transition-all duration-300 min-h-screen pb-10 ${collapsed ? 'pt-0' : 'pt-2'} mt-[calc(${TABBAR_HEIGHT}+${TABBAR_GAP})]`}
+      className={`transition-all duration-300 min-h-screen pb-10 border-t border-[var(--dashboard-border)] ${collapsed ? 'pt-0' : 'pt-2'} mt-[calc(${TABBAR_HEIGHT}+${TABBAR_GAP})]`}
     >
       <GridLayout
         layout={layout}
         cols={cols}
         rowHeight={rowHeight}
         width={width || 800}
+        margin={[10,10]}
+        isBounded
         useCSSTransforms
         {...({ dragStartThreshold: CARD_DRAG_THRESHOLD } as any)}
         onLayoutChange={onLayoutChange}
