@@ -18,4 +18,18 @@ describe('useCardLayout', () => {
     const updated = applyLayout(tabs, layout as any)
     expect(updated[0].x).toBe(1)
   })
+
+  it('restaura el orden con datos remotos', () => {
+    const tabs = [
+      { id: 'a', title: 'A', type: 'materiales', x: 0, y: 0 } as any,
+      { id: 'b', title: 'B', type: 'materiales', x: 0, y: 1 } as any,
+    ]
+    const remote = [
+      { i: 'a', x: 2, y: 0, w: 1, h: 1 },
+      { i: 'b', x: 2, y: 1, w: 1, h: 1 },
+    ]
+    const updated = applyLayout(tabs, remote as any)
+    expect(updated[0].x).toBe(2)
+    expect(updated[1].y).toBe(1)
+  })
 })

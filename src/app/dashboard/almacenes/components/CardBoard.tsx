@@ -26,9 +26,7 @@ export default function CardBoard() {
         apiFetch("/api/dashboard/layout")
           .then(jsonOrNull)
           .then((d) => {
-            if (
-              Array.isArray(d?.tabs) && cards.length === 0
-            ) {
+            if (Array.isArray(d?.tabs)) {
               setTabs(d.tabs as Tab[])
             }
           })

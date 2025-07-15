@@ -2,6 +2,11 @@
 
 - Eliminamos la función de minimizar tarjetas y pestañas.
 
+## 0.6.4
+
+- Aplicamos siempre el layout del servidor al hidratar las tarjetas.
+- Sincronizamos `localStorage` con el servidor al cambiar de tablero.
+
 ## 0.6.2
 
 - Ajustamos la separación límite entre el tablero de tarjetas y la barra de pestañas.
