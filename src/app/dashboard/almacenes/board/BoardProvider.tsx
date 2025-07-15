@@ -18,6 +18,7 @@ interface BoardState {
   crear: (m: Material) => Promise<any>;
   actualizar: (m: Material) => Promise<any>;
   eliminar: (id: number) => Promise<any>;
+  duplicar: (id: number) => Promise<any>;
   mutate: () => void;
 }
 
@@ -25,7 +26,7 @@ const Context = createContext<BoardState | null>(null);
 
 export function BoardProvider({ children }: { children: React.ReactNode }) {
   const { id } = useParams();
-  const { materiales, isLoading, error, crear, actualizar, eliminar, mutate } =
+  const { materiales, isLoading, error, crear, actualizar, eliminar, duplicar, mutate } =
     useMateriales(id as string);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [unidadSel, setUnidadSel] = useState<UnidadDetalle | null>(null);
@@ -55,9 +56,10 @@ export function BoardProvider({ children }: { children: React.ReactNode }) {
       crear,
       actualizar,
       eliminar,
+      duplicar,
       mutate,
     }),
-    [materiales, selectedId, unidadSel, auditoriaSel, crear, actualizar, eliminar, isLoading, error, mutate, setSelId, setUni, setAud]
+    [materiales, selectedId, unidadSel, auditoriaSel, crear, actualizar, eliminar, duplicar, isLoading, error, mutate, setSelId, setUni, setAud]
   );
 
   if (!id) return <>{children}</>;

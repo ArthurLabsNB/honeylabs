@@ -6,6 +6,7 @@ import { useBoard } from '../../board/BoardProvider'
 import { useTabHelpers } from '@/hooks/useTabHelpers'
 import { generarUUID } from '@/lib/uuid'
 import { openMaterial as doOpenMaterial } from '../../utils/openMaterial'
+import { useToast } from '@/components/Toast'
 
 export default function MaterialesTab() {
   const {
@@ -14,8 +15,10 @@ export default function MaterialesTab() {
     setSelectedId,
     setUnidadSel,
     crear,
+    duplicar,
   } = useBoard()
   const { ensureTab, openForm } = useTabHelpers()
+  const toast = useToast()
   const [busqueda, setBusqueda] = useState('')
   const [orden, setOrden] = useState<'nombre' | 'cantidad'>('nombre')
   const nameCounter = useRef(0)
@@ -66,7 +69,16 @@ export default function MaterialesTab() {
         if (mid) openMaterial(String(mid))
         return res
       }}
-      onDuplicar={() => {}}
+      onDuplicar={async () => {
+        if (!selectedId) return
+        const res = await duplicar(Number(selectedId))
+        if (res?.material?.id) {
+          toast.show('Material duplicado', 'success')
+          openMaterial(String(res.material.id))
+        } else {
+          toast.show(res?.error || 'Error al duplicar', 'error')
+        }
+      }}
     />
   )
 }

@@ -131,6 +131,19 @@ export default function useMateriales(almacenId?: number | string) {
     }
   }
 
+  const duplicar = async (materialId: number) => {
+    try {
+      const res = await apiFetch(`/api/materiales/${materialId}/duplicar`, { method: 'POST' })
+      const data = await jsonOrNull(res)
+      if (res.ok && data?.material) {
+        mutate()
+      }
+      return data
+    } catch {
+      return { error: 'Error de red' }
+    }
+  }
+
   const mats = useMemo(
     () =>
       (data?.materiales as any[] | undefined)?.map((m) => ({
@@ -154,5 +167,6 @@ export default function useMateriales(almacenId?: number | string) {
     crear,
     actualizar,
     eliminar,
+    duplicar,
   }
 }
