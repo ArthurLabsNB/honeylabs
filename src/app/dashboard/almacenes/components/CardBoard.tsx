@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import GridLayout, { Layout } from "react-grid-layout";
+import { computeBoardLayout } from "@lib/boardLayout";
 import { CARD_DRAG_THRESHOLD } from "../../constants";
 import { useTabStore, Tab } from "@/hooks/useTabs";
 import { useBoardStore } from "@/hooks/useBoards";
@@ -55,17 +56,7 @@ export default function CardBoard() {
   const rowHeight = width < 640 ? 140 : 150
 
 
-  const layout: Layout[] = (() => {
-    let leftY = 0;
-    let rightY = 0;
-    return current.map(t => {
-      const x = typeof t.x === 'number' ? t.x : (t.side === 'right' ? 1 : 0);
-      const y = typeof t.y === 'number'
-        ? t.y
-        : (t.side === 'right' ? rightY++ : leftY++);
-      return { i: t.id, x, y, w: t.w ?? 1, h: t.h ?? 1 };
-    });
-  })();
+  const layout: Layout[] = computeBoardLayout(current)
 
   const { onLayoutChange } = useCardLayout(boardId, safeCards, setTabs);
 
