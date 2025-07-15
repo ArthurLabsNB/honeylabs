@@ -10,7 +10,7 @@ import { usePrompt } from "@/hooks/usePrompt";
 export default function TabsMenu() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const { addAfterActive, minimizeAll, restoreAll, closeOthers, activeId } = useTabStore();
+  const { addAfterActive, closeOthers, activeId } = useTabStore();
   const { activeId: boardId } = useBoardStore();
   const prompt = usePrompt();
 
@@ -62,8 +62,6 @@ export default function TabsMenu() {
             </button>
           ))}
           <hr className="my-1 border-[var(--dashboard-border)]" />
-          <button onClick={minimizeAll} className="block w-full text-left px-3 py-2 hover:bg-white/5">Minimizar todas</button>
-          <button onClick={restoreAll} className="block w-full text-left px-3 py-2 hover:bg-white/5">Restaurar todas</button>
           {activeId && (
             <button onClick={() => closeOthers(activeId)} className="block w-full text-left px-3 py-2 hover:bg-white/5">Cerrar otras</button>
           )}

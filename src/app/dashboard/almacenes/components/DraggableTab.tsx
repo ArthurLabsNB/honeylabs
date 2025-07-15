@@ -1,6 +1,6 @@
 "use client";
 import { useRef } from "react";
-import { Pencil, Pin, PinOff, Minimize2, Maximize2, X } from "lucide-react";
+import { Pencil, Pin, PinOff, X } from "lucide-react";
 import { useTabStore, Tab } from "@/hooks/useTabs";
 import { usePrompt } from "@/hooks/usePrompt";
 
@@ -25,8 +25,6 @@ export default function DraggableTab({ tab, index, draggable = true }: Props) {
 
   const pin = () => update(tab.id, { pinned: !tab.pinned });
   const toggle = () => update(tab.id, { collapsed: !tab.collapsed });
-  const minimize = () => update(tab.id, { minimized: true });
-  const maximize = () => update(tab.id, { minimized: false });
   const onRename = async () => {
     const name = await prompt("Renombrar pestaña", tab.title);
     if (name) rename(tab.id, name);
@@ -60,15 +58,6 @@ export default function DraggableTab({ tab, index, draggable = true }: Props) {
       {!tab.pinned && (
         <button onClick={() => close(tab.id)} className="p-1 hover:bg-white/20 rounded" title="Cerrar">
           <X className="w-3 h-3" />
-        </button>
-      )}
-      {tab.minimized ? (
-        <button onClick={maximize} className="p-1 hover:bg-white/20 rounded" title="Maximizar">
-          <Maximize2 className="w-3 h-3" />
-        </button>
-      ) : (
-        <button onClick={minimize} className="p-1 hover:bg-white/20 rounded" title="Minimizar">
-          <Minimize2 className="w-3 h-3" />
         </button>
       )}
     </div>

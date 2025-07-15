@@ -4,7 +4,7 @@ import { Resizable } from "react-resizable";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { motion } from "framer-motion";
-import { Pencil, Pin, PinOff, Minimize2, Maximize2, X } from "lucide-react";
+import { Pencil, Pin, PinOff, X } from "lucide-react";
 import { useTabStore, Tab } from "@/hooks/useTabs";
 import { usePrompt } from "@/hooks/usePrompt";
 import MaterialesTab from "./tabs/MaterialesTab";
@@ -65,8 +65,6 @@ export default function DraggableCard({ tab, grid = false }: Props) {
 
   const pin = () => update(tab.id, { pinned: !tab.pinned });
   const toggle = () => update(tab.id, { collapsed: !tab.collapsed });
-  const minimize = () => update(tab.id, { minimized: true });
-  const maximize = () => update(tab.id, { minimized: false });
   const onRename = async () => {
     const name = await prompt("Renombrar tarjeta", tab.title);
     if (name) rename(tab.id, name);
@@ -112,18 +110,9 @@ export default function DraggableCard({ tab, grid = false }: Props) {
               <X className="w-3 h-3" />
             </button>
           )}
-          {tab.minimized ? (
-            <button onPointerDown={stop} onClick={maximize} className="no-drag p-1 hover:bg-white/10 rounded" title="Maximizar">
-              <Maximize2 className="w-3 h-3" />
-            </button>
-          ) : (
-            <button onPointerDown={stop} onClick={minimize} className="no-drag p-1 hover:bg-white/10 rounded" title="Minimizar">
-              <Minimize2 className="w-3 h-3" />
-            </button>
-          )}
         </div>
       </div>
-        {!tab.minimized && !tab.collapsed && <CardBody tab={tab} />}
+        {!tab.collapsed && <CardBody tab={tab} />}
       </motion.div>
   );
 
