@@ -229,7 +229,7 @@ export async function POST(req: NextRequest) {
 
     await logAudit(usuario.id, 'creacion_material', 'almacen', { almacenId, materialId: material.id })
 
-    const auditoria = await registrarAuditoria(
+    const { auditoria, error: auditError } = await registrarAuditoria(
       req,
       'material',
       material.id,
@@ -238,7 +238,7 @@ export async function POST(req: NextRequest) {
       reportFiles,
     )
 
-    const res = NextResponse.json({ material, auditoria })
+    const res = NextResponse.json({ material, auditoria, auditError })
     logger.info(req, `Material ${material.id} creado`)
     return res
   } catch (err) {
@@ -265,7 +265,7 @@ export async function DELETE(req: NextRequest) {
     await prisma.material.deleteMany({ where: { almacenId } })
     await logAudit(usuario.id, 'eliminacion_materiales', 'almacen', { almacenId })
 
-    const auditoria = await registrarAuditoria(
+    const { auditoria, error: auditError } = await registrarAuditoria(
       req,
       'almacen',
       almacenId,
@@ -273,7 +273,7 @@ export async function DELETE(req: NextRequest) {
       { accion: 'vaciar_materiales' },
     )
 
-    return NextResponse.json({ success: true, auditoria })
+    return NextResponse.json({ success: true, auditoria, auditError })
   } catch (err) {
     logger.error('DELETE /api/almacenes/[id]/materiales', err)
     return NextResponse.json({ error: 'Error al vaciar' }, { status: 500 })

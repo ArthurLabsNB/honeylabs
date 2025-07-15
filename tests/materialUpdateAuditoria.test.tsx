@@ -28,7 +28,7 @@ describe('PUT /api/materiales/[id]', () => {
     }
     vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
     vi.doMock('../src/lib/audit', () => ({ logAudit: vi.fn() }))
-    const registrarAuditoria = vi.fn().mockResolvedValue({ id: 9 })
+    const registrarAuditoria = vi.fn().mockResolvedValue({ auditoria: { id: 9 } })
     vi.doMock('../lib/reporter', () => ({ registrarAuditoria }))
     const { PUT } = await import('../src/app/api/materiales/[id]/route')
     const body = JSON.stringify({ nombre: 'nuevo' })
