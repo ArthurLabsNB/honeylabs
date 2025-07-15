@@ -28,6 +28,8 @@ export function useTabHelpers() {
           side: 'left',
           x: undefined,
           y: undefined,
+          collapsed: false,
+          h: 2,
         })
         setActive(form.id)
       } else {
@@ -39,6 +41,8 @@ export function useTabHelpers() {
           boardId: activeId,
           x: undefined,
           y: undefined,
+          collapsed: false,
+          h: 2,
         })
       }
     },

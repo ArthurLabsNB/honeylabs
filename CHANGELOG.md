@@ -1,3 +1,6 @@
+## 0.7.1
+- Evitamos que las tarjetas de formularios se abran colapsadas y ajustamos su tamaño por defecto.
+
 ## 0.7.0
 - Permite borrar materiales desde la lista con confirmación.
 

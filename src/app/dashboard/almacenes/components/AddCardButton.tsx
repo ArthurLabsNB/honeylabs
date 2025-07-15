@@ -45,7 +45,7 @@ export default function AddCardButton() {
       extra.boardId = board;
       title = board;
     }
-    addAfterActive({ id, title, type, side: "left", x: 0, y: 0, w: 1, h: 1, ...extra });
+    addAfterActive({ id, title, type, side: "left", x: 0, y: 0, w: 1, h: 2, ...extra });
     setOpen(false);
   };
 
