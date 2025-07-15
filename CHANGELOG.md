@@ -10,6 +10,9 @@
 ## 0.8.3
 - Corregimos el margen superior del tablero para que las tarjetas no se superpongan con la barra de pestañas.
 
+## 0.8.4
+- Las tarjetas nuevas ahora se ubican tras la última y conservan su posición luego de recargar.
+
 ## 0.7.1
 - Evitamos que las tarjetas de formularios se abran colapsadas y ajustamos su tamaño por defecto.
 
