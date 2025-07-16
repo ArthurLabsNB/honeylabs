@@ -29,7 +29,7 @@ export function useTabHelpers() {
           x: undefined,
           y: undefined,
           collapsed: false,
-          h: 2,
+          h: 3,
         })
         setActive(form.id)
       } else {
@@ -42,7 +42,7 @@ export function useTabHelpers() {
           x: undefined,
           y: undefined,
           collapsed: false,
-          h: 2,
+          h: 3,
         })
       }
     },
