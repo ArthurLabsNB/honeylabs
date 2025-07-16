@@ -122,7 +122,7 @@ describe('MaterialFormTab y UnidadFormTab', () => {
     await (global as any).matGuardar()
     expect(toast.show).toHaveBeenCalledWith('Material guardado', 'success')
     expect(mutate).toHaveBeenCalled()
-    expect(close).toHaveBeenCalledWith('t1')
+    expect(close).not.toHaveBeenCalled()
   })
 
   it('muestra error sin cerrar', async () => {
@@ -159,6 +159,6 @@ describe('MaterialFormTab y UnidadFormTab', () => {
     await (global as any).uniGuardar()
     expect(toast.show).toHaveBeenCalledWith('Unidad guardada', 'success')
     expect(mutate).toHaveBeenCalled()
-    expect(close).toHaveBeenCalledWith('t3')
+    expect(close).not.toHaveBeenCalled()
   })
 })

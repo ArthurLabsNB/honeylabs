@@ -20,8 +20,10 @@ export default function UnidadFormTab({ tabId }: { tabId: string }) {
     }
     toast.show('Unidad guardada', 'success')
     mutate()
-    setUnidadSel(null)
-    close(tabId)
+    if (res?.unidad?.id) {
+      const id = res.unidad.id
+      setUnidadSel(u => (u ? { ...u, id } : u))
+    }
   }
 
   const cancelar = () => {

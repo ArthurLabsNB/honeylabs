@@ -47,9 +47,12 @@ export default function MaterialFormTab({ tabId }: { tabId: string }) {
     }
     toast.show('Material guardado', 'success')
     mutate()
-    setSelectedId(null)
-    close(tabId)
-  }, [draft, actualizar, crear, mutate, setSelectedId, close, tabId, toast])
+    if (res?.material?.id) {
+      const id = String(res.material.id)
+      setDraft(d => d ? { ...d, dbId: res.material.id, id } : d)
+      setSelectedId(id)
+    }
+  }, [draft, actualizar, crear, mutate, setSelectedId, toast])
 
   const duplicar = useCallback(async () => {
     if (!draft) return

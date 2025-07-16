@@ -9,7 +9,7 @@ import type { TabType } from "@/hooks/useTabs";
 export default function AddCardButton() {
   const toast = useToast();
   const { create: createHook, disabled } = useCreateTab({
-    defaultLayout: { w: 1, h: 2 },
+    defaultLayout: { w: 1, h: 3 },
   });
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);

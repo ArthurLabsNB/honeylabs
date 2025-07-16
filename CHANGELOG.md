@@ -20,6 +20,10 @@
 - Validamos el ID seleccionado antes de llamar la API para duplicar o eliminar materiales.
 - Mostramos notificaciones de éxito o error al guardar o borrar materiales.
 
+## 0.8.8
+- Mantuvimos abiertos los formularios tras guardar para seguir editando.
+- Ajustamos las nuevas tarjetas a altura mayor por defecto.
+
 ## 0.8.5
 - Registramos auditorías también al escanear códigos.
 - Mejoramos el manejo de errores al crear reportes y auditorías.
