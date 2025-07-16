@@ -12,7 +12,6 @@ import AddCardButton from "./AddCardButton";
 import { useDetalleUI } from "../DetalleUI";
 import useCardLayout from "@/hooks/useCardLayout";
 import useElementSize from "@/hooks/useElementSize";
-import { useDragAndDrop as useDragDrop } from "react-aria-components";
 
 export default function CardBoard() {
   const { tabs: cards, setTabs } = useTabStore();
@@ -64,7 +63,6 @@ export default function CardBoard() {
     safeCards,
     setTabs,
   );
-  useDragDrop({});
 
   return (
     <div
