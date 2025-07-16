@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { useToast } from "@/components/Toast";
 import ImageModal from "@/components/ImageModal";
 import useObjectUrl from "@/hooks/useObjectUrl";
+import { parseId } from "@/lib/parseId";
 import type { Material } from "./MaterialRow";
 
 interface Props {
@@ -148,7 +149,12 @@ export default function MaterialList({
         <button
           type="button"
           onClick={() => {
-            if (selectedId) onEliminar(Number(selectedId));
+            const id = parseId(selectedId);
+            if (!id) {
+              toast.show('ID inválido', 'error');
+              return;
+            }
+            onEliminar(id);
           }}
           disabled={selectedId === null}
           className="flex-1 py-1 rounded-md bg-red-600 text-white text-sm disabled:opacity-50"
