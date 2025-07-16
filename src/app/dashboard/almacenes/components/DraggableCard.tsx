@@ -43,9 +43,14 @@ function CardBody({ tab }: { tab: Tab }) {
 }
 
 
-interface Props { tab: Tab; grid?: boolean }
+interface Props {
+  tab: Tab;
+  grid?: boolean;
+  onMove?: (dir: 'left' | 'right' | 'up' | 'down') => void;
+  onDrop?: () => void;
+}
 
-export default function DraggableCard({ tab, grid = false }: Props) {
+export default function DraggableCard({ tab, grid = false, onMove, onDrop }: Props) {
   const sortable = !grid;
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     sortable ? useSortable({ id: tab.id }) : ({} as any);
@@ -77,6 +82,26 @@ export default function DraggableCard({ tab, grid = false }: Props) {
         {...(sortable ? attributes : {})}
         className={cn("dashboard-card overflow-auto", grid && "h-full")}
         whileDrag={sortable ? { scale: 1.05 } : undefined}
+        tabIndex={0}
+        role="listitem"
+        onKeyDown={(e) => {
+          if (!onMove) return;
+          if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            onMove('left');
+          } else if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            onMove('right');
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            onMove('up');
+          } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            onMove('down');
+          } else if (e.key === 'Enter' || e.key === ' ') {
+            onDrop?.();
+          }
+        }}
       >
       <div className="flex items-center justify-between mb-2">
         <div className="drag-handle cursor-move" {...(sortable ? listeners : {})}>

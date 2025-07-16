@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import type { Layout } from 'react-grid-layout';
 import { compactLayout } from '@lib/boardLayout';
 import type { Tab } from './useTabs';
+import { useLiveRegion } from './useLiveRegion';
 
 export function applyLayout(tabs: Tab[], layout: Layout[]) {
   return tabs.map(t => {
@@ -71,5 +72,48 @@ export default function useCardLayout(
     [setTabs, save, tabs],
   );
 
-  return { onLayoutChange };
+  const { speak } = useLiveRegion();
+
+  const moveItem = useCallback(
+    (id: string, dir: 'left' | 'right' | 'up' | 'down') => {
+      setTabs(prev => prev.map(t => {
+        if (t.id !== id) return t;
+        let x = t.x ?? 0;
+        let y = t.y ?? 0;
+        switch (dir) {
+          case 'left':
+            x = Math.max(0, x - 1);
+            break;
+          case 'right':
+            x = Math.min(1, x + 1);
+            break;
+          case 'up':
+            y = Math.max(0, y - 1);
+            break;
+          case 'down':
+            y = Math.max(0, y + 1);
+            break;
+        }
+        return { ...t, x, y };
+      }));
+    },
+    [setTabs],
+  );
+
+  const dropItem = useCallback(
+    (id: string) => {
+      const layout = tabs.map(t => ({
+        i: t.id,
+        x: t.x ?? 0,
+        y: t.y ?? 0,
+        w: t.w ?? 1,
+        h: t.h ?? 1,
+      }));
+      save(layout);
+      speak('Tarjeta movida');
+    },
+    [tabs, save, speak],
+  );
+
+  return { onLayoutChange, moveItem, dropItem };
 }
