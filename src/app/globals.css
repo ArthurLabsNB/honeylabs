@@ -376,7 +376,7 @@ html, body {
 
 /* --------- TARJETAS --------- */
 .dashboard-card {
-  @apply p-4 rounded-md border transition shadow-sm hover:bg-white/5;
+  @apply p-6 rounded-md border transition shadow-sm hover:bg-white/5;
   background: var(--dashboard-card);
   border-color: var(--dashboard-border);
   box-shadow: var(--dashboard-shadow);
