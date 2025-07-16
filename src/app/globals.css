@@ -376,11 +376,10 @@ html, body {
 
 /* --------- TARJETAS --------- */
 .dashboard-card {
-  @apply p-4 rounded-md border transition shadow-sm hover:bg-white/5;
+  @apply p-4 md:p-6 rounded-md border transition shadow-sm hover:bg-white/5 min-w-[16rem] overflow-x-auto overflow-y-auto;
   background: var(--dashboard-card);
   border-color: var(--dashboard-border);
   box-shadow: var(--dashboard-shadow);
-  overflow: auto;
 }
 .dashboard-card:hover {
   border-color: var(--dashboard-accent);

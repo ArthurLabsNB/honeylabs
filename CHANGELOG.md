@@ -35,6 +35,9 @@
 - Desactivamos colisiones en `react-grid-layout` y reducimos el umbral de arrastre a 5 px.
 - Tarjetas más altas por defecto y padding reducido para ocupar menos ancho.
 
+## 0.8.12
+- Ampliamos el padding opcional y ancho mínimo de `.dashboard-card` para evitar desbordes.
+
 ## 0.8.5
 - Registramos auditorías también al escanear códigos.
 - Mejoramos el manejo de errores al crear reportes y auditorías.
