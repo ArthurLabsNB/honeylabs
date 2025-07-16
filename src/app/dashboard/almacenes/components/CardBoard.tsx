@@ -12,6 +12,7 @@ import AddCardButton from "./AddCardButton";
 import { useDetalleUI } from "../DetalleUI";
 import useCardLayout from "@/hooks/useCardLayout";
 import useElementSize from "@/hooks/useElementSize";
+import { useDragAndDrop as useDragDrop } from "react-aria-components";
 
 export default function CardBoard() {
   const { tabs: cards, setTabs } = useTabStore();
@@ -58,7 +59,12 @@ export default function CardBoard() {
 
   const layout: Layout[] = computeBoardLayout(current)
 
-  const { onLayoutChange } = useCardLayout(boardId, safeCards, setTabs);
+  const { onLayoutChange, moveItem, dropItem } = useCardLayout(
+    boardId,
+    safeCards,
+    setTabs,
+  );
+  useDragDrop({});
 
   return (
     <div
@@ -82,7 +88,12 @@ export default function CardBoard() {
       >
         {current.map(tab => (
           <div key={tab.id} className="h-full">
-            <DraggableCard tab={tab} grid />
+            <DraggableCard
+              tab={tab}
+              grid
+              onMove={(dir) => moveItem(tab.id, dir)}
+              onDrop={() => dropItem(tab.id)}
+            />
           </div>
         ))}
       </GridLayout>
