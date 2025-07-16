@@ -28,16 +28,24 @@ export default function useMateriales(almacenId?: number | string) {
       const form = new FormData()
       form.append('nombre', m.nombre)
       if (m.descripcion) form.append('descripcion', m.descripcion)
-      form.append('cantidad', String(m.cantidad))
+      if (typeof m.cantidad === 'number' && !Number.isNaN(m.cantidad)) {
+        form.append('cantidad', String(m.cantidad))
+      }
       if (m.unidad) form.append('unidad', m.unidad)
       if (m.lote) form.append('lote', m.lote)
-      if (m.fechaCaducidad) form.append('fechaCaducidad', m.fechaCaducidad)
+      if (m.fechaCaducidad && !Number.isNaN(Date.parse(m.fechaCaducidad))) {
+        form.append('fechaCaducidad', m.fechaCaducidad)
+      }
       if (m.ubicacion) form.append('ubicacion', m.ubicacion)
       if (m.proveedor) form.append('proveedor', m.proveedor)
       if (m.estado) form.append('estado', m.estado)
       if (m.observaciones) form.append('observaciones', m.observaciones)
-      if (typeof m.minimo === 'number') form.append('minimo', String(m.minimo))
-      if (typeof m.maximo === 'number') form.append('maximo', String(m.maximo))
+      if (typeof m.minimo === 'number' && !Number.isNaN(m.minimo)) {
+        form.append('minimo', String(m.minimo))
+      }
+      if (typeof m.maximo === 'number' && !Number.isNaN(m.maximo)) {
+        form.append('maximo', String(m.maximo))
+      }
       if (m.codigoBarra) form.append('codigoBarra', m.codigoBarra)
       if (m.codigoQR) form.append('codigoQR', m.codigoQR)
       if (m.miniatura) form.append('miniatura', m.miniatura)
@@ -75,16 +83,24 @@ export default function useMateriales(almacenId?: number | string) {
       const form = new FormData()
       form.append('nombre', m.nombre)
       if (m.descripcion) form.append('descripcion', m.descripcion)
-      form.append('cantidad', String(m.cantidad))
+      if (typeof m.cantidad === 'number' && !Number.isNaN(m.cantidad)) {
+        form.append('cantidad', String(m.cantidad))
+      }
       if (m.unidad) form.append('unidad', m.unidad)
       if (m.lote) form.append('lote', m.lote)
-      if (m.fechaCaducidad) form.append('fechaCaducidad', m.fechaCaducidad)
+      if (m.fechaCaducidad && !Number.isNaN(Date.parse(m.fechaCaducidad))) {
+        form.append('fechaCaducidad', m.fechaCaducidad)
+      }
       if (m.ubicacion) form.append('ubicacion', m.ubicacion)
       if (m.proveedor) form.append('proveedor', m.proveedor)
       if (m.estado) form.append('estado', m.estado)
       if (m.observaciones) form.append('observaciones', m.observaciones)
-      if (typeof m.minimo === 'number') form.append('minimo', String(m.minimo))
-      if (typeof m.maximo === 'number') form.append('maximo', String(m.maximo))
+      if (typeof m.minimo === 'number' && !Number.isNaN(m.minimo)) {
+        form.append('minimo', String(m.minimo))
+      }
+      if (typeof m.maximo === 'number' && !Number.isNaN(m.maximo)) {
+        form.append('maximo', String(m.maximo))
+      }
       if (m.codigoBarra) form.append('codigoBarra', m.codigoBarra)
       if (m.codigoQR) form.append('codigoQR', m.codigoQR)
       if (m.miniatura) form.append('miniatura', m.miniatura)

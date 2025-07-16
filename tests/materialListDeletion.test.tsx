@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import React from 'react'
+(global as any).React = React
 import { renderToStaticMarkup } from 'react-dom/server'
 
 import MaterialList from '../src/app/dashboard/almacenes/components/MaterialList'

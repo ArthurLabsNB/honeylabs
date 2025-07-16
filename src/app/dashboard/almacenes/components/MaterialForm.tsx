@@ -82,12 +82,21 @@ export default function MaterialForm({
   };
 
 
+  const numericFields: Array<keyof Material> = ['cantidad', 'minimo', 'maximo'];
+  const dateFields: Array<keyof Material> = ['fechaCaducidad'];
+
   const handle = useCallback(
     (campo: keyof Material) => (
       e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
     ) => {
-      if (campo === 'cantidad') {
-        onChange(campo, Number(e.target.value));
+      if (numericFields.includes(campo)) {
+        const val = e.target.value;
+        const num = val === '' ? (campo === 'cantidad' ? 0 : null) : Number(val);
+        onChange(campo, Number.isNaN(num) ? (campo === 'cantidad' ? 0 : null) : num);
+        return;
+      }
+      if (dateFields.includes(campo)) {
+        onChange(campo, e.target.value || null);
         return;
       }
       if (campo === 'unidad' || campo === 'estado') {
@@ -113,7 +122,7 @@ export default function MaterialForm({
         onChange('archivos', arr);
         return;
       }
-      onChange(campo, e.target.value);
+      onChange(campo, e.target.value || null);
     },
     [material.archivos, onChange, toast],
   );
