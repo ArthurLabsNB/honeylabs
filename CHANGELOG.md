@@ -24,6 +24,9 @@
 - Mantuvimos abiertos los formularios tras guardar para seguir editando.
 - Ajustamos las nuevas tarjetas a altura mayor por defecto.
 
+## 0.8.9
+- Eliminamos dependencias obsoletas de arrastrar y soltar en el tablero de tarjetas.
+
 ## 0.8.5
 - Registramos auditorías también al escanear códigos.
 - Mejoramos el manejo de errores al crear reportes y auditorías.
