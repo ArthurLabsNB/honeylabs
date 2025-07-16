@@ -21,6 +21,15 @@ const fileToBase64 = (file: File) =>
     reader.readAsDataURL(file)
   })
 
+const cleanPayload = (obj: Record<string, any>) => {
+  const out: Record<string, any> = {}
+  for (const [k, v] of Object.entries(obj)) {
+    if (v === '' || v === null || v === undefined) continue
+    if (typeof v === 'number' && Number.isNaN(v)) continue
+    out[k] = v
+  }
+  return out
+}
 export interface Unidad {
   id: number
   nombre: string
@@ -98,7 +107,7 @@ export default function useUnidades(materialId?: number | string) {
       const res = await apiFetch(`/api/materiales/${id}/unidades`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(cleanPayload(payload)),
       })
       const result = await jsonOrNull(res)
       if (res.ok) {
@@ -140,7 +149,7 @@ export default function useUnidades(materialId?: number | string) {
       const res = await apiFetch(`/api/materiales/${id}/unidades/${uid}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(cleanPayload(payload)),
       })
       const result = await jsonOrNull(res)
       if (res.ok) {

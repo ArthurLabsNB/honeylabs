@@ -38,9 +38,22 @@ export default function MaterialFormTab({ tabId }: { tabId: string }) {
 
   const guardar = useCallback(async () => {
     if (!draft) return
+    if (!draft.nombre || !draft.nombre.trim()) {
+      toast.show('Nombre requerido', 'error')
+      return
+    }
+    const cantidad =
+      typeof draft.cantidad === 'number' && !Number.isNaN(draft.cantidad)
+        ? draft.cantidad
+        : 0
+    if (cantidad < 0) {
+      toast.show('Cantidad inválida', 'error')
+      return
+    }
+    const data = { ...draft, cantidad }
     const res = draft.dbId
-      ? await actualizar(draft as any)
-      : await crear({ ...draft, id: generarUUID() } as any)
+      ? await actualizar(data as any)
+      : await crear({ ...data, id: generarUUID() } as any)
     if (res?.error) {
       toast.show(res.error, 'error')
       return
