@@ -53,7 +53,7 @@ export default function CardBoard() {
   const current = safeCards.filter((t) => t.boardId === boardId)
 
   const cols = width < 640 ? 1 : 2
-  const rowHeight = width < 640 ? 200 : 200
+  const rowHeight = width < 640 ? 170 : 170
 
 
   const layout: Layout[] = computeBoardLayout(current)
@@ -77,6 +77,7 @@ export default function CardBoard() {
         width={width || 800}
         margin={[10,10]}
         isBounded
+        preventCollision={false}
         useCSSTransforms
         {...({ dragStartThreshold: CARD_DRAG_THRESHOLD } as any)}
         onLayoutChange={onLayoutChange}
