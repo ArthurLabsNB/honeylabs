@@ -27,6 +27,10 @@
 ## 0.8.9
 - Eliminamos dependencias obsoletas de arrastrar y soltar en el tablero de tarjetas.
 
+## 0.8.10
+- Validamos campos obligatorios en MaterialFormTab antes de guardar.
+- Normalizamos datos en useUnidades para evitar valores vacíos.
+
 ## 0.8.5
 - Registramos auditorías también al escanear códigos.
 - Mejoramos el manejo de errores al crear reportes y auditorías.
