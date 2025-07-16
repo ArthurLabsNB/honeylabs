@@ -38,6 +38,10 @@
 ## 0.8.12
 - Ampliamos el padding opcional y ancho mínimo de `.dashboard-card` para evitar desbordes.
 
+## 0.8.13
+- Incrementamos el padding máximo y min-width en `.dashboard-card`.
+- Evitamos que las tarjetas pierdan su orden al cambiar de pestaña.
+
 ## 0.8.5
 - Registramos auditorías también al escanear códigos.
 - Mejoramos el manejo de errores al crear reportes y auditorías.
