@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { jsonOrNull } from '@lib/http'
 import { apiFetch } from '@lib/api'
+import { DragStartEvent, DragOverEvent, DragEndEvent } from '@dnd-kit/core'
 import { useToast } from '@/components/Toast'
 import useSession from '@/hooks/useSession'
 import useAlmacenes, { Almacen } from '@/hooks/useAlmacenes'
@@ -113,33 +114,40 @@ export default function useAlmacenesLogic() {
     [toast],
   )
 
-  const handleDragStart = useCallback((id: number) => {
+  const handleDragStart = useCallback((ev: DragStartEvent) => {
+    const id = Number(ev.active.id)
     setDragId(id)
   }, [])
 
-  const handleDragEnter = useCallback(
-    (id: number) => {
-      if (dragId === null || dragId === id) return
+  const handleDragOver = useCallback(
+    (ev: DragOverEvent) => {
+      const overId = ev.over?.id
+      if (overId == null || dragId === null) return
+      const over = Number(overId)
+      if (dragId === over) return
       const oldIndex = almacenes.findIndex((a) => a.id === dragId)
-      const newIndex = almacenes.findIndex((a) => a.id === id)
+      const newIndex = almacenes.findIndex((a) => a.id === over)
       setAlmacenes((items) => arrayMove(items, oldIndex, newIndex))
-      setDragId(id)
+      setDragId(over)
     },
     [dragId, almacenes],
   )
 
-  const handleDragEnd = useCallback(async () => {
-    setDragId(null)
-    try {
-      await apiFetch('/api/almacenes/orden', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids: almacenes.map((a) => a.id) }),
-      })
-    } catch {
-      // no-op
-    }
-  }, [almacenes])
+  const handleDragEnd = useCallback(
+    async (_ev: DragEndEvent) => {
+      setDragId(null)
+      try {
+        await apiFetch('/api/almacenes/orden', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ids: almacenes.map((a) => a.id) }),
+        })
+      } catch {
+        // no-op
+      }
+    },
+    [almacenes],
+  )
 
   const moveItem = useCallback(
     (id: number, dir: -1 | 1) => {
@@ -192,7 +200,7 @@ export default function useAlmacenesLogic() {
     loading,
     error,
     handleDragStart,
-    handleDragEnter,
+    handleDragOver,
     handleDragEnd,
     moveItem,
     eliminar,

@@ -4,8 +4,26 @@ import { Pencil, Trash, ChevronUp, ChevronDown, Star } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { motion } from "framer-motion";
 import dayjs from "dayjs";
-import { memo, useState } from "react";
+import { memo } from "react";
+import {
+  DndContext,
+  PointerSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  DragStartEvent,
+  DragOverEvent,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  useSortable,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { cn } from "@/lib/utils";
+import { POINTER_ACTIVATION_DISTANCE } from "../../constants";
 import type { Almacen } from "@/hooks/useAlmacenes";
 
 interface Props {
@@ -13,9 +31,9 @@ interface Props {
   onEdit: (id: number) => void;
   onDelete: (id: number) => void;
   onOpen: (id: number) => void;
-  onDragStart: (id: number) => void;
-  onDragEnter: (id: number) => void;
-  onDragEnd: () => void;
+  onDragStart: (ev: DragStartEvent) => void;
+  onDragOver: (ev: DragOverEvent) => void;
+  onDragEnd: (ev: DragEndEvent) => void;
   onMove: (id: number, dir: number) => void;
   favoritos: number[];
   onToggleFavorito: (id: number) => void;
@@ -27,30 +45,36 @@ export default function AlmacenesList({
   onDelete,
   onOpen,
   onDragStart,
-  onDragEnter,
+  onDragOver,
   onDragEnd,
   onMove,
   favoritos,
   onToggleFavorito,
 }: Props) {
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: POINTER_ACTIVATION_DISTANCE } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
   return (
-    <ul className="space-y-2">
-      {almacenes.map((a) => (
-        <SortableAlmacen
-          key={a.id}
-          almacen={a}
-          favorito={favoritos.includes(a.id)}
-          onToggleFavorito={() => onToggleFavorito(a.id)}
-          onEdit={() => onEdit(a.id)}
-          onDelete={() => onDelete(a.id)}
-          onOpen={() => onOpen(a.id)}
-          onDragStart={() => onDragStart(a.id)}
-          onDragEnter={() => onDragEnter(a.id)}
-          onDragEnd={onDragEnd}
-          onMove={(dir) => onMove(a.id, dir)}
-        />
-      ))}
-    </ul>
+    <DndContext sensors={sensors} onDragStart={onDragStart} onDragOver={onDragOver} onDragEnd={onDragEnd}>
+      <SortableContext items={almacenes.map((a) => a.id)} strategy={verticalListSortingStrategy}>
+        <ul className="space-y-2">
+          {almacenes.map((a) => (
+            <SortableAlmacen
+              key={a.id}
+              almacen={a}
+              favorito={favoritos.includes(a.id)}
+              onToggleFavorito={() => onToggleFavorito(a.id)}
+              onEdit={() => onEdit(a.id)}
+              onDelete={() => onDelete(a.id)}
+              onOpen={() => onOpen(a.id)}
+              onMove={(dir) => onMove(a.id, dir)}
+            />
+          ))}
+        </ul>
+      </SortableContext>
+    </DndContext>
   );
 }
 
@@ -60,9 +84,6 @@ const SortableAlmacen = memo(function SortableAlmacen({
   onEdit,
   onDelete,
   onOpen,
-  onDragStart,
-  onDragEnter,
-  onDragEnd,
   onMove,
   favorito,
   onToggleFavorito,
@@ -71,32 +92,31 @@ const SortableAlmacen = memo(function SortableAlmacen({
   onEdit: () => void;
   onDelete: () => void;
   onOpen: () => void;
-  onDragStart: () => void;
-  onDragEnter: () => void;
-  onDragEnd: () => void;
   onMove: (dir: number) => void;
   favorito: boolean;
   onToggleFavorito: () => void;
 }) {
-  const style = {};
-  const [dragging, setDragging] = useState(false);
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: almacen.id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  } as React.CSSProperties;
 
   return (
     <motion.li
+      ref={setNodeRef}
       style={style}
-      draggable
       whileDrag={{ scale: 1.05 }}
       transition={{ type: "spring", stiffness: 350, damping: 25 }}
-      onDragStart={(e) => {
-        setDragging(true);
-        onDragStart();
-      }}
-      onDragEnter={onDragEnter}
-      onDragEnd={(e) => {
-        setDragging(false);
-        onDragEnd();
-      }}
-      onDragOver={(e) => e.preventDefault()}
+      {...attributes}
+      {...listeners}
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === 'ArrowUp') {
@@ -111,7 +131,7 @@ const SortableAlmacen = memo(function SortableAlmacen({
       }}
       className={cn(
         "bg-white/5 hover:bg-white/10 p-3 rounded-md flex gap-3 cursor-grab active:cursor-grabbing",
-        dragging && "shadow-lg ring-2 ring-[var(--dashboard-accent)]"
+        isDragging && "shadow-lg ring-2 ring-[var(--dashboard-accent)]"
       )}
     >
       <div className="w-20 h-20 flex-shrink-0 rounded-md overflow-hidden bg-white/10" onClick={onOpen}>

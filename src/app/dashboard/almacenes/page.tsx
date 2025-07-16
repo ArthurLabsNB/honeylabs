@@ -21,7 +21,7 @@ export default function AlmacenesPage() {
     loading,
     error,
     handleDragStart,
-    handleDragEnter,
+    handleDragOver,
     handleDragEnd,
     moveItem,
     eliminar,
@@ -65,7 +65,7 @@ export default function AlmacenesPage() {
           onDelete={eliminar}
           onOpen={(id) => router.push(`/dashboard/almacenes/${id}`)}
           onDragStart={handleDragStart}
-          onDragEnter={handleDragEnter}
+          onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
           onMove={(id, dir) => moveItem(id, dir)}
         />
