@@ -6,7 +6,7 @@ export const TABBAR_HEIGHT = 'var(--tabbar-height)';
 export const TABBAR_GAP = 'var(--tabbar-gap)';
 
 // Umbral mínimo en píxeles antes de activar el arrastre
-export const POINTER_ACTIVATION_DISTANCE = 8;
+export const POINTER_ACTIVATION_DISTANCE = 5;
 
 // Ajuste para react-grid-layout; controla desde qué distancia inicia el drag
 export const CARD_DRAG_THRESHOLD = 8;
