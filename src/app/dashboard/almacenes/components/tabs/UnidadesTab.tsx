@@ -16,7 +16,7 @@ export default function UnidadesTab() {
       if (!u?.id) return
       const info = await obtener(u.id)
       if (!info) return
-      setUnidadSel({ nombreMaterial: u.nombre, ...info })
+      setUnidadSel(info)
       openForm('form-unidad', 'Unidad')
     },
     [obtener, setUnidadSel, openForm]

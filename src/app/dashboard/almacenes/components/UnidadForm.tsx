@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: Props) {
-  const nombreValido = Boolean(unidad?.nombreMaterial && unidad.nombreMaterial.trim())
+  const nombreValido = Boolean(unidad?.nombre && unidad.nombre.trim())
   const { archivos: archivosPrevios, eliminar, mutate } = useArchivosUnidad(
     unidad?.materialId,
     unidad?.id,
@@ -76,11 +76,11 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
       <section className="space-y-2">
         <h3 className="font-semibold">Identificación y control</h3>
         <div>
-        <label htmlFor="unidad-nombreMaterial" className="text-xs text-[var(--dashboard-muted)]">Nombre del material</label>
+        <label htmlFor="unidad-nombre" className="text-xs text-[var(--dashboard-muted)]">Nombre del material</label>
         <input
-          id="unidad-nombreMaterial"
-          value={unidad.nombreMaterial ?? ''}
-          onChange={handle('nombreMaterial')}
+          id="unidad-nombre"
+          value={unidad.nombre ?? ''}
+          onChange={handle('nombre')}
           autoFocus
           required
           className="dashboard-input no-drag w-full mt-1"

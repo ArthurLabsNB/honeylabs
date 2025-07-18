@@ -1,6 +1,6 @@
 export interface UnidadDetalle {
   id?: number;
-  nombreMaterial?: string;
+  nombre?: string;
   internoId?: string;
   serie?: string;
   codigoBarra?: string;
