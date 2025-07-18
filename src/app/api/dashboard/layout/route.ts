@@ -10,7 +10,7 @@ export async function GET() {
     const usuario = await getUsuarioFromSession();
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     const prefs = usuario.preferencias ? JSON.parse(usuario.preferencias) : {};
-    const layout = prefs.dashboardLayout || { tabs: [], layout: [] };
+    const layout = prefs.dashboardLayout || {};
     return NextResponse.json(layout);
   } catch (err) {
     logger.error('GET /api/dashboard/layout', err);
@@ -24,8 +24,12 @@ export async function POST(req: NextRequest) {
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     const data = await req.json();
     const prefs = usuario.preferencias ? JSON.parse(usuario.preferencias) : {};
-    prefs.dashboardLayout = data;
-    await prisma.usuario.update({ where: { id: usuario.id }, data: { preferencias: JSON.stringify(prefs) } });
+    const layout = prefs.dashboardLayout || {};
+    prefs.dashboardLayout = { ...layout, ...data };
+    await prisma.usuario.update({
+      where: { id: usuario.id },
+      data: { preferencias: JSON.stringify(prefs) },
+    });
     return NextResponse.json({ ok: true });
   } catch (err) {
     logger.error('POST /api/dashboard/layout', err);
