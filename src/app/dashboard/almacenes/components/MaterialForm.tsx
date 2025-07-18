@@ -45,27 +45,25 @@ export default function MaterialForm({
   readOnly = false,
   historialInfo,
 }: Props) {
-  if (!material) return null;
-
   const toast = useToast();
   const [preview, setPreview] = useState<string | null>(null);
-  const { unidades } = useUnidades(material.dbId);
+  const { unidades } = useUnidades(material?.dbId);
   const {
     archivos: archivosPreviosHook,
     eliminar,
     mutate,
-  } = useArchivosMaterial(material.dbId);
+  } = useArchivosMaterial(material?.dbId);
   const miniaturaFileUrl = useObjectUrl(
-    material.miniatura instanceof File ? material.miniatura : undefined,
+    material && material.miniatura instanceof File ? material.miniatura : undefined,
   );
   const miniaturaSrc =
-    material.miniatura instanceof File
+    material && material.miniatura instanceof File
       ? miniaturaFileUrl
-      : typeof material.miniatura === 'string'
-        ? material.miniatura
-        : (material.miniaturaUrl as string | null);
-  const archivosPrevios = readOnly && Array.isArray(material.archivos)
-    ? (material.archivos as any[]).map((a, i) => ({ ...a, id: i }))
+      : typeof material?.miniatura === 'string'
+        ? (material as any).miniatura
+        : (material?.miniaturaUrl as string | null);
+  const archivosPrevios = readOnly && Array.isArray(material?.archivos)
+    ? (material?.archivos as any[]).map((a, i) => ({ ...a, id: i }))
     : archivosPreviosHook;
 
   const guardar = useCallback(() => {
@@ -126,6 +124,14 @@ export default function MaterialForm({
     },
     [material.archivos, onChange, toast],
   );
+
+  if (!material) {
+    return (
+      <p className="text-sm text-[var(--dashboard-muted)]">
+        Selecciona o crea un material.
+      </p>
+    );
+  }
 
   return (
     <>
