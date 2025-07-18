@@ -126,7 +126,9 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
             className="dashboard-input no-drag w-full mt-1"
           />
           <MaterialCodes
-            value={unidad.codigoQR || ''}
+            value={unidad}
+            tipo="unidad"
+            codigo={unidad.codigoQR || ''}
             onRegenerate={() => onChange('codigoQR', generarUUID())}
           />
         </div>

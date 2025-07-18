@@ -398,7 +398,9 @@ export default function MaterialForm({
         )}
       </div>
       <MaterialCodes
-        value={material.codigoQR || ''}
+        value={material}
+        tipo="material"
+        codigo={material.codigoQR || ''}
         onRegenerate={() => onChange('codigoQR', generarUUID())}
       />
       <div className="flex gap-2 pt-2">
