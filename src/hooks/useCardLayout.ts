@@ -18,30 +18,24 @@ export default function useCardLayout(
   setTabs: (tabs: Tab[]) => void,
 ) {
   const key = boardId ? `card-layout-${boardId}` : null;
-  const loaded = useRef(false);
-
   useEffect(() => {
-    loaded.current = false;
-  }, [boardId]);
+    if (!key) return;
+    try {
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        const data = JSON.parse(raw) as Layout[];
+        if (Array.isArray(data)) {
+          setTabs(prev => applyLayout(prev, compactLayout(data)));
+        }
+      }
+    } catch {}
+  }, [key, setTabs]);
 
   useEffect(() => {
     if (!key) return;
     const boardTabs = tabs.filter(t => t.boardId === boardId);
     if (boardTabs.length === 0) return;
     try {
-      if (!loaded.current) {
-        loaded.current = true;
-        const raw = localStorage.getItem(key);
-        if (raw) {
-          const data = JSON.parse(raw) as Layout[];
-          if (Array.isArray(data)) {
-            const compacted = compactLayout(data);
-            setTabs(prev => applyLayout(prev, compacted));
-            return;
-          }
-        }
-      }
-
       const layout = boardTabs.map(t => ({
         i: t.id,
         x: t.x ?? 0,
@@ -51,7 +45,7 @@ export default function useCardLayout(
       }));
       localStorage.setItem(key, JSON.stringify(compactLayout(layout)));
     } catch {}
-  }, [key, boardId, tabs, setTabs]);
+  }, [key, boardId, tabs]);
 
   const save = useCallback(
     (layout: Layout[]) => {

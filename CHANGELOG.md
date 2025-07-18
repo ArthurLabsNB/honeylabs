@@ -42,6 +42,9 @@
 - Incrementamos el padding máximo y min-width en `.dashboard-card`.
 - Evitamos que las tarjetas pierdan su orden al cambiar de pestaña.
 
+## 0.8.14
+- Restauramos las tarjetas de cada tablero al cambiar y recargar.
+
 ## 0.8.5
 - Registramos auditorías también al escanear códigos.
 - Mejoramos el manejo de errores al crear reportes y auditorías.
