@@ -97,7 +97,7 @@ export default function CardBoard() {
         margin={[10,10]}
         isBounded
         preventCollision={false}
-        useCSSTransforms
+        useCSSTransforms={false}
         {...({ dragStartThreshold: CARD_DRAG_THRESHOLD } as any)}
         onLayoutChange={onLayoutChange}
         draggableHandle=".drag-handle"

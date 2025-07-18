@@ -45,6 +45,9 @@
 ## 0.8.14
 - Restauramos las tarjetas de cada tablero al cambiar y recargar.
 
+## 0.8.15
+- Desactivamos `useCSSTransforms` y reducimos `CARD_DRAG_THRESHOLD` a 4 px para movimientos más fluidos.
+
 ## 0.8.5
 - Registramos auditorías también al escanear códigos.
 - Mejoramos el manejo de errores al crear reportes y auditorías.
