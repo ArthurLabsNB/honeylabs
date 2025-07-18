@@ -28,8 +28,9 @@ export default function CardBoard() {
         apiFetch("/api/dashboard/layout")
           .then(jsonOrNull)
           .then((d) => {
-            if (Array.isArray(d?.tabs)) {
-              setTabs(d.tabs as Tab[])
+            if (d && typeof d === "object") {
+              const all = Object.values(d).flat() as Tab[]
+              setTabs(all)
             }
           })
           .catch(() => {})
@@ -42,8 +43,8 @@ export default function CardBoard() {
     apiFetch("/api/dashboard/layout")
       .then(jsonOrNull)
       .then((d) => {
-        if (Array.isArray(d?.tabs)) {
-          const tabs = (d.tabs as Tab[]).filter(t => t.boardId === boardId)
+        if (d && typeof d === "object") {
+          const tabs = (d[boardId] as Tab[]) ?? []
           setTabs(prev => {
             const others = prev.filter(t => t.boardId !== boardId)
             return [...others, ...tabs]
@@ -58,12 +59,14 @@ export default function CardBoard() {
   }, [boardId, boards, setActive])
 
   useEffect(() => {
+    if (!boardId) return
+    const boardTabs = cards.filter(t => t.boardId === boardId)
     apiFetch("/api/dashboard/layout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ tabs: cards }),
+      body: JSON.stringify({ [boardId]: boardTabs }),
     }).catch(() => {});
-  }, [cards]);
+  }, [boardId, cards]);
 
   const safeCards = Array.isArray(cards) ? cards : []
   const current = safeCards.filter((t) => t.boardId === boardId)
