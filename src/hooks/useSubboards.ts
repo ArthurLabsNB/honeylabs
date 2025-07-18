@@ -57,6 +57,21 @@ export default function useSubboards(
   );
 
   useEffect(() => {
+    if (!activeSub) return;
+    setSubboards(bs => {
+      const idx = bs.findIndex(b => b.id === activeSub);
+      if (idx === -1) return bs;
+      const current = bs[idx];
+      if (current.widgets === widgets && current.layout === layout) return bs;
+      const updated = bs.map(b => (b.id === activeSub ? { ...b, widgets, layout } : b));
+      if (panelId) {
+        try { localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify(updated)); } catch {}
+      }
+      return updated;
+    });
+  }, [widgets, layout, activeSub, panelId]);
+
+  useEffect(() => {
     if (!panelId) return;
     let boards: Subboard[] = [];
     try { boards = JSON.parse(localStorage.getItem(`panel-subboards-${panelId}`) || '[]'); } catch {}
