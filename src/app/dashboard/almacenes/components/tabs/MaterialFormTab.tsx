@@ -37,8 +37,7 @@ export default function MaterialFormTab({ tabId }: { tabId: string }) {
   const guardar = useCallback(async () => {
     if (!draft) return
     if (!draft.nombre || !draft.nombre.trim()) {
-      toast.show('Nombre requerido', 'error')
-      return
+      toast.show('Nombre vacío', 'warning')
     }
     const cantidad =
       typeof draft.cantidad === 'number' && !Number.isNaN(draft.cantidad)

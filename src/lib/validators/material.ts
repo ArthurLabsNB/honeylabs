@@ -1,9 +1,9 @@
 import { z } from 'zod'
 
 export const materialSchema = z.object({
-  nombre: z.string().min(1),
+  nombre: z.string().min(1).optional(),
   descripcion: z.string().optional(),
-  cantidad: z.coerce.number().int().nonnegative(),
+  cantidad: z.coerce.number().int().nonnegative().optional(),
   unidad: z
     .preprocess((v) => (v === '' ? null : v), z.string().optional().nullable()),
   lote: z.string().optional().nullable(),

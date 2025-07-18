@@ -42,4 +42,23 @@ describe('validaciones de materiales', () => {
     const res = await POST(req)
     expect(res.status).toBe(400)
   })
+
+  it('acepta datos parciales', async () => {
+    vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue({ id: 1 } as any)
+    vi.spyOn(permisos, 'hasManagePerms').mockReturnValue(true)
+    vi.spyOn(prisma.usuarioAlmacen, 'findFirst').mockResolvedValue({ id: 1 } as any)
+    const createMaterial = vi.fn().mockResolvedValue({ id: 2 })
+    vi.spyOn(prisma, '$transaction').mockImplementation(async (cb: any) =>
+      cb({
+        material: { create: createMaterial, findUnique: vi.fn().mockResolvedValue(null) },
+        usuarioAlmacen: { upsert: vi.fn().mockResolvedValue({}) },
+        historialLote: { create: vi.fn().mockResolvedValue({}) },
+      })
+    )
+    const { POST: handler } = await import('../src/app/api/almacenes/[id]/materiales/route')
+    const req = new NextRequest('http://localhost/api/almacenes/1/materiales', { ...baseReq, body: '{}' })
+    const res = await handler(req)
+    expect(res.status).toBe(200)
+    vi.resetModules()
+  })
 })
