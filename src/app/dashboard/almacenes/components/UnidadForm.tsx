@@ -13,15 +13,10 @@ interface Props {
 }
 
 export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: Props) {
-  if (!unidad)
-    return (
-      <p className="text-sm text-[var(--dashboard-muted)]">Selecciona o crea una unidad.</p>
-    );
-
-  const nombreValido = Boolean(unidad.nombreMaterial && unidad.nombreMaterial.trim())
+  const nombreValido = Boolean(unidad?.nombreMaterial && unidad.nombreMaterial.trim())
   const { archivos: archivosPrevios, eliminar, mutate } = useArchivosUnidad(
-    unidad.materialId,
-    unidad.id,
+    unidad?.materialId,
+    unidad?.id,
   )
 
   const guardarLocal = () => {
@@ -68,6 +63,12 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
       const val = files ? files[0] : null
       onChange(campo, val)
     }
+  }
+
+  if (!unidad) {
+    return (
+      <p className="text-sm text-[var(--dashboard-muted)]">Selecciona o crea una unidad.</p>
+    )
   }
 
   return (

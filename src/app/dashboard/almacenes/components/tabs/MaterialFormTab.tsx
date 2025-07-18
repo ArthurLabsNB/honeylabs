@@ -34,8 +34,6 @@ export default function MaterialFormTab({ tabId }: { tabId: string }) {
     close(tabId)
   }, [draft, eliminar, mutate, setSelectedId, close, tabId, toast])
 
-  if (!draft) return null
-
   const guardar = useCallback(async () => {
     if (!draft) return
     if (!draft.nombre || !draft.nombre.trim()) {
@@ -73,6 +71,14 @@ export default function MaterialFormTab({ tabId }: { tabId: string }) {
     await crear({ ...rest, id: generarUUID() } as any)
     mutate()
   }, [draft, crear, mutate])
+
+  if (!draft) {
+    return (
+      <p className="text-sm text-[var(--dashboard-muted)]">
+        Selecciona o crea un material.
+      </p>
+    )
+  }
 
   const cancelar = () => {
     setSelectedId(null)
