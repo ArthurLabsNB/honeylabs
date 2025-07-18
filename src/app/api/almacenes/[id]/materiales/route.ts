@@ -166,7 +166,7 @@ export async function POST(req: NextRequest) {
     } else {
       datos = await req.json()
     }
-    const parsed = materialSchema.safeParse(datos)
+    const parsed = materialSchema.partial().safeParse(datos)
     if (!parsed.success)
       return NextResponse.json({ error: 'Datos inválidos' }, { status: 400 })
     const {
@@ -187,7 +187,10 @@ export async function POST(req: NextRequest) {
       reorderLevel,
     } = parsed.data
 
-    if (!nombre.trim() || nombre.trim().toLowerCase() === 'nuevo') {
+    if (
+      nombre !== undefined &&
+      (!nombre.trim() || nombre.trim().toLowerCase() === 'nuevo')
+    ) {
       return NextResponse.json({ error: 'Nombre inválido' }, { status: 400 })
     }
 
@@ -196,11 +199,11 @@ export async function POST(req: NextRequest) {
     const material = await prisma.$transaction(async (tx) => {
       const creado = await tx.material.create({
         data: {
-          nombre,
+          nombre: nombre ?? '',
           descripcion,
           miniatura: miniaturaBuffer as any,
           miniaturaNombre,
-          cantidad,
+          cantidad: cantidad ?? 0,
           unidad,
           lote,
           fechaCaducidad,
