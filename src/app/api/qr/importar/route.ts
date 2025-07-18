@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@lib/prisma'
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
+import { decodeQR } from '@/lib/qr'
 
 export async function POST(req: NextRequest) {
   logger.debug(req, 'POST /api/qr/importar')
@@ -13,6 +14,11 @@ export async function POST(req: NextRequest) {
     const { codigo } = await req.json()
     if (typeof codigo !== 'string' || !codigo.trim()) {
       return NextResponse.json({ error: 'Código requerido' }, { status: 400 })
+    }
+
+    const decoded = decodeQR<any>(codigo)
+    if (decoded && typeof decoded === 'object' && decoded.tipo) {
+      return NextResponse.json(decoded)
     }
 
     const unidad = await prisma.materialUnidad.findUnique({
