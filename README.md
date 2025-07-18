@@ -137,6 +137,7 @@ honeylabs/
 * El menú de usuario ahora también se abre al hacer clic en el avatar del dashboard.
 * Ajustamos el tablero de tarjetas para usar `useCSSTransforms` y un umbral de arrastre de 8 px.
 * El drag es más suave con umbral reducido a 5 px y sin colisiones entre tarjetas.
+* Desactivamos `useCSSTransforms` para animaciones estables y bajamos el umbral a 4 px.
 
 
 ---

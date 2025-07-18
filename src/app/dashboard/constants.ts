@@ -9,4 +9,4 @@ export const TABBAR_GAP = 'var(--tabbar-gap)';
 export const POINTER_ACTIVATION_DISTANCE = 5;
 
 // Ajuste para react-grid-layout; controla desde qué distancia inicia el drag
-export const CARD_DRAG_THRESHOLD = 8;
+export const CARD_DRAG_THRESHOLD = 4;
