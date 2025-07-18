@@ -15,7 +15,7 @@ export default function Breadcrumbs({ material, unidad, onBack }: Props) {
       {unidad && (
         <>
           <span className="mx-1">/</span>
-          <span>{unidad.nombreMaterial || unidad.nombre}</span>
+          <span>{unidad.nombre}</span>
           <button
             onClick={onBack}
             className="ml-2 underline text-blue-400"
