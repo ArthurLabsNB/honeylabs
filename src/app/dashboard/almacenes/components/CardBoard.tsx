@@ -18,6 +18,8 @@ export default function CardBoard() {
   const { activeId: boardId, boards, setActive } = useBoardStore();
   const { collapsed } = useDetalleUI();
 
+  const safeCards = Array.isArray(cards) ? cards : []
+
   const containerRef = useRef<HTMLDivElement>(null)
   const { width } = useElementSize(containerRef)
 
@@ -60,15 +62,14 @@ export default function CardBoard() {
 
   useEffect(() => {
     if (!boardId) return
-    const boardTabs = cards.filter(t => t.boardId === boardId)
+    const boardTabs = safeCards.filter(t => t.boardId === boardId)
     apiFetch("/api/dashboard/layout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ [boardId]: boardTabs }),
     }).catch(() => {});
-  }, [boardId, cards]);
+  }, [boardId, safeCards]);
 
-  const safeCards = Array.isArray(cards) ? cards : []
   const current = safeCards.filter((t) => t.boardId === boardId)
 
   const cols = width < 640 ? 1 : 2
@@ -97,7 +98,7 @@ export default function CardBoard() {
         margin={[10,10]}
         isBounded
         preventCollision={false}
-        useCSSTransforms={false}
+        useCSSTransforms
         {...({ dragStartThreshold: CARD_DRAG_THRESHOLD } as any)}
         onLayoutChange={onLayoutChange}
         draggableHandle=".drag-handle"
