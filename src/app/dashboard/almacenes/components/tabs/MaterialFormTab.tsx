@@ -42,12 +42,13 @@ export default function MaterialFormTab({ tabId }: { tabId: string }) {
     const cantidad =
       typeof draft.cantidad === 'number' && !Number.isNaN(draft.cantidad)
         ? draft.cantidad
-        : 0
-    if (cantidad < 0) {
+        : undefined
+    if (cantidad !== undefined && cantidad < 0) {
       toast.show('Cantidad inválida', 'error')
       return
     }
-    const data = { ...draft, cantidad }
+    const data = { ...draft }
+    if (cantidad !== undefined) data.cantidad = cantidad
     const res = draft.dbId
       ? await actualizar(data as any)
       : await crear({ ...data, id: generarUUID() } as any)

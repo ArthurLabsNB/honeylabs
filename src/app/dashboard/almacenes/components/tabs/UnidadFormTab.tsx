@@ -13,7 +13,18 @@ export default function UnidadFormTab({ tabId }: { tabId: string }) {
 
   const guardar = async () => {
     if (!unidadSel) return
-    const res = await actualizar(unidadSel as any)
+    const numericFields: Array<keyof UnidadDetalle> = [
+      'peso',
+      'volumen',
+      'alto',
+      'largo',
+      'ancho',
+    ]
+    const payload: any = { ...unidadSel }
+    for (const f of numericFields) {
+      if (payload[f] == null) delete payload[f]
+    }
+    const res = await actualizar(payload as any)
     if (res?.error) {
       toast.show(res.error, 'error')
       return
