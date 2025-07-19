@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect } from 'react';
 import type { Layout } from 'react-grid-layout';
 import { compactLayout } from '@lib/boardLayout';
 import type { Tab } from './useTabs';
@@ -22,14 +22,30 @@ export default function useCardLayout(
     if (!key) return;
     try {
       const raw = localStorage.getItem(key);
-      if (raw) {
-        const data = JSON.parse(raw) as Layout[];
-        if (Array.isArray(data)) {
-          setTabs(prev => applyLayout(prev, compactLayout(data)));
-        }
+      if (!raw) return;
+      const data = JSON.parse(raw) as Layout[];
+      if (Array.isArray(data)) {
+        setTabs(prev => applyLayout(prev, compactLayout(data)));
       }
     } catch {}
   }, [key, setTabs]);
+
+  useEffect(() => {
+    if (!key) return;
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return;
+      const data = JSON.parse(raw) as Layout[];
+      if (!Array.isArray(data)) return;
+      const compacted = compactLayout(data);
+      const updated = applyLayout(tabs, compacted);
+      const changed = tabs.some(t => {
+        const it = updated.find(u => u.id === t.id);
+        return it && (t.x !== it.x || t.y !== it.y || t.w !== it.w || t.h !== it.h);
+      });
+      if (changed) setTabs(updated);
+    } catch {}
+  }, [key, tabs, setTabs]);
 
   useEffect(() => {
     if (!key) return;
