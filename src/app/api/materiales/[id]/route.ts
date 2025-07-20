@@ -151,8 +151,12 @@ export async function PUT(req: NextRequest) {
     }
 
     const parsed = materialSchema.partial().safeParse(datos)
-    if (!parsed.success)
-      return NextResponse.json({ error: 'Datos inválidos' }, { status: 400 })
+    if (!parsed.success) {
+      const issue = parsed.error.issues[0]
+      const campo = issue?.path?.[0]
+      const msg = campo ? `Campo "${campo}" inválido` : 'Datos inválidos'
+      return NextResponse.json({ error: msg }, { status: 400 })
+    }
     datos = parsed.data
 
     const actualizado = await prisma.$transaction(async (tx) => {

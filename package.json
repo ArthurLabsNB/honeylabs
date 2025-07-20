@@ -1,7 +1,12 @@
 {
   "name": "honeylabs",
+<<<<<<< HEAD
   "version": "0.8.15",
   "packageManager": "pnpm@10.13.1",
+=======
+  "version": "0.8.16",
+  "packageManager": "pnpm@8.15.4",
+>>>>>>> 26f06baaa24e856e0a5dff9d368294e7e9d95452
   "private": true,
   "scripts": {
     "gen:dev": "prisma generate",
