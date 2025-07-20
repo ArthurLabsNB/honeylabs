@@ -72,6 +72,7 @@ model Usuario {
   esSuperAdmin         Boolean?               @default(false)
   archivosMaterial     ArchivoMaterial[]
   archivosUnidad       ArchivoUnidad[]
+  auditLogs            AuditLog[]
   bitacoraCambios      BitacoraCambioPerfil[]
   chatMensajes         ChatMensaje[]
   documentosSubidos    DocumentoAlmacen[]     @relation("DocumentosSubidos")
@@ -100,7 +101,6 @@ model Usuario {
   plan                 Plan?                  @relation(fields: [planId], references: [id])
   almacenes            UsuarioAlmacen[]
   roles                Rol[]                  @relation("RolToUsuario")
-  auditLogs            AuditLog[]
 }
 
 model BitacoraCambioPerfil {
@@ -347,29 +347,29 @@ model HistorialLote {
   descripcion String?
   ubicacion   String?
   cantidad    Float?
-  estado      Json?
   fecha       DateTime @default(now())
   usuarioId   Int?
+  estado      Json?
   material    Material @relation(fields: [materialId], references: [id])
   usuario     Usuario? @relation(fields: [usuarioId], references: [id])
 }
 
 model HistorialUnidad {
-  id          Int      @id @default(autoincrement())
+  id          Int            @id @default(autoincrement())
   unidadId    Int
   descripcion String?
   estado      Json?
-  fecha       DateTime @default(now())
+  fecha       DateTime       @default(now())
   usuarioId   Int?
   unidad      MaterialUnidad @relation(fields: [unidadId], references: [id], onDelete: Cascade)
-  usuario     Usuario? @relation(fields: [usuarioId], references: [id])
+  usuario     Usuario?       @relation(fields: [usuarioId], references: [id])
 }
 
 model MaterialUnidad {
-  id                 Int             @id @default(autoincrement())
+  id                 Int               @id @default(autoincrement())
   nombre             String
   materialId         Int
-  codigoQR           String          @unique @default(dbgenerated("gen_random_uuid()"))
+  codigoQR           String            @unique @default(dbgenerated("gen_random_uuid()"))
   internoId          String?
   serie              String?
   codigoBarra        String?
@@ -401,9 +401,9 @@ model MaterialUnidad {
   observaciones      String?
   imagen             Bytes?
   imagenNombre       String?
-  historial         HistorialUnidad[]
   archivos           ArchivoUnidad[]
-  material           Material        @relation(fields: [materialId], references: [id])
+  historial          HistorialUnidad[]
+  material           Material          @relation(fields: [materialId], references: [id])
 
   @@unique([materialId, nombre])
 }
@@ -515,12 +515,6 @@ model PuntajeTetris {
   Usuario   Usuario  @relation(fields: [usuarioId], references: [id])
 }
 
-enum PrioridadAlerta {
-  ALTA
-  MEDIA
-  BAJA
-}
-
 model AuditLog {
   id        Int      @id @default(autoincrement())
   usuarioId Int?
@@ -529,4 +523,10 @@ model AuditLog {
   payload   Json?
   fecha     DateTime @default(now())
   usuario   Usuario? @relation(fields: [usuarioId], references: [id])
+}
+
+enum PrioridadAlerta {
+  ALTA
+  MEDIA
+  BAJA
 }
