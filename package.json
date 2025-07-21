@@ -1,7 +1,6 @@
 {
   "name": "honeylabs",
   "packageManager": "pnpm@10.13.1",
-  "packageManager": "pnpm@8.15.4",
   "private": true,
   "scripts": {
     "gen:dev": "prisma generate",
