@@ -34,7 +34,14 @@ export default function CardBoard() {
           .then((d) => {
             if (d && typeof d === "object") {
               const all = Object.values(d).flat() as Tab[]
-              setTabs(all)
+              setTabs((prev) => {
+                const map = new Map(prev.map((t) => [t.id, t]))
+                all.forEach((tab) => {
+                  const prevTab = map.get(tab.id)
+                  map.set(tab.id, { ...prevTab, ...tab })
+                })
+                return Array.from(map.values())
+              })
             }
           })
           .catch(() => {})
@@ -53,8 +60,12 @@ export default function CardBoard() {
         if (d && typeof d === "object") {
           const tabs = (d[currentBoardId] as Tab[]) ?? []
           setTabs(prev => {
-            const others = prev.filter(t => t.boardId !== currentBoardId)
-            return [...others, ...tabs]
+            const map = new Map(prev.map(t => [t.id, t]))
+            tabs.forEach(tab => {
+              const prevTab = map.get(tab.id)
+              map.set(tab.id, { ...prevTab, ...tab })
+            })
+            return Array.from(map.values())
           })
         }
       })
