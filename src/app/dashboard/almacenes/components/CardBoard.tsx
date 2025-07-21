@@ -72,7 +72,7 @@ export default function CardBoard() {
 
   const current = safeCards.filter((t) => t.boardId === boardId)
 
-  const cols = width < 640 ? 1 : 2
+  const cols = width < 640 ? 1 : width < 1024 ? 2 : 3
   const rowHeight = width < 640 ? 170 : 170
 
 
