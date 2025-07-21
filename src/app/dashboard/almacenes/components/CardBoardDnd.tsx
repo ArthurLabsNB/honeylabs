@@ -60,7 +60,8 @@ export default function CardBoardDnd() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { width } = useElementSize(containerRef);
   const cols = width < 640 ? 1 : width < 1024 ? 2 : 3;
-  const rowHeight = width < 640 ? 200 : 200;
+  // Altura fija para todas las tarjetas
+  const rowHeight = 200;
   const marginX = 10;
   const marginY = 10;
   const colWidth = cols > 0 ? (width - marginX * (cols + 1)) / cols : 0;

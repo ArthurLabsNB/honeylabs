@@ -77,7 +77,8 @@ export default function CardBoard() {
   const current = safeCards.filter((t) => t.boardId === boardId)
 
   const cols = width < 640 ? 1 : width < 1024 ? 2 : 3
-  const rowHeight = width < 640 ? 170 : 170
+  // Altura fija para todas las tarjetas
+  const rowHeight = 200
 
 
   const layout: Layout[] = computeBoardLayout(current)
