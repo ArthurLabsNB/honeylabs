@@ -22,6 +22,8 @@ export default function CardBoard() {
 
   const containerRef = useRef<HTMLDivElement>(null)
   const { width } = useElementSize(containerRef)
+  const prevBoardId = useRef<string>()
+  const lastLayout = useRef<string>("[]")
 
   useEffect(() => {
     useTabStore.persist
@@ -67,12 +69,22 @@ export default function CardBoard() {
   useEffect(() => {
     if (!boardId) return
     const boardTabs = safeCards.filter(t => t.boardId === boardId)
+    const serialized = JSON.stringify(boardTabs)
+    const changedBoard = prevBoardId.current !== boardId
+    prevBoardId.current = boardId
+
+    if (changedBoard && boardTabs.length === 0) {
+      lastLayout.current = serialized
+      return
+    }
+    if (!changedBoard && lastLayout.current === serialized) return
+    lastLayout.current = serialized
     apiFetch("/api/dashboard/layout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ [boardId]: boardTabs }),
-    }).catch(() => {});
-  }, [boardId, safeCards]);
+    }).catch(() => {})
+  }, [boardId, safeCards])
 
   const current = safeCards.filter((t) => t.boardId === boardId)
 
