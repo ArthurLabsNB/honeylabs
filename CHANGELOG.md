@@ -51,6 +51,9 @@
 ## 0.8.16
 - Reaplicamos layouts guardados al recibir tarjetas remotas.
 
+## 0.8.17
+- Evitamos sobreescribir layouts vacíos al cambiar de tablero.
+
 ## 0.8.5
 - Registramos auditorías también al escanear códigos.
 - Mejoramos el manejo de errores al crear reportes y auditorías.
