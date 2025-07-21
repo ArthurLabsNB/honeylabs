@@ -42,18 +42,22 @@ export default function CardBoard() {
 
   useEffect(() => {
     if (!boardId) return
-    apiFetch("/api/dashboard/layout")
+    const currentBoardId = boardId
+    const controller = new AbortController()
+    apiFetch("/api/dashboard/layout", { signal: controller.signal })
       .then(jsonOrNull)
       .then((d) => {
+        if (currentBoardId !== boardId) return
         if (d && typeof d === "object") {
-          const tabs = (d[boardId] as Tab[]) ?? []
+          const tabs = (d[currentBoardId] as Tab[]) ?? []
           setTabs(prev => {
-            const others = prev.filter(t => t.boardId !== boardId)
+            const others = prev.filter(t => t.boardId !== currentBoardId)
             return [...others, ...tabs]
           })
         }
       })
       .catch(() => {})
+    return () => controller.abort()
   }, [boardId, setTabs])
 
   useEffect(() => {
