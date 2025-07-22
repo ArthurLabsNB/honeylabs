@@ -54,6 +54,11 @@
 ## 0.8.17
 - Evitamos sobreescribir layouts vacíos al cambiar de tablero.
 
+## 0.8.18
+- Calculamos `rowHeight` según el alto disponible en `CardBoard`.
+- Ajustamos `.dashboard-card` para un `min-height` coherente y sin barras dobles.
+- Verificamos con un test que `AddCardButton` siga visible en contenedores bajos.
+
 ## 0.8.5
 - Registramos auditorías también al escanear códigos.
 - Mejoramos el manejo de errores al crear reportes y auditorías.

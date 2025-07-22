@@ -21,7 +21,7 @@ export default function CardBoard() {
   const safeCards = Array.isArray(cards) ? cards : []
 
   const containerRef = useRef<HTMLDivElement>(null)
-  const { width } = useElementSize(containerRef)
+  const { width, height } = useElementSize(containerRef)
   const prevBoardId = useRef<string>()
   const lastLayout = useRef<string>("[]")
 
@@ -101,8 +101,8 @@ export default function CardBoard() {
   const current = safeCards.filter((t) => t.boardId === boardId)
 
   const cols = width < 640 ? 1 : width < 1024 ? 2 : 3
-  // Altura fija para todas las tarjetas
-  const rowHeight = 200
+  const desiredRows = 4
+  const rowHeight = height > 0 ? Math.max(120, Math.floor(height / desiredRows)) : 200
 
 
   const layout: Layout[] = computeBoardLayout(current)
