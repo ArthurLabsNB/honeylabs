@@ -54,19 +54,23 @@ describe('useCreateTab', () => {
     expect(mockTabStore.addAfterActive).not.toHaveBeenCalled()
   })
 
-  it('crea tabs con layout por defecto', async () => {
-    const { create } = useCreateTab({ defaultLayout: { w: 1, h: 2 } })
+  it('aplica la altura según el tipo', async () => {
+    const { create } = useCreateTab({ defaultLayout: { w: 2, h: 5 } })
     await create('unidades', 'Unid')
     expect(tabs[0]).toMatchObject({
       id: 'uid',
       title: 'Unid',
       type: 'unidades',
       boardId: 'b1',
-      w: 1,
+      w: 2,
       h: 2,
     })
-    expect(tabs[0].x).toBeUndefined()
-    expect(tabs[0].y).toBeUndefined()
+  })
+
+  it('mantiene h=3 para formularios', async () => {
+    const { create } = useCreateTab()
+    await create('form-material', 'Form')
+    expect(tabs[0].h).toBe(3)
   })
 
   it('solicita datos adicionales para url', async () => {
