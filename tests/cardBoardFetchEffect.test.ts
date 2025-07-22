@@ -53,10 +53,12 @@ describe('cambio rapido de tablero', () => {
           if (currentBoardId !== boardId) return
           if (d && typeof d === 'object') {
             const boardTabs = (d[currentBoardId] as Tab[]) ?? []
-            setTabs(prev => {
-              const others = prev.filter(t => t.boardId !== currentBoardId)
-              return [...others, ...boardTabs]
-            })
+            if (boardTabs.length > 0) {
+              setTabs(prev => {
+                const others = prev.filter(t => t.boardId !== currentBoardId)
+                return [...others, ...boardTabs]
+              })
+            }
           }
         })
         .catch(() => {})

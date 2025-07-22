@@ -33,8 +33,18 @@ export default function CardBoard() {
           .then(jsonOrNull)
           .then((d) => {
             if (d && typeof d === "object") {
-              const all = Object.values(d).flat() as Tab[]
-              setTabs(all)
+              setTabs((prev) => {
+                let updated = prev
+                for (const [id, arr] of Object.entries(d)) {
+                  if (Array.isArray(arr) && arr.length > 0) {
+                    updated = [
+                      ...updated.filter((t) => t.boardId !== id),
+                      ...(arr as Tab[]),
+                    ]
+                  }
+                }
+                return updated
+              })
             }
           })
           .catch(() => {})
@@ -52,10 +62,12 @@ export default function CardBoard() {
         if (currentBoardId !== boardId) return
         if (d && typeof d === "object") {
           const tabs = (d[currentBoardId] as Tab[]) ?? []
-          setTabs(prev => {
-            const others = prev.filter(t => t.boardId !== currentBoardId)
-            return [...others, ...tabs]
-          })
+          if (tabs.length > 0) {
+            setTabs(prev => {
+              const others = prev.filter(t => t.boardId !== currentBoardId)
+              return [...others, ...tabs]
+            })
+          }
         }
       })
       .catch(() => {})
