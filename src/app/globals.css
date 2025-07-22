@@ -471,3 +471,10 @@ html, body {
 .dashboard-overlay.hidden {
   @apply opacity-0 pointer-events-none;
 }
+
+/* ----- Notas ----- */
+.nota-tag-imagen { @apply bg-blue-600 text-white px-1 rounded; }
+.nota-tag-url { @apply bg-green-600 text-white px-1 rounded; }
+.nota-tag-doc { @apply bg-purple-600 text-white px-1 rounded; }
+.nota-tag-sticky { @apply bg-yellow-400 text-black px-1 rounded; }
+.notas-grid { @apply grid grid-cols-2 md:grid-cols-3 gap-2; }

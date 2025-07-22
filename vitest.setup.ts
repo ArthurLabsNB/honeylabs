@@ -27,6 +27,12 @@ class PrismaClient {
   material = {
     findMany: () => Promise.resolve(),
   }
+  nota = {
+    findMany: () => Promise.resolve(),
+    create: () => Promise.resolve(),
+    update: () => Promise.resolve(),
+    delete: () => Promise.resolve(),
+  }
   $transaction = (cb: any) => cb(this)
   $executeRawUnsafe = () => Promise.resolve()
   $use() {}
