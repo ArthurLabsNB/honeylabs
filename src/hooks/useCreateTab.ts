@@ -4,6 +4,7 @@ import { useBoardStore } from './useBoards'
 import { useToast } from '@/components/Toast'
 import { generarUUID } from '@/lib/uuid'
 import { usePrompt } from './usePrompt'
+import { tabConfig } from '@/app/dashboard/almacenes/components/tabOptions'
 
 interface Options {
   defaultLayout?: Pick<Tab, 'x' | 'y' | 'w' | 'h'>
@@ -41,6 +42,7 @@ export function useCreateTab(options?: Options) {
         type,
         side: 'left',
         ...options?.defaultLayout,
+        h: tabConfig[type]?.defaultH,
         ...extra,
       })
     },

@@ -8,10 +8,7 @@ import type { TabType } from "@/hooks/useTabs";
 
 export default function AddCardButton() {
   const toast = useToast();
-  const { create: createHook, disabled } = useCreateTab({
-    // Altura base suficiente para la mayoría de formularios
-    defaultLayout: { w: 1, h: 3 },
-  });
+  const { create: createHook, disabled } = useCreateTab();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
