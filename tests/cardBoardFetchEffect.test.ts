@@ -54,8 +54,12 @@ describe('cambio rapido de tablero', () => {
           if (d && typeof d === 'object') {
             const boardTabs = (d[currentBoardId] as Tab[]) ?? []
             setTabs(prev => {
-              const others = prev.filter(t => t.boardId !== currentBoardId)
-              return [...others, ...boardTabs]
+              const map = new Map(prev.map(t => [t.id, t]))
+              boardTabs.forEach(tab => {
+                const prevTab = map.get(tab.id)
+                map.set(tab.id, { ...prevTab, ...tab })
+              })
+              return Array.from(map.values())
             })
           }
         })
@@ -66,5 +70,53 @@ describe('cambio rapido de tablero', () => {
     runEffect('b2')
     await vi.runAllTimersAsync()
     expect(tabs[0].boardId).toBe('b2')
+  })
+
+  it('conserva estado collapsed local al fusionar', async () => {
+    const layouts = {
+      b1: [{ id: 'a', boardId: 'b1', title: 'A', type: 'materiales' } as Tab],
+    }
+    global.fetch = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify(layouts), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    )
+
+    let boardId = 'b1'
+    let tabs: Tab[] = [
+      { id: 'a', boardId: 'b1', title: 'A', type: 'materiales', collapsed: true } as Tab,
+    ]
+    let controller: AbortController | undefined
+    const setTabs = (updater: (prev: Tab[]) => Tab[]) => {
+      tabs = updater(tabs)
+    }
+
+    const runEffect = () => {
+      controller?.abort()
+      controller = new AbortController()
+      const currentBoardId = boardId
+      apiFetch('/api/dashboard/layout', { signal: controller.signal })
+        .then(jsonOrNull)
+        .then(d => {
+          if (currentBoardId !== boardId) return
+          if (d && typeof d === 'object') {
+            const boardTabs = (d[currentBoardId] as Tab[]) ?? []
+            setTabs(prev => {
+              const map = new Map(prev.map(t => [t.id, t]))
+              boardTabs.forEach(tab => {
+                const prevTab = map.get(tab.id)
+                map.set(tab.id, { ...prevTab, ...tab })
+              })
+              return Array.from(map.values())
+            })
+          }
+        })
+        .catch(() => {})
+    }
+
+    runEffect()
+    await Promise.resolve()
+    expect(tabs[0].collapsed).toBe(true)
   })
 })
