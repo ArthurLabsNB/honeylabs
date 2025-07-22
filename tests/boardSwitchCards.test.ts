@@ -70,4 +70,14 @@ describe('persistencia por tablero', () => {
     tabs = applyLayout(tabs, compactLayout(reloadA))
     expect(tabs.find(t => t.id === 'a')?.x).toBe(1)
   })
+
+  it('layout vacio no elimina tarjetas existentes', () => {
+    ;(localStorage.getItem as any).mockImplementation(() => JSON.stringify([]))
+
+    let tabs = [{ id: 'a', boardId: 'b1', title: 'A', type: 'materiales', x: 0, y: 0 } as any]
+    const stored = JSON.parse(localStorage.getItem('card-layout-b1') as string)
+    tabs = applyLayout(tabs, compactLayout(stored))
+    expect(tabs).toHaveLength(1)
+    expect(tabs[0].id).toBe('a')
+  })
 })
