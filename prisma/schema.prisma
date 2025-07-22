@@ -530,3 +530,17 @@ enum PrioridadAlerta {
   MEDIA
   BAJA
 }
+
+model Nota {
+  id        Int      @id @default(autoincrement())
+  tabId     String
+  tipo      NotaTipo
+  contenido String
+}
+
+enum NotaTipo {
+  imagen
+  url
+  doc
+  sticky
+}

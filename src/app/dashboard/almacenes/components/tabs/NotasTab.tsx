@@ -1,77 +1,107 @@
 "use client"
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { generarUUID } from '@/lib/uuid'
 import MediaWidget from '../../../components/widgets/MediaWidget'
+import { useToast } from '@/components/Toast'
+import useNotas from '@/hooks/useNotas'
 
-interface DocItem { name: string; url: string }
-interface Sticky { id: string; text: string }
+interface DocItem { id: number; name: string; contenido: string }
 
 export default function NotasTab({ tabId }: { tabId: string }) {
-  const [images, setImages] = useState<string[]>([])
-  const [urls, setUrls] = useState<string[]>([])
-  const [docs, setDocs] = useState<DocItem[]>([])
-  const [stickies, setStickies] = useState<Sticky[]>([])
+  const { notas, crear, actualizar, eliminar, mutate } = useNotas(tabId)
+  const toast = useToast()
   const [input, setInput] = useState('')
 
+  const [imgOrder, setImgOrder] = useState<number[]>([])
+  const [urlOrder, setUrlOrder] = useState<number[]>([])
+  const [docOrder, setDocOrder] = useState<number[]>([])
+
+  const images = notas.filter(n => n.tipo === 'imagen')
+  const urls = notas.filter(n => n.tipo === 'url')
+  const docs = notas.filter(n => n.tipo === 'doc') as DocItem[]
+  const stickies = notas.filter(n => n.tipo === 'sticky')
+
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(`notas-${tabId}`)
-      if (!raw) return
-      const data = JSON.parse(raw) as {
-        images?: string[]
-        urls?: string[]
-        docs?: DocItem[]
-        stickies?: Sticky[]
+    setImgOrder(images.map(n => n.id))
+    setUrlOrder(urls.map(n => n.id))
+    setDocOrder(docs.map(n => n.id))
+  }, [images, urls, docs])
+
+  const move = (arr: number[], from: number, to: number) => {
+    const copy = arr.slice()
+    const [it] = copy.splice(from, 1)
+    copy.splice(to, 0, it)
+    return copy
+  }
+
+  const moveImage = (idx: number, dir: number) =>
+    setImgOrder(o => move(o, idx, idx + dir))
+  const moveUrl = (idx: number, dir: number) =>
+    setUrlOrder(o => move(o, idx, idx + dir))
+  const moveDoc = (idx: number, dir: number) =>
+    setDocOrder(o => move(o, idx, idx + dir))
+
+  const fileToBase64 = (file: File) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        const res = reader.result
+        if (typeof res === 'string') {
+          const comma = res.indexOf(',')
+          resolve(comma >= 0 ? res.slice(comma + 1) : res)
+        } else reject(new Error('read error'))
       }
-      setImages(data.images || [])
-      setUrls(data.urls || [])
-      setDocs(data.docs || [])
-      setStickies(data.stickies || [])
-    } catch {}
-  }, [tabId])
-
-  useEffect(() => {
-    const data = { images, urls, docs, stickies }
-    try {
-      localStorage.setItem(`notas-${tabId}`, JSON.stringify(data))
-    } catch {}
-  }, [images, urls, docs, stickies, tabId])
-
-  const onDrop = useCallback((accepted: File[]) => {
-    accepted.forEach(file => {
-      const url = URL.createObjectURL(file)
-      if (file.type.startsWith('image/')) setImages(i => [...i, url])
-      else if (file.name.match(/\.docx$/i))
-        setDocs(d => [...d, { name: file.name, url }])
+      reader.onerror = () => reject(reader.error)
+      reader.readAsDataURL(file)
     })
-  }, [])
+
+  const onDrop = useCallback(
+    async (accepted: File[]) => {
+      for (const file of accepted) {
+        if (file.type.startsWith('image/')) {
+          const b64 = await fileToBase64(file)
+          await crear('imagen', b64)
+        } else if (file.name.match(/\.docx$/i)) {
+          const b64 = await fileToBase64(file)
+          await crear('doc', b64)
+        }
+      }
+      mutate()
+    },
+    [crear, mutate],
+  )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
-  const handleCommand = () => {
+  const handleCommand = async () => {
     if (input.startsWith('/imagen ')) {
-      const url = input.replace('/imagen ', '').trim()
-      if (url) setImages(i => [...i, url])
+      const val = input.replace('/imagen ', '').trim()
+      if (val) await crear('imagen', val)
       setInput('')
+      mutate()
       return
     }
     if (input.startsWith('/url ')) {
-      const url = input.replace('/url ', '').trim()
-      if (url) setUrls(u => [...u, url])
+      const val = input.replace('/url ', '').trim()
+      if (val) await crear('url', val)
       setInput('')
+      mutate()
       return
     }
     if (input.startsWith('/postit ')) {
       const text = input.replace('/postit ', '').trim()
-      if (text) setStickies(s => [...s, { id: generarUUID(), text }])
+      if (text) await crear('sticky', text)
       setInput('')
+      mutate()
       return
     }
   }
 
-  const updateSticky = (id: string, text: string) =>
-    setStickies(s => s.map(st => (st.id === id ? { ...st, text } : st)))
+  const updateSticky = async (id: number, text: string) => {
+    await actualizar(id, text)
+    mutate()
+  }
 
   return (
     <div className="space-y-4" {...getRootProps()}>
@@ -99,42 +129,72 @@ export default function NotasTab({ tabId }: { tabId: string }) {
         </div>
       )}
       {images.length > 0 && (
-        <div className="grid grid-cols-2 gap-2">
-          {images.map(src => (
-            <img key={src} src={src} className="w-full h-32 object-cover rounded" />
-          ))}
+        <div className="notas-grid">
+          {imgOrder.map((id, idx) => {
+            const it = images.find(i => i.id === id)
+            if (!it) return null
+            return (
+              <div key={id} className="space-y-1">
+                <img
+                  src={`data:image/*;base64,${it.contenido}`}
+                  className="w-full h-32 object-cover rounded"
+                />
+                <div className="flex gap-1 text-xs">
+                  <button onClick={() => moveImage(idx, -1)} disabled={idx === 0}>↑</button>
+                  <button onClick={() => moveImage(idx, 1)} disabled={idx === imgOrder.length - 1}>↓</button>
+                  <button onClick={() => eliminar(id)}>X</button>
+                </div>
+              </div>
+            )
+          })}
         </div>
       )}
-      {urls.map(url => (
-        <div key={url} className="h-40">
-          <MediaWidget url={url} />
-        </div>
-      ))}
-      {docs.map(doc => (
-        <div key={doc.url} className="space-y-1">
-          <iframe
-            src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(doc.url)}`}
-            className="w-full h-48"
-          />
-          <div className="flex gap-2 text-xs">
-            <a href={`ms-word:ofe|u|${doc.url}`} className="underline">
-              Editar
-            </a>
-            <a href={doc.url} download={doc.name} className="underline">
-              Descargar
-            </a>
+      {urlOrder.map((id, idx) => {
+        const it = urls.find(u => u.id === id)
+        if (!it) return null
+        return (
+          <div key={id} className="h-40 space-y-1">
+            <MediaWidget url={it.contenido} />
+            <div className="flex gap-1 text-xs">
+              <button onClick={() => moveUrl(idx, -1)} disabled={idx === 0}>↑</button>
+              <button onClick={() => moveUrl(idx, 1)} disabled={idx === urlOrder.length - 1}>↓</button>
+              <button onClick={() => eliminar(id)}>X</button>
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
+      {docOrder.map((id, idx) => {
+        const it = docs.find(d => d.id === id)
+        if (!it) return null
+        return (
+          <div key={id} className="space-y-1">
+            <iframe
+              src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(it.contenido)}`}
+              className="w-full h-48"
+            />
+            <div className="flex gap-1 text-xs">
+              <a href={`ms-word:ofe|u|${it.contenido}`} className="underline">Editar</a>
+              <a href={it.contenido} download className="underline">Descargar</a>
+              <button onClick={() => moveDoc(idx, -1)} disabled={idx === 0}>↑</button>
+              <button onClick={() => moveDoc(idx, 1)} disabled={idx === docOrder.length - 1}>↓</button>
+              <button onClick={() => eliminar(id)}>X</button>
+            </div>
+          </div>
+        )
+      })}
       {stickies.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {stickies.map(s => (
-            <textarea
-              key={s.id}
-              value={s.text}
-              onChange={e => updateSticky(s.id, e.target.value)}
-              className="no-drag bg-yellow-200 text-black p-2 rounded w-32 h-32 resize-none"
-            />
+            <div key={s.id} className="relative">
+              <textarea
+                value={s.contenido}
+                onChange={e => updateSticky(s.id, e.target.value)}
+                className="no-drag bg-yellow-200 text-black p-2 rounded w-32 h-32 resize-none"
+              />
+              <div className="flex gap-1 text-xs mt-1">
+                <button onClick={() => eliminar(s.id)}>Borrar</button>
+              </div>
+            </div>
           ))}
         </div>
       )}
