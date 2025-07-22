@@ -1,5 +1,5 @@
 "use client";
-import { ArrowLeft, Save, Search, ClipboardList, Trash2, QrCode, ChevronUp, ChevronDown } from "lucide-react";
+import { ArrowLeft, Save, Search, ClipboardList, Trash2, QrCode, ChevronUp, ChevronDown, Share2 } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -7,6 +7,7 @@ import useSession from "@/hooks/useSession";
 import UserMenu from "@/components/UserMenu";
 import AlmacenTools from "./AlmacenTools";
 import TabsMenu from "./TabsMenu";
+import ShareAlmacenModal from "./ShareAlmacenModal";
 import { jsonOrNull } from "@lib/http";
 import { apiFetch } from "@lib/api";
 import { useDashboardUI } from "../../ui";
@@ -34,6 +35,7 @@ export default function AlmacenDetailNavbar() {
   const [original, setOriginal] = useState("");
   const [guardando, setGuardando] = useState(false);
   const [dirty, setDirty] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -95,6 +97,7 @@ export default function AlmacenDetailNavbar() {
 
 
   return (
+    <>
     <header
       className={`flex items-center justify-between h-[3.5rem] min-h-[3.5rem] px-3 md:px-4 border-b border-[var(--dashboard-border)] bg-[var(--dashboard-navbar)] fixed left-0 right-0 z-30 transition-transform duration-300 ${collapsed ? '-translate-y-full' : 'translate-y-0'}`}
       style={{ top: fullscreen ? 0 : NAVBAR_HEIGHT }}
@@ -163,6 +166,13 @@ export default function AlmacenDetailNavbar() {
         <TabsMenu />
         <AlmacenTools id={id as string} />
         <button
+          onClick={() => setShareOpen(true)}
+          className="p-2 hover:bg-white/10 rounded-lg"
+          title="Compartir"
+        >
+          <Share2 className="w-5 h-5" />
+        </button>
+        <button
           onClick={guardar}
           disabled={!cambios || guardando}
           className={`flex items-center gap-2 px-4 h-9 rounded-lg text-sm font-medium transition-colors ${cambios ? "bg-[var(--dashboard-accent)] text-black hover:bg-[var(--dashboard-accent-hover)]" : "bg-gray-600 text-gray-300"}`}
@@ -183,5 +193,13 @@ export default function AlmacenDetailNavbar() {
         </button>
       </div>
     </header>
+    {shareOpen && (
+      <ShareAlmacenModal
+        id={id as string}
+        nombre={nombre}
+        onClose={() => setShareOpen(false)}
+      />
+    )}
+    </>
   );
 }
