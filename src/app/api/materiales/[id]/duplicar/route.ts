@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@lib/prisma'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
+import { registrarAuditoria } from '@lib/reporter'
 import crypto from 'node:crypto'
 import * as logger from '@lib/logger'
 
@@ -88,7 +89,15 @@ export async function POST(req: NextRequest) {
       return creado
     })
 
-    return NextResponse.json({ material: nuevo })
+    const { auditoria, error: auditError } = await registrarAuditoria(
+      req,
+      'material',
+      id,
+      'duplicacion',
+      nuevo,
+    )
+
+    return NextResponse.json({ material: nuevo, auditoria, auditError })
   } catch (err) {
     logger.error('POST /api/materiales/[id]/duplicar', err)
     return NextResponse.json({ error: 'Error al duplicar' }, { status: 500 })

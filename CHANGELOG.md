@@ -66,6 +66,9 @@
 ## 0.8.20
 - Añadimos margen superior en `AuditoriasPanel` y `UnidadesPanel` para separar secciones.
 
+## 0.8.21
+- Registramos auditoría al duplicar materiales y almacenes.
+
 ## 0.8.5
 - Registramos auditorías también al escanear códigos.
 - Mejoramos el manejo de errores al crear reportes y auditorías.
