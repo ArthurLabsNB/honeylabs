@@ -64,7 +64,7 @@ export default function MaterialList({
     return (
       <img
         src={src}
-        className="w-32 h-32 object-cover rounded cursor-pointer"
+        className="w-32 h-32 object-contain rounded cursor-pointer"
         alt="miniatura"
         onClick={(e) => {
           e.stopPropagation();

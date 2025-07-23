@@ -445,7 +445,7 @@ function PartnersSection() {
 // =============== EXPORT DE LA PAGINA PRINCIPAL ===============
 export default function Page() {
   return (
-    <main className="relative min-h-screen w-full font-sans overflow-x-hidden">
+    <main className="relative min-h-screen w-full font-sans overflow-x-hidden mt-6">
       <HeroSection />
       <FeaturesSection />
       <DemoSection />
