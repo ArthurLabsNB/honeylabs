@@ -7,6 +7,7 @@ import useHistorialAlmacen from "@/hooks/useHistorialAlmacen";
 import useHistorialUnidad from "@/hooks/useHistorialUnidad";
 import { useState, useMemo } from "react";
 import { apiFetch } from "@lib/api";
+import * as logger from '@lib/logger'
 import Link from "next/link";
 import {
   PlusIcon,
@@ -140,7 +141,7 @@ export default function HistorialMovimientosPanel({ material, almacenId, unidadI
           toast.show('Este movimiento no tiene datos disponibles.', 'error');
         }
       } catch (err) {
-        console.error(err);
+        logger.error(err);
         toast.show('Error al obtener movimiento.', 'error');
       }
     } else if (pref === 'm') {
@@ -170,7 +171,7 @@ export default function HistorialMovimientosPanel({ material, almacenId, unidadI
           toast.show('Este movimiento no tiene datos disponibles.', 'error');
         }
       } catch (err) {
-        console.error(err);
+        logger.error(err);
         toast.show('Error al obtener movimiento.', 'error');
       }
     }

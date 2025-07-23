@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer';
 import { plantillaRegistroHTML } from '@/templates/email/registro.html';
 import { plantillaConfirmacionHTML } from '@/templates/email/confirmacion.html';
 import { getCorreoDestino } from './rutasCorreo';
+import * as logger from '@lib/logger'
 
 // ✅ Variables de entorno requeridas
 const EMAIL_ADMIN = process.env.EMAIL_ADMIN;
@@ -40,7 +41,7 @@ export async function enviarCorreoValidacionEmpresa({
 
     // 📍 Determinar a qué correo enviar la notificación interna
     const correoDestino = getCorreoDestino(tipoCuenta);
-    console.log('[DESTINO_CORREO_INTERNO]', correoDestino);
+    logger.info('[DESTINO_CORREO_INTERNO]', correoDestino);
 
     // 🧾 Generar plantillas personalizadas
     const htmlInterno = plantillaRegistroHTML({ nombre, correo, tipoCuenta });
@@ -55,7 +56,7 @@ export async function enviarCorreoValidacionEmpresa({
       html: htmlInterno,
     });
 
-    console.log('[✅ EMAIL INTERNO ENVIADO]', envioInterno.messageId);
+    logger.info('[✅ EMAIL INTERNO ENVIADO]', envioInterno.messageId);
 
     // 📬 2. Correo directo al usuario
     const envioUsuario = await transporter.sendMail({
@@ -65,12 +66,12 @@ export async function enviarCorreoValidacionEmpresa({
       html: htmlUsuario,
     });
 
-    console.log('[✅ EMAIL USUARIO ENVIADO]', envioUsuario.messageId);
+    logger.info('[✅ EMAIL USUARIO ENVIADO]', envioUsuario.messageId);
 
     return { enviado: true };
 
   } catch (error: any) {
-    console.error('[❌ ERROR ENVÍO CORREO]', error.message || error);
+    logger.error('[❌ ERROR ENVÍO CORREO]', error.message || error);
     return {
       enviado: false,
       error: error.message || 'Error desconocido',

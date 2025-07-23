@@ -83,7 +83,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ unidad })
   } catch (err) {
     logger.error('GET /api/materiales/[id]/unidades/[unidadId]', err)
-    if (process.env.NODE_ENV === 'development') console.error(err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
   }
 }
@@ -194,7 +193,6 @@ export async function PUT(req: NextRequest) {
     }
   } catch (err) {
     logger.error('PUT /api/materiales/[id]/unidades/[unidadId]', err)
-    if (process.env.NODE_ENV === 'development') console.error(err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
   }
 }
@@ -229,7 +227,6 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ success: true, auditoria, auditError })
   } catch (err) {
     logger.error('DELETE /api/materiales/[id]/unidades/[unidadId]', err)
-    if (process.env.NODE_ENV === 'development') console.error(err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
   }
 }

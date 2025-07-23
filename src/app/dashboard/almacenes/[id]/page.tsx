@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import QuickInventoryModal from "./QuickInventoryModal";
 import { jsonOrNull } from "@lib/http";
 import { apiFetch } from "@lib/api";
+import * as logger from '@lib/logger'
 import { QUICK_INVENTORY_EVENT } from "@/lib/ui-events";
 
 interface Inventory {
@@ -31,7 +32,7 @@ export default function AlmacenPage() {
           }
         })
         .catch((err) => {
-          if (err.name !== "AbortError") console.error(err);
+          if (err.name !== 'AbortError') logger.error(err);
         });
 
     window.addEventListener(QUICK_INVENTORY_EVENT, fetchInv as EventListener);

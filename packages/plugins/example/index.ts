@@ -1,3 +1,5 @@
+import * as logger from '@lib/logger'
+
 export default function () {
-  console.log('Example plugin loaded');
+  logger.info('Example plugin loaded');
 }

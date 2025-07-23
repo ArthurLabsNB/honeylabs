@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SESSION_COOKIE } from '@lib/constants'
+import * as logger from '@lib/logger'
 
 const PROTECTED_PREFIXES = ['/dashboard', '/configuracion', '/admin']
 const API_LOGIN = '/api/login'
@@ -62,7 +63,7 @@ export function middleware(req: NextRequest) {
 
     if (entry && now - entry.lastRequest < RATE_LIMIT_WINDOW_MS) {
       if (entry.count >= RATE_LIMIT_MAX) {
-        console.warn(`[RATE LIMIT] Bloqueado: ${key} en ${path} (${entry.count} reqs/min)`)
+        logger.warn(`[RATE LIMIT] Bloqueado: ${key} en ${path} (${entry.count} reqs/min)`)
         return new NextResponse(
           JSON.stringify({ error: 'Demasiadas peticiones. Intenta más tarde.' }),
           {
