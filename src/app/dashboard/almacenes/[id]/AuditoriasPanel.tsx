@@ -178,7 +178,7 @@ export default function HistorialMovimientosPanel({ material, almacenId, unidadI
   };
 
   return (
-    <div className="p-4 border rounded-md space-y-2">
+    <div className="p-4 border rounded-md space-y-2 mt-4">
       <div className="flex items-center justify-between">
         <h2 className="font-semibold">Auditorías</h2>
         <Link href="/dashboard/auditorias" className="text-sm underline">
