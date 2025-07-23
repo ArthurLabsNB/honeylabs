@@ -144,7 +144,7 @@ export default function WarehouseBoard() {
   );
 
   return (
-    <div className="flex flex-col md:flex-row gap-4 md:gap-0 p-4 pb-10">
+    <div className="mt-4 flex flex-col md:flex-row gap-4 md:gap-0 p-4 pb-10">
       <div className="md:w-1/2 md:pr-4 md:border-r md:border-[var(--dashboard-border)] space-y-4">
         {unidadSel ? (
           <UnidadForm
