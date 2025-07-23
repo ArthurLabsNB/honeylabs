@@ -100,6 +100,9 @@ Para iniciar el entorno de desarrollo:
 pnpm dev
 ```
 
+Este comando ejecuta `pnpm gen:dev`, el cual genera el cliente de Prisma con
+`--data-proxy` cuando la variable `PRISMA_DATA_PROXY` es `true`.
+
 La aplicación estará disponible en [honeylabs.vercel.app] por el momento hasta que se tenga un host fijo.
 Entender que este repositorio solo cuenta "Funcional" la base del proyecto, no se piensa colocar completo por el momento.
 
