@@ -79,6 +79,13 @@ DATABASE_URL=$DIRECT_DB_URL pnpm prisma migrate deploy
 vercel --prod
 ```
 
+Si Prisma arroja el error `P2021` indicando que la tabla `Usuario` no existe,
+asegúrate de aplicar todas las migraciones con:
+
+```sh
+pnpm prisma migrate deploy
+```
+
 Configura las variables de entorno copiando `.env.example` a `.env`.
 Debes definir `DATABASE_URL` con la URL de Prisma Accelerate y
 `DIRECT_DB_URL` con la conexión directa usada en las migraciones.

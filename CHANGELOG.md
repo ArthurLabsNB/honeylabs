@@ -59,6 +59,10 @@
 - Ajustamos `.dashboard-card` para un `min-height` coherente y sin barras dobles.
 - Verificamos con un test que `AddCardButton` siga visible en contenedores bajos.
 
+## 0.8.19
+- Manejamos el error `P2021` de Prisma en `/api/login` para indicar que la base
+  de datos requiere migraciones.
+
 ## 0.8.5
 - Registramos auditorías también al escanear códigos.
 - Mejoramos el manejo de errores al crear reportes y auditorías.
