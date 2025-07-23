@@ -21,4 +21,16 @@ describe('HEAD /api/app/url', () => {
     await fs.writeFile(file, backup)
     global.fetch = original
   })
+
+  it('returns error unreachable when fetch fails', async () => {
+    const original = global.fetch
+    global.fetch = vi.fn().mockRejectedValue(new Error('offline'))
+    const backup = await fs.readFile(file, 'utf8')
+    await fs.writeFile(file, JSON.stringify({ version: '1', url: appUrl, sha256: 'a' }))
+    const res = await HEAD()
+    expect(res.status).toBe(502)
+    expect(await res.json()).toEqual({ error: 'unreachable' })
+    await fs.writeFile(file, backup)
+    global.fetch = original
+  })
 })
