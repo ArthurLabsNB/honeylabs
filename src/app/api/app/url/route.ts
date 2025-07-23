@@ -1,6 +1,6 @@
 export const runtime = 'nodejs'
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs/promises'
 import path from 'path'
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
@@ -20,10 +20,11 @@ export async function GET() {
   }
 }
 
-export async function HEAD() {
+export async function HEAD(req: NextRequest) {
   try {
     const raw = await fs.readFile(appInfoPath, 'utf8')
-    const { url } = JSON.parse(raw) as { url: string }
+    let { url } = JSON.parse(raw) as { url: string }
+    url = new URL(url, req.nextUrl.origin).href
     let res: Response
     try {
       res = await fetch(url, { method: 'HEAD' })
