@@ -3,7 +3,6 @@ import { useState, useCallback, useEffect, useRef } from 'react'
 import MaterialList from '../MaterialList'
 import type { Material } from '../MaterialRow'
 import { useBoard } from '../../board/BoardProvider'
-import { useTabHelpers } from '@/hooks/useTabHelpers'
 import { generarUUID } from '@/lib/uuid'
 import { openMaterial as doOpenMaterial } from '../../utils/openMaterial'
 import { useToast } from '@/components/Toast'
@@ -20,7 +19,6 @@ export default function MaterialesTab() {
     eliminar,
     mutate,
   } = useBoard()
-  const { ensureTab, openForm } = useTabHelpers()
   const toast = useToast()
   const [busqueda, setBusqueda] = useState('')
   const [orden, setOrden] = useState<'nombre' | 'cantidad'>('nombre')
@@ -61,10 +59,8 @@ export default function MaterialesTab() {
       doOpenMaterial(id, {
         setSelectedId,
         setUnidadSel,
-        ensureTab,
-        openForm,
       }),
-    [ensureTab, openForm, setSelectedId, setUnidadSel]
+    [setSelectedId, setUnidadSel]
   )
 
   return (

@@ -1,7 +1,6 @@
 "use client";
 import UnidadesPanel from '../../[id]/UnidadesPanel'
 import { useBoard } from '../../board/BoardProvider'
-import { useTabHelpers } from '@/hooks/useTabHelpers'
 import useUnidades from '@/hooks/useUnidades'
 import { useCallback } from 'react'
 
@@ -9,7 +8,6 @@ export default function UnidadesTab() {
   const { materiales, selectedId, setUnidadSel } = useBoard()
   const selected = materiales.find(m => m.id === selectedId) || null
   const { obtener } = useUnidades(selected?.dbId)
-  const { openForm } = useTabHelpers()
 
   const openUnidad = useCallback(
     async (u: any) => {
@@ -17,9 +15,8 @@ export default function UnidadesTab() {
       const info = await obtener(u.id)
       if (!info) return
       setUnidadSel(info)
-      openForm('form-unidad', 'Unidad')
     },
-    [obtener, setUnidadSel, openForm]
+    [obtener, setUnidadSel]
   )
 
   return (
