@@ -122,7 +122,7 @@ export default function MaterialForm({
       }
       onChange(campo, e.target.value || null);
     },
-    [material.archivos, onChange, toast],
+    [material?.archivos, onChange, toast],
   );
 
   if (!material) {
