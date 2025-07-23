@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import AlmacenDetailNavbar from "../components/AlmacenDetailNavbar";
 import Spinner from "@/components/Spinner";
 import useSession from "@/hooks/useSession";
-import WarehouseBoard from "./WarehouseBoard";
+import WarehouseBoard from "../components/WarehouseBoard";
 import { NAVBAR_HEIGHT } from "../../constants";
 import { BoardProvider } from "../board/BoardProvider";
 import { DetalleUIProvider, useDetalleUI } from "../DetalleUI";
