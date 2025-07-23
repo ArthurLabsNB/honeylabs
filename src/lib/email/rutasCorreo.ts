@@ -1,4 +1,5 @@
 // 📦 Módulo de rutas inteligentes para correo según tipo de cuenta
+import * as logger from '@lib/logger'
 
 /**
  * Devuelve el correo destino correspondiente al tipo de cuenta.
@@ -17,13 +18,13 @@ export function getCorreoDestino(tipoCuenta: string): string {
 
   // 🚨 Validación por variable ausente
   if (!EMAIL_ESTANDAR) {
-    console.error('❌ Falta EMAIL_DESTINO_ESTANDAR en el entorno.');
+    logger.error('❌ Falta EMAIL_DESTINO_ESTANDAR en el entorno.');
   }
   if (!EMAIL_VALIDACION) {
-    console.error('❌ Falta EMAIL_DESTINO_VALIDACION en el entorno.');
+    logger.error('❌ Falta EMAIL_DESTINO_VALIDACION en el entorno.');
   }
   if (!EMAIL_ADMIN) {
-    console.error('❌ Falta EMAIL_ADMIN en el entorno.');
+    logger.error('❌ Falta EMAIL_ADMIN en el entorno.');
   }
 
   if (!EMAIL_ESTANDAR || !EMAIL_VALIDACION || !EMAIL_ADMIN) {
@@ -37,7 +38,7 @@ export function getCorreoDestino(tipoCuenta: string): string {
     case 'individual':
       return EMAIL_ESTANDAR;
     default:
-      console.warn(`⚠️ Tipo de cuenta desconocido: "${tipoCuenta}". Usando EMAIL_ADMIN como respaldo.`);
+      logger.warn(`⚠️ Tipo de cuenta desconocido: "${tipoCuenta}". Usando EMAIL_ADMIN como respaldo.`);
       return EMAIL_ADMIN;
   }
 }

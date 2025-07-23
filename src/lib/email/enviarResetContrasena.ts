@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { plantillaResetContrasenaHTML } from '@/templates/email/resetContrasena.html';
+import * as logger from '@lib/logger'
 
 const SMTP_USER = process.env.SMTP_USER;
 const SMTP_PASS = process.env.SMTP_PASS;
@@ -33,10 +34,10 @@ export async function enviarCorreoResetContrasena({
       html,
     });
 
-    console.log('[EMAIL_RESET_ENVIADO]', info.messageId);
+    logger.info('[EMAIL_RESET_ENVIADO]', info.messageId);
     return { enviado: true };
   } catch (error: any) {
-    console.error('[ERROR_EMAIL_RESET]', error);
+    logger.error('[ERROR_EMAIL_RESET]', error);
     return { enviado: false, error: error.message };
   }
 }

@@ -1,4 +1,5 @@
 import metadata from "../../packages/plugins/metadata.json";
+import * as logger from '@lib/logger'
 
 export async function loadPlugins() {
   const list: { name: string; entry: string }[] = (metadata as any).plugins || [];
@@ -8,7 +9,7 @@ export async function loadPlugins() {
       const mod = await import(`../../packages/plugins/${p.name}/index`);
       loaded.push(mod.default?.());
     } catch (err) {
-      console.error('Failed to load plugin', p.name, err);
+      logger.error('Failed to load plugin', p.name, err);
     }
   }
   return loaded;

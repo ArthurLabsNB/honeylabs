@@ -1,3 +1,5 @@
+import * as logger from '@lib/logger'
+
 export async function logAudit(
   usuarioId: number | null,
   accion: string,
@@ -15,6 +17,6 @@ export async function logAudit(
       payload ? JSON.stringify(payload) : null,
     )
   } catch (err) {
-    console.error('audit log error:', err)
+    logger.error('audit log error:', err)
   }
 }

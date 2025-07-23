@@ -5,6 +5,7 @@ import { FOCUS_SEARCH_EVENT } from "@/lib/ui-events";
 import { nanoid } from "nanoid";
 import { jsonOrNull } from "@lib/http";
 import { apiFetch } from "@lib/api";
+import * as logger from '@lib/logger'
 import type { Usuario } from "@/types/usuario";
 import useSession from "@/hooks/useSession";
 import { useParams } from "next/navigation";
@@ -278,7 +279,7 @@ export default function PanelPage() {
           localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify([{ id: 'main', nombre: 'Principal', permiso: 'edicion', widgets: wid, layout: lay }]))
         }
       } catch (err) {
-        console.error("Error al cargar widgets:", err);
+        logger.error('Error al cargar widgets:', err);
       }
     }
 

@@ -61,7 +61,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ unidades })
   } catch (err) {
     logger.error('GET /api/materiales/[id]/unidades', err)
-    if (process.env.NODE_ENV === 'development') console.error(err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
   }
 }
@@ -172,7 +171,6 @@ export async function POST(req: NextRequest) {
     }
   } catch (err) {
     logger.error('POST /api/materiales/[id]/unidades', err)
-    if (process.env.NODE_ENV === 'development') console.error(err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
   }
 }
