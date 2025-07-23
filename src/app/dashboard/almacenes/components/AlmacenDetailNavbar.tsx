@@ -1,5 +1,5 @@
 "use client";
-import { ArrowLeft, Save, Search, ClipboardList, Trash2, QrCode, ChevronUp, ChevronDown, Share2 } from "lucide-react";
+import { ArrowLeft, Save, QrCode, ChevronUp, ChevronDown, Share2 } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -15,8 +15,6 @@ import { useDetalleUI } from "../DetalleUI";
 import { NAVBAR_HEIGHT } from "../../constants";
 import { useToast } from "@/components/Toast";
 import {
-  QUICK_INVENTORY_EVENT,
-  VACIA_MATERIALES_EVENT,
   AUDIT_CANCEL_EVENT,
   AUDIT_PREVIEW_EVENT,
   ALMACEN_DIRTY_EVENT,
@@ -117,39 +115,11 @@ export default function AlmacenDetailNavbar() {
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-1 mr-2">
           <button
-            onClick={() =>
-              window.dispatchEvent(new Event(QUICK_INVENTORY_EVENT))
-            }
-            className="p-2 hover:bg-white/10 rounded-lg"
-            title="Vista rápida"
-          >
-            <ClipboardList className="w-5 h-5" />
-          </button>
-          <button
             onClick={() => router.push(`/dashboard/almacenes/${id}/scan`)}
             className="p-2 hover:bg-white/10 rounded-lg"
             title="Escanear"
           >
             <QrCode className="w-5 h-5" />
-          </button>
-          <button
-            onClick={() => {
-              const el = document.getElementById('busqueda-materiales') as HTMLInputElement | null
-              el?.focus()
-            }}
-            className="p-2 hover:bg-white/10 rounded-lg"
-            title="Buscar"
-          >
-            <Search className="w-5 h-5" />
-          </button>
-          <button
-            onClick={() =>
-              window.dispatchEvent(new Event(VACIA_MATERIALES_EVENT))
-            }
-            className="p-2 hover:bg-white/10 rounded-lg"
-            title="Vaciar"
-          >
-            <Trash2 className="w-5 h-5" />
           </button>
           {auditActive && (
             <button
