@@ -24,7 +24,12 @@ export async function HEAD() {
   try {
     const raw = await fs.readFile(appInfoPath, 'utf8')
     const { url } = JSON.parse(raw) as { url: string }
-    const res = await fetch(url, { method: 'HEAD' })
+    let res: Response
+    try {
+      res = await fetch(url, { method: 'HEAD' })
+    } catch {
+      return NextResponse.json({ error: 'unreachable' }, { status: 502 })
+    }
     if (res.ok) return new Response(null)
     if (!res.ok && process.env.AWS_APK_URL) {
       return NextResponse.json({ url: process.env.AWS_APK_URL })
