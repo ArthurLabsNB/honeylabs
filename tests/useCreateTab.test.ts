@@ -73,6 +73,12 @@ describe('useCreateTab', () => {
     expect(tabs[0].h).toBe(3)
   })
 
+  it('aplica x y iniciales si se proporcionan', async () => {
+    const { create } = useCreateTab({ defaultLayout: { x: 1, y: 2, h: 1, w: 1 } })
+    await create('materiales', 'Mat')
+    expect(tabs[0]).toMatchObject({ x: 1, y: 2 })
+  })
+
   it('solicita datos adicionales para url', async () => {
     prompt.mockResolvedValueOnce('http://test')
     const { create } = useCreateTab()
