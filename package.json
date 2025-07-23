@@ -3,7 +3,7 @@
   "packageManager": "pnpm@10.13.1",
   "private": true,
   "scripts": {
-    "gen:dev": "prisma generate",
+    "gen:dev": "node scripts/gen-dev.js",
     "prisma:gen:prod": "prisma generate --data-proxy",
     "dev": "pnpm gen:dev && next dev",
     "postinstall": "prisma generate",
