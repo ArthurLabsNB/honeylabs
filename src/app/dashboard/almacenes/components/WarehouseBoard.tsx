@@ -144,8 +144,8 @@ export default function WarehouseBoard() {
   );
 
   return (
-    <div className="flex gap-4 p-4 pb-10">
-      <div className="w-1/3 space-y-4">
+    <div className="flex flex-col md:flex-row gap-4 md:gap-0 p-4 pb-10">
+      <div className="md:w-1/2 md:pr-4 md:border-r md:border-[var(--dashboard-border)] space-y-4">
         {unidadSel ? (
           <UnidadForm
             unidad={unidadDraft}
@@ -164,7 +164,7 @@ export default function WarehouseBoard() {
           />
         ) : null}
       </div>
-      <div className="flex-1 space-y-4">
+      <div className="md:w-1/2 md:pl-4 space-y-4">
         <MaterialesTab />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <UnidadesPanel material={material} onChange={() => {}} onSelect={openUnidad} />
