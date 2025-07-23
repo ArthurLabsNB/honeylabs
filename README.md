@@ -35,7 +35,7 @@ Actualmente se están implementando las funcionalidades principales. Se aceptan 
 
 ## Version
 
-0.4.5
+0.4.6
 
 ---
 
@@ -98,6 +98,12 @@ Para iniciar el entorno de desarrollo:
 
 ```sh
 pnpm dev
+```
+
+Para probar el PWA en local:
+
+```sh
+NEXT_PUBLIC_ENABLE_PWA=true pnpm run dev
 ```
 
 Este comando ejecuta `pnpm gen:dev`, el cual genera el cliente de Prisma con
