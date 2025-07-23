@@ -5,14 +5,11 @@ vi.mock('react', () => ({ useCallback: (fn: any) => fn }))
 
 const tabs: Tab[] = []
 let boardId: string | null = 'b1'
-const boards = [{ id: 'b1', title: 'B1' }]
-
 const mockTabStore = {
-  addAfterActive: vi.fn((tab: Tab) => { tabs.push(tab) }),
+  add: vi.fn((tab: Tab) => { tabs.push(tab) }),
 }
 const mockBoardStore = {
   get activeId() { return boardId },
-  get boards() { return boards },
 }
 const toast = { show: vi.fn() }
 const prompt = vi.fn()
@@ -34,10 +31,9 @@ import { useCreateTab } from '../src/hooks/useCreateTab'
 beforeEach(() => {
   tabs.length = 0
   boardId = 'b1'
-  boards.length = 1
   toast.show.mockClear()
   prompt.mockReset()
-  mockTabStore.addAfterActive.mockClear()
+  mockTabStore.add.mockClear()
 })
 
 afterEach(() => {
@@ -51,7 +47,7 @@ describe('useCreateTab', () => {
     expect(disabled).toBe(true)
     await create('materiales', 'Mat')
     expect(toast.show).toHaveBeenCalled()
-    expect(mockTabStore.addAfterActive).not.toHaveBeenCalled()
+    expect(mockTabStore.add).not.toHaveBeenCalled()
   })
 
   it('aplica la altura según el tipo', async () => {

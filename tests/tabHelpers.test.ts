@@ -1,16 +1,14 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import type { Tab } from '../src/hooks/useTabs'
-import type { Board } from '../src/hooks/useBoards'
 
 vi.mock('react', () => ({ useCallback: (fn: any) => fn }))
 
 const tabs: Tab[] = []
 let activeBoard = 'b1'
-const boards: Board[] = [{ id: 'b1', title: 'B1' }]
 
 const mockTabStore = {
   tabs,
-  addAfterActive: vi.fn((tab: Tab) => { tabs.push(tab) }),
+  add: vi.fn((tab: Tab) => { tabs.push(tab) }),
   setActive: vi.fn(),
   update: vi.fn((id: string, data: Partial<Tab>) => {
     const idx = tabs.findIndex(t => t.id === id)
@@ -20,7 +18,6 @@ const mockTabStore = {
 
 const mockBoardStore = {
   get activeId() { return activeBoard },
-  add: (b: Board) => { boards.push(b); activeBoard = b.id },
   setActive: (id: string) => { activeBoard = id },
 }
 
@@ -39,7 +36,6 @@ import { useTabHelpers } from '../src/hooks/useTabHelpers'
 beforeEach(() => {
   tabs.length = 0
   activeBoard = 'b1'
-  boards.length = 1
 })
 
 afterEach(() => {
@@ -52,7 +48,6 @@ describe('useTabHelpers', () => {
     ensureTab('materiales', 'Materiales', 'left')
     expect(tabs[0]).toMatchObject({ type: 'materiales', boardId: 'b1', side: 'left' })
 
-    mockBoardStore.add({ id: 'b2', title: 'B2' })
     mockBoardStore.setActive('b2')
     ;({ ensureTab } = useTabHelpers())
     ensureTab('materiales', 'Materiales', 'right')
@@ -76,7 +71,6 @@ describe('useTabHelpers', () => {
     expect(formsB1[0].x).toBeUndefined()
     expect(formsB1[0].y).toBeUndefined()
 
-    mockBoardStore.add({ id: 'b2', title: 'B2' })
     mockBoardStore.setActive('b2')
     ;({ openForm } = useTabHelpers())
     openForm('form-material', 'Material')

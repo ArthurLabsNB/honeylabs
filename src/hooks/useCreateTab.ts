@@ -11,8 +11,8 @@ interface Options {
 }
 
 export function useCreateTab(options?: Options) {
-  const { addAfterActive } = useTabStore()
-  const { activeId: boardId, boards } = useBoardStore()
+  const { add } = useTabStore()
+  const { activeId: boardId } = useBoardStore()
   const toast = useToast()
   const prompt = usePrompt()
 
@@ -36,7 +36,7 @@ export function useCreateTab(options?: Options) {
         extra.boardId = board
         title = board
       }
-      addAfterActive({
+      add({
         id,
         title,
         type,
@@ -46,10 +46,10 @@ export function useCreateTab(options?: Options) {
         ...extra,
       })
     },
-    [boardId, toast, addAfterActive, prompt, options]
+    [boardId, toast, add, prompt, options]
   )
 
-  const disabled = !boardId || boards.length === 0
+  const disabled = !boardId
 
   return { create, disabled }
 }

@@ -15,7 +15,7 @@ import useElementSize from "@/hooks/useElementSize";
 
 export default function CardBoard() {
   const { tabs: cards, setTabs } = useTabStore();
-  const { activeId: boardId, boards, setActive } = useBoardStore();
+  const { activeId: boardId } = useBoardStore();
   const { collapsed } = useDetalleUI();
 
   const safeCards = Array.isArray(cards) ? cards : []
@@ -74,9 +74,6 @@ export default function CardBoard() {
     return () => controller.abort()
   }, [boardId, setTabs])
 
-  useEffect(() => {
-    if (!boardId && boards.length > 0) setActive(boards[0].id)
-  }, [boardId, boards, setActive])
 
   useEffect(() => {
     if (!boardId) return
