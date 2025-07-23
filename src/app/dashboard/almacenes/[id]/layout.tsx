@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import AlmacenDetailNavbar from "../components/AlmacenDetailNavbar";
 import Spinner from "@/components/Spinner";
 import useSession from "@/hooks/useSession";
-import CardBoard from "../components/CardBoard";
-import TabBar from "../components/TabBar";
+import WarehouseBoard from "./WarehouseBoard";
 import { NAVBAR_HEIGHT } from "../../constants";
 import { BoardProvider } from "../board/BoardProvider";
 import { DetalleUIProvider, useDetalleUI } from "../DetalleUI";
@@ -55,18 +54,17 @@ function ProtectedAlmacen({ children }: { children: React.ReactNode }) {
         style={{
           paddingTop: `calc(${fullscreen ? '0' : NAVBAR_HEIGHT} + ${
             collapsed ? '0' : NAVBAR_HEIGHT
-          } + var(--tabbar-height) + var(--tabbar-gap))`,
+          })`,
         } as React.CSSProperties}
         data-oid="9d4tqvn"
       >
         <AlmacenDetailNavbar />
-        <TabBar />
         <section
           className="flex-1 overflow-y-auto bg-[var(--dashboard-bg)] text-[var(--dashboard-text)]"
           data-oid="fuuwox1"
         >
           <BoardProvider>
-            <CardBoard />
+            <WarehouseBoard />
             {children}
           </BoardProvider>
         </section>
