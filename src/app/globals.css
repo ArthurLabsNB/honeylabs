@@ -379,11 +379,11 @@ html, body {
   @apply p-4 sm:p-6 lg:p-8 rounded-md border transition shadow-sm hover:bg-white/5 min-w-[12rem] min-h-[8rem] overflow-hidden;
   background: var(--dashboard-card);
   border-color: var(--dashboard-border);
-  box-shadow: var(--dashboard-shadow);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.4);
 }
 .dashboard-card:hover {
   border-color: var(--dashboard-accent);
-  box-shadow: 0 6px 24px #ffe06628, 0 2px 18px #0007;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.5);
 }
 
 /* --------- RESPONSIVE --------- */
