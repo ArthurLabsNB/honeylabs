@@ -60,7 +60,7 @@ export default function UnidadesPanel({
   );
 
   return (
-    <div className="p-4 border rounded-md space-y-2">
+    <div className="p-4 border rounded-md space-y-2 mt-4">
       <div className="flex justify-between">
         <h2 className="font-semibold">Unidades</h2>
         {onBack && (
