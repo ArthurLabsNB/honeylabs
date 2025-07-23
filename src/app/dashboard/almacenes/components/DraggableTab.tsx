@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function DraggableTab({ tab, index, draggable = true }: Props) {
-  const { activeId, setActive, move, update, close, rename } = useTabStore();
+  const { activeId, setActive, update, close, rename } = useTabStore();
   const prompt = usePrompt();
   const ref = useRef<HTMLDivElement>(null);
 
@@ -19,8 +19,7 @@ export default function DraggableTab({ tab, index, draggable = true }: Props) {
     e.dataTransfer.setData("tab-index", String(index));
   };
   const onDrop = (e: React.DragEvent) => {
-    const from = Number(e.dataTransfer.getData("tab-index"));
-    move(from, index);
+    e.preventDefault();
   };
 
   const pin = () => update(tab.id, { pinned: !tab.pinned });

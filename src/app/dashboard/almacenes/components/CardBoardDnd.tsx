@@ -54,7 +54,7 @@ function SortableCard({ tab, layout, colWidth, rowHeight, marginX, marginY }: So
 
 export default function CardBoardDnd() {
   const { tabs: cards, setTabs } = useTabStore();
-  const { activeId: boardId, boards, setActive } = useBoardStore();
+  const { activeId: boardId } = useBoardStore();
   const { collapsed } = useDetalleUI();
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -91,9 +91,6 @@ export default function CardBoardDnd() {
 
   const height = layout.reduce((acc, it) => Math.max(acc, it.y + it.h), 0);
 
-  useEffect(() => {
-    if (!boardId && boards.length > 0) setActive(boards[0].id);
-  }, [boardId, boards, setActive]);
 
   return (
     <div

@@ -4,16 +4,16 @@ import { useBoardStore } from './useBoards'
 import { generarUUID } from '@/lib/uuid'
 
 export function useTabHelpers() {
-  const { tabs, addAfterActive, setActive, update } = useTabStore()
+  const { tabs, add, setActive, update } = useTabStore()
   const { activeId } = useBoardStore()
 
   const ensureTab = useCallback(
     (type: TabType, title: string, side: 'left' | 'right') => {
       const existing = tabs.find(t => t.type === type && t.boardId === activeId)
       if (existing) setActive(existing.id)
-      else addAfterActive({ id: generarUUID(), title, type, boardId: activeId, side })
+      else add({ id: generarUUID(), title, type, boardId: activeId, side })
     },
-    [tabs, addAfterActive, setActive, activeId]
+    [tabs, add, setActive, activeId]
   )
 
   const openForm = useCallback(
@@ -33,7 +33,7 @@ export function useTabHelpers() {
         })
         setActive(form.id)
       } else {
-        addAfterActive({
+        add({
           id: generarUUID(),
           title,
           type,
@@ -46,7 +46,7 @@ export function useTabHelpers() {
         })
       }
     },
-    [tabs, addAfterActive, setActive, update, activeId]
+    [tabs, add, setActive, update, activeId]
   )
 
   return { ensureTab, openForm }
