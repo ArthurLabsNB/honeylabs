@@ -126,6 +126,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
     "fake-indexeddb": "^6.0.1",
+    "jsdom": "^26.1.0",
     "nx": "^18.1.0",
     "nx-cloud": "^19.1.0",
     "postcss": "^8.5.3",
