@@ -3,6 +3,7 @@ export const runtime = 'nodejs'
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@lib/prisma'
 import { getUsuarioFromSession } from '@lib/auth'
+import { emitEvent } from '@/lib/events'
 import * as logger from '@lib/logger'
 
 export async function POST(req: NextRequest) {
@@ -32,6 +33,8 @@ export async function POST(req: NextRequest) {
       },
       update: {},
     })
+
+    emitEvent({ type: 'usuarios_update', payload: { almacenId: cod.almacenId } })
 
     if (cod.usosDisponibles !== null) {
       await prisma.codigoAlmacen.update({

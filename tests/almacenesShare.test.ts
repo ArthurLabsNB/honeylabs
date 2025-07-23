@@ -20,7 +20,7 @@ describe('POST /api/almacenes/compartir', () => {
       id: 9,
       almacenId: 2,
       codigo: 'abc',
-      rolAsignado: 'lector',
+      rolAsignado: 'visualizacion',
       permisos: null,
       usosDisponibles: 1,
       activo: true,
@@ -36,7 +36,11 @@ describe('POST /api/almacenes/compartir', () => {
     })
     const res = await POST(req)
     expect(res.status).toBe(200)
-    expect(upsert).toHaveBeenCalled()
+    expect(upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        create: expect.objectContaining({ rolEnAlmacen: 'visualizacion' }),
+      }),
+    )
     expect(update).toHaveBeenCalled()
   })
 })
