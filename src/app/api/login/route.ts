@@ -3,6 +3,7 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers'
 import prisma from '@lib/prisma';
+import { Prisma } from '@prisma/client'
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { SESSION_COOKIE, sessionCookieOptions } from '@lib/constants';
@@ -141,8 +142,21 @@ export async function POST(req: NextRequest) {
 
     return res;
   } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2021'
+    ) {
+      logger.error('[ERROR_LOGIN_DB]', error)
+      return NextResponse.json(
+        { success: false, error: 'Base de datos no inicializada.' },
+        { status: 500 },
+      )
+    }
     logger.error('[ERROR_LOGIN]', error);
-    return NextResponse.json({ success: false, error: 'Error interno.' }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: 'Error interno.' },
+      { status: 500 },
+    );
   }
 }
 
