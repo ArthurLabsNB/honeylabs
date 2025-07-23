@@ -51,6 +51,10 @@ export default function OlvideContrasenaPage() {
         <h1 className="text-3xl font-bold text-center text-amber-700 dark:text-amber-300">
           Recuperar contraseña
         </h1>
+        <p className="text-center text-sm text-gray-600 dark:text-zinc-300">
+          Coloca el correo del que quieres recuperar tu contraseña. Te enviaremos
+          un enlace para confirmarla y crear una nueva.
+        </p>
         <div className="space-y-1">
           <input
             {...register("correo")}
