@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     await updateBuildStatus({ building: false, progress: 0 })
     return NextResponse.json({ error: 'missing_env' }, { status: 500 })
   }
-  const workflow = path.join(process.cwd(), '.github', 'workflows', 'build.yml')
+  const workflow = path.join(process.cwd(), '.github', 'workflows', 'mobile.yml')
   try {
     await fs.access(workflow)
   } catch {
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
   try {
     const native = await detectNativeChanges()
     const ref = body.commit || GITHUB_BRANCH || 'main'
-    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/actions/workflows/build.yml/dispatches`, {
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/actions/workflows/mobile.yml/dispatches`, {
       method: 'POST',
       headers: {
         Authorization: `token ${GITHUB_TOKEN}`,

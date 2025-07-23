@@ -14,7 +14,7 @@ afterEach(async () => {
   process.env.GITHUB_REPO = envBackup.repo
   process.env.GITHUB_TOKEN = envBackup.token
   await fs.writeFile(buildStatusPath, JSON.stringify({ building: false, progress: 0 }))
-  await fs.rm(path.join(process.cwd(), '.github', 'workflows', 'build.yml')).catch(() => {})
+  await fs.rm(path.join(process.cwd(), '.github', 'workflows', 'mobile.yml')).catch(() => {})
 })
 
 describe('build mobile endpoint', () => {
@@ -55,7 +55,7 @@ describe('build mobile endpoint', () => {
     const fetchMock = vi.spyOn(global, 'fetch').mockResolvedValue(new Response('{}'))
     process.env.GITHUB_REPO = 'repo'
     process.env.GITHUB_TOKEN = 'tok'
-    await fs.writeFile(path.join(process.cwd(), '.github', 'workflows', 'build.yml'), '')
+    await fs.writeFile(path.join(process.cwd(), '.github', 'workflows', 'mobile.yml'), '')
     process.env.CSRF_TOKEN = 'secret'
     const req = new NextRequest('http://localhost/api/build-mobile', {
       method: 'POST',
