@@ -206,6 +206,14 @@ export default function LoginPage() {
             Crear cuenta
           </Link>
         </p>
+        <p className="text-center text-sm text-gray-600 dark:text-zinc-300">
+          <Link
+            href="/olvide-contrasena"
+            className="text-amber-700 underline hover:text-amber-900 dark:text-amber-300 font-medium transition"
+          >
+            ¿Olvidaste tu contraseña?
+          </Link>
+        </p>
 
         {/* 🧾 Mensaje */}
         {mensaje && (
