@@ -18,7 +18,7 @@ function FileThumb({ file, onClick }: { file: File; onClick: (url: string) => vo
     <img
       src={url}
       alt="preview"
-      className="w-12 h-12 object-cover rounded cursor-pointer"
+      className="w-12 h-12 object-contain rounded cursor-pointer"
       onClick={() => onClick(url)}
     />
   );
@@ -293,7 +293,7 @@ export default function MaterialForm({
             <img
               src={miniaturaSrc}
               alt="miniatura"
-              className="w-32 h-32 object-cover rounded cursor-pointer"
+              className="w-32 h-32 object-contain rounded cursor-pointer"
               onClick={() => setPreview(miniaturaSrc)}
             />
             <button
@@ -353,7 +353,7 @@ export default function MaterialForm({
                     <img
                       src={`data:image/*;base64,${(a as any).archivo}`}
                       alt={a.nombre}
-                      className="w-12 h-12 object-cover rounded cursor-pointer"
+                      className="w-12 h-12 object-contain rounded cursor-pointer"
                       onClick={() =>
                         setPreview(`data:image/*;base64,${(a as any).archivo}`)
                       }
@@ -363,7 +363,7 @@ export default function MaterialForm({
                   <img
                     src={`/api/materiales/${material.dbId}/archivos/${a.id}`}
                     alt={a.nombre}
-                    className="w-12 h-12 object-cover rounded cursor-pointer"
+                    className="w-12 h-12 object-contain rounded cursor-pointer"
                     onClick={() =>
                       setPreview(
                         `/api/materiales/${material.dbId}/archivos/${a.id}`
