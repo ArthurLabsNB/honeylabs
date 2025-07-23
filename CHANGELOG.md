@@ -1042,6 +1042,10 @@
 
 - Sidebar de almacenes simplificado con las nuevas categorías principales.
 
+## 0.2.31
+
+- Nuevo endpoint `POST /api/auditorias/[id]/restore` para revivir elementos desde auditorías.
+
 ## 0.2.29
 
 - Se añadieron placeholders para inventario, operaciones, reportes, archivos, configuracion y ayuda.
