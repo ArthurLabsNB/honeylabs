@@ -16,6 +16,8 @@ class PrismaClient {
   usuarioAlmacen = {
     findFirst: () => Promise.resolve(),
     upsert: () => Promise.resolve(),
+    findMany: () => Promise.resolve(),
+    delete: () => Promise.resolve(),
   }
   almacen = {
     findMany: () => Promise.resolve(),
@@ -23,6 +25,7 @@ class PrismaClient {
   codigoAlmacen = {
     findUnique: () => Promise.resolve(),
     update: () => Promise.resolve(),
+    create: () => Promise.resolve(),
   }
   material = {
     findMany: () => Promise.resolve(),

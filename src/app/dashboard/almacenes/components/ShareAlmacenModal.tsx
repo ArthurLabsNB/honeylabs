@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
 import { useToast } from "@/components/Toast";
+import useAlmacenUsuarios from "@/hooks/useAlmacenUsuarios";
 
 interface Props {
   id: number | string;
@@ -12,6 +13,7 @@ interface Props {
 
 export default function ShareAlmacenModal({ id, nombre, onClose }: Props) {
   const toast = useToast();
+  const { usuarios, revocar } = useAlmacenUsuarios(id);
   const [correos, setCorreos] = useState("");
   const [acceso, setAcceso] = useState<"restricto" | "dominio" | "publico">(
     "restricto",
@@ -19,6 +21,7 @@ export default function ShareAlmacenModal({ id, nombre, onClose }: Props) {
   const [terminacion, setTerminacion] = useState("");
   const [codigo, setCodigo] = useState<string | null>(null);
   const [guardando, setGuardando] = useState(false);
+  const [rol, setRol] = useState<"visualizacion" | "edicion">("visualizacion");
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -39,7 +42,7 @@ export default function ShareAlmacenModal({ id, nombre, onClose }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           almacenId: id,
-          rolAsignado: "lector",
+          rolAsignado: rol,
           permisos: {
             correos: correos
               .split(",")
@@ -107,6 +110,21 @@ export default function ShareAlmacenModal({ id, nombre, onClose }: Props) {
           className="w-full h-16 p-2 bg-white/10 rounded text-sm mb-2"
           placeholder="correo@ejemplo.com, otro@ej.com"
         />
+        {usuarios.length > 0 && (
+          <ul className="mb-3 space-y-1 text-sm">
+            {usuarios.map((u) => (
+              <li key={u.correo} className="flex justify-between items-center">
+                <span>{u.correo} ({u.rol})</span>
+                <button
+                  className="text-red-500 text-xs"
+                  onClick={() => revocar(u.correo)}
+                >
+                  revocar
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
         <div className="mb-3">
           <p className="text-xs mb-1">Accesos</p>
           <label className="flex items-center gap-1 text-sm">
@@ -140,6 +158,25 @@ export default function ShareAlmacenModal({ id, nombre, onClose }: Props) {
               onChange={() => setAcceso("publico")}
             />
             Cualquiera con enlace
+          </label>
+        </div>
+        <div className="mb-3">
+          <p className="text-xs mb-1">Rol</p>
+          <label className="flex items-center gap-1 text-sm">
+            <input
+              type="radio"
+              checked={rol === "visualizacion"}
+              onChange={() => setRol("visualizacion")}
+            />
+            visualizacion
+          </label>
+          <label className="flex items-center gap-1 text-sm mt-1">
+            <input
+              type="radio"
+              checked={rol === "edicion"}
+              onChange={() => setRol("edicion")}
+            />
+            edicion
           </label>
         </div>
         <div className="flex justify-end gap-2">
