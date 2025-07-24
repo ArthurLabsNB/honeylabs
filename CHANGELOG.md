@@ -73,6 +73,10 @@
 - Virtualizamos `MaterialList` y `AuditoriasPage` con `react-window` para renderizar
   solo los elementos visibles.
 
+## 0.8.23
+- Permitimos subir imagen de QR cuando no hay cámara disponible.
+- Usamos `react-zxing` para decodificar imágenes en el escáner.
+
 ## 0.8.5
 - Registramos auditorías también al escanear códigos.
 - Mejoramos el manejo de errores al crear reportes y auditorías.
