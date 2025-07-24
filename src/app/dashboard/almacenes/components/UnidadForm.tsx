@@ -4,6 +4,7 @@ import MaterialCodes from "./MaterialCodes";
 import { generarUUID } from "@/lib/uuid";
 import type { UnidadDetalle } from "@/types/unidad-detalle";
 import useArchivosUnidad from "@/hooks/useArchivosUnidad";
+import useObjectUrl from "@/hooks/useObjectUrl";
 
 interface Props {
   unidad: UnidadDetalle | null;
@@ -17,6 +18,10 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
   const { archivos: archivosPrevios, eliminar, mutate } = useArchivosUnidad(
     unidad?.materialId,
     unidad?.id,
+  )
+
+  const imagenFileUrl = useObjectUrl(
+    unidad && unidad.imagen instanceof File ? unidad.imagen : undefined,
   )
 
   const guardarLocal = () => {
@@ -63,6 +68,14 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
       const val = files ? files[0] : null
       onChange(campo, val)
     }
+  }
+
+  function FileThumb({ file }: { file: File }) {
+    const url = useObjectUrl(file)
+    if (!url || !file.type.startsWith('image/')) return null
+    return (
+      <img src={url} alt="preview" className="w-12 h-12 object-cover rounded" />
+    )
   }
 
   if (!unidad) {
@@ -411,7 +424,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
               <img
                 src={
                   unidad.imagen instanceof File
-                    ? URL.createObjectURL(unidad.imagen)
+                    ? imagenFileUrl ?? undefined
                     : typeof unidad.imagen === 'string'
                       ? unidad.imagen
                       : unidad.imagenUrl ?? undefined
@@ -434,13 +447,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           <div className="space-y-2 max-h-40 overflow-y-auto">
             {unidad.archivos?.map((f, i) => (
               <div key={i} className="flex items-center gap-2">
-                {f.type.startsWith('image/') && (
-                  <img
-                    src={URL.createObjectURL(f)}
-                    alt="preview"
-                    className="w-12 h-12 object-cover rounded"
-                  />
-                )}
+                {f.type.startsWith('image/') && <FileThumb file={f} />}
                 <input
                   type="file"
                   data-index={i}
