@@ -9,7 +9,7 @@ vi.mock('../src/components/Toast', () => ({ useToast: () => toast }))
 
 const toast = { show: vi.fn() }
 
-function renderList(selectedId: string | null, onEliminar: any) {
+function renderList(id: string, onEliminar: any) {
   const elems: any[] = []
   const orig = React.createElement
   const spy = vi
@@ -22,8 +22,8 @@ function renderList(selectedId: string | null, onEliminar: any) {
 
   renderToStaticMarkup(
     <MaterialList
-      materiales={[]}
-      selectedId={selectedId}
+      materiales={[{ id, nombre: 'x', cantidad: 0, lote: '' } as any]}
+      selectedId={null}
       onSeleccion={() => {}}
       busqueda=""
       setBusqueda={() => {}}
@@ -44,7 +44,7 @@ describe('MaterialList', () => {
     const remove = vi.fn()
     const click = renderList('abc', remove)
     expect(click).toBeTypeOf('function')
-    click()
+    click({ stopPropagation() {} })
     expect(remove).not.toHaveBeenCalled()
     expect(toast.show).toHaveBeenCalledWith('ID inválido', 'error')
   })
