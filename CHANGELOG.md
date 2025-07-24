@@ -69,6 +69,10 @@
 ## 0.8.21
 - Registramos auditoría al duplicar materiales y almacenes.
 
+## 0.8.22
+- Virtualizamos `MaterialList` y `AuditoriasPage` con `react-window` para renderizar
+  solo los elementos visibles.
+
 ## 0.8.5
 - Registramos auditorías también al escanear códigos.
 - Mejoramos el manejo de errores al crear reportes y auditorías.
