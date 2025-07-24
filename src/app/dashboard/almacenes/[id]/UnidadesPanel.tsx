@@ -124,9 +124,16 @@ export default function UnidadesPanel({
             {(u.imagen || u.imagenNombre) && (
               <UnidadThumb unidad={u} />
             )}
-            <div onClick={() => select(u)} className="flex flex-col flex-1">
-              <span className="font-semibold">{u.nombre}</span>
+            <div onClick={() => select(u)} className="flex flex-col flex-1 space-y-1">
+              <span className="font-semibold text-sm">{u.nombre}</span>
               <span className="text-xs">ID: {u.id}</span>
+              {u.lote && <span className="text-xs">Lote: {u.lote}</span>}
+              {u.fechaIngreso && (
+                <span className="text-xs">Ingreso: {u.fechaIngreso}</span>
+              )}
+              {u.fechaCaducidad && (
+                <span className="text-xs">Caduca: {u.fechaCaducidad}</span>
+              )}
               {u.codigoQR && (
                 <span className="text-xs break-all">QR: {u.codigoQR}</span>
               )}
