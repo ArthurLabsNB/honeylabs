@@ -45,7 +45,7 @@ export default function AuditoriasPage() {
           Volver
         </button>
       </div>
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex flex-wrap gap-2 max-w-full overflow-x-auto">
         <input
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
@@ -104,7 +104,7 @@ export default function AuditoriasPage() {
         </button>
       </div>
       <p className="text-xs">Total: {total}</p>
-      <ul className="space-y-2">
+      <ul className="space-y-2 max-w-full overflow-x-auto">
         {filtradas.map((a) => (
           <li
             key={a.id}
