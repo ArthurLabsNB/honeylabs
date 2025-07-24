@@ -5,6 +5,7 @@ import { generarUUID } from "@/lib/uuid";
 import type { UnidadDetalle } from "@/types/unidad-detalle";
 import useArchivosUnidad from "@/hooks/useArchivosUnidad";
 import useObjectUrl from "@/hooks/useObjectUrl";
+import { MAX_ARCHIVOS_UNIDAD } from "@/lib/constants";
 
 interface Props {
   unidad: UnidadDetalle | null;
@@ -466,7 +467,8 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
                 </button>
               </div>
             ))}
-            {(!unidad.archivos || unidad.archivos.length < 10) && (
+            {(!unidad.archivos ||
+              unidad.archivos.length < MAX_ARCHIVOS_UNIDAD) && (
               <input
                 type="file"
                 data-index={unidad.archivos?.length || 0}

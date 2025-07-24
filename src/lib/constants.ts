@@ -1,0 +1,3 @@
+export const MAX_ARCHIVOS_MATERIAL = 10
+export const MAX_ARCHIVOS_UNIDAD = 10
+
