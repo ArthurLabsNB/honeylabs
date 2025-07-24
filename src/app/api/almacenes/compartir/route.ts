@@ -5,17 +5,24 @@ import prisma from '@lib/prisma'
 import { getUsuarioFromSession } from '@lib/auth'
 import { emitEvent } from '@/lib/events'
 import * as logger from '@lib/logger'
+import { enviarInvitacionAlmacen } from '@/lib/email/enviarInvitacionAlmacen'
 
 export async function POST(req: NextRequest) {
   logger.debug(req, 'POST /api/almacenes/compartir')
   try {
     const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
-    const { codigo } = await req.json()
+    const { codigo, correos } = await req.json()
     if (!codigo) return NextResponse.json({ error: 'Código requerido' }, { status: 400 })
 
     const cod = await prisma.codigoAlmacen.findUnique({ where: { codigo } })
     if (!cod || !cod.activo) return NextResponse.json({ error: 'Código inválido' }, { status: 404 })
+    if (Array.isArray(correos) && correos.length > 0) {
+      const base = `${req.nextUrl.origin}${process.env.NEXT_PUBLIC_BASE_PATH || ''}`
+      const enlace = `${base}/api/almacenes/compartir?codigo=${codigo}`
+      const envio = await enviarInvitacionAlmacen({ correos, enlace })
+      return NextResponse.json({ enviado: envio.enviado })
+    }
     if (cod.fechaExpiracion && cod.fechaExpiracion < new Date()) {
       return NextResponse.json({ error: 'Código expirado' }, { status: 410 })
     }
