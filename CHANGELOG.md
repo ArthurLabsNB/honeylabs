@@ -77,6 +77,10 @@
 - Permitimos subir imagen de QR cuando no hay cámara disponible.
 - Usamos `react-zxing` para decodificar imágenes en el escáner.
 
+## 0.8.24
+- Eliminamos `AddCardButton` y su test asociado.
+- Ajustamos `CardBoard` y `CardBoardDnd` para depender solo del menú flotante.
+
 ## 0.8.5
 - Registramos auditorías también al escanear códigos.
 - Mejoramos el manejo de errores al crear reportes y auditorías.

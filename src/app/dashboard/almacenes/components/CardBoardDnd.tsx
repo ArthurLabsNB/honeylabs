@@ -11,7 +11,6 @@ import { useBoardStore } from "@/hooks/useBoards";
 import { useDetalleUI } from "../DetalleUI";
 import useCardLayout from "@/hooks/useCardLayout";
 import useElementSize from "@/hooks/useElementSize";
-import AddCardButton from "./AddCardButton";
 import DraggableCard from "./DraggableCard";
 
 function arrayMove<T>(arr: T[], from: number, to: number): T[] {
@@ -109,7 +108,6 @@ export default function CardBoardDnd() {
           })}
         </SortableContext>
       </DndContext>
-      <AddCardButton />
     </div>
   );
 }

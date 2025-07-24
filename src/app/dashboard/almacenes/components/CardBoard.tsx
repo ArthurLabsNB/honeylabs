@@ -8,7 +8,6 @@ import { useBoardStore } from "@/hooks/useBoards";
 import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
 import DraggableCard from "./DraggableCard";
-import AddCardButton from "./AddCardButton";
 import { useDetalleUI } from "../DetalleUI";
 import useCardLayout from "@/hooks/useCardLayout";
 import useElementSize from "@/hooks/useElementSize";
@@ -142,7 +141,6 @@ export default function CardBoard() {
           </div>
         ))}
       </GridLayout>
-      <AddCardButton />
     </div>
   );
 }
