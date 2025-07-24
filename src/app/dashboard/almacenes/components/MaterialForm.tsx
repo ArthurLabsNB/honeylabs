@@ -10,6 +10,7 @@ import MaterialCodes from "./MaterialCodes";
 import { generarUUID } from "@/lib/uuid";
 import useUnidades from "@/hooks/useUnidades";
 import useArchivosMaterial from "@/hooks/useArchivosMaterial";
+import { MAX_ARCHIVOS_MATERIAL } from "@/lib/constants";
 
 function FileThumb({ file, onClick }: { file: File; onClick: (url: string) => void }) {
   const url = useObjectUrl(file);
@@ -335,7 +336,9 @@ export default function MaterialForm({
               </button>
             </div>
           ))}
-          {!readOnly && (!material.archivos || material.archivos.length < 10) && (
+          {!readOnly &&
+            (!material.archivos ||
+              material.archivos.length < MAX_ARCHIVOS_MATERIAL) && (
             <input
               type="file"
               data-index={material.archivos?.length || 0}

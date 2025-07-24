@@ -116,6 +116,10 @@ Entender que este repositorio solo cuenta "Funcional" la base del proyecto, no s
 
 Para ver mensajes detallados de la aplicación establece `LOG_LEVEL=debug` antes de ejecutar los comandos de desarrollo o producción.
 
+### Límites de archivos adjuntos
+
+Por omisión se permiten hasta diez archivos en los formularios de materiales y unidades. Estos valores se definen en `src/lib/constants.ts` mediante las constantes `MAX_ARCHIVOS_MATERIAL` y `MAX_ARCHIVOS_UNIDAD`. Si necesitas un límite distinto basta con modificar dichas constantes y recompilar la aplicación.
+
 ### Generación de APK
 
 La sección **App** del panel permite descargar la versión móvil. Para que el APK se genere correctamente es necesario definir las variables `GITHUB_REPO` y `GITHUB_TOKEN` en el entorno del servidor. Al enviar una petición `POST` al endpoint `/api/build-mobile` se activa el workflow de GitHub que compila la aplicación Android y actualiza `lib/app-info.json` con la nueva versión y su hash.
