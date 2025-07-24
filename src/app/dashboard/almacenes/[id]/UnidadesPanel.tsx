@@ -3,6 +3,8 @@ import { useMemo, useState } from "react";
 import type { Material } from "../components/MaterialRow";
 import useUnidades, { type Unidad as UnidadAPI } from "@/hooks/useUnidades";
 import { useToast } from "@/components/Toast";
+import useObjectUrl from "@/hooks/useObjectUrl";
+import { apiPath } from "@lib/api";
 
 interface Props {
   material: Material | null;
@@ -59,6 +61,25 @@ export default function UnidadesPanel({
     [unidades, busqueda],
   );
 
+  function UnidadThumb({ unidad }: { unidad: UnidadAPI }) {
+    const fileUrl = useObjectUrl(
+      unidad.imagen instanceof File ? unidad.imagen : undefined,
+    );
+    const src = unidad.imagen instanceof File
+      ? fileUrl
+      : typeof unidad.imagen === 'string'
+        ? `data:image/*;base64,${unidad.imagen}`
+        : unidad.imagenNombre && material?.dbId
+          ? apiPath(
+              `/api/materiales/${material.dbId}/unidades/archivo?nombre=${encodeURIComponent(
+                unidad.imagenNombre,
+              )}`,
+            )
+          : null;
+    if (!src) return null;
+    return <img src={src} alt="miniatura" className="w-20 h-20 object-contain rounded" />;
+  }
+
   return (
     <div className="p-4 border rounded-md space-y-2 mt-4">
       <div className="flex justify-between">
@@ -100,6 +121,9 @@ export default function UnidadesPanel({
                 : 'hover:border-[var(--dashboard-accent)]'
             }`}
           >
+            {(u.imagen || u.imagenNombre) && (
+              <UnidadThumb unidad={u} />
+            )}
             <div onClick={() => select(u)} className="flex flex-col flex-1">
               <span className="font-semibold">{u.nombre}</span>
               <span className="text-xs">ID: {u.id}</span>
