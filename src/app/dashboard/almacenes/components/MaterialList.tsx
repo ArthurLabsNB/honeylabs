@@ -112,10 +112,16 @@ export default function MaterialList({
               className={`dashboard-card w-full text-left flex items-center gap-4 ${m.id === selectedId ? 'border-[var(--dashboard-accent)]' : 'hover:border-[var(--dashboard-accent)]'}`}
             >
               {(m.miniatura || m.miniaturaUrl) && <Miniatura m={m} />}
-              <div className="flex flex-col flex-1">
-                <span className="font-semibold">{m.nombre}</span>
+              <div className="flex flex-col flex-1 space-y-1">
+                <span className="font-semibold text-sm">{m.nombre}</span>
                 <span className="text-xs">Stock: {m.numUnidades ?? 0}</span>
                 {m.lote && <span className="text-xs">Lote: {m.lote}</span>}
+                {m.proveedor && (
+                  <span className="text-xs">Proveedor: {m.proveedor}</span>
+                )}
+                {m.fechaCaducidad && (
+                  <span className="text-xs">Caduca: {m.fechaCaducidad}</span>
+                )}
               </div>
             </button>
             <div className="absolute right-2 top-2 flex gap-1 opacity-0 group-hover:opacity-100">
