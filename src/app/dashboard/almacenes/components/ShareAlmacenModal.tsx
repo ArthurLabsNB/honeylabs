@@ -74,14 +74,21 @@ export default function ShareAlmacenModal({ id, nombre, onClose }: Props) {
     }
     setGuardando(true);
     try {
+      const lista = correos
+        .split(',')
+        .map((c) => c.trim())
+        .filter(Boolean);
       const res = await apiFetch("/api/almacenes/compartir", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ codigo }),
+        body: JSON.stringify({ codigo, correos: lista }),
       });
-      if (res.ok) {
-        toast.show("Configuración guardada", "success");
+      const data = await jsonOrNull(res);
+      if (res.ok && data?.enviado) {
+        toast.show("Invitación enviada", "success");
         onClose();
+      } else if (res.ok) {
+        toast.show("Error al enviar", "error");
       } else {
         toast.show("Error al guardar", "error");
       }

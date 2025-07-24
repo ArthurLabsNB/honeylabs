@@ -3,6 +3,7 @@ import { POST } from '../src/app/api/almacenes/compartir/route'
 import { NextRequest } from 'next/server'
 import prisma from '../lib/prisma'
 import * as auth from '../lib/auth'
+import * as email from '../src/lib/email/enviarInvitacionAlmacen'
 
 afterEach(() => vi.restoreAllMocks())
 
@@ -42,5 +43,22 @@ describe('POST /api/almacenes/compartir', () => {
       }),
     )
     expect(update).toHaveBeenCalled()
+  })
+
+  it('envia invitaciones por correo', async () => {
+    vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue({ id: 1 } as any)
+    vi.spyOn(prisma.codigoAlmacen, 'findUnique').mockResolvedValue({ activo: true } as any)
+    const enviar = vi.spyOn(email, 'enviarInvitacionAlmacen').mockResolvedValue({ enviado: true })
+
+    const req = new NextRequest('http://localhost/api/almacenes/compartir', {
+      method: 'POST',
+      body: JSON.stringify({ codigo: 'abc', correos: ['a@x.com'] }),
+    })
+    const res = await POST(req)
+    expect(res.status).toBe(200)
+    expect(enviar).toHaveBeenCalledWith({
+      correos: ['a@x.com'],
+      enlace: expect.any(String),
+    })
   })
 })
