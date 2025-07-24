@@ -74,20 +74,24 @@ export default function CommentsPanel({ comentarios, onAdd, widgetId }: { coment
           className="w-full mt-3 p-2 bg-white/10 rounded text-sm"
           rows={3}
         />
-        <button
-          onClick={() => {
-            if (texto.trim()) {
-              onAdd(texto.trim(), widgetId);
-              setTexto("");
-            }
-          }}
-          className="mt-2 px-3 py-1 bg-white/10 rounded w-full text-sm"
-        >
-          Agregar
-        </button>
-        <button onClick={() => setMostrarComentarios(() => {})} className="mt-3 px-3 py-1 bg-white/10 rounded w-full text-sm">
-          Cerrar
-        </button>
+        <span title="Agregar comentario">
+          <button
+            onClick={() => {
+              if (texto.trim()) {
+                onAdd(texto.trim(), widgetId);
+                setTexto("");
+              }
+            }}
+            className="mt-2 px-3 py-1 bg-white/10 rounded w-full text-sm"
+          >
+            Agregar
+          </button>
+        </span>
+        <span title="Cerrar panel">
+          <button onClick={() => setMostrarComentarios(() => {})} className="mt-3 px-3 py-1 bg-white/10 rounded w-full text-sm">
+            Cerrar
+          </button>
+        </span>
       </div>
     </div>
   );

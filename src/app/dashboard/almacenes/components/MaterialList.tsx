@@ -127,40 +127,46 @@ export default function MaterialList({
       </ul>
       <p className="text-xs text-right">Total stock: {totalStock}</p>
       <div className="flex gap-2">
-        <button
-          type="button"
-          onClick={async () => {
-            const res = await onNuevo();
-            if (res?.error) toast.show(res.error, 'error');
-            else toast.show('Material creado', 'success');
-          }}
-          className="flex-1 py-1 rounded-md bg-[var(--dashboard-accent)] text-black text-sm hover:bg-[var(--dashboard-accent-hover)]"
-        >
-          Nuevo Material
-        </button>
-        <button
-          type="button"
-          onClick={onDuplicar}
-          disabled={selectedId === null}
-          className="flex-1 py-1 rounded-md bg-white/10 text-white text-sm disabled:opacity-50"
-        >
-          Duplicar
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            const id = parseId(selectedId);
-            if (!id) {
-              toast.show('ID inválido', 'error');
-              return;
-            }
-            onEliminar(id);
-          }}
-          disabled={selectedId === null}
-          className="flex-1 py-1 rounded-md bg-red-600 text-white text-sm disabled:opacity-50"
-        >
-          Eliminar
-        </button>
+        <span title="Crear un material nuevo" className="flex-1">
+          <button
+            type="button"
+            onClick={async () => {
+              const res = await onNuevo();
+              if (res?.error) toast.show(res.error, 'error');
+              else toast.show('Material creado', 'success');
+            }}
+            className="w-full py-1 rounded-md bg-[var(--dashboard-accent)] text-black text-sm hover:bg-[var(--dashboard-accent-hover)]"
+          >
+            Nuevo Material
+          </button>
+        </span>
+        <span title="Duplicar material seleccionado" className="flex-1">
+          <button
+            type="button"
+            onClick={onDuplicar}
+            disabled={selectedId === null}
+            className="w-full py-1 rounded-md bg-white/10 text-white text-sm disabled:opacity-50"
+          >
+            Duplicar
+          </button>
+        </span>
+        <span title="Eliminar material seleccionado" className="flex-1">
+          <button
+            type="button"
+            onClick={() => {
+              const id = parseId(selectedId);
+              if (!id) {
+                toast.show('ID inválido', 'error');
+                return;
+              }
+              onEliminar(id);
+            }}
+            disabled={selectedId === null}
+            className="w-full py-1 rounded-md bg-red-600 text-white text-sm disabled:opacity-50"
+          >
+            Eliminar
+          </button>
+        </span>
       </div>
       {preview && (
         <ImageModal src={preview} onClose={() => setPreview(null)} />
