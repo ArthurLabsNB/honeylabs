@@ -70,12 +70,16 @@ export default function ChatPanel({ canalId }: { canalId: number }) {
           className="w-full mt-3 p-2 bg-white/10 rounded text-sm"
           rows={3}
         />
-        <button onClick={enviar} className="mt-2 px-3 py-1 bg-white/10 rounded w-full text-sm">
-          Enviar
-        </button>
-        <button onClick={() => setMostrarChat(() => {})} className="mt-2 px-3 py-1 bg-white/10 rounded w-full text-sm">
-          Cerrar
-        </button>
+        <span title="Enviar mensaje">
+          <button onClick={enviar} className="mt-2 px-3 py-1 bg-white/10 rounded w-full text-sm">
+            Enviar
+          </button>
+        </span>
+        <span title="Cerrar panel">
+          <button onClick={() => setMostrarChat(() => {})} className="mt-2 px-3 py-1 bg-white/10 rounded w-full text-sm">
+            Cerrar
+          </button>
+        </span>
       </div>
     </div>
   );

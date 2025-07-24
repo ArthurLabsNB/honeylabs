@@ -20,7 +20,9 @@ export default function HistorySidebar({ open, historial, onClose, restore }: {
           ))}
           {!historial.length && <li className="text-gray-400">Sin historial</li>}
         </ul>
-        <button onClick={onClose} className="mt-3 px-3 py-1 bg-white/10 rounded w-full text-sm">Cerrar</button>
+        <span title="Cerrar historial">
+          <button onClick={onClose} className="mt-3 px-3 py-1 bg-white/10 rounded w-full text-sm">Cerrar</button>
+        </span>
       </div>
     </div>
   )

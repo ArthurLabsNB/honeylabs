@@ -13,7 +13,9 @@ export default function GalleryPanel({ images, onSelect, onClose }:{ images:stri
             </button>
           ))}
         </div>
-        <button onClick={onClose} className="mt-3 px-3 py-1 bg-white/10 rounded w-full text-sm">Cerrar</button>
+        <span title="Cerrar galería">
+          <button onClick={onClose} className="mt-3 px-3 py-1 bg-white/10 rounded w-full text-sm">Cerrar</button>
+        </span>
       </div>
     </div>
   );
