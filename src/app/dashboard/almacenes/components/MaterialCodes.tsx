@@ -20,6 +20,9 @@ export default function MaterialCodes({
   const qrData =
     typeof value === 'object' && tipo ? buildQRPayload(tipo, value) : value;
   const qrValue = typeof qrData === 'string' ? qrData : encodeQR(qrData);
+  const MAX_QR_LEN = 2000;
+  const tooLong = qrValue.length > MAX_QR_LEN;
+  const displayValue = tooLong ? qrValue.slice(0, MAX_QR_LEN) : qrValue;
 
   const barValue = codigo ??
     (typeof value === 'object' ? (value as any).codigoQR ?? (value as any).codigoUnico : value);
@@ -34,7 +37,12 @@ export default function MaterialCodes({
 
   return (
     <div className="flex flex-col items-start gap-2">
-      <QRCodeSVG value={qrValue} size={128} />
+      {tooLong && (
+        <p className="text-red-500 text-xs">
+          Datos demasiado extensos para código QR, se usa versión resumida.
+        </p>
+      )}
+      <QRCodeSVG value={displayValue} size={128} />
       <svg ref={barRef} className="w-32 h-16" />
       {onRegenerate && (
         <button
