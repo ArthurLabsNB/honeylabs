@@ -15,7 +15,7 @@ interface Props {
   orden: "nombre" | "cantidad";
   setOrden: (v: "nombre" | "cantidad") => void;
   onNuevo: () => Promise<any>;
-  onDuplicar: () => void;
+  onDuplicar: (id: string) => void;
   onEliminar: (id: number) => Promise<any>;
 }
 
@@ -105,7 +105,7 @@ export default function MaterialList({
       </div>
       <ul className="space-y-2 overflow-y-auto max-h-[calc(100vh-12rem)]">
         {filtrados.map((m) => (
-          <li key={m.id}>
+          <li key={m.id} className="relative group">
             <button
               type="button"
               onClick={() => onSeleccion(m.id)}
@@ -114,14 +114,37 @@ export default function MaterialList({
               {(m.miniatura || m.miniaturaUrl) && <Miniatura m={m} />}
               <div className="flex flex-col flex-1">
                 <span className="font-semibold">{m.nombre}</span>
-                <span className="text-xs">
-                  Stock: {m.numUnidades ?? 0}
-                </span>
-                {m.lote && (
-                  <span className="text-xs">Lote: {m.lote}</span>
-                )}
+                <span className="text-xs">Stock: {m.numUnidades ?? 0}</span>
+                {m.lote && <span className="text-xs">Lote: {m.lote}</span>}
               </div>
             </button>
+            <div className="absolute right-2 top-2 flex gap-1 opacity-0 group-hover:opacity-100">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDuplicar(m.id);
+                }}
+                className="px-1 py-0.5 text-xs rounded bg-white/10"
+              >
+                Duplicar
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const id = parseId(m.id);
+                  if (!id) {
+                    toast.show('ID inválido', 'error');
+                    return;
+                  }
+                  onEliminar(id);
+                }}
+                className="px-1 py-0.5 text-xs rounded bg-red-600 text-white"
+              >
+                Eliminar
+              </button>
+            </div>
           </li>
         ))}
       </ul>
@@ -138,33 +161,6 @@ export default function MaterialList({
             className="w-full py-1 rounded-md bg-[var(--dashboard-accent)] text-black text-sm hover:bg-[var(--dashboard-accent-hover)]"
           >
             Nuevo Material
-          </button>
-        </span>
-        <span title="Duplicar material seleccionado" className="flex-1">
-          <button
-            type="button"
-            onClick={onDuplicar}
-            disabled={selectedId === null}
-            className="w-full py-1 rounded-md bg-white/10 text-white text-sm disabled:opacity-50"
-          >
-            Duplicar
-          </button>
-        </span>
-        <span title="Eliminar material seleccionado" className="flex-1">
-          <button
-            type="button"
-            onClick={() => {
-              const id = parseId(selectedId);
-              if (!id) {
-                toast.show('ID inválido', 'error');
-                return;
-              }
-              onEliminar(id);
-            }}
-            disabled={selectedId === null}
-            className="w-full py-1 rounded-md bg-red-600 text-white text-sm disabled:opacity-50"
-          >
-            Eliminar
           </button>
         </span>
       </div>

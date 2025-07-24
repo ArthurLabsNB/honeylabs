@@ -86,8 +86,8 @@ export default function MaterialesTab() {
         if (mid) openMaterial(String(mid))
         return res
       }}
-      onDuplicar={async () => {
-        const id = parseId(selectedId)
+      onDuplicar={async (mid) => {
+        const id = parseId(mid)
         if (!id) {
           toast.show('ID inválido', 'error')
           return
