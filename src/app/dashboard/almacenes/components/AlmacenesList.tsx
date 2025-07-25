@@ -158,7 +158,7 @@ const SortableAlmacen = memo(function SortableAlmacen({
         <h3 className="font-semibold text-base">{almacen.nombre}</h3>
         <span
           className={cn(
-            "px-1.5 py-0.5 rounded-full text-[10px]",
+            "px-1 py-px rounded text-[9px]",
             (almacen.inventario ?? 0) > 0
               ? "bg-emerald-600 text-white"
               : "bg-red-600 text-white",
@@ -167,21 +167,33 @@ const SortableAlmacen = memo(function SortableAlmacen({
           {(almacen.inventario ?? 0) > 0 ? "Act." : "Vac."}
         </span>
         <ul className="mt-1 space-y-1 list-disc list-inside">
-          <li
-            className={cn(
-              'text-sm font-medium',
-              (almacen.inventario ?? 0) > 0 ? 'text-emerald-500' : 'text-red-500'
-            )}
-          >
-            Materiales: {almacen.inventario ?? 0}
+          <li className="text-sm font-medium">
+            <span
+              className={
+                (almacen.inventario ?? 0) > 0
+                  ? 'text-white font-semibold'
+                  : 'text-[var(--dashboard-muted)]'
+              }
+            >
+              Materiales:
+            </span>
+            <span className="text-yellow-400 ml-1">
+              {almacen.inventario ?? 0}
+            </span>
           </li>
-          <li
-            className={cn(
-              'text-sm font-medium',
-              (almacen.unidades ?? 0) > 0 ? 'text-emerald-500' : 'text-red-500'
-            )}
-          >
-            Unidades: {almacen.unidades ?? 0}
+          <li className="text-sm font-medium">
+            <span
+              className={
+                (almacen.unidades ?? 0) > 0
+                  ? 'text-white font-semibold'
+                  : 'text-[var(--dashboard-muted)]'
+              }
+            >
+              Unidades:
+            </span>
+            <span className="text-yellow-400 ml-1">
+              {almacen.unidades ?? 0}
+            </span>
           </li>
         </ul>
         {almacen.descripcion && (
