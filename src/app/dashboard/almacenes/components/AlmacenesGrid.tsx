@@ -31,11 +31,11 @@ export default function AlmacenesGrid({
       {almacenes.map((a) => (
         <div
           key={a.id}
-          className="grid grid-cols-[96px_1fr_auto] gap-3 p-3 border rounded-lg cursor-pointer hover:bg-white/5 transition"
+          className="flex flex-col sm:grid sm:grid-cols-[96px_1fr_auto] gap-3 p-3 border rounded-lg cursor-pointer hover:bg-white/5 transition"
           style={{ boxShadow: 'var(--dashboard-widget-glow)' }}
           onClick={() => onOpen(a.id)}
         >
-          <div className="w-24 h-24 bg-white/10 rounded-md overflow-hidden relative">
+          <div className="w-24 h-24 bg-white/10 rounded-md overflow-hidden relative max-w-xs:w-20 max-w-xs:h-20">
             <Image
               src={a.imagenUrl || '/ilustracion-almacen-3d.svg'}
               alt={a.nombre}
