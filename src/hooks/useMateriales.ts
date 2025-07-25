@@ -140,10 +140,11 @@ export default function useMateriales(almacenId?: number | string) {
         if (data?.auditoria?.id) {
           window.dispatchEvent(new CustomEvent(AUDIT_PREVIEW_EVENT, { detail: true }))
         }
+        return { success: true, auditoria: data?.auditoria }
       }
-      return data
+      return { success: false, error: data?.error || 'Error' }
     } catch {
-      return { error: 'Error de red' }
+      return { success: false, error: 'Error de red' }
     }
   }
 
