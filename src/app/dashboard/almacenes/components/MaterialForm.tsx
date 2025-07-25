@@ -6,8 +6,8 @@ import useObjectUrl from "@/hooks/useObjectUrl";
 
 const MAX_FILE_MB = 20;
 import type { Material } from "./MaterialRow";
-import MaterialCodes from "./MaterialCodes";
-import { generarUUID } from "@/lib/uuid";
+import { buildQRDataURL } from "@/lib/qr";
+import { buildQRPayload } from "@/lib/buildQRPayload";
 import useUnidades from "@/hooks/useUnidades";
 import useArchivosMaterial from "@/hooks/useArchivosMaterial";
 import { MAX_ARCHIVOS_MATERIAL } from "@/lib/constants";
@@ -48,6 +48,7 @@ export default function MaterialForm({
 }: Props) {
   const toast = useToast();
   const [preview, setPreview] = useState<string | null>(null);
+  const [qrUrl, setQrUrl] = useState<string | null>(null);
   const { unidades } = useUnidades(material?.dbId);
   const {
     archivos: archivosPreviosHook,
@@ -79,6 +80,13 @@ export default function MaterialForm({
     const fecha = new Date(historialInfo.fecha).toLocaleString();
     toast.show(`Último cambio por ${usuario} el ${fecha}${valor !== undefined ? `, valor: ${valor}` : ''}`);
   };
+
+  const mostrarQR = useCallback(async () => {
+    if (!material) return;
+    const data = buildQRPayload('material', material);
+    const url = await buildQRDataURL(data);
+    setQrUrl(url);
+  }, [material]);
 
 
   const numericFields: Array<keyof Material> = ['cantidad', 'minimo', 'maximo'];
@@ -400,12 +408,13 @@ export default function MaterialForm({
           </ul>
         )}
       </div>
-      <MaterialCodes
-        value={material}
-        tipo="material"
-        codigo={material.codigoQR || ''}
-        onRegenerate={() => onChange('codigoQR', generarUUID())}
-      />
+      <button
+        type="button"
+        onClick={mostrarQR}
+        className="px-3 py-1 rounded bg-white/10 text-sm"
+      >
+        Ver QR
+      </button>
       <div className="flex gap-2 pt-2">
         {readOnly ? (
           <button
@@ -446,6 +455,7 @@ export default function MaterialForm({
       {preview && (
         <ImageModal src={preview} onClose={() => setPreview(null)} />
       )}
+      {qrUrl && <ImageModal src={qrUrl} onClose={() => setQrUrl(null)} />}
       </div>
     </>
   );

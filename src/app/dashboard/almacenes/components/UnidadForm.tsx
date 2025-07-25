@@ -1,7 +1,8 @@
 "use client";
-import { ChangeEvent } from "react";
-import MaterialCodes from "./MaterialCodes";
-import { generarUUID } from "@/lib/uuid";
+import { ChangeEvent, useCallback, useState } from "react";
+import { buildQRDataURL } from "@/lib/qr";
+import { buildQRPayload } from "@/lib/buildQRPayload";
+import ImageModal from "@/components/ImageModal";
 import type { UnidadDetalle } from "@/types/unidad-detalle";
 import useArchivosUnidad from "@/hooks/useArchivosUnidad";
 import useObjectUrl from "@/hooks/useObjectUrl";
@@ -24,11 +25,19 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
   const imagenFileUrl = useObjectUrl(
     unidad && unidad.imagen instanceof File ? unidad.imagen : undefined,
   )
+  const [qrUrl, setQrUrl] = useState<string | null>(null)
 
   const guardarLocal = () => {
     onGuardar()
     mutate()
   }
+
+  const mostrarQR = useCallback(async () => {
+    if (!unidad) return
+    const data = buildQRPayload('unidad', unidad)
+    const url = await buildQRDataURL(data)
+    setQrUrl(url)
+  }, [unidad])
 
   const numericFields: Array<keyof UnidadDetalle> = [
     "peso",
@@ -139,12 +148,13 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
             onChange={handle("codigoQR")}
             className="dashboard-input no-drag w-full mt-1"
           />
-          <MaterialCodes
-            value={unidad}
-            tipo="unidad"
-            codigo={unidad.codigoQR || ''}
-            onRegenerate={() => onChange('codigoQR', generarUUID())}
-          />
+          <button
+            type="button"
+            onClick={mostrarQR}
+            className="px-3 py-1 mt-1 rounded bg-white/10 text-sm"
+          >
+            Ver QR
+          </button>
         </div>
         </div>
         <div>
@@ -525,6 +535,7 @@ export default function UnidadForm({ unidad, onChange, onGuardar, onCancelar }: 
           Cancelar
         </button>
       </div>
+      {qrUrl && <ImageModal src={qrUrl} onClose={() => setQrUrl(null)} />}
     </div>
   );
 }

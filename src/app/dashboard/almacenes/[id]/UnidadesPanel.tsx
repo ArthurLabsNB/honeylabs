@@ -112,7 +112,7 @@ export default function UnidadesPanel({
         className="p-1 w-full rounded-md bg-white/5 focus:outline-none"
       />
       <ul className="space-y-1 max-h-96 overflow-y-auto">
-        {filtrados.map((u) => (
+        {filtrados.map((u, i) => (
           <li
             key={u.id}
             className={`dashboard-card cursor-pointer flex justify-between items-center gap-2 ${
@@ -121,6 +121,7 @@ export default function UnidadesPanel({
                 : 'hover:border-[var(--dashboard-accent)]'
             }`}
           >
+            <span className="w-5 text-xs font-semibold">{i + 1}.</span>
             {(u.imagen || u.imagenNombre) && (
               <UnidadThumb unidad={u} />
             )}
