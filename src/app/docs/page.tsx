@@ -129,8 +129,33 @@ export default function DocumentosPage() {
           className="text-zinc-600 dark:text-zinc-300 text-sm"
           data-oid="67v_5ex"
         >
-          Consejos y atajos para aprovechar al máximo todas las funciones.
+        Consejos y atajos para aprovechar al máximo todas las funciones.
+      </p>
+      </section>
+      <section
+        className="rounded-lg bg-white/70 dark:bg-[#22223b]/80 p-4 shadow"
+        data-oid="descargas"
+      >
+        <h2 className="text-lg font-bold text-amber-700 mb-1">Descargas</h2>
+        <p className="text-zinc-600 dark:text-zinc-300 text-sm">
+          Manuales disponibles para consulta sin conexión.
         </p>
+        <div className="grid sm:grid-cols-2 gap-4 mt-4">
+          <a
+            href="/manuales/manual-usuario.pdf"
+            className="block rounded-md bg-white/70 dark:bg-[#22223b]/60 p-4 shadow hover:shadow-md transition"
+            data-oid="download-manual"
+          >
+            Manual de Usuario
+          </a>
+          <a
+            href="/manuales/referencia-tecnica.pdf"
+            className="block rounded-md bg-white/70 dark:bg-[#22223b]/60 p-4 shadow hover:shadow-md transition"
+            data-oid="download-tecnica"
+          >
+            Referencia Técnica
+          </a>
+        </div>
       </section>
       <section
         className="rounded-lg bg-white/70 dark:bg-[#22223b]/80 p-4 shadow"
