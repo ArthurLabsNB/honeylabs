@@ -97,6 +97,8 @@ model Usuario {
   PuntajeTetris        PuntajeTetris[]
   sesiones             SesionUsuario[]
   suscripciones        Suscripcion[]
+  facturas             Factura[]
+  tickets              Ticket[]
   entidad              Entidad?               @relation(fields: [entidadId], references: [id])
   plan                 Plan?                  @relation(fields: [planId], references: [id])
   almacenes            UsuarioAlmacen[]
@@ -314,6 +316,7 @@ model Material {
   usuario             Usuario?             @relation(fields: [usuarioId], references: [id])
   unidades            MaterialUnidad[]
   movimientosMaterial MovimientoMaterial[]
+  facturaItems        FacturaItem[]
 }
 
 model ArchivoMaterial {
@@ -403,6 +406,7 @@ model MaterialUnidad {
   imagenNombre       String?
   archivos           ArchivoUnidad[]
   historial          HistorialUnidad[]
+  facturaItems       FacturaItem[]
   material           Material          @relation(fields: [materialId], references: [id])
 
   @@unique([materialId, nombre])
@@ -543,4 +547,52 @@ enum NotaTipo {
   url
   doc
   sticky
+}
+
+model Factura {
+  id            Int            @id @default(autoincrement())
+  folio         String         @unique
+  clienteId     Int?
+  fechaEmision  DateTime       @default(now())
+  total         Float
+  moneda        String         @default("MXN")
+  pdf           Bytes?
+  xml           Bytes?
+  ublJson       Json?
+  cliente       Usuario?       @relation(fields: [clienteId], references: [id])
+  items         FacturaItem[]
+  transacciones Transaccion[]
+  tickets       Ticket[]
+}
+
+model FacturaItem {
+  id         Int            @id @default(autoincrement())
+  facturaId  Int
+  materialId Int?
+  unidadId   Int?
+  cantidad   Float
+  precio     Float
+  factura    Factura        @relation(fields: [facturaId], references: [id], onDelete: Cascade)
+  material   Material?      @relation(fields: [materialId], references: [id])
+  unidad     MaterialUnidad? @relation(fields: [unidadId], references: [id])
+}
+
+model Transaccion {
+  id        Int      @id @default(autoincrement())
+  facturaId Int
+  fecha     DateTime @default(now())
+  metodo    String
+  monto     Float
+  referencia String?
+  factura   Factura  @relation(fields: [facturaId], references: [id], onDelete: Cascade)
+}
+
+model Ticket {
+  id        Int      @id @default(autoincrement())
+  facturaId Int?
+  usuarioId Int
+  fecha     DateTime @default(now())
+  detalle   String
+  factura   Factura? @relation(fields: [facturaId], references: [id])
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
 }
