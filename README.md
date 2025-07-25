@@ -35,7 +35,7 @@ Actualmente se están implementando las funcionalidades principales. Se aceptan 
 
 ## Version
 
-0.4.6
+0.5.0
 
 ---
 
@@ -123,6 +123,10 @@ Por omisión se permiten hasta diez archivos en los formularios de materiales y 
 ### Generación de APK
 
 La sección **App** del panel permite descargar la versión móvil. Para que el APK se genere correctamente es necesario definir las variables `GITHUB_REPO` y `GITHUB_TOKEN` en el entorno del servidor. Al enviar una petición `POST` al endpoint `/api/build-mobile` se activa el workflow de GitHub que compila la aplicación Android y actualiza `lib/app-info.json` con la nueva versión y su hash.
+
+### Facturación
+
+El endpoint `/api/billing` permite registrar facturas con validación CFDI 4.0. Envía un cuerpo JSON con `folio`, `clienteRfc` y `total` para obtener PDF, XML y UBL.
 
 ---
 

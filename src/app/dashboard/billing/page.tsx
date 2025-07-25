@@ -3,21 +3,20 @@ import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
 import { apiFetch } from "@lib/api";
 import type { Usuario } from "@/types/usuario";
+import type { Factura } from "@/types/billing";
 import useSession from "@/hooks/useSession";
 import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
 import Spinner from "@/components/Spinner";
+import BillingFilters from "./components/BillingFilters";
+import InvoiceGraph from "./components/InvoiceGraph";
+import InvoiceHistory from "./components/InvoiceHistory";
 
-interface Invoice {
-  id: number;
-  concepto: string;
-  monto: number;
-  estado: string;
-}
 
 export default function BillingPage() {
   const allowed = ["admin", "administrador", "institucional"];
   const { usuario, loading: loadingUsuario } = useSession();
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [invoices, setInvoices] = useState<Factura[]>([]);
+  const [filtered, setFiltered] = useState<Factura[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -41,7 +40,10 @@ export default function BillingPage() {
     setLoading(true);
     apiFetch("/api/billing")
       .then(jsonOrNull)
-      .then((d) => setInvoices(d.invoices || []))
+      .then((d) => {
+        setInvoices(d.facturas || [])
+        setFiltered(d.facturas || [])
+      })
       .catch(() => setError("Error al cargar datos"))
       .finally(() => setLoading(false));
   }, [usuario, loadingUsuario, error]);
@@ -65,13 +67,15 @@ export default function BillingPage() {
       <h1 className="text-2xl font-bold mb-4" data-oid="rf_rc_.">
         Billing
       </h1>
-      <ul className="list-disc pl-4" data-oid="n_816z3">
-        {invoices.map((i) => (
-          <li key={i.id} data-oid="hxxqwhx">
-            {i.concepto} - ${"{i.monto}"} ({i.estado})
-          </li>
-        ))}
-      </ul>
+      <BillingFilters
+        onChange={(q) =>
+          setFiltered(
+            invoices.filter((f) => f.folio?.toLowerCase().includes(q.toLowerCase())),
+          )
+        }
+      />
+      <InvoiceGraph data={filtered.map((f) => ({ fecha: f.fechaEmision ?? '', total: f.total ?? 0 }))} />
+      <InvoiceHistory facturas={filtered} />
     </div>
   );
 }
