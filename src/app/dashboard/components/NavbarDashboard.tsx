@@ -25,7 +25,7 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
   return (
     <header
       ref={navRef}
-      className="dashboard-navbar flex items-center px-8 py-2 justify-between fixed top-0 left-0 right-0 z-20 shadow bg-[var(--dashboard-navbar)]"
+      className="dashboard-navbar flex items-center px-4 sm:px-6 lg:px-8 py-2 justify-between fixed top-0 left-0 right-0 z-20 shadow bg-[var(--dashboard-navbar)]"
       style={{ minHeight: '70px', width: '100%' }}
       data-oid="z5vbw0i"
     >
