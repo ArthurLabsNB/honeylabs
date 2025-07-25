@@ -157,14 +157,14 @@ const SortableAlmacen = memo(function SortableAlmacen({
       <div className="flex flex-col flex-1" onClick={onOpen}>
         <h3 className="font-semibold text-base">{almacen.nombre}</h3>
         <span
-            className={cn(
-              "px-2 py-0.5 rounded-full text-xs",
-              (almacen.inventario ?? 0) > 0
-                ? "bg-emerald-600 text-white"
-                : "bg-red-600 text-white",
-            )}
-          >
-            {(almacen.inventario ?? 0) > 0 ? "Activo" : "Vacío"}
+          className={cn(
+            "px-1.5 py-0.5 rounded-full text-[10px]",
+            (almacen.inventario ?? 0) > 0
+              ? "bg-emerald-600 text-white"
+              : "bg-red-600 text-white",
+          )}
+        >
+          {(almacen.inventario ?? 0) > 0 ? "Act." : "Vac."}
         </span>
         <ul className="text-sm mt-1 space-y-1 list-disc list-inside">
           <li>Materiales: {almacen.inventario ?? 0}</li>
