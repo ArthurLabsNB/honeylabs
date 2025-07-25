@@ -51,13 +51,6 @@ const sidebarMenu = [
     allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
   },
   {
-    key: "utilidades",
-    label: "Utilidades",
-    icon: <Sliders className="dashboard-sidebar-icon" />,
-    path: "/dashboard/almacenes/utilidades",
-    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
-  },
-  {
     key: "auditorias",
     label: "Auditorías",
     icon: <FileStack className="dashboard-sidebar-icon" data-oid="audits" />,
