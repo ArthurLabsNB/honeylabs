@@ -7,6 +7,7 @@ export const ContentSecurityPolicy = dev
     style-src 'self' 'unsafe-inline';
     img-src 'self' http: https: data: blob:;
     connect-src 'self' http://localhost:* ws://localhost:*;
+    frame-src 'self' https://www.google.com http://localhost:*;
     object-src 'none';
   `
   : `
@@ -15,6 +16,7 @@ export const ContentSecurityPolicy = dev
     style-src 'self' 'unsafe-inline';
     img-src 'self' https: data: blob:;
     connect-src 'self';
+    frame-src 'self' https://www.google.com;
     object-src 'none';
   `;
 
