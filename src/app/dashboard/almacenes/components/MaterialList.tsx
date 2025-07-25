@@ -36,7 +36,8 @@ export default function MaterialList({
   // Reducimos el número de nodos renderizados con react-window
   // En pruebas con 1000 materiales, el tiempo de carga pasó de ~120 ms a ~25 ms
   // Altura base de cada tarjeta. Incrementamos para evitar solapamientos
-  const ITEM_HEIGHT = 200;
+  // y permitir miniaturas ligeramente más grandes
+  const ITEM_HEIGHT = 230;
   const filtrados = useMemo(
     () =>
       materiales
@@ -71,14 +72,14 @@ export default function MaterialList({
     else src = m.miniaturaUrl as string | null;
     if (!src)
       return (
-        <div className="w-16 h-16 bg-zinc-800 rounded-md mr-4 flex items-center justify-center text-xs text-zinc-500">
+        <div className="w-20 h-20 bg-zinc-800 rounded-md mr-4 flex items-center justify-center text-xs text-zinc-500">
           Sin imagen
         </div>
       );
     return (
       <img
         src={src}
-        className="w-16 h-16 object-cover rounded-md mr-4 cursor-pointer"
+        className="w-20 h-20 object-cover rounded-md mr-4 cursor-pointer"
         alt="miniatura"
         onClick={(e) => {
           e.stopPropagation();
@@ -130,9 +131,9 @@ export default function MaterialList({
               <div
                 role="button"
                 onClick={() => onSeleccion(m.id)}
-                className="bg-zinc-900 rounded-xl shadow-md p-3 flex flex-col hover:scale-[1.01] transition"
+                className="bg-zinc-900 rounded-xl shadow-md p-4 flex flex-col hover:scale-[1.01] transition"
               >
-                <div className="flex">
+                <div className="flex pl-2">
                   <Miniatura m={m} />
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
@@ -147,10 +148,10 @@ export default function MaterialList({
                         Stock: {m.numUnidades ?? 0}
                       </span>
                     </div>
-                    <ul className="text-sm text-zinc-400 space-y-0.5 mt-1">
-                      <li>Unidad: {m.unidad || 'Sin especificar'}</li>
-                      <li>Ubicación: {m.ubicacion || 'Sin especificar'}</li>
-                      <li>Lote: {m.lote || 'Sin especificar'}</li>
+                    <ul className="text-sm space-y-0.5 mt-1">
+                      <li className="text-blue-300">Unidad: {m.unidad || 'Sin especificar'}</li>
+                      <li className="text-yellow-300">Ubicación: {m.ubicacion || 'Sin especificar'}</li>
+                      <li className="text-purple-300">Lote: {m.lote || 'Sin especificar'}</li>
                     </ul>
                   </div>
                 </div>
