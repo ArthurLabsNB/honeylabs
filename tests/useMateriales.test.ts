@@ -87,4 +87,37 @@ describe('useMateriales', () => {
     expect(form.get('fechaCaducidad')).toBe('2024-01-01')
     vi.resetModules()
   })
+
+  it('eliminar notifica exito', async () => {
+    const mutate = vi.fn()
+    const swr = useSWR as unknown as ReturnType<typeof vi.fn>
+    swr.mockReturnValue({ data: null, error: null, isLoading: false, mutate })
+    const apiFetch = vi.fn().mockResolvedValue(
+      new Response('{"success":true}', { status: 200, headers: { 'Content-Type': 'application/json' } })
+    )
+    vi.doMock('../lib/api', () => ({ apiFetch, apiPath: (p: string) => p }))
+    const { default: useMats } = await import('../src/hooks/useMateriales')
+    const { eliminar } = useMats(1)
+    const res = await eliminar(2)
+    expect(res.success).toBe(true)
+    expect(mutate).toHaveBeenCalled()
+    vi.resetModules()
+  })
+
+  it('eliminar devuelve error', async () => {
+    const mutate = vi.fn()
+    const swr = useSWR as unknown as ReturnType<typeof vi.fn>
+    swr.mockReturnValue({ data: null, error: null, isLoading: false, mutate })
+    const apiFetch = vi.fn().mockResolvedValue(
+      new Response('{"error":"fail"}', { status: 400, headers: { 'Content-Type': 'application/json' } })
+    )
+    vi.doMock('../lib/api', () => ({ apiFetch, apiPath: (p: string) => p }))
+    const { default: useMats } = await import('../src/hooks/useMateriales')
+    const { eliminar } = useMats(1)
+    const res = await eliminar(2)
+    expect(res.success).toBe(false)
+    expect(res.error).toBe('fail')
+    expect(mutate).not.toHaveBeenCalled()
+    vi.resetModules()
+  })
 })

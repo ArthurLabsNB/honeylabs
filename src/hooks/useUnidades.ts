@@ -179,9 +179,9 @@ export default function useUnidades(materialId?: number | string) {
   }
 
   const eliminar = async (unidadId: number) => {
-    if (Number.isNaN(id) || id <= 0) return { error: 'ID inválido' }
+    if (Number.isNaN(id) || id <= 0) return { success: false, error: 'ID inválido' }
     if (Number.isNaN(unidadId) || unidadId <= 0)
-      return { error: 'ID de unidad inválido' }
+      return { success: false, error: 'ID de unidad inválido' }
     try {
       const res = await apiFetch(`/api/materiales/${id}/unidades/${unidadId}`, {
         method: 'DELETE',
@@ -193,10 +193,11 @@ export default function useUnidades(materialId?: number | string) {
         if (result?.auditoria?.id) {
           window.dispatchEvent(new CustomEvent(AUDIT_PREVIEW_EVENT, { detail: true }))
         }
+        return { success: true, auditoria: result?.auditoria }
       }
-      return result
+      return { success: false, error: result?.error || 'Error' }
     } catch {
-      return { error: 'Error de red' }
+      return { success: false, error: 'Error de red' }
     }
   }
 

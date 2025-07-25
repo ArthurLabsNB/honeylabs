@@ -156,7 +156,7 @@ export default function MaterialList({
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    const id = parseId(m.id);
+                    const id = parseId(m.dbId);
                     if (!id) {
                       toast.show('ID inválido', 'error');
                       return;

@@ -48,7 +48,10 @@ export default function UnidadesPanel({
 
   const remove = async (id: number) => {
     const ok = await toast.confirm('¿Eliminar unidad?')
-    if (ok) await eliminar(id)
+    if (!ok) return
+    const res = await eliminar(id)
+    if (res.success) toast.show('Unidad eliminada', 'success')
+    else if (res.error) toast.show(res.error, 'error')
   };
 
   const filtrados = useMemo(
