@@ -389,8 +389,9 @@ html, body {
 /* --------- RESPONSIVE --------- */
 @media (max-width: 480px) {
   :root {
-    --sidebar-width: clamp(0rem, 80vw, 13rem);
-    --sidebar-collapsed-width: clamp(0rem, 18vw, 4rem);
+    /* Sidebar más reducido en móviles */
+    --sidebar-width: clamp(0rem, 90vw, 12rem);
+    --sidebar-collapsed-width: clamp(0rem, 15vw, 3rem);
     --tools-sidebar-width: clamp(0rem, 75vw, 10rem);
   }
 }
