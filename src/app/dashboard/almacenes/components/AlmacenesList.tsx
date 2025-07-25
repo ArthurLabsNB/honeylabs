@@ -155,7 +155,7 @@ const SortableAlmacen = memo(function SortableAlmacen({
         {dayjs(almacen.fechaCreacion).format('DD/MM/YYYY')}
       </span>
       <div className="flex flex-col flex-1" onClick={onOpen}>
-        <h3 className="font-semibold text-base">{almacen.nombre}</h3>
+        <h3 className="font-semibold text-lg font-bold">{almacen.nombre}</h3>
         <span
           className={cn(
             "px-1.5 py-0.5 rounded-full text-[10px]",
