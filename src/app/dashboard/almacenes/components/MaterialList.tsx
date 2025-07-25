@@ -36,7 +36,7 @@ export default function MaterialList({
   // Reducimos el número de nodos renderizados con react-window
   // En pruebas con 1000 materiales, el tiempo de carga pasó de ~120 ms a ~25 ms
   // Altura base de cada tarjeta. Incrementamos para evitar solapamientos
-  const ITEM_HEIGHT = 236;
+  const ITEM_HEIGHT = 200;
   const filtrados = useMemo(
     () =>
       materiales
@@ -64,12 +64,17 @@ export default function MaterialList({
 
   function Miniatura({ m }: { m: Material }) {
     const url = useObjectUrl(m.miniatura instanceof File ? m.miniatura : undefined);
-    let src = null as string | null;
+    let src: string | null = null;
     if (m.miniatura instanceof File) src = url;
     else if (typeof m.miniatura === 'string')
       src = m.miniatura.startsWith('data:') ? m.miniatura : `data:image/*;base64,${m.miniatura}`;
     else src = m.miniaturaUrl as string | null;
-    if (!src) return null;
+    if (!src)
+      return (
+        <div className="w-16 h-16 bg-zinc-800 rounded-md mr-4 flex items-center justify-center text-xs text-zinc-500">
+          Sin imagen
+        </div>
+      );
     return (
       <img
         src={src}
@@ -77,7 +82,7 @@ export default function MaterialList({
         alt="miniatura"
         onClick={(e) => {
           e.stopPropagation();
-          setPreview(src);
+          setPreview(src!);
         }}
       />
     );
@@ -121,14 +126,14 @@ export default function MaterialList({
         {({ index, style }) => {
           const m = filtrados[index];
           return (
-            <div style={style} key={m.id} className="py-2">
+            <div style={style} key={m.id} className="py-1">
               <div
                 role="button"
                 onClick={() => onSeleccion(m.id)}
-                className="bg-zinc-900 rounded-xl shadow-md p-4 flex flex-col hover:scale-[1.01] transition"
+                className="bg-zinc-900 rounded-xl shadow-md p-3 flex flex-col hover:scale-[1.01] transition"
               >
                 <div className="flex">
-                  {(m.miniatura || m.miniaturaUrl) && <Miniatura m={m} />}
+                  <Miniatura m={m} />
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
                       <h3 className="text-white font-bold text-lg">{m.nombre}</h3>
@@ -139,27 +144,13 @@ export default function MaterialList({
                             : 'text-green-400'
                         }`}
                       >
-                        {m.numUnidades ?? 0}
+                        Stock: {m.numUnidades ?? 0}
                       </span>
                     </div>
                     <ul className="text-sm text-zinc-400 space-y-0.5 mt-1">
-                      <li className="flex justify-between">
-                        <span>{m.unidad || '-'}</span>
-                        <span
-                          className={`ml-2 font-semibold ${
-                            (m.numUnidades ?? 0) <= (m.minimo ?? 0)
-                              ? 'text-red-500'
-                              : 'text-green-400'
-                          }`}
-                        >
-                          {m.numUnidades ?? 0}
-                        </span>
-                      </li>
-                      {m.ubicacion && <li>{m.ubicacion}</li>}
-                      <li className="flex justify-between">
-                        <span>{m.lote || '-'}</span>
-                        {m.fechaCaducidad && <span>{m.fechaCaducidad}</span>}
-                      </li>
+                      <li>Unidad: {m.unidad || 'Sin especificar'}</li>
+                      <li>Ubicación: {m.ubicacion || 'Sin especificar'}</li>
+                      <li>Lote: {m.lote || 'Sin especificar'}</li>
                     </ul>
                   </div>
                 </div>
