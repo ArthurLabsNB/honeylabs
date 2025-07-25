@@ -120,4 +120,24 @@ describe('useMateriales', () => {
     expect(mutate).not.toHaveBeenCalled()
     vi.resetModules()
   })
+
+  it('incluye apiPath en miniaturaUrl', async () => {
+    const swr = useSWR as unknown as ReturnType<typeof vi.fn>
+    swr.mockReturnValue({
+      data: { materiales: [{ nombre: 'm1', miniaturaNombre: 'img.png' }] },
+      error: null,
+      isLoading: false,
+      mutate: vi.fn(),
+    })
+    vi.doMock('../lib/api', () => ({
+      apiFetch: vi.fn(),
+      apiPath: (p: string) => '/base' + p,
+    }))
+    const { default: useMats } = await import('../src/hooks/useMateriales')
+    const { materiales } = useMats(1)
+    expect(materiales[0].miniaturaUrl).toBe(
+      '/base/api/materiales/archivo?nombre=img.png',
+    )
+    vi.resetModules()
+  })
 })
