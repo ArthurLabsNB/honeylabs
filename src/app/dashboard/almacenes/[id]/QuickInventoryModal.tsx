@@ -23,7 +23,7 @@ export default function QuickInventoryModal({ data, onClose }: { data: { entrada
       aria-labelledby="inv-title"
     >
       <div
-        className="bg-white dark:bg-zinc-800 p-4 rounded-md min-w-[200px]"
+        className="bg-white dark:bg-zinc-800 p-4 rounded-md w-[90vw] max-w-xs sm:min-w-[300px]"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="inv-title" className="text-lg font-semibold mb-2">Inventario</h2>
