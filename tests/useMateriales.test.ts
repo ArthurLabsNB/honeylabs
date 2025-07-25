@@ -58,6 +58,25 @@ describe('useMateriales', () => {
     Object.defineProperty(globalThis, 'crypto', { value: originalCrypto, configurable: true })
   })
 
+  it('construye miniaturaUrl con BASE_PATH', async () => {
+    const swr = useSWR as unknown as ReturnType<typeof vi.fn>
+    swr.mockReturnValue({
+      data: { materiales: [{ nombre: 'm1', miniaturaNombre: 'img 1.png' }] },
+      error: null,
+      isLoading: false,
+      mutate: vi.fn(),
+    })
+    const original = process.env.NEXT_PUBLIC_BASE_PATH
+    process.env.NEXT_PUBLIC_BASE_PATH = '/base'
+    const { default: useMats } = await import('../src/hooks/useMateriales')
+    const { materiales } = useMats(1)
+    expect(materiales[0].miniaturaUrl).toBe(
+      '/base/api/materiales/archivo?nombre=img%201.png',
+    )
+    process.env.NEXT_PUBLIC_BASE_PATH = original
+    vi.resetModules()
+  })
+
   it('crear genera FormData valida', async () => {
     const swr = useSWR as unknown as ReturnType<typeof vi.fn>
     swr.mockReturnValue({ data: null, error: null, isLoading: false, mutate: vi.fn() })

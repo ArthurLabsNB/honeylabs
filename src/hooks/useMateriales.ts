@@ -3,7 +3,7 @@ import fetcher from '@lib/swrFetcher'
 import { jsonOrNull } from '@lib/http'
 import { useMemo } from 'react'
 import { generarUUID } from '@/lib/uuid'
-import { apiFetch } from '@lib/api'
+import { apiFetch, apiPath } from '@lib/api'
 import { parseId } from '@/lib/parseId'
 import { AUDIT_PREVIEW_EVENT } from '@/lib/ui-events'
 import type { Material } from '@/app/dashboard/almacenes/components/MaterialRow'
@@ -170,7 +170,7 @@ export default function useMateriales(almacenId?: number | string) {
         numUnidades: m._count?.unidades ?? 0,
         fechaCaducidad: m.fechaCaducidad?.slice(0, 10) ?? '',
         miniaturaUrl: m.miniaturaNombre
-          ? `/api/materiales/archivo?nombre=${encodeURIComponent(m.miniaturaNombre)}`
+          ? apiPath(`/api/materiales/archivo?nombre=${encodeURIComponent(m.miniaturaNombre)}`)
           : null,
       })) as Material[] | undefined,
     [data],
