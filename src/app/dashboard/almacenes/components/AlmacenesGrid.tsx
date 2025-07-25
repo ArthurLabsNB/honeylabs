@@ -91,7 +91,7 @@ export default function AlmacenesGrid({
               </span>
             </div>
             <div className="mt-auto flex justify-between items-end">
-              <span className="text-xs text-[var(--dashboard-muted)]">
+              <span className="text-xs text-[var(--dashboard-muted)] mt-3">
                 {a.encargado || 'Sin encargado'}
                 {a.correo ? ` - ${a.correo}` : ''}
               </span>
