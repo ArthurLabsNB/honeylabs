@@ -89,6 +89,11 @@
 - Organizamos la información de cada material en una lista con stock y caducidad.
 - Añadimos botón "Duplicar" dentro de las tarjetas de `MaterialList`.
 
+## 0.8.27
+- Agrandamos la miniatura y el QR en las tarjetas de almacenes.
+- Reorganizamos la información con totales y ubicación.
+- Reemplazamos los iconos por botones de texto en la lista.
+
 ## 0.8.5
 - Registramos auditorías también al escanear códigos.
 - Mejoramos el manejo de errores al crear reportes y auditorías.

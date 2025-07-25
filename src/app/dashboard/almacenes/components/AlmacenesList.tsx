@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { Pencil, Trash, ChevronUp, ChevronDown, Star } from "lucide-react";
+
 import { QRCodeSVG } from "qrcode.react";
 import { motion } from "framer-motion";
 import dayjs from "dayjs";
@@ -134,15 +134,19 @@ const SortableAlmacen = memo(function SortableAlmacen({
         isDragging && "shadow-lg ring-2 ring-[var(--dashboard-accent)]"
       )}
     >
-      <div className="w-20 h-20 flex-shrink-0 rounded-md overflow-hidden bg-white/10" onClick={onOpen}>
+      <div className="w-24 h-24 flex-shrink-0 rounded-md overflow-hidden bg-white/10 self-center" onClick={onOpen}>
         <Image
           src={almacen.imagenUrl || '/ilustracion-almacen-3d.svg'}
           alt={almacen.nombre}
-          width={80}
-          height={80}
-          sizes="80px"
+          width={96}
+          height={96}
+          sizes="96px"
           className="object-cover w-full h-full"
         />
+      </div>
+      <div className="text-xs text-center mt-1">
+        {almacen.encargado || 'Sin encargado'}
+        {almacen.correo ? ` - ${almacen.correo}` : ''}
       </div>
       <div className="flex flex-col flex-1" onClick={onOpen}>
         <div className="flex justify-between items-center gap-2">
@@ -159,73 +163,34 @@ const SortableAlmacen = memo(function SortableAlmacen({
             {(almacen.inventario ?? 0) > 0 ? "Activo" : "Vacío"}
           </span>
         </div>
+        <ul className="text-xs flex gap-4 mt-1">
+          <li>Cant. materiales: {almacen.inventario ?? 0}</li>
+          <li>
+            Cant. unidades:{' '}
+            {(almacen.entradas ?? 0) - (almacen.salidas ?? 0)}
+          </li>
+          <li>Ubicación: N/A</li>
+        </ul>
         {almacen.descripcion && (
           <p className="text-xs text-[var(--dashboard-muted)] mt-1">
             {almacen.descripcion}
           </p>
         )}
         <div className="flex justify-between text-xs mt-auto">
-          <span>
-            {almacen.encargado || 'Sin encargado'}
-            {almacen.correo ? ` - ${almacen.correo}` : ''}
-          </span>
           {almacen.ultimaActualizacion && (
             <span>{dayjs(almacen.ultimaActualizacion).format('DD/MM/YYYY')}</span>
           )}
         </div>
       </div>
       <div className="flex flex-col items-end ml-2">
-        <div className="mb-2">
-          <QRCodeSVG value={almacen.codigoUnico ?? ''} size={48} />
+        <div className="my-auto">
+          <QRCodeSVG value={almacen.codigoUnico ?? ''} size={64} />
         </div>
-        <button
-          onClick={onToggleFavorito}
-          className={cn(
-            'p-1 hover:text-yellow-400',
-            favorito ? 'text-yellow-300' : 'text-white/50',
-          )}
-          title="Favorito"
-          aria-label="Favorito"
-        >
-          <span className="sr-only">Favorito</span>
-          <Star className="w-4 h-4" fill={favorito ? 'currentColor' : 'none'} />
-        </button>
-        <button
-          onClick={() => onMove(-1)}
-          className="p-1 text-white/70 hover:text-white"
-          title="Subir"
-          aria-label="Subir"
-        >
-          <span className="sr-only">Subir</span>
-          <ChevronUp className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => onMove(1)}
-          className="p-1 text-white/70 hover:text-white"
-          title="Bajar"
-          aria-label="Bajar"
-        >
-          <span className="sr-only">Bajar</span>
-          <ChevronDown className="w-4 h-4" />
-        </button>
-        <button
-          onClick={onEdit}
-          className="p-1 text-blue-500 hover:text-blue-400"
-          title="Editar"
-          aria-label="Editar"
-        >
-          <span className="sr-only">Editar</span>
-          <Pencil className="w-4 h-4" />
-        </button>
-        <button
-          onClick={onDelete}
-          className="p-1 text-red-500 hover:text-red-400"
-          title="Eliminar"
-          aria-label="Eliminar"
-        >
-          <span className="sr-only">Eliminar</span>
-          <Trash className="w-4 h-4" />
-        </button>
+        <button onClick={onEdit} className="px-2 py-1 text-blue-500 hover:text-blue-400 text-xs">Editar</button>
+        <button onClick={onDelete} className="px-2 py-1 text-red-500 hover:text-red-400 text-xs">Eliminar</button>
+        <button onClick={onToggleFavorito} className="px-2 py-1 hover:text-yellow-400 text-xs">Favoritos</button>
+        <button onClick={() => onMove(1)} className="px-2 py-1 text-white/70 hover:text-white text-xs">Bajar</button>
+        <button onClick={() => onMove(-1)} className="px-2 py-1 text-white/70 hover:text-white text-xs">Subir</button>
       </div>
     </motion.li>
   );
