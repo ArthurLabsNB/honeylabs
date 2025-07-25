@@ -35,7 +35,8 @@ export default function MaterialList({
   const toast = useToast();
   // Reducimos el número de nodos renderizados con react-window
   // En pruebas con 1000 materiales, el tiempo de carga pasó de ~120 ms a ~25 ms
-  const ITEM_HEIGHT = 168;
+  // Altura base de cada tarjeta. Incrementamos para evitar solapamientos
+  const ITEM_HEIGHT = 196;
   const filtrados = useMemo(
     () =>
       materiales
@@ -63,7 +64,11 @@ export default function MaterialList({
 
   function Miniatura({ m }: { m: Material }) {
     const url = useObjectUrl(m.miniatura instanceof File ? m.miniatura : undefined);
-    const src = m.miniatura instanceof File ? url : (typeof m.miniatura === 'string' ? m.miniatura : m.miniaturaUrl as string | null);
+    let src = null as string | null;
+    if (m.miniatura instanceof File) src = url;
+    else if (typeof m.miniatura === 'string')
+      src = m.miniatura.startsWith('data:') ? m.miniatura : `data:image/*;base64,${m.miniatura}`;
+    else src = m.miniaturaUrl as string | null;
     if (!src) return null;
     return (
       <img
@@ -116,12 +121,13 @@ export default function MaterialList({
         {({ index, style }) => {
           const m = filtrados[index];
           return (
-            <div style={style} key={m.id} className="relative group py-1">
+            <div style={style} key={m.id} className="relative group py-2">
               <button
                 type="button"
                 onClick={() => onSeleccion(m.id)}
                 className={`dashboard-card w-full text-left flex items-center gap-4 ${m.id === selectedId ? 'border-[var(--dashboard-accent)]' : 'hover:border-[var(--dashboard-accent)]'}`}
               >
+                <span className="w-5 text-xs font-semibold">{index + 1}.</span>
                 {(m.miniatura || m.miniaturaUrl) && <Miniatura m={m} />}
                 <div className="flex flex-col flex-1 space-y-1">
                   <span className="font-semibold text-sm">{m.nombre}</span>
