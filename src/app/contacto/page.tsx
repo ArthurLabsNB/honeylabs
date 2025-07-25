@@ -1,3 +1,5 @@
+'use client'
+
 /* src/pages/Contacto.tsx
    Página de contacto profesional completa    – Next.js + React + Tailwind CSS
    – Iconos vía react-icons ( pnpm add react-icons)
