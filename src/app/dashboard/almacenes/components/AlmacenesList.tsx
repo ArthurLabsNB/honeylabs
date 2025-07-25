@@ -197,15 +197,27 @@ const SortableAlmacen = memo(function SortableAlmacen({
       </div>
       <div className="flex flex-col items-end ml-2">
         <div className="flex items-start gap-2">
-          <QRCodeSVG value={almacen.codigoUnico ?? ''} size={96} />
+          <QRCodeSVG value={almacen.codigoUnico ?? ''} size={112} className="mr-2" />
           <div className="flex flex-col gap-1">
-            <button onClick={() => onMove(-1)} className="px-2 py-1 text-white/70 hover:text-white text-sm">Subir</button>
-            <button onClick={() => onMove(1)} className="px-2 py-1 text-white/70 hover:text-white text-sm">Bajar</button>
+            <button
+              onClick={() => onMove(-1)}
+              className="py-1.5 px-3 text-sm font-semibold text-white/70 hover:text-white"
+            >
+              Subir
+            </button>
+            <button
+              onClick={() => onMove(1)}
+              className="py-1.5 px-3 text-sm font-semibold text-white/70 hover:text-white"
+            >
+              Bajar
+            </button>
           </div>
         </div>
-        <button onClick={onEdit} className="mt-2 px-3 py-1 text-blue-500 hover:text-blue-400 text-sm">Editar</button>
-        <button onClick={onDelete} className="px-3 py-1 text-red-500 hover:text-red-400 text-sm">Eliminar</button>
-        <button onClick={onToggleFavorito} className="px-3 py-1 hover:text-yellow-400 text-sm">Favoritos</button>
+        <div className="flex gap-2 mt-2">
+          <button onClick={onEdit} className="px-3 py-1 text-blue-500 hover:text-blue-400 text-sm">Editar</button>
+          <button onClick={onDelete} className="px-3 py-1 text-red-500 hover:text-red-400 text-sm">Eliminar</button>
+          <button onClick={onToggleFavorito} className="px-3 py-1 hover:text-yellow-400 text-sm">Favoritos</button>
+        </div>
       </div>
     </motion.li>
   );
