@@ -85,6 +85,10 @@
 - Rediseñamos las tarjetas de `MaterialList` con estilos oscuros y botones visibles.
 - Actualizamos la prueba de eliminación para reflejar el nuevo texto "Borrar".
 
+## 0.8.26
+- Organizamos la información de cada material en una lista con stock y caducidad.
+- Añadimos botón "Duplicar" dentro de las tarjetas de `MaterialList`.
+
 ## 0.8.5
 - Registramos auditorías también al escanear códigos.
 - Mejoramos el manejo de errores al crear reportes y auditorías.
