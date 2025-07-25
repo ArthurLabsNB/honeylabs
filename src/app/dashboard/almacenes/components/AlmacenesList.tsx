@@ -146,7 +146,7 @@ const SortableAlmacen = memo(function SortableAlmacen({
             className="object-cover w-full h-full"
           />
         </div>
-        <div className="text-sm text-center mt-2">
+        <div className="text-sm text-center mt-3">
           {almacen.encargado || 'Sin encargado'}
           {almacen.correo ? ` - ${almacen.correo}` : ''}
         </div>
@@ -166,9 +166,23 @@ const SortableAlmacen = memo(function SortableAlmacen({
         >
           {(almacen.inventario ?? 0) > 0 ? "Act." : "Vac."}
         </span>
-        <ul className="text-sm mt-1 space-y-1 list-disc list-inside">
-          <li>Materiales: {almacen.inventario ?? 0}</li>
-          <li>Unidades: {almacen.unidades ?? 0}</li>
+        <ul className="mt-1 space-y-1 list-disc list-inside">
+          <li
+            className={cn(
+              'text-sm font-medium',
+              (almacen.inventario ?? 0) > 0 ? 'text-emerald-500' : 'text-red-500'
+            )}
+          >
+            Materiales: {almacen.inventario ?? 0}
+          </li>
+          <li
+            className={cn(
+              'text-sm font-medium',
+              (almacen.unidades ?? 0) > 0 ? 'text-emerald-500' : 'text-red-500'
+            )}
+          >
+            Unidades: {almacen.unidades ?? 0}
+          </li>
         </ul>
         {almacen.descripcion && (
           <p className="text-xs text-[var(--dashboard-muted)] mt-1">
