@@ -36,7 +36,7 @@ export default function MaterialList({
   // Reducimos el número de nodos renderizados con react-window
   // En pruebas con 1000 materiales, el tiempo de carga pasó de ~120 ms a ~25 ms
   // Altura base de cada tarjeta. Incrementamos para evitar solapamientos
-  const ITEM_HEIGHT = 196;
+  const ITEM_HEIGHT = 236;
   const filtrados = useMemo(
     () =>
       materiales
@@ -125,70 +125,89 @@ export default function MaterialList({
               <div
                 role="button"
                 onClick={() => onSeleccion(m.id)}
-                className="bg-zinc-900 rounded-xl shadow-md p-4 flex justify-between items-center hover:scale-[1.01] transition"
+                className="bg-zinc-900 rounded-xl shadow-md p-4 flex flex-col hover:scale-[1.01] transition"
               >
-                <div className="flex items-center">
+                <div className="flex">
                   {(m.miniatura || m.miniaturaUrl) && <Miniatura m={m} />}
-                  <div>
-                    <h3 className="text-white font-bold text-lg">{m.nombre}</h3>
-                    <p className="text-sm text-zinc-400">
-                      {[m.unidad, m.ubicacion, m.lote]
-                        .filter(Boolean)
-                        .join(' • ')}
-                    </p>
+                  <div className="flex-1">
+                    <div className="flex justify-between items-start">
+                      <h3 className="text-white font-bold text-lg">{m.nombre}</h3>
+                      <span
+                        className={`text-sm font-bold ${
+                          (m.numUnidades ?? 0) <= (m.minimo ?? 0)
+                            ? 'text-red-500'
+                            : 'text-green-400'
+                        }`}
+                      >
+                        {m.numUnidades ?? 0}
+                      </span>
+                    </div>
+                    <ul className="text-sm text-zinc-400 space-y-0.5 mt-1">
+                      <li className="flex justify-between">
+                        <span>{m.unidad || '-'}</span>
+                        <span
+                          className={`ml-2 font-semibold ${
+                            (m.numUnidades ?? 0) <= (m.minimo ?? 0)
+                              ? 'text-red-500'
+                              : 'text-green-400'
+                          }`}
+                        >
+                          {m.numUnidades ?? 0}
+                        </span>
+                      </li>
+                      {m.ubicacion && <li>{m.ubicacion}</li>}
+                      <li className="flex justify-between">
+                        <span>{m.lote || '-'}</span>
+                        {m.fechaCaducidad && <span>{m.fechaCaducidad}</span>}
+                      </li>
+                    </ul>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm text-white">
-                    Stock:{' '}
-                    <span
-                      className={`font-bold ${
-                        (m.numUnidades ?? 0) <= (m.minimo ?? 0)
-                          ? 'text-red-500'
-                          : 'text-green-400'
-                      }`}
-                    >
-                      {m.numUnidades ?? 0}
-                    </span>
-                  </p>
-                  {m.fechaCaducidad && (
-                    <p className="text-xs text-zinc-500">{m.fechaCaducidad}</p>
-                  )}
+                <hr className="my-2 border-t border-white/10 opacity-50" />
+                <div className="flex gap-2 justify-end">
+                  <button
+                    type="button"
+                    onClick={() => onSeleccion(m.id)}
+                    className="text-xs px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 transition-colors"
+                  >
+                    Ver
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSeleccion(m.id);
+                    }}
+                    className="text-xs px-2 py-1 rounded bg-blue-700 hover:bg-blue-600 transition-colors"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDuplicar(m.id);
+                    }}
+                    className="text-xs px-2 py-1 rounded bg-purple-700 hover:bg-purple-600 transition-colors"
+                  >
+                    Duplicar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const id = parseId(m.dbId);
+                      if (!id) {
+                        toast.show('ID inválido', 'error');
+                        return;
+                      }
+                      onEliminar(id);
+                    }}
+                    className="text-xs px-2 py-1 rounded bg-red-700 hover:bg-red-600 transition-colors"
+                  >
+                    Borrar
+                  </button>
                 </div>
-              </div>
-              <div className="flex gap-2 mt-2 justify-end">
-                <button
-                  type="button"
-                  onClick={() => onSeleccion(m.id)}
-                  className="text-xs px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 transition-colors"
-                >
-                  Ver
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onSeleccion(m.id);
-                  }}
-                  className="text-xs px-2 py-1 rounded bg-blue-700 hover:bg-blue-600 transition-colors"
-                >
-                  Editar
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const id = parseId(m.dbId);
-                    if (!id) {
-                      toast.show('ID inválido', 'error');
-                      return;
-                    }
-                    onEliminar(id);
-                  }}
-                  className="text-xs px-2 py-1 rounded bg-red-700 hover:bg-red-600 transition-colors"
-                >
-                  Borrar
-                </button>
               </div>
             </div>
           );
