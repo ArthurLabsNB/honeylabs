@@ -99,9 +99,11 @@ export async function GET(req: NextRequest) {
     const ids = data.map((a) => a.id);
     const counts: Record<number, { entradas: number; salidas: number }> = {};
     const materiales: Record<number, number> = {};
+    const unidades: Record<number, number> = {};
     ids.forEach((id) => {
       counts[id] = { entradas: 0, salidas: 0 };
       materiales[id] = 0;
+      unidades[id] = 0;
     });
 
     if (ids.length > 0) {
@@ -122,6 +124,14 @@ export async function GET(req: NextRequest) {
         where: { almacenId: { in: ids } },
       });
       for (const m of mats) materiales[m.almacenId] = m._count._all;
+
+      const unidadesPorMaterial = await prisma.material.findMany({
+        where: { almacenId: { in: ids } },
+        select: { almacenId: true, _count: { select: { unidades: true } } },
+      });
+      for (const u of unidadesPorMaterial) {
+        unidades[u.almacenId] += u._count.unidades;
+      }
     }
 
     let orden: number[] = []
@@ -152,6 +162,7 @@ export async function GET(req: NextRequest) {
       entradas: counts[a.id].entradas,
       salidas: counts[a.id].salidas,
       inventario: materiales[a.id],
+      unidades: unidades[a.id],
     }))
 
     if (orden.length > 0) {

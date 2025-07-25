@@ -168,7 +168,7 @@ const SortableAlmacen = memo(function SortableAlmacen({
         </span>
         <ul className="text-sm mt-1 space-y-1 list-disc list-inside">
           <li>Materiales: {almacen.inventario ?? 0}</li>
-          <li>Unidades: {(almacen.entradas ?? 0) - (almacen.salidas ?? 0)}</li>
+          <li>Unidades: {almacen.unidades ?? 0}</li>
         </ul>
         {almacen.descripcion && (
           <p className="text-xs text-[var(--dashboard-muted)] mt-1">
