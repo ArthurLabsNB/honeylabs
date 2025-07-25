@@ -188,6 +188,7 @@ export async function DELETE(req: NextRequest) {
       await tx.incidencia.deleteMany({ where: { almacenId: id } })
       await tx.notificacion.deleteMany({ where: { almacenId: id } })
       await tx.alerta.deleteMany({ where: { almacenId: id } })
+      await tx.historialLote.deleteMany({ where: { material: { almacenId: id } } })
       await tx.materialUnidad.deleteMany({ where: { material: { almacenId: id } } })
       await tx.archivoMaterial.deleteMany({ where: { material: { almacenId: id } } })
       await tx.material.deleteMany({ where: { almacenId: id } })
