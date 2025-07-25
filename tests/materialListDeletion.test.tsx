@@ -35,7 +35,7 @@ function renderList(id: string, onEliminar: any) {
     />,
   )
   spy.mockRestore()
-  const btn = elems.find(e => e.props?.onClick && e.props.children === 'Eliminar')
+  const btn = elems.find(e => e.props?.onClick && e.props.children === 'Borrar')
   return btn?.props.onClick
 }
 

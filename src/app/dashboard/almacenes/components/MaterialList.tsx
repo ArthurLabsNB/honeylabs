@@ -73,7 +73,7 @@ export default function MaterialList({
     return (
       <img
         src={src}
-        className="w-32 h-32 object-contain rounded cursor-pointer"
+        className="w-16 h-16 object-cover rounded-md mr-4 cursor-pointer"
         alt="miniatura"
         onClick={(e) => {
           e.stopPropagation();
@@ -121,36 +121,58 @@ export default function MaterialList({
         {({ index, style }) => {
           const m = filtrados[index];
           return (
-            <div style={style} key={m.id} className="relative group py-2">
-              <button
-                type="button"
+            <div style={style} key={m.id} className="py-2">
+              <div
+                role="button"
                 onClick={() => onSeleccion(m.id)}
-                className={`dashboard-card w-full text-left flex items-center gap-4 ${m.id === selectedId ? 'border-[var(--dashboard-accent)]' : 'hover:border-[var(--dashboard-accent)]'}`}
+                className="bg-zinc-900 rounded-xl shadow-md p-4 flex justify-between items-center hover:scale-[1.01] transition"
               >
-                <span className="w-5 text-xs font-semibold">{index + 1}.</span>
-                {(m.miniatura || m.miniaturaUrl) && <Miniatura m={m} />}
-                <div className="flex flex-col flex-1 space-y-1">
-                  <span className="font-semibold text-sm">{m.nombre}</span>
-                  <span className="text-xs">Stock: {m.numUnidades ?? 0}</span>
-                  {m.lote && <span className="text-xs">Lote: {m.lote}</span>}
-                  {m.proveedor && (
-                    <span className="text-xs">Proveedor: {m.proveedor}</span>
-                  )}
+                <div className="flex items-center">
+                  {(m.miniatura || m.miniaturaUrl) && <Miniatura m={m} />}
+                  <div>
+                    <h3 className="text-white font-bold text-lg">{m.nombre}</h3>
+                    <p className="text-sm text-zinc-400">
+                      {[m.unidad, m.ubicacion, m.lote]
+                        .filter(Boolean)
+                        .join(' • ')}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-white">
+                    Stock:{' '}
+                    <span
+                      className={`font-bold ${
+                        (m.numUnidades ?? 0) <= (m.minimo ?? 0)
+                          ? 'text-red-500'
+                          : 'text-green-400'
+                      }`}
+                    >
+                      {m.numUnidades ?? 0}
+                    </span>
+                  </p>
                   {m.fechaCaducidad && (
-                    <span className="text-xs">Caduca: {m.fechaCaducidad}</span>
+                    <p className="text-xs text-zinc-500">{m.fechaCaducidad}</p>
                   )}
                 </div>
-              </button>
-              <div className="absolute right-2 top-2 flex gap-1 opacity-0 group-hover:opacity-100">
+              </div>
+              <div className="flex gap-2 mt-2 justify-end">
+                <button
+                  type="button"
+                  onClick={() => onSeleccion(m.id)}
+                  className="text-xs px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 transition-colors"
+                >
+                  Ver
+                </button>
                 <button
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onDuplicar(m.id);
+                    onSeleccion(m.id);
                   }}
-                  className="px-1 py-0.5 text-xs rounded bg-white/10"
+                  className="text-xs px-2 py-1 rounded bg-blue-700 hover:bg-blue-600 transition-colors"
                 >
-                  Duplicar
+                  Editar
                 </button>
                 <button
                   type="button"
@@ -163,9 +185,9 @@ export default function MaterialList({
                     }
                     onEliminar(id);
                   }}
-                  className="px-1 py-0.5 text-xs rounded bg-red-600 text-white"
+                  className="text-xs px-2 py-1 rounded bg-red-700 hover:bg-red-600 transition-colors"
                 >
-                  Eliminar
+                  Borrar
                 </button>
               </div>
             </div>
