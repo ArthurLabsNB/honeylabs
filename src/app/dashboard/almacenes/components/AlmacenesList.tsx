@@ -118,6 +118,7 @@ const SortableAlmacen = memo(function SortableAlmacen({
       {...attributes}
       {...listeners}
       tabIndex={0}
+      className="relative"
       onKeyDown={(e) => {
         if (e.key === 'ArrowUp') {
           e.preventDefault()
@@ -134,25 +135,28 @@ const SortableAlmacen = memo(function SortableAlmacen({
         isDragging && "shadow-lg ring-2 ring-[var(--dashboard-accent)]"
       )}
     >
-      <div className="w-24 h-24 flex-shrink-0 rounded-md overflow-hidden bg-white/10 self-center" onClick={onOpen}>
-        <Image
-          src={almacen.imagenUrl || '/ilustracion-almacen-3d.svg'}
-          alt={almacen.nombre}
-          width={96}
-          height={96}
-          sizes="96px"
-          className="object-cover w-full h-full"
-        />
+      <div className="flex flex-col items-center ml-2" onClick={onOpen}>
+        <div className="w-28 h-28 flex-shrink-0 rounded-md overflow-hidden bg-white/10">
+          <Image
+            src={almacen.imagenUrl || '/ilustracion-almacen-3d.svg'}
+            alt={almacen.nombre}
+            width={112}
+            height={112}
+            sizes="112px"
+            className="object-cover w-full h-full"
+          />
+        </div>
+        <div className="text-sm text-center mt-2">
+          {almacen.encargado || 'Sin encargado'}
+          {almacen.correo ? ` - ${almacen.correo}` : ''}
+        </div>
       </div>
-      <div className="text-xs text-center mt-1">
-        {almacen.encargado || 'Sin encargado'}
-        {almacen.correo ? ` - ${almacen.correo}` : ''}
-      </div>
+      <span className="absolute top-2 right-2 text-xs text-[var(--dashboard-muted)]">
+        {dayjs(almacen.fechaCreacion).format('DD/MM/YYYY')}
+      </span>
       <div className="flex flex-col flex-1" onClick={onOpen}>
-        <div className="flex justify-between items-center gap-2">
-          <h3 className="font-semibold">{almacen.nombre}</h3>
-          <span className="text-lg font-semibold text-[var(--dashboard-accent)]">{almacen.inventario ?? 0} mat.</span>
-          <span
+        <h3 className="font-semibold text-base">{almacen.nombre}</h3>
+        <span
             className={cn(
               "px-2 py-0.5 rounded-full text-xs",
               (almacen.inventario ?? 0) > 0
@@ -161,15 +165,10 @@ const SortableAlmacen = memo(function SortableAlmacen({
             )}
           >
             {(almacen.inventario ?? 0) > 0 ? "Activo" : "Vacío"}
-          </span>
-        </div>
-        <ul className="text-xs flex gap-4 mt-1">
-          <li>Cant. materiales: {almacen.inventario ?? 0}</li>
-          <li>
-            Cant. unidades:{' '}
-            {(almacen.entradas ?? 0) - (almacen.salidas ?? 0)}
-          </li>
-          <li>Ubicación: N/A</li>
+        </span>
+        <ul className="text-sm mt-1 space-y-1 list-disc list-inside">
+          <li>Materiales: {almacen.inventario ?? 0}</li>
+          <li>Unidades: {(almacen.entradas ?? 0) - (almacen.salidas ?? 0)}</li>
         </ul>
         {almacen.descripcion && (
           <p className="text-xs text-[var(--dashboard-muted)] mt-1">
@@ -183,14 +182,16 @@ const SortableAlmacen = memo(function SortableAlmacen({
         </div>
       </div>
       <div className="flex flex-col items-end ml-2">
-        <div className="my-auto">
-          <QRCodeSVG value={almacen.codigoUnico ?? ''} size={64} />
+        <div className="flex items-start gap-2">
+          <QRCodeSVG value={almacen.codigoUnico ?? ''} size={96} />
+          <div className="flex flex-col gap-1">
+            <button onClick={() => onMove(-1)} className="px-2 py-1 text-white/70 hover:text-white text-sm">Subir</button>
+            <button onClick={() => onMove(1)} className="px-2 py-1 text-white/70 hover:text-white text-sm">Bajar</button>
+          </div>
         </div>
-        <button onClick={onEdit} className="px-2 py-1 text-blue-500 hover:text-blue-400 text-xs">Editar</button>
-        <button onClick={onDelete} className="px-2 py-1 text-red-500 hover:text-red-400 text-xs">Eliminar</button>
-        <button onClick={onToggleFavorito} className="px-2 py-1 hover:text-yellow-400 text-xs">Favoritos</button>
-        <button onClick={() => onMove(1)} className="px-2 py-1 text-white/70 hover:text-white text-xs">Bajar</button>
-        <button onClick={() => onMove(-1)} className="px-2 py-1 text-white/70 hover:text-white text-xs">Subir</button>
+        <button onClick={onEdit} className="mt-2 px-3 py-1 text-blue-500 hover:text-blue-400 text-sm">Editar</button>
+        <button onClick={onDelete} className="px-3 py-1 text-red-500 hover:text-red-400 text-sm">Eliminar</button>
+        <button onClick={onToggleFavorito} className="px-3 py-1 hover:text-yellow-400 text-sm">Favoritos</button>
       </div>
     </motion.li>
   );

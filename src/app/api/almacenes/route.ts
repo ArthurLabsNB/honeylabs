@@ -76,6 +76,7 @@ export async function GET(req: NextRequest) {
         descripcion: true,
         imagenUrl: true,
         imagenNombre: true,
+        fechaCreacion: true,
         codigoUnico: true,
         usuarios: {
           take: 1,
@@ -143,6 +144,7 @@ export async function GET(req: NextRequest) {
       descripcion: a.descripcion,
       imagenUrl: a.imagenNombre ? `/api/almacenes/foto?nombre=${encodeURIComponent(a.imagenNombre)}` : a.imagenUrl,
       codigoUnico: a.codigoUnico,
+      fechaCreacion: a.fechaCreacion,
       encargado: a.usuarios[0]?.usuario.nombre ?? null,
       correo: a.usuarios[0]?.usuario.correo ?? null,
       ultimaActualizacion: a.movimientos[0]?.fecha ?? null,

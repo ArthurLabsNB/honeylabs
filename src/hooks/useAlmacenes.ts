@@ -6,6 +6,7 @@ export interface Almacen {
   nombre: string
   descripcion?: string | null
   imagenUrl?: string | null
+  fechaCreacion?: string | null
   ultimaActualizacion?: string | null
   entradas?: number
   salidas?: number
