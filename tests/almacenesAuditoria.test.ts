@@ -76,6 +76,7 @@ describe('DELETE /api/almacenes/[id]', () => {
       incidencia: { deleteMany: vi.fn() },
       notificacion: { deleteMany: vi.fn() },
       alerta: { deleteMany: vi.fn() },
+      historialLote: { deleteMany: vi.fn() },
       materialUnidad: { deleteMany: vi.fn() },
       archivoMaterial: { deleteMany: vi.fn() },
       material: { deleteMany: vi.fn() },

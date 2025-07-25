@@ -204,6 +204,7 @@ export async function DELETE(req: NextRequest) {
     }
     await prisma.$transaction(async (tx) => {
       await snapshot(tx, id, usuario.id, 'Eliminación')
+      await tx.historialLote.deleteMany({ where: { materialId: id } })
       await tx.materialUnidad.deleteMany({ where: { materialId: id } })
       await tx.archivoMaterial.deleteMany({ where: { materialId: id } })
       await tx.material.delete({ where: { id } })
