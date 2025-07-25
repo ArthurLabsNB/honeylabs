@@ -30,4 +30,37 @@ describe('GET /api/almacenes', () => {
     await GET(req)
     expect(find).toHaveBeenCalledWith(expect.objectContaining({ where: { usuarios: { some: { usuarioId: 5 } } } }))
   })
+
+  it('incluye total de unidades', async () => {
+    vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue({ id: 1 } as any)
+    vi.spyOn(permisos, 'hasManagePerms').mockReturnValue(true)
+
+    const almacenesData = [
+      {
+        id: 2,
+        nombre: 'A',
+        descripcion: '',
+        imagenNombre: null,
+        imagenUrl: null,
+        fechaCreacion: new Date(),
+        codigoUnico: 'c',
+        usuarios: [],
+        movimientos: [],
+        notificaciones: [],
+      },
+    ] as any
+
+    vi.spyOn(prisma.almacen, 'findMany').mockResolvedValue(almacenesData)
+    ;(prisma as any).movimiento = { groupBy: vi.fn().mockResolvedValue([]) }
+    ;(prisma.material as any).groupBy = vi.fn().mockResolvedValue([])
+    ;(prisma.material as any).findMany = vi
+      .spyOn(prisma.material, 'findMany')
+      .mockResolvedValue([{ almacenId: 2, _count: { unidades: 7 } }] as any)
+    vi.spyOn(prisma.usuario, 'findUnique').mockResolvedValue(null as any)
+
+    const res = await GET(new NextRequest('http://localhost/api/almacenes'))
+    expect(res.status).toBe(200)
+    const data = await res.json()
+    expect(data.almacenes[0].unidades).toBe(7)
+  })
 })

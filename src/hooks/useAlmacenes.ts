@@ -11,6 +11,7 @@ export interface Almacen {
   entradas?: number
   salidas?: number
   inventario?: number
+  unidades?: number
   encargado?: string | null
   correo?: string | null
   notificaciones?: number
