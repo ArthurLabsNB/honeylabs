@@ -24,6 +24,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { cn } from "@/lib/utils";
 import { POINTER_ACTIVATION_DISTANCE } from "../../constants";
+import { Pencil, Trash2, Star } from "lucide-react";
 import type { Almacen } from "@/hooks/useAlmacenes";
 
 interface Props {
@@ -226,9 +227,33 @@ const SortableAlmacen = memo(function SortableAlmacen({
           </div>
         </div>
         <div className="flex gap-2 mt-2">
-          <button onClick={onEdit} className="px-3 py-1 text-blue-500 hover:text-blue-400 text-sm">Editar</button>
-          <button onClick={onDelete} className="px-3 py-1 text-red-500 hover:text-red-400 text-sm">Eliminar</button>
-          <button onClick={onToggleFavorito} className="px-3 py-1 hover:text-yellow-400 text-sm">Favoritos</button>
+          <button
+            onClick={onEdit}
+            className="p-1 hover:bg-white/20 rounded"
+            aria-label="Editar"
+            title="Editar"
+          >
+            <Pencil className="w-4 h-4" />
+          </button>
+          <button
+            onClick={onDelete}
+            className="p-1 hover:bg-white/20 rounded text-red-500 hover:text-red-400"
+            aria-label="Eliminar"
+            title="Eliminar"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+          <button
+            onClick={onToggleFavorito}
+            className={cn(
+              'p-1 hover:text-yellow-400',
+              favorito ? 'text-yellow-300' : 'text-white/50'
+            )}
+            aria-label={favorito ? 'Quitar de favoritos' : 'Añadir a favoritos'}
+            title={favorito ? 'Quitar de favoritos' : 'Añadir a favoritos'}
+          >
+            <Star className="w-4 h-4" fill={favorito ? 'currentColor' : 'none'} />
+          </button>
         </div>
       </div>
     </motion.li>
