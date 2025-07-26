@@ -35,11 +35,12 @@ export default function AlmacenesGrid({
           style={{ boxShadow: 'var(--dashboard-widget-glow)' }}
           onClick={() => onOpen(a.id)}
         >
-          <div className="w-24 h-24 bg-white/10 rounded-md overflow-hidden relative max-w-xs:w-20 max-w-xs:h-20">
+          <div className="w-24 h-24 bg-white/10 rounded-md overflow-hidden relative max-[425px]:w-20 max-[425px]:h-20">
             <Image
               src={a.imagenUrl || '/ilustracion-almacen-3d.svg'}
               alt={a.nombre}
               fill
+              sizes="(max-width: 425px) 80px, 96px"
               className="object-cover w-full h-full"
             />
           </div>
