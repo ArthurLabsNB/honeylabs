@@ -4,13 +4,17 @@ import { NextResponse } from 'next/server'
 import prisma from '@lib/prisma'
 import * as logger from '@lib/logger'
 
-const EXTERNAL_URL = process.env.STATUS_SERVICE_URL || 'https://example.com'
+const EXTERNAL_URL = process.env.STATUS_SERVICE_URL
 
 export async function GET() {
   try {
     await prisma.$queryRaw`SELECT 1`
-    const res = await fetch(EXTERNAL_URL, { method: 'HEAD' })
-    if (!res.ok) throw new Error('external')
+
+    if (EXTERNAL_URL) {
+      const res = await fetch(EXTERNAL_URL, { method: 'HEAD' })
+      if (!res.ok) throw new Error('external')
+    }
+
     return NextResponse.json(
       { status: 'ok' },
       { headers: { 'Cache-Control': 'no-store' } },
