@@ -133,17 +133,18 @@ const SortableAlmacen = memo(function SortableAlmacen({
       }}
       className={cn(
         "bg-white/5 hover:bg-white/10 p-3 rounded-md flex gap-3 cursor-grab active:cursor-grabbing",
+        "max-[360px]:flex-col",
         isDragging && "shadow-lg ring-2 ring-[var(--dashboard-accent)]"
       )}
     >
       <div className="flex flex-col items-center ml-2" onClick={onOpen}>
-        <div className="w-28 h-28 flex-shrink-0 rounded-md overflow-hidden bg-white/10">
+        <div className="w-24 h-24 flex-shrink-0 rounded-md overflow-hidden bg-white/10 sm:w-28 sm:h-28">
           <Image
             src={almacen.imagenUrl || '/ilustracion-almacen-3d.svg'}
             alt={almacen.nombre}
-            width={112}
-            height={112}
-            sizes="112px"
+            width={96}
+            height={96}
+            sizes="96px"
             className="object-cover w-full h-full"
           />
         </div>
@@ -209,8 +210,8 @@ const SortableAlmacen = memo(function SortableAlmacen({
         </div>
       </div>
       <div className="flex flex-col items-end ml-2">
-        <div className="flex items-start gap-2">
-          <QRCodeSVG value={almacen.codigoUnico ?? ''} size={112} className="mr-2" />
+        <div className="flex items-start gap-2 max-[360px]:flex-col max-[360px]:items-center">
+          <QRCodeSVG value={almacen.codigoUnico ?? ''} size={96} className="mr-2" />
           <div className="flex flex-col gap-1">
             <button
               onClick={() => onMove(-1)}
