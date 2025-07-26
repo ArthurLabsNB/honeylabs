@@ -158,7 +158,7 @@ const SortableAlmacen = memo(function SortableAlmacen({
         <h3 className="font-semibold text-base">{almacen.nombre}</h3>
         <span
           className={cn(
-            "px-1 py-px rounded text-[9px]",
+            "px-1 py-0.5 rounded text-[9px]",
             (almacen.inventario ?? 0) > 0
               ? "bg-emerald-600 text-white"
               : "bg-red-600 text-white",

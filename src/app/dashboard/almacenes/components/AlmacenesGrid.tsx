@@ -48,7 +48,7 @@ export default function AlmacenesGrid({
               <h3 className="font-semibold text-base">{a.nombre}</h3>
               <span
                 className={cn(
-                  'px-2 py-0.5 rounded-full text-xs font-semibold',
+                  'px-1 py-0.5 rounded-full text-xs font-semibold',
                   (a.inventario ?? 0) > 0 ? 'bg-yellow-400 text-black' : 'bg-gray-500 text-white',
                 )}
               >
@@ -81,7 +81,7 @@ export default function AlmacenesGrid({
               <span className="font-semibold text-lg">📦 {a.inventario ?? 0}</span>
               <span
                 className={cn(
-                  'px-2 py-0.5 rounded-full text-xs',
+                  'px-1 py-0.5 rounded-full text-xs',
                   (a.inventario ?? 0) > 0
                     ? 'bg-emerald-600 text-white'
                     : 'bg-red-600 text-white',
@@ -98,7 +98,7 @@ export default function AlmacenesGrid({
               {a.notificaciones && a.notificaciones > 0 && (
                 <span
                   title={`${a.notificaciones} notificaciones sin leer`}
-                  className="text-xs px-2 py-0.5 rounded-full bg-[var(--dashboard-accent)] text-[#101014] font-semibold"
+                  className="text-xs px-1 py-0.5 rounded-full bg-[var(--dashboard-accent)] text-[#101014] font-semibold"
                 >
                   {a.notificaciones}
                 </span>
