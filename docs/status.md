@@ -4,6 +4,9 @@
 
 Retorna un JSON indicando si todos los servicios están operativos.
 
+Si la variable de entorno `STATUS_SERVICE_URL` no está definida, se omite la
+verificación externa y solo se comprueba la conexión a la base de datos.
+
 ```json
 { "status": "ok" }
 ```
