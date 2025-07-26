@@ -140,7 +140,7 @@ const SortableAlmacen = memo(function SortableAlmacen({
       <div className="flex flex-col items-center ml-2" onClick={onOpen}>
         <div className="w-24 h-24 flex-shrink-0 rounded-md overflow-hidden bg-white/10 sm:w-28 sm:h-28">
           <Image
-            src={almacen.imagenUrl || '/ilustracion-almacen-3d.svg'}
+            src={almacen.imagenUrl || '/Almacen Default.png'}
             alt={almacen.nombre}
             width={96}
             height={96}

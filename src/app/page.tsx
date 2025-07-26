@@ -69,7 +69,7 @@ function HeroSection() {
       <div className="flex-1 flex items-center justify-center relative z-10">
         <div className="relative w-full max-w-[440px] aspect-[4/3] drop-shadow-2xl animate-3dpop">
           <Image
-            src="/hero-warehouse-ui-mockup.png"
+            src="/1.gif"
             alt="Mockup HoneyLabs dashboard"
             fill
             className="rounded-3xl object-cover border-4 border-amber-200 shadow-2xl"
@@ -79,7 +79,7 @@ function HeroSection() {
           {/* Gif flotando */}
           <div className="absolute -bottom-8 -left-10 w-36 h-24 z-20 animate-float-card">
             <Image
-              src="/gif/demo-movimientos.gif"
+              src="/2.gif"
               alt="Demostración animada movimientos"
               fill
               className="rounded-xl object-cover shadow-lg border-2 border-white"
@@ -108,27 +108,27 @@ const FEATURES = [
   {
     title: "Inventario en tiempo real",
     desc: "Consulta y actualiza el estado de los materiales al instante, con historial y trazabilidad total. Cada movimiento queda registrado para máxima transparencia y seguridad.",
-    image: "/feature-inventario.png",
+    image: "/4.gif",
     icon: "/logo-honeylabs",
   },
   {
     title: "Acceso desde cualquier lugar",
     desc: "Gestión 100% web. Ingresa a tu plataforma desde PC, tablet o celular, en todo momento, y con respaldos automáticos de seguridad.",
-    image: "/feature-web-devices.png",
+    image: "/mobil.gif",
     icon: "/icons/cloud-access.svg",
     inverse: true,
   },
   {
     title: "Roles y permisos personalizados",
     desc: "Define permisos para cada tipo de usuario, protegiendo la información y asignando responsabilidades. Acciones y acceso totalmente controlados.",
-    image: "/feature-users.gif",
+    image: "/5.gif",
     icon: "/icons/user-roles.svg",
   },
 ];
 
 const EXTRA_FEATURES = [
   {
-    icon: "/icons/integrations.svg",
+    icon: "/6.gif",
     title: "Integraciones y reportes",
     desc: "Exporta a Excel, PDF, conecta APIs, y genera reportes visuales de movimientos.",
   },
