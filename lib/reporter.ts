@@ -33,11 +33,15 @@ export async function registrarAuditoria(
       logger.error(req, 'Error de red al crear reporte', err)
       return { error: 'Error de red al crear reporte' }
     }
+    const data1 = await res
+      .json()
+      .catch(() => ({ error: 'No se pudo crear reporte' }))
     if (!res.ok) {
-      logger.error(req, 'Fallo al crear reporte', res.status)
-      return { error: 'No se pudo crear reporte' }
+      const msg = data1?.error || 'No se pudo crear reporte'
+      logger.error(req, 'Fallo al crear reporte', msg)
+      return { error: msg }
     }
-    const { reporte } = await res.json()
+    const { reporte } = data1 as any
 
     let res2: Response
     try {
@@ -53,11 +57,15 @@ export async function registrarAuditoria(
       logger.error(req, 'Error de red al crear auditoría', err)
       return { error: 'Error de red al crear auditoría' }
     }
+    const data2 = await res2
+      .json()
+      .catch(() => ({ error: 'No se pudo crear auditoría' }))
     if (!res2.ok) {
-      logger.error(req, 'Fallo al crear auditoría', res2.status)
-      return { error: 'No se pudo crear auditoría' }
+      const msg = data2?.error || 'No se pudo crear auditoría'
+      logger.error(req, 'Fallo al crear auditoría', msg)
+      return { error: msg }
     }
-    const { auditoria } = await res2.json()
+    const { auditoria } = data2 as any
     return { auditoria }
   } catch (err) {
     logger.error(req, 'Error inesperado en registrarAuditoria', err)
