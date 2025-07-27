@@ -1,12 +1,24 @@
 // src/app/estado/page.tsx
 import { apiPath } from '@lib/api'
+import { headers } from 'next/headers'
 
 interface EstadoData {
   status: 'ok' | 'maintenance'
 }
 
 export default async function EstadoPage() {
-  const res = await fetch(apiPath('/api/status'), { cache: 'no-store' })
+  let url = apiPath('/api/status')
+  try {
+    const h = headers()
+    const proto = h.get('x-forwarded-proto') ?? 'http'
+    const host = h.get('x-forwarded-host') ?? h.get('host')
+    if (host) {
+      url = `${proto}://${host}${url}`
+    }
+  } catch {
+    // sin contexto de request (p.ej. pruebas)
+  }
+  const res = await fetch(url, { cache: 'no-store' })
   const data = (await res.json()) as EstadoData
   const now = new Date().toLocaleString()
   const ok = data.status === 'ok'
