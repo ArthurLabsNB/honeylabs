@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
 import * as logger from './logger'
+import { apiPath } from './api'
 
 export interface RegistrarAuditoriaResult {
   auditoria?: any
@@ -24,7 +25,7 @@ export async function registrarAuditoria(
 
     let res: Response
     try {
-      res = await fetch(new URL('/api/reportes', req.url), {
+      res = await fetch(new URL(apiPath('/api/reportes'), req.url), {
         method: 'POST',
         headers: { cookie: req.headers.get('cookie') ?? '' },
         body: form,
@@ -45,7 +46,7 @@ export async function registrarAuditoria(
 
     let res2: Response
     try {
-      res2 = await fetch(new URL('/api/auditorias', req.url), {
+      res2 = await fetch(new URL(apiPath('/api/auditorias'), req.url), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
