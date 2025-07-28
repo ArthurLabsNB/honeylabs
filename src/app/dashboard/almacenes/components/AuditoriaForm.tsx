@@ -24,7 +24,7 @@ export default function AuditoriaForm({ auditoriaId, onClose }: Props) {
   return (
     <div className="space-y-2 text-sm p-2 overflow-y-auto max-h-[calc(100vh-8rem)]">
       <div>Tipo: {auditoria.tipo}</div>
-      <div>Versión: {auditoria.version}</div>
+      {auditoria.version != null && <div>Versión: {auditoria.version}</div>}
       {auditoria.categoria && <div>Categoría: {auditoria.categoria}</div>}
       {auditoria.almacen?.nombre && <div>Almacén: {auditoria.almacen.nombre}</div>}
       {auditoria.material?.nombre && <div>Material: {auditoria.material.nombre}</div>}

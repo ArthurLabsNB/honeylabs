@@ -101,7 +101,7 @@ export default function AuditoriaPage() {
       <div className="p-4 space-y-4" style={{ paddingTop: 'calc(var(--navbar-height) * 2)' }}>
         <div className="dashboard-card text-xs space-y-1">
           <div>Tipo: {data.tipo}</div>
-          <div>Versión: {data.version}</div>
+          {data.version != null && <div>Versión: {data.version}</div>}
           {data.unidad?.nombre && <div>Unidad: {data.unidad.nombre}</div>}
           {data.material?.nombre && <div>Material: {data.material.nombre}</div>}
           {data.almacen?.nombre && <div>Almacén: {data.almacen.nombre}</div>}

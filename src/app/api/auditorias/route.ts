@@ -42,10 +42,10 @@ export async function GET(req: NextRequest) {
       take: 50,
       orderBy: { fecha: 'desc' },
       where,
+      // "version" se excluye para compatibilidad con clientes antiguos
       select: {
         id: true,
         tipo: true,
-        version: true,
         categoria: true,
         fecha: true,
         observaciones: true,

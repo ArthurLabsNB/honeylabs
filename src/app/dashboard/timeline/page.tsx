@@ -7,7 +7,7 @@ interface Evento {
   id: number;
   fecha: string;
   observaciones: string | null;
-  version: number;
+  version?: number;
   usuario?: { nombre: string } | null;
   almacen?: { nombre: string } | null;
   material?: { nombre: string } | null;
@@ -57,7 +57,7 @@ export default function TimelinePage() {
             {activo === e.id && (
               <div className="mt-1 text-xs space-y-1">
                 {e.observaciones && <div>{e.observaciones}</div>}
-                <div>Versión: {e.version}</div>
+                {e.version != null && <div>Versión: {e.version}</div>}
                 {e.usuario?.nombre && <div>Usuario: {e.usuario.nombre}</div>}
               </div>
             )}
