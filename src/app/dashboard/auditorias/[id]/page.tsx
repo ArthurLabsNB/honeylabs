@@ -14,6 +14,11 @@ export default function AuditoriaPage() {
   const [from, setFrom] = useState<string | null>(null);
   const [data, setData] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [historial, setHistorial] = useState<any[]>([]);
+  const [diffIndexA, setDiffIndexA] = useState(-2);
+  const [diffIndexB, setDiffIndexB] = useState(-1);
+  const [diffData, setDiffData] = useState<{ prev: any; current: any } | null>(null);
+  const [showDiff, setShowDiff] = useState(false);
 
   const id = Array.isArray(params?.id) ? params.id[0] : params?.id;
 
@@ -32,6 +37,43 @@ export default function AuditoriaPage() {
       .finally(() => setLoading(false));
     return () => ctrl.abort();
   }, [id]);
+
+  useEffect(() => {
+    if (!data) return;
+    let url = '';
+    if (data.tipo === 'almacen' && data.almacenId) {
+      url = `/api/almacenes/${data.almacenId}/historial`;
+    } else if (data.tipo === 'material' && data.materialId) {
+      url = `/api/materiales/${data.materialId}/historial`;
+    } else if (data.tipo === 'unidad' && data.materialId && data.unidadId) {
+      url = `/api/materiales/${data.materialId}/unidades/${data.unidadId}/historial`;
+    }
+    if (!url) return;
+    apiFetch(url)
+      .then(jsonOrNull)
+      .then((d) => {
+        const h: any[] = d?.historial || [];
+        setHistorial(h);
+        if (h.length >= 2) {
+          setDiffIndexA(h.length - 2);
+          setDiffIndexB(h.length - 1);
+        } else {
+          setDiffIndexA(-1);
+          setDiffIndexB(-1);
+        }
+      })
+      .catch(() => {});
+  }, [data]);
+
+  useEffect(() => {
+    if (diffIndexA < 0 || diffIndexB < 0) {
+      setDiffData(null);
+      return;
+    }
+    if (historial[diffIndexA] && historial[diffIndexB]) {
+      setDiffData({ prev: historial[diffIndexA], current: historial[diffIndexB] });
+    }
+  }, [diffIndexA, diffIndexB, historial]);
 
   const goBack = () => {
     if (from) router.push(from);
@@ -74,6 +116,56 @@ export default function AuditoriaPage() {
           >
             Copiar
           </button>
+          <button
+            onClick={() => setShowDiff((v) => !v)}
+            className="px-2 py-1 rounded bg-white/10 text-xs ml-2"
+          >
+            {showDiff ? 'Ocultar diff' : 'Comparar versiones'}
+          </button>
+          {showDiff && (
+            <div className="mt-3 space-y-2">
+              {historial.length >= 2 ? (
+                <>
+                  <div className="flex gap-2 text-xs">
+                    <select
+                      value={diffIndexA}
+                      onChange={(e) => setDiffIndexA(Number(e.target.value))}
+                      className="border p-1 rounded"
+                    >
+                      {historial.map((h, i) => (
+                        <option key={i} value={i}>
+                          {new Date(h.fecha).toLocaleString()}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={diffIndexB}
+                      onChange={(e) => setDiffIndexB(Number(e.target.value))}
+                      className="border p-1 rounded"
+                    >
+                      {historial.map((h, i) => (
+                        <option key={i} value={i}>
+                          {new Date(h.fecha).toLocaleString()}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {diffData && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                      <pre className="p-2 bg-black/20 rounded overflow-auto whitespace-pre-wrap">
+                        {JSON.stringify(diffData.prev.estado, null, 2)}
+                      </pre>
+                      <pre className="p-2 bg-black/20 rounded overflow-auto whitespace-pre-wrap">
+                        {JSON.stringify(diffData.current.estado, null, 2)}
+                      </pre>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <p className="text-xs text-gray-400">No hay versiones suficientes.</p>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </>
