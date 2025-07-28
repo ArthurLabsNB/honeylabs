@@ -99,6 +99,8 @@ model Usuario {
   suscripciones        Suscripcion[]
   facturas             Factura[]
   tickets              Ticket[]
+  reportes             Reporte[]       @relation("ReporteUsuario")
+  archivosReportes     ArchivoReporte[] @relation("ArchivoReporteSubidoPor")
   entidad              Entidad?               @relation(fields: [entidadId], references: [id])
   plan                 Plan?                  @relation(fields: [planId], references: [id])
   almacenes            UsuarioAlmacen[]
@@ -158,6 +160,7 @@ model Almacen {
   notificaciones          Notificacion[]
   novedades               NovedadAlmacen[]
   usuarios                UsuarioAlmacen[]
+  reportes               Reporte[]          @relation("ReporteAlmacen")
 }
 
 model UsuarioAlmacen {
@@ -317,6 +320,7 @@ model Material {
   unidades            MaterialUnidad[]
   movimientosMaterial MovimientoMaterial[]
   facturaItems        FacturaItem[]
+  reportes            Reporte[]          @relation("ReporteMaterial")
 }
 
 model ArchivoMaterial {
@@ -407,6 +411,7 @@ model MaterialUnidad {
   archivos           ArchivoUnidad[]
   historial          HistorialUnidad[]
   facturaItems       FacturaItem[]
+  reportes           Reporte[]          @relation("ReporteUnidad")
   material           Material          @relation(fields: [materialId], references: [id])
 
   @@unique([materialId, nombre])
@@ -595,4 +600,38 @@ model Ticket {
   detalle   String
   factura   Factura? @relation(fields: [facturaId], references: [id])
   usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+}
+
+// ================================
+// Reportes generados por escaneos
+// ================================
+model Reporte {
+  id            Int      @id @default(autoincrement())
+  tipo          String   // 'almacen', 'material', 'unidad'
+  almacenId     Int?
+  materialId    Int?
+  unidadId      Int?
+  observaciones String?
+  categoria     String?
+  fecha         DateTime @default(now())
+  usuarioId     Int?
+
+  usuario   Usuario?        @relation("ReporteUsuario", fields: [usuarioId], references: [id])
+  almacen   Almacen?        @relation("ReporteAlmacen", fields: [almacenId], references: [id])
+  material  Material?       @relation("ReporteMaterial", fields: [materialId], references: [id])
+  unidad    MaterialUnidad? @relation("ReporteUnidad", fields: [unidadId], references: [id])
+
+  archivos  ArchivoReporte[] @relation("ArchivoDeReporte")
+}
+
+model ArchivoReporte {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  archivo       Bytes?
+  archivoNombre String?
+  fecha         DateTime @default(now())
+  reporteId     Int
+  reporte       Reporte  @relation("ArchivoDeReporte", fields: [reporteId], references: [id])
+  subidoPorId   Int?
+  subidoPor     Usuario? @relation("ArchivoReporteSubidoPor", fields: [subidoPorId], references: [id])
 }
