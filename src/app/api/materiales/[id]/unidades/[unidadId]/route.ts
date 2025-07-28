@@ -8,28 +8,8 @@ import { hasManagePerms } from '@lib/permisos'
 import * as logger from '@lib/logger'
 import { logAudit } from '@/lib/audit'
 import { registrarAuditoria } from '@lib/reporter'
+import { snapshotUnidad } from '@/lib/snapshot'
 
-async function snapshot(unidadId: number, usuarioId: number, descripcion: string) {
-  const unidad = await prisma.materialUnidad.findUnique({
-    where: { id: unidadId },
-    include: { archivos: { select: { nombre: true, archivoNombre: true, archivo: true } } },
-  })
-  const estado = unidad
-    ? {
-        ...unidad,
-        imagen: unidad.imagen ? Buffer.from(unidad.imagen as Buffer).toString('base64') : null,
-        archivos: unidad.archivos.map(a => ({
-          nombre: a.nombre,
-          archivoNombre: a.archivoNombre,
-          archivo: a.archivo ? Buffer.from(a.archivo as Buffer).toString('base64') : null,
-        })),
-      }
-    : null
-  // @ts-ignore
-  await prisma.historialUnidad.create({
-    data: { unidadId, usuarioId, descripcion, estado },
-  })
-}
 function getIds(req: NextRequest): { materialId: number | null; unidadId: number | null } {
   const parts = req.nextUrl.pathname.split('/')
   const idxM = parts.findIndex(p => p === 'materiales')
@@ -167,7 +147,7 @@ export async function PUT(req: NextRequest) {
         data,
         select: { id: true, nombre: true, codigoQR: true },
       })
-      await snapshot(actualizado.id, usuario.id, 'Modificación')
+      await snapshotUnidad(prisma, actualizado.id, usuario.id, 'Modificación')
       await logAudit(usuario.id, 'modificacion_unidad', 'material', { materialId, unidadId })
 
       const { auditoria, error: auditError } = await registrarAuditoria(
@@ -212,7 +192,7 @@ export async function DELETE(req: NextRequest) {
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
     }
-    await snapshot(unidadId, usuario.id, 'Eliminación')
+    await snapshotUnidad(prisma, unidadId, usuario.id, 'Eliminación')
     await prisma.materialUnidad.delete({ where: { id: unidadId } })
     await logAudit(usuario.id, 'eliminacion_unidad', 'material', { materialId, unidadId })
 

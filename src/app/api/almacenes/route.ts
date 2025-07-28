@@ -10,6 +10,7 @@ import { hasManagePerms, normalizeTipoCuenta } from "@lib/permisos";
 import * as logger from '@lib/logger'
 import { logAudit } from '@/lib/audit'
 import { registrarAuditoria } from '@lib/reporter'
+import { snapshotAlmacen } from '@/lib/snapshot'
 
 const MAX_IMAGE_MB = 5;
 const MAX_IMAGE_BYTES = MAX_IMAGE_MB * 1024 * 1024;
@@ -21,35 +22,6 @@ const IMAGE_TYPES = [
   'image/gif',
 ];
 
-async function snapshot(
-  db: Prisma.TransactionClient | typeof prisma,
-  almacenId: number,
-  usuarioId: number,
-  descripcion: string,
-) {
-  const almacen = await db.almacen.findUnique({
-    where: { id: almacenId },
-    select: {
-      nombre: true,
-      descripcion: true,
-      imagen: true,
-      imagenNombre: true,
-      imagenUrl: true,
-      codigoUnico: true,
-    },
-  })
-  const estado = almacen
-    ? {
-        ...almacen,
-        imagen: almacen.imagen
-          ? Buffer.from(almacen.imagen as Buffer).toString('base64')
-          : null,
-      }
-    : null
-  await db.historialAlmacen.create({
-    data: { almacenId, usuarioId, descripcion, estado },
-  })
-}
 
 export async function GET(req: NextRequest) {
   try {
@@ -280,7 +252,7 @@ export async function POST(req: NextRequest) {
           codigoUnico: true,
         },
       })
-      await snapshot(tx, creado.id, usuario.id, 'Creación')
+      await snapshotAlmacen(tx, creado.id, usuario.id, 'Creación')
       return creado
   })
 

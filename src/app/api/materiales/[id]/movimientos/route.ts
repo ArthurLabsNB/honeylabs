@@ -5,6 +5,7 @@ import prisma from '@lib/prisma'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import * as logger from '@lib/logger'
+import { snapshotMaterial } from '@/lib/snapshot'
 
 function getMaterialId(req: NextRequest): number | null {
   const parts = req.nextUrl.pathname.split('/')
@@ -13,57 +14,6 @@ function getMaterialId(req: NextRequest): number | null {
   return id && !Number.isNaN(id) ? id : null
 }
 
-async function snapshot(materialId: number, usuarioId: number, datos?: { descripcion?: string; cantidad?: number | null }) {
-  const material = await prisma.material.findUnique({
-    where: { id: materialId },
-    select: {
-      nombre: true,
-      descripcion: true,
-      miniatura: true,
-      miniaturaNombre: true,
-      cantidad: true,
-      unidad: true,
-      lote: true,
-      fechaCaducidad: true,
-      ubicacion: true,
-      proveedor: true,
-      estado: true,
-      observaciones: true,
-      codigoBarra: true,
-      codigoQR: true,
-      minimo: true,
-      maximo: true,
-      archivos: { select: { nombre: true, archivoNombre: true, archivo: true } },
-    },
-  })
-  const estado = material
-    ? {
-        ...material,
-        miniatura: material.miniatura
-          ? Buffer.from(material.miniatura as Buffer).toString('base64')
-          : null,
-        archivos: material.archivos.map((a) => ({
-          nombre: a.nombre,
-          archivoNombre: a.archivoNombre,
-          archivo: a.archivo
-            ? Buffer.from(a.archivo as Buffer).toString('base64')
-            : null,
-        })),
-      }
-    : null
-
-  await prisma.historialLote.create({
-    data: {
-      materialId,
-      descripcion: datos?.descripcion || null,
-      cantidad: datos?.cantidad ?? null,
-      usuarioId,
-      estado,
-      lote: null,
-      ubicacion: null,
-    },
-  })
-}
 
 export async function POST(req: NextRequest) {
   try {
@@ -98,7 +48,7 @@ export async function POST(req: NextRequest) {
         usuarioId: usuario.id,
       },
     })
-    await snapshot(id, usuario.id, { descripcion, cantidad: n })
+    await snapshotMaterial(prisma, id, usuario.id, descripcion || '', { cantidad: n })
     return NextResponse.json({ success: true })
   } catch (err) {
     logger.error('POST /api/materiales/[id]/movimientos', err)

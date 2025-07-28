@@ -10,46 +10,8 @@ import crypto from 'node:crypto'
 import * as logger from '@lib/logger'
 import { logAudit } from '@/lib/audit'
 import { registrarAuditoria } from '@lib/reporter'
+import { snapshotMaterial } from '@/lib/snapshot'
 
-async function snapshot(
-  db: Prisma.TransactionClient | typeof prisma,
-  materialId: number,
-  usuarioId: number,
-  descripcion: string,
-) {
-  const material = await db.material.findUnique({
-    where: { id: materialId },
-    include: {
-      archivos: { select: { nombre: true, archivoNombre: true, archivo: true } },
-    },
-  })
-  const estado = material
-    ? {
-        ...material,
-        miniatura: material.miniatura
-          ? Buffer.from(material.miniatura as Buffer).toString('base64')
-          : null,
-        archivos: material.archivos.map((a) => ({
-          nombre: a.nombre,
-          archivoNombre: a.archivoNombre,
-          archivo: a.archivo
-            ? Buffer.from(a.archivo as Buffer).toString('base64')
-            : null,
-        })),
-      }
-    : null
-  await db.historialLote.create({
-    data: {
-      materialId,
-      usuarioId,
-      descripcion,
-      lote: material?.lote ?? null,
-      ubicacion: material?.ubicacion ?? null,
-      cantidad: material?.cantidad ?? null,
-      estado,
-    },
-  })
-}
 
 function getMaterialId(req: NextRequest): number | null {
   const parts = req.nextUrl.pathname.split('/');
@@ -165,7 +127,7 @@ export async function PUT(req: NextRequest) {
         data: datos,
         select: { id: true },
       })
-      await snapshot(tx, id, usuario.id, 'Modificación')
+      await snapshotMaterial(tx, id, usuario.id, 'Modificación')
       return upd
     })
 
@@ -203,7 +165,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
     }
     await prisma.$transaction(async (tx) => {
-      await snapshot(tx, id, usuario.id, 'Eliminación')
+      await snapshotMaterial(tx, id, usuario.id, 'Eliminación')
       await tx.historialLote.deleteMany({ where: { materialId: id } })
       await tx.materialUnidad.deleteMany({ where: { materialId: id } })
       await tx.archivoMaterial.deleteMany({ where: { materialId: id } })
