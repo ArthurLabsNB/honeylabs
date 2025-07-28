@@ -15,6 +15,7 @@ export async function GET(req: NextRequest) {
     const almacenId = req.nextUrl.searchParams.get('almacenId') || undefined
     const materialId = req.nextUrl.searchParams.get('materialId') || undefined
     const unidadId = req.nextUrl.searchParams.get('unidadId') || undefined
+    const usuarioId = req.nextUrl.searchParams.get('usuarioId') || undefined
     const q = req.nextUrl.searchParams.get('q')?.toLowerCase() || undefined
     const desde = req.nextUrl.searchParams.get('desde') || undefined
     const hasta = req.nextUrl.searchParams.get('hasta') || undefined
@@ -23,6 +24,7 @@ export async function GET(req: NextRequest) {
     if (almacenId) where.almacenId = Number(almacenId)
     if (materialId) where.materialId = Number(materialId)
     if (unidadId) where.unidadId = Number(unidadId)
+    if (usuarioId) where.usuarioId = Number(usuarioId)
     if (categoria) where.categoria = categoria
     if (q) {
       where.OR = [

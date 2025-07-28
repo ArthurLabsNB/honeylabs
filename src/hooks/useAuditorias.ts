@@ -13,7 +13,7 @@ export interface Auditoria {
   unidad?: { nombre: string }
 }
 
-export default function useAuditorias(opts?: { tipo?: string, categoria?: string, q?: string, desde?: string, hasta?: string, almacenId?: number, materialId?: number, unidadId?: number }) {
+export default function useAuditorias(opts?: { tipo?: string, categoria?: string, q?: string, desde?: string, hasta?: string, almacenId?: number, materialId?: number, unidadId?: number, usuarioId?: number }) {
   const params = new URLSearchParams()
   if (opts?.tipo && opts.tipo !== 'todos') params.set('tipo', opts.tipo)
   if (opts?.categoria && opts.categoria !== 'todas') params.set('categoria', opts.categoria)
@@ -23,6 +23,7 @@ export default function useAuditorias(opts?: { tipo?: string, categoria?: string
   if (opts?.almacenId) params.set('almacenId', String(opts.almacenId))
   if (opts?.materialId) params.set('materialId', String(opts.materialId))
   if (opts?.unidadId) params.set('unidadId', String(opts.unidadId))
+  if (opts?.usuarioId) params.set('usuarioId', String(opts.usuarioId))
   const url = `/api/auditorias${params.toString() ? `?${params.toString()}` : ''}`
 
   const { data, error, isLoading, mutate } = useSWR(url, fetcher, {
