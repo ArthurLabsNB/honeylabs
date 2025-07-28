@@ -11,6 +11,7 @@ import * as logger from '@lib/logger'
 import { logAudit } from '@/lib/audit'
 import { registrarAuditoria } from '@lib/reporter'
 import { snapshotMaterial } from '@/lib/snapshot'
+import { emitEvent } from '@/lib/events'
 
 
 function getAlmacenIdFromRequest(req: NextRequest): number | null {
@@ -242,6 +243,17 @@ export async function DELETE(req: NextRequest) {
       'eliminacion',
       { accion: 'vaciar_materiales' },
     )
+
+    await prisma.alerta.create({
+      data: {
+        titulo: 'Eliminación masiva de materiales',
+        mensaje: 'Se eliminaron todos los materiales del almacén',
+        prioridad: 'ALTA',
+        tipo: 'eliminacion_masiva',
+        almacenId,
+      },
+    })
+    emitEvent({ type: 'alertas_update', payload: { almacenId } })
 
     return NextResponse.json({ success: true, auditoria, auditError })
   } catch (err) {

@@ -1,8 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
 import { apiFetch } from "@lib/api";
 import { X } from "lucide-react";
+import { startAlertasUpdates } from "@/hooks/useAlertasUpdates";
 
 // Utilidad para pintar colores según prioridad
 const prioridadColor = {
@@ -25,19 +26,29 @@ export default function AlertasWidget({ usuario }: { usuario: any }) {
   const [err, setErr] = useState<string | null>(null);
   const [show, setShow] = useState(true);
 
-  useEffect(() => {
-    if (!usuario) return;
-    setLoading(true);
-    setErr(null);
+  const fetchAlertas = useCallback(() => {
+    if (!usuario) return
+    setLoading(true)
+    setErr(null)
     apiFetch(`/api/alertas?usuarioId=${usuario.id}`)
-      .then(async (res) => {
-        if (!res.ok) throw new Error("Error consultando alertas");
-        const data = await jsonOrNull(res);
-        setAlertas(data?.alertas || []);
+      .then(async res => {
+        if (!res.ok) throw new Error('Error consultando alertas')
+        const data = await jsonOrNull(res)
+        setAlertas(data?.alertas || [])
       })
-      .catch((e) => setErr(e.message))
-      .finally(() => setLoading(false));
-  }, [usuario]);
+      .catch(e => setErr(e.message))
+      .finally(() => setLoading(false))
+  }, [usuario])
+
+  useEffect(() => {
+    fetchAlertas()
+  }, [fetchAlertas])
+
+  useEffect(() => {
+    if (!usuario) return
+    const stop = startAlertasUpdates(fetchAlertas)
+    return stop
+  }, [usuario, fetchAlertas])
 
   if (!show) return null;
 
