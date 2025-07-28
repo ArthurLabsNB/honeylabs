@@ -4,6 +4,7 @@ import { FixedSizeList as VList } from "react-window";
 import { useRouter } from "next/navigation";
 import Spinner from "@/components/Spinner";
 import useAuditorias from "@/hooks/useAuditorias";
+import useAdminUsuarios from "@/hooks/useAdminUsuarios";
 import { apiFetch } from "@lib/api";
 
 export default function AuditoriasPage() {
@@ -13,7 +14,16 @@ export default function AuditoriasPage() {
   const [busqueda, setBusqueda] = useState("");
   const [desde, setDesde] = useState('');
   const [hasta, setHasta] = useState('');
-  const { auditorias, loading } = useAuditorias({ tipo, categoria, q: busqueda, desde, hasta });
+  const [usuarioId, setUsuarioId] = useState('todos');
+  const { usuarios } = useAdminUsuarios();
+  const { auditorias, loading } = useAuditorias({
+    tipo,
+    categoria,
+    q: busqueda,
+    desde,
+    hasta,
+    usuarioId: usuarioId !== 'todos' ? Number(usuarioId) : undefined,
+  });
   const [detalle, setDetalle] = useState<any | null>(null);
   const [activo, setActivo] = useState<number | null>(null);
 
@@ -95,6 +105,16 @@ export default function AuditoriasPage() {
           <option value="actualizacion">Actualizaciones</option>
           <option value="duplicacion">Duplicaciones</option>
         </select>
+        <select
+          value={usuarioId}
+          onChange={(e) => setUsuarioId(e.target.value)}
+          className="dashboard-input"
+        >
+          <option value="todos">Todos</option>
+          {usuarios.map((u) => (
+            <option key={u.id} value={u.id}>{u.nombre}</option>
+          ))}
+        </select>
         <button
           onClick={() => {
             setBusqueda('');
@@ -102,6 +122,7 @@ export default function AuditoriasPage() {
             setCategoria('todas');
             setDesde('');
             setHasta('');
+            setUsuarioId('todos');
           }}
           className="px-3 py-1 rounded bg-white/10 text-sm"
         >
