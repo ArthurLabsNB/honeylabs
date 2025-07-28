@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import useAuditorias from "@/hooks/useAuditorias";
 
 interface Props {
@@ -18,6 +19,7 @@ export default function AuditoriasPanel({ material, almacenId, unidadId, onSelec
     unidadId,
   });
   const [activo, setActivo] = useState<number | null>(null);
+  const router = useRouter();
 
   return (
     <div className="p-4 border rounded-md space-y-2 mt-4">
@@ -36,6 +38,8 @@ export default function AuditoriasPanel({ material, almacenId, unidadId, onSelec
             }`}
             onClick={() => {
               setActivo(a.id);
+              const from = encodeURIComponent(location.pathname);
+              router.push(`/dashboard/auditorias/${a.id}?from=${from}`);
               onSelectHistorial && onSelectHistorial(a);
             }}
           >
