@@ -2,6 +2,7 @@ export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@lib/prisma'
+import { Prisma } from '@prisma/client'
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
 
@@ -51,6 +52,16 @@ export async function GET(req: NextRequest) {
     })
     return NextResponse.json({ auditorias })
   } catch (err) {
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === 'P2021'
+    ) {
+      logger.error('GET /api/auditorias', err)
+      return NextResponse.json(
+        { error: 'Base de datos no inicializada.' },
+        { status: 500 },
+      )
+    }
     logger.error('GET /api/auditorias', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
   }
@@ -110,6 +121,16 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ auditoria })
   } catch (err) {
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === 'P2021'
+    ) {
+      logger.error('POST /api/auditorias', err)
+      return NextResponse.json(
+        { error: 'Base de datos no inicializada.' },
+        { status: 500 },
+      )
+    }
     logger.error('POST /api/auditorias', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
   }

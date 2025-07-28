@@ -94,6 +94,10 @@
 - Reorganizamos la información con totales y ubicación.
 - Reemplazamos los iconos por botones de texto en la lista.
 
+## 0.8.28
+- Manejamos el error `P2021` en las rutas de auditorías para indicar que la base
+  de datos requiere migraciones.
+
 ## 0.8.5
 - Registramos auditorías también al escanear códigos.
 - Mejoramos el manejo de errores al crear reportes y auditorías.
