@@ -1,181 +1,23 @@
 "use client";
-import type { Material } from "../components/MaterialRow";
-import useMovimientosMaterial from "@/hooks/useMovimientosMaterial";
-import useHistorialMaterial from "@/hooks/useHistorialMaterial";
-import useMovimientos from "@/hooks/useMovimientos";
-import useHistorialAlmacen from "@/hooks/useHistorialAlmacen";
-import useHistorialUnidad from "@/hooks/useHistorialUnidad";
-import { useState, useMemo } from "react";
-import { apiFetch } from "@lib/api";
-import * as logger from '@lib/logger'
+import { useState } from "react";
 import Link from "next/link";
-import {
-  PlusIcon,
-  MinusIcon,
-  PencilSquareIcon,
-  TrashIcon,
-} from "@heroicons/react/24/solid";
-import { useToast } from "@/components/Toast";
-import ExportNavbar from "../components/ExportNavbar";
-import MaterialCodes from "../components/MaterialCodes";
-
+import useAuditorias from "@/hooks/useAuditorias";
 
 interface Props {
-  material: Material | null;
+  material: { dbId: number; nombre: string } | null;
   almacenId?: number;
   unidadId?: number;
   onSelectHistorial?: (entry: any) => void;
 }
 
-interface Registro {
-  id: string;
-  tipo: string;
-  cantidad?: number | null;
-  fecha: string;
-  descripcion?: string | null;
-  usuario?: string;
-  estado?: any;
-  fuente: 'material' | 'unidad';
-}
-
-export default function HistorialMovimientosPanel({ material, almacenId, unidadId, onSelectHistorial }: Props) {
-  const { movimientos } = useMovimientosMaterial(material?.dbId);
-  const { historial } = useHistorialMaterial(material?.dbId);
-  const { movimientos: movimientosAlmacen } = useMovimientos(almacenId);
-  const { historial: historialAlmacen } = useHistorialAlmacen(almacenId);
-  const { historial: historialUnidad } = useHistorialUnidad(material?.dbId, unidadId);
-  const [detalle, setDetalle] = useState<any | null>(null);
-  const [activo, setActivo] = useState<string | null>(null);
-  const toast = useToast();
-  const [busqueda, setBusqueda] = useState('');
-  const [tipo, setTipo] = useState<'todos' | 'entrada' | 'salida' | 'creacion' | 'modificacion' | 'eliminacion'>('todos');
-
-  const registros: Registro[] = [
-    ...(!material
-      ? historial.map((h) => ({
-          id: `h-${h.id}`,
-          tipo: h.descripcion?.startsWith('Entrada')
-            ? 'entrada'
-            : h.descripcion?.startsWith('Eliminacion')
-              ? 'eliminacion'
-              : 'modificacion',
-          cantidad: h.cantidad,
-          fecha: h.fecha,
-          descripcion: h.descripcion ?? undefined,
-          estado: h.estado,
-          usuario: h.usuario?.nombre,
-          fuente: 'material',
-        }))
-      : []),
-    ...historialUnidad.map((h) => ({
-      id: `hu-${h.id}`,
-      tipo: h.descripcion?.startsWith('Eliminacion')
-        ? 'eliminacion'
-        : h.descripcion?.startsWith('Creacion')
-          ? 'creacion'
-          : 'modificacion',
-      fecha: h.fecha,
-      descripcion: h.descripcion ?? undefined,
-      estado: h.estado,
-      usuario: h.usuario?.nombre,
-      fuente: 'unidad',
-    })),
-    ...(!material
-      ? movimientos.map((m) => ({
-          id: `m-${m.id}`,
-          tipo: m.tipo,
-          cantidad: m.cantidad,
-          fecha: m.fecha,
-          descripcion: m.descripcion ?? undefined,
-          usuario: m.usuario?.nombre,
-          fuente: 'material',
-        }))
-      : []),
-  ].sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
-
-  const buscarEstado = (
-    fuente: 'material' | 'unidad',
-    fecha: string,
-    descripcion?: string,
-  ) => {
-    const hist =
-      fuente === 'material'
-        ? historial
-        : historialUnidad;
-    const target = hist.find(
-      (h) =>
-        Math.abs(new Date(h.fecha).getTime() - new Date(fecha).getTime()) < 5000 &&
-        (h.descripcion ?? '') === (descripcion ?? '')
-    );
-    return target?.estado;
-  };
-
-  const filtrados = useMemo(
-    () =>
-      registros.filter(
-        (r) =>
-          (tipo === 'todos' || r.tipo === tipo) &&
-          (busqueda === '' ||
-            r.descripcion?.toLowerCase().includes(busqueda.toLowerCase()) ||
-            r.usuario?.toLowerCase().includes(busqueda.toLowerCase())),
-      ),
-    [registros, busqueda, tipo],
-  );
-
-  const handleClickMovimiento = async (id: string) => {
-    setActivo(id);
-    const [pref, real] = id.split('-');
-    if (pref === 'h') {
-      try {
-        const res = await apiFetch(`/api/historial/material/${real}`);
-        let data: any = null;
-        if (res.headers.get('content-type')?.includes('json')) {
-          try {
-            data = await res.json();
-          } catch {}
-        }
-        if (data?.entry?.estado) {
-          setDetalle({ ...data.entry, id });
-          onSelectHistorial && onSelectHistorial(data.entry);
-        } else {
-          toast.show('Este movimiento no tiene datos disponibles.', 'error');
-        }
-      } catch (err) {
-        logger.error(err);
-        toast.show('Error al obtener movimiento.', 'error');
-      }
-    } else if (pref === 'm') {
-      const registro = registros.find((r) => r.id === id);
-      if (!registro) return;
-      const estado = buscarEstado('material', registro.fecha, registro.descripcion);
-      if (estado) {
-        const entry = { ...registro, estado } as any;
-        setDetalle({ ...entry, id });
-        onSelectHistorial && onSelectHistorial(entry);
-      } else {
-        toast.show('Este movimiento no tiene datos disponibles.', 'error');
-      }
-    } else if (pref === 'hu') {
-      try {
-        const res = await apiFetch(`/api/historial/unidad/${real}`);
-        let data: any = null;
-        if (res.headers.get('content-type')?.includes('json')) {
-          try {
-            data = await res.json();
-          } catch {}
-        }
-        if (data?.entry?.estado) {
-          setDetalle({ ...data.entry, id });
-          onSelectHistorial && onSelectHistorial(data.entry);
-        } else {
-          toast.show('Este movimiento no tiene datos disponibles.', 'error');
-        }
-      } catch (err) {
-        logger.error(err);
-        toast.show('Error al obtener movimiento.', 'error');
-      }
-    }
-  };
+export default function AuditoriasPanel({ material, almacenId, unidadId, onSelectHistorial }: Props) {
+  const { auditorias } = useAuditorias({
+    tipo: material ? "material" : unidadId ? "unidad" : "almacen",
+    almacenId,
+    materialId: material?.dbId,
+    unidadId,
+  });
+  const [activo, setActivo] = useState<number | null>(null);
 
   return (
     <div className="p-4 border rounded-md space-y-2 mt-4">
@@ -185,79 +27,34 @@ export default function HistorialMovimientosPanel({ material, almacenId, unidadI
           Ver todas
         </Link>
       </div>
-      <div className="flex gap-2">
-        <input
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-          placeholder="Buscar"
-          className="dashboard-input flex-1"
-        />
-        <select
-          value={tipo}
-          onChange={(e) => setTipo(e.target.value as any)}
-          className="dashboard-input"
-        >
-          <option value="todos">Todos</option>
-          <option value="entrada">Entradas</option>
-          <option value="salida">Salidas</option>
-          <option value="creacion">Creaciones</option>
-          <option value="modificacion">Modificaciones</option>
-          <option value="eliminacion">Eliminaciones</option>
-        </select>
-      </div>
       <ul className="space-y-2 max-h-96 overflow-y-auto">
-        {filtrados.map((r) => (
+        {auditorias.map((a) => (
           <li
-            key={r.id}
-            className={`dashboard-card cursor-pointer space-y-1 ${
-              activo === r.id
-                ? 'border-[var(--dashboard-accent)]'
-                : 'hover:border-[var(--dashboard-accent)]'
+            key={a.id}
+            className={`dashboard-card space-y-1 cursor-pointer ${
+              activo === a.id ? 'border-[var(--dashboard-accent)]' : 'hover:border-[var(--dashboard-accent)]'
             }`}
-            onClick={() => handleClickMovimiento(r.id)}
+            onClick={() => {
+              setActivo(a.id);
+              onSelectHistorial && onSelectHistorial(a);
+            }}
           >
             <div className="flex justify-between items-center">
-              <span className="flex items-center gap-2">
-                <span className="inline-block w-4 h-4">
-                  {r.tipo === 'entrada' ? (
-                    <PlusIcon className="w-4 h-4" />
-                  ) : r.tipo === 'salida' ? (
-                    <MinusIcon className="w-4 h-4" />
-                  ) : r.tipo === 'eliminacion' ? (
-                    <TrashIcon className="w-4 h-4" />
-                  ) : (
-                    <PencilSquareIcon className="w-4 h-4" />
-                  )}
-                </span>
-                <span className="font-medium">
-                  {r.fuente === 'material'
-                    ? material?.nombre
-                    : r.fuente === 'unidad'
-                      ? 'Unidad'
-                      : 'Almacén'}
-                </span>
+              <span className="font-medium">
+                {a.almacen?.nombre || a.material?.nombre || a.unidad?.nombre || '-'}
               </span>
-              <span className="text-xs">
-                {new Date(r.fecha).toLocaleString()}
-              </span>
+              <span className="text-xs">{new Date(a.fecha).toLocaleString()}</span>
             </div>
             <div className="text-xs">
-              <span>{r.descripcion}</span>
-              {r.cantidad != null && <span className="ml-2">Cant: {r.cantidad}</span>}
-              {r.usuario && <span className="ml-2">Por: {r.usuario}</span>}
+              <span className="mr-2 font-semibold">{a.categoria || a.tipo}</span>
+              {a.observaciones && <span>{a.observaciones}</span>}
             </div>
           </li>
         ))}
+        {auditorias.length === 0 && (
+          <li className="text-sm text-zinc-500">Sin registros</li>
+        )}
       </ul>
-      {detalle && (
-        <div className="text-xs dashboard-card space-y-2">
-          {(detalle.fuente === 'material' || detalle.fuente === 'unidad') &&
-            detalle.estado?.codigoQR && (
-            <MaterialCodes value={detalle.estado.codigoQR} />
-          )}
-          <div>{detalle.descripcion || "Sin detalles"}</div>
-        </div>
-      )}
     </div>
   );
 }
