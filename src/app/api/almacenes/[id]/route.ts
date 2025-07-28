@@ -9,6 +9,7 @@ import crypto from 'node:crypto';
 import * as logger from '@lib/logger'
 import { logAudit } from '@/lib/audit'
 import { registrarAuditoria } from '@lib/reporter'
+import { snapshotAlmacen } from '@/lib/snapshot'
 
 function getAlmacenId(req: NextRequest): number | null {
   const parts = req.nextUrl.pathname.split('/');
@@ -27,35 +28,6 @@ const IMAGE_TYPES = [
   'image/gif',
 ];
 
-async function snapshot(
-  db: Prisma.TransactionClient | typeof prisma,
-  almacenId: number,
-  usuarioId: number,
-  descripcion: string,
-) {
-  const almacen = await db.almacen.findUnique({
-    where: { id: almacenId },
-    select: {
-      nombre: true,
-      descripcion: true,
-      imagen: true,
-      imagenNombre: true,
-      imagenUrl: true,
-      codigoUnico: true,
-    },
-  })
-  const estado = almacen
-    ? {
-        ...almacen,
-        imagen: almacen.imagen
-          ? Buffer.from(almacen.imagen as Buffer).toString('base64')
-          : null,
-      }
-    : null
-  await db.historialAlmacen.create({
-    data: { almacenId, usuarioId, descripcion, estado },
-  })
-}
 
 export async function GET(req: NextRequest) {
   logger.debug(req, 'GET /api/almacenes/[id]')
@@ -178,7 +150,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
     }
   await prisma.$transaction(async tx => {
-      await snapshot(tx, id, usuario.id, 'Eliminación')
+      await snapshotAlmacen(tx, id, usuario.id, 'Eliminación')
       await tx.usuarioAlmacen.deleteMany({ where: { almacenId: id } })
       await tx.codigoAlmacen.deleteMany({ where: { almacenId: id } })
       await tx.movimiento.deleteMany({ where: { almacenId: id } })
@@ -279,7 +251,7 @@ export async function PUT(req: NextRequest) {
           imagenUrl: true,
         },
       })
-      await snapshot(tx, id, usuario.id, 'Modificación')
+      await snapshotAlmacen(tx, id, usuario.id, 'Modificación')
       return upd
   })
 

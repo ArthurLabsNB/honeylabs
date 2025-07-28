@@ -5,6 +5,7 @@ import prisma from '@lib/prisma'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import * as logger from '@lib/logger'
+import { snapshotAlmacen } from '@/lib/snapshot'
 
 function getAlmacenId(req: NextRequest): number | null {
   const parts = req.nextUrl.pathname.split('/')
@@ -44,30 +45,6 @@ export async function GET(req: NextRequest) {
   }
 }
 
-async function snapshot(almacenId: number, usuarioId: number, descripcion: string) {
-  const almacen = await prisma.almacen.findUnique({
-    where: { id: almacenId },
-    select: {
-      nombre: true,
-      descripcion: true,
-      imagen: true,
-      imagenNombre: true,
-      imagenUrl: true,
-      codigoUnico: true,
-    },
-  })
-  const estado = almacen
-    ? {
-        ...almacen,
-        imagen: almacen.imagen
-          ? Buffer.from(almacen.imagen as Buffer).toString('base64')
-          : null,
-      }
-    : null
-  await prisma.historialAlmacen.create({
-    data: { almacenId, usuarioId, descripcion, estado },
-  })
-}
 
 export async function POST(req: NextRequest) {
   try {
@@ -83,7 +60,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
     }
     const body = await req.json()
-    await snapshot(id, usuario.id, body.descripcion || 'Modificación')
+    await snapshotAlmacen(prisma, id, usuario.id, body.descripcion || 'Modificación')
     return NextResponse.json({ success: true })
   } catch (err) {
     logger.error('POST /api/almacenes/[id]/historial', err)
@@ -91,4 +68,3 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export { snapshot }

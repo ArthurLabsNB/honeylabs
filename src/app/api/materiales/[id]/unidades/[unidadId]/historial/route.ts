@@ -5,6 +5,7 @@ import prisma from '@lib/prisma'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import * as logger from '@lib/logger'
+import { snapshotUnidad } from '@/lib/snapshot'
 
 function getIds(req: NextRequest): { materialId: number | null; unidadId: number | null } {
   const parts = req.nextUrl.pathname.split('/')
@@ -52,32 +53,6 @@ export async function GET(req: NextRequest) {
   }
 }
 
-async function snapshot(unidadId: number, usuarioId: number, descripcion?: string) {
-  const unidad = await prisma.materialUnidad.findUnique({
-    where: { id: unidadId },
-    include: { archivos: { select: { nombre: true, archivoNombre: true, archivo: true } } },
-  })
-  const estado = unidad
-    ? {
-        ...unidad,
-        imagen: unidad.imagen ? Buffer.from(unidad.imagen as Buffer).toString('base64') : null,
-        archivos: unidad.archivos.map(a => ({
-          nombre: a.nombre,
-          archivoNombre: a.archivoNombre,
-          archivo: a.archivo ? Buffer.from(a.archivo as Buffer).toString('base64') : null,
-        })),
-      }
-    : null
-  // @ts-ignore
-  await prisma.historialUnidad.create({
-    data: {
-      unidadId,
-      usuarioId,
-      descripcion: descripcion || null,
-      estado,
-    },
-  })
-}
 
 export async function POST(req: NextRequest) {
   try {
@@ -95,7 +70,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
     }
     const body = await req.json()
-    await snapshot(unidadId, usuario.id, body.descripcion)
+    await snapshotUnidad(prisma, unidadId, usuario.id, body.descripcion)
     return NextResponse.json({ success: true })
   } catch (err) {
     logger.error('POST /api/materiales/[id]/unidades/[unidadId]/historial', err)
