@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
     if (desde) where.fecha = { gte: new Date(desde) }
     if (hasta) where.fecha = { ...(where.fecha || {}), lte: new Date(hasta) }
 
-    const auditorias = await prisma.reporte.findMany({
+    const auditorias = await prisma.auditoria.findMany({
       take: 50,
       orderBy: { fecha: 'desc' },
       where,
@@ -60,32 +60,55 @@ export async function POST(req: NextRequest) {
   try {
     const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
-    const { reporteId } = await req.json()
-    if (!reporteId) return NextResponse.json({ error: 'Datos incompletos' }, { status: 400 })
-    const original = await prisma.reporte.findUnique({
-      where: { id: Number(reporteId) },
-      include: { archivos: true }
-    })
-    if (!original) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
-  const { id, archivos, ...data } = original as any
-  data.fecha = new Date()
-  const copia = await prisma.reporte.create({ data })
-    if (archivos && archivos.length) {
+
+    let tipo: string | null = null
+    let objetoId: string | null = null
+    let observaciones: string | null = null
+    let categoria: string | null = null
+    let files: File[] = []
+
+    if (req.headers.get('content-type')?.includes('multipart/form-data')) {
+      const form = await req.formData()
+      tipo = String(form.get('tipo') ?? '')
+      objetoId = String(form.get('objetoId') ?? '')
+      observaciones = String(form.get('observaciones') ?? '')
+      categoria = String(form.get('categoria') ?? '')
+      files = form.getAll('archivos') as File[]
+    } else {
+      const body = await req.json()
+      tipo = body.tipo
+      objetoId = body.objetoId
+      observaciones = body.observaciones
+      categoria = body.categoria
+    }
+
+    if (!tipo || !objetoId) {
+      return NextResponse.json({ error: 'Datos incompletos' }, { status: 400 })
+    }
+
+    const data: any = { tipo, observaciones, categoria, usuarioId: usuario.id }
+    if (tipo === 'almacen') data.almacenId = Number(objetoId)
+    if (tipo === 'material') data.materialId = Number(objetoId)
+    if (tipo === 'unidad') data.unidadId = Number(objetoId)
+
+    const auditoria = await prisma.auditoria.create({ data, select: { id: true } })
+
+    if (files.length > 0) {
       await Promise.all(
-        archivos.map(a =>
-          prisma.archivoReporte.create({
+        files.map(async (f) => {
+          const buffer = Buffer.from(await f.arrayBuffer())
+          await prisma.archivoAuditoria.create({
             data: {
-              nombre: a.nombre,
-              archivo: a.archivo as any,
-              archivoNombre: a.archivoNombre,
-              reporteId: copia.id,
-              subidoPorId: a.subidoPorId ?? null,
+              nombre: f.name,
+              archivo: buffer as any,
+              auditoriaId: auditoria.id,
             },
           })
-        )
+        })
       )
     }
-    return NextResponse.json({ auditoria: copia })
+
+    return NextResponse.json({ auditoria })
   } catch (err) {
     logger.error('POST /api/auditorias', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })

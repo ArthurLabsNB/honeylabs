@@ -1,12 +1,17 @@
-import { describe, it, expect, vi, afterEach } from 'vitest'
+import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
 import { GET as GET_MATERIALES } from '../src/app/api/materiales/route'
 import { POST as POST_MATERIAL } from '../src/app/api/almacenes/[id]/materiales/route'
 import { NextRequest } from 'next/server'
 import prisma from '../lib/prisma'
 import * as auth from '../lib/auth'
 import * as permisos from '../lib/permisos'
+import * as reporter from '../lib/reporter'
 
 afterEach(() => vi.restoreAllMocks())
+
+beforeEach(() => {
+  vi.spyOn(reporter, 'registrarAuditoria').mockResolvedValue({})
+})
 
 describe('materiales orden y asociacion', () => {
   it('GET ordena por id desc', async () => {

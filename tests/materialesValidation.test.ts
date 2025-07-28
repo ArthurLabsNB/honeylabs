@@ -1,11 +1,16 @@
-import { describe, it, expect, vi, afterEach } from 'vitest'
+import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
 import { POST } from '../src/app/api/almacenes/[id]/materiales/route'
+import * as reporter from '../lib/reporter'
 import { NextRequest } from 'next/server'
 import prisma from '../lib/prisma'
 import * as auth from '../lib/auth'
 import * as permisos from '../lib/permisos'
 
 afterEach(() => vi.restoreAllMocks())
+
+beforeEach(() => {
+  vi.spyOn(reporter, 'registrarAuditoria').mockResolvedValue({})
+})
 
 describe('validaciones de materiales', () => {
   const baseReq = {
