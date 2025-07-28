@@ -5,6 +5,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Spinner from "@/components/Spinner";
 import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
+import AuditoriaDetailNavbar from "../components/AuditoriaDetailNavbar";
 
 export default function AuditoriaPage() {
   const params = useParams<{ id: string }>();
@@ -48,37 +49,32 @@ export default function AuditoriaPage() {
     return (
       <div className="p-4 space-y-2">
         <p className="text-red-500">No encontrado</p>
-        <button onClick={goBack} className="underline text-sm">
-          Volver
-        </button>
+        <button onClick={goBack} className="underline text-sm">Volver</button>
       </div>
     );
 
   return (
-    <div className="p-4 space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Auditoría {data.id}</h1>
-        <button onClick={goBack} className="underline text-sm">
-          Volver
-        </button>
+    <>
+      <AuditoriaDetailNavbar />
+      <div className="p-4 space-y-4" style={{ paddingTop: 'calc(var(--navbar-height) * 2)' }}>
+        <div className="dashboard-card text-xs space-y-1">
+          <div>Tipo: {data.tipo}</div>
+          {data.unidad?.nombre && <div>Unidad: {data.unidad.nombre}</div>}
+          {data.material?.nombre && <div>Material: {data.material.nombre}</div>}
+          {data.almacen?.nombre && <div>Almacén: {data.almacen.nombre}</div>}
+          {data.observaciones && <div>{data.observaciones}</div>}
+          <div>{new Date(data.fecha).toLocaleString()}</div>
+          <pre className="overflow-auto bg-black/20 p-2 rounded">
+            {JSON.stringify(data, null, 2)}
+          </pre>
+          <button
+            onClick={() => navigator.clipboard.writeText(JSON.stringify(data))}
+            className="px-2 py-1 rounded bg-white/10 text-xs"
+          >
+            Copiar
+          </button>
+        </div>
       </div>
-      <div className="dashboard-card text-xs space-y-1">
-        <div>Tipo: {data.tipo}</div>
-        {data.unidad?.nombre && <div>Unidad: {data.unidad.nombre}</div>}
-        {data.material?.nombre && <div>Material: {data.material.nombre}</div>}
-        {data.almacen?.nombre && <div>Almacén: {data.almacen.nombre}</div>}
-        {data.observaciones && <div>{data.observaciones}</div>}
-        <div>{new Date(data.fecha).toLocaleString()}</div>
-        <pre className="overflow-auto bg-black/20 p-2 rounded">
-          {JSON.stringify(data, null, 2)}
-        </pre>
-        <button
-          onClick={() => navigator.clipboard.writeText(JSON.stringify(data))}
-          className="px-2 py-1 rounded bg-white/10 text-xs"
-        >
-          Copiar
-        </button>
-      </div>
-    </div>
+    </>
   );
 }
