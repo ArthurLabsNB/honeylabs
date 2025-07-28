@@ -79,7 +79,7 @@ DATABASE_URL=$DIRECT_DB_URL pnpm prisma migrate deploy
 vercel --prod
 ```
 
-Si Prisma arroja el error `P2021` indicando que la tabla `Usuario` no existe,
+Si Prisma arroja el error `P2021` indicando que la tabla `Usuario` o `Auditoria` no existe,
 asegúrate de aplicar todas las migraciones con:
 
 ```sh
