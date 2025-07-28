@@ -51,7 +51,9 @@ export default function AuditoriasPanel({ material, almacenId, unidadId, onSelec
             </div>
           <div className="text-xs">
               <span className="mr-2 font-semibold">{a.categoria || a.tipo}</span>
-              <span className="mr-2">v{a.version}</span>
+              {a.version != null && (
+                <span className="mr-2">v{a.version}</span>
+              )}
               {a.observaciones && <span>{a.observaciones}</span>}
             </div>
           </li>
