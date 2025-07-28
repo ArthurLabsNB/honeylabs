@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
+import { fetchAuditoriaExport } from "@/app/dashboard/utils/auditoriaExport";
 import { useToast } from "@/components/Toast";
 import { NAVBAR_HEIGHT } from "../../constants";
 
@@ -30,8 +31,13 @@ export default function AuditoriaDetailNavbar() {
 
   const volver = () => router.back();
 
-  const exportar = (formato: "pdf" | "excel") => {
-    window.open(`/api/auditorias/${id}/export?format=${formato}`, "_blank");
+  const exportar = async (formato: "pdf" | "excel" | "csv" | "json") => {
+    if (!id) return;
+    try {
+      await fetchAuditoriaExport(id, formato);
+    } catch {
+      toast.show("Error al exportar", "error");
+    }
   };
 
   const respaldar = async () => {
@@ -88,7 +94,7 @@ export default function AuditoriaDetailNavbar() {
           </button>
           {openExport && (
             <div className="absolute right-0 mt-2 bg-[var(--dashboard-sidebar)] border border-[var(--dashboard-border)] rounded shadow-md z-10">
-              {(["pdf", "excel"] as const).map((f) => (
+              {(["pdf", "excel", "csv", "json"] as const).map((f) => (
                 <button
                   key={f}
                   onClick={() => {
