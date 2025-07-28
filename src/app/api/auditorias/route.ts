@@ -7,7 +7,6 @@ import * as logger from '@lib/logger'
 
 export async function GET(req: NextRequest) {
   try {
-    await prisma.$connect()
     const tipo = req.nextUrl.searchParams.get('tipo') || undefined
     const categoria = req.nextUrl.searchParams.get('categoria') || undefined
     const almacenId = req.nextUrl.searchParams.get('almacenId') || undefined
@@ -59,7 +58,6 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    await prisma.$connect()
     const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const { reporteId } = await req.json()
