@@ -647,6 +647,7 @@ model Auditoria {
   almacenId     Int?
   materialId    Int?
   unidadId      Int?
+  version       Int      @default(1)
   observaciones String?
   categoria     String?
   fecha         DateTime @default(now())

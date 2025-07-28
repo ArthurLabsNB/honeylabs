@@ -166,6 +166,7 @@ export default function AuditoriasPage() {
               </div>
               <div className="text-xs">
                 <span className="font-semibold mr-2">{a.categoria || a.tipo}</span>
+                <span className="mr-2">v{a.version}</span>
                 {a.observaciones && <span className="mr-2">{a.observaciones}</span>}
                 {a.usuario?.nombre && <span className="mr-2">{a.usuario.nombre}</span>}
               </div>
@@ -176,6 +177,7 @@ export default function AuditoriasPage() {
       {detalle && (
         <div className="dashboard-card text-xs space-y-1">
           <div>Tipo: {detalle.tipo}</div>
+          <div>Versión: {detalle.version}</div>
           {detalle.unidad?.nombre && <div>Unidad: {detalle.unidad.nombre}</div>}
           {detalle.material?.nombre && <div>Material: {detalle.material.nombre}</div>}
           {detalle.almacen?.nombre && <div>Almacén: {detalle.almacen.nombre}</div>}
