@@ -45,8 +45,9 @@ export default function AuditoriasPanel({ material, almacenId, unidadId, onSelec
               </span>
               <span className="text-xs">{new Date(a.fecha).toLocaleString()}</span>
             </div>
-            <div className="text-xs">
+          <div className="text-xs">
               <span className="mr-2 font-semibold">{a.categoria || a.tipo}</span>
+              <span className="mr-2">v{a.version}</span>
               {a.observaciones && <span>{a.observaciones}</span>}
             </div>
           </li>

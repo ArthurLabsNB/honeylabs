@@ -45,6 +45,7 @@ export async function GET(req: NextRequest) {
       select: {
         id: true,
         tipo: true,
+        version: true,
         categoria: true,
         fecha: true,
         observaciones: true,
@@ -106,6 +107,13 @@ export async function POST(req: NextRequest) {
     if (tipo === 'almacen') data.almacenId = Number(objetoId)
     if (tipo === 'material') data.materialId = Number(objetoId)
     if (tipo === 'unidad') data.unidadId = Number(objetoId)
+
+    const where: any = { tipo }
+    if (data.almacenId) where.almacenId = data.almacenId
+    if (data.materialId) where.materialId = data.materialId
+    if (data.unidadId) where.unidadId = data.unidadId
+    const count = await prisma.auditoria.count({ where })
+    data.version = count + 1
 
     const auditoria = await prisma.auditoria.create({ data, select: { id: true } })
 
