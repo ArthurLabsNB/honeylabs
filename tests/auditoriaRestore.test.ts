@@ -10,7 +10,7 @@ describe('POST /api/auditorias/[id]/restore', () => {
   it('restaura y registra auditoria', async () => {
     const auditoria = { id: 5, tipo: 'material', observaciones: '{"nombre":"m"}' }
     const prismaMock = {
-      reporte: { findUnique: vi.fn().mockResolvedValue(auditoria) },
+      auditoria: { findUnique: vi.fn().mockResolvedValue(auditoria) },
       material: { create: vi.fn().mockResolvedValue({ id: 8 }) },
     }
     vi.doMock('../lib/prisma', () => ({ default: prismaMock }))

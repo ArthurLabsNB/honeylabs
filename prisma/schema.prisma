@@ -100,7 +100,9 @@ model Usuario {
   facturas             Factura[]
   tickets              Ticket[]
   reportes             Reporte[]       @relation("ReporteUsuario")
+  auditorias           Auditoria[]     @relation("AuditoriaUsuario")
   archivosReportes     ArchivoReporte[] @relation("ArchivoReporteSubidoPor")
+  archivosAuditorias   ArchivoAuditoria[] @relation("ArchivoAuditoriaSubidoPor")
   entidad              Entidad?               @relation(fields: [entidadId], references: [id])
   plan                 Plan?                  @relation(fields: [planId], references: [id])
   almacenes            UsuarioAlmacen[]
@@ -161,6 +163,7 @@ model Almacen {
   novedades               NovedadAlmacen[]
   usuarios                UsuarioAlmacen[]
   reportes               Reporte[]          @relation("ReporteAlmacen")
+  auditorias             Auditoria[]        @relation("AuditoriaAlmacen")
 }
 
 model UsuarioAlmacen {
@@ -321,6 +324,7 @@ model Material {
   movimientosMaterial MovimientoMaterial[]
   facturaItems        FacturaItem[]
   reportes            Reporte[]          @relation("ReporteMaterial")
+  auditorias          Auditoria[]        @relation("AuditoriaMaterial")
 }
 
 model ArchivoMaterial {
@@ -412,6 +416,7 @@ model MaterialUnidad {
   historial          HistorialUnidad[]
   facturaItems       FacturaItem[]
   reportes           Reporte[]          @relation("ReporteUnidad")
+  auditorias         Auditoria[]        @relation("AuditoriaUnidad")
   material           Material          @relation(fields: [materialId], references: [id])
 
   @@unique([materialId, nombre])
@@ -634,4 +639,35 @@ model ArchivoReporte {
   reporte       Reporte  @relation("ArchivoDeReporte", fields: [reporteId], references: [id])
   subidoPorId   Int?
   subidoPor     Usuario? @relation("ArchivoReporteSubidoPor", fields: [subidoPorId], references: [id])
+}
+
+model Auditoria {
+  id            Int      @id @default(autoincrement())
+  tipo          String   // 'almacen', 'material', 'unidad'
+  almacenId     Int?
+  materialId    Int?
+  unidadId      Int?
+  observaciones String?
+  categoria     String?
+  fecha         DateTime @default(now())
+  usuarioId     Int?
+
+  usuario   Usuario?        @relation("AuditoriaUsuario", fields: [usuarioId], references: [id])
+  almacen   Almacen?        @relation("AuditoriaAlmacen", fields: [almacenId], references: [id])
+  material  Material?       @relation("AuditoriaMaterial", fields: [materialId], references: [id])
+  unidad    MaterialUnidad? @relation("AuditoriaUnidad", fields: [unidadId], references: [id])
+
+  archivos  ArchivoAuditoria[] @relation("ArchivoDeAuditoria")
+}
+
+model ArchivoAuditoria {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  archivo       Bytes?
+  archivoNombre String?
+  fecha         DateTime @default(now())
+  auditoriaId   Int
+  auditoria     Auditoria @relation("ArchivoDeAuditoria", fields: [auditoriaId], references: [id])
+  subidoPorId   Int?
+  subidoPor     Usuario?  @relation("ArchivoAuditoriaSubidoPor", fields: [subidoPorId], references: [id])
 }

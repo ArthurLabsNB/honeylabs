@@ -25,48 +25,24 @@ export async function registrarAuditoria(
 
     let res: Response
     try {
-      res = await fetch(new URL(apiPath('/api/reportes'), req.url), {
+      res = await fetch(new URL(apiPath('/api/auditorias'), req.url), {
         method: 'POST',
         headers: { cookie: req.headers.get('cookie') ?? '' },
         body: form,
       })
     } catch (err) {
-      logger.error(req, 'Error de red al crear reporte', err)
-      return { error: 'Error de red al crear reporte' }
-    }
-    const data1 = await res
-      .json()
-      .catch(() => ({ error: 'No se pudo crear reporte' }))
-    if (!res.ok) {
-      const msg = data1?.error || 'No se pudo crear reporte'
-      logger.error(req, 'Fallo al crear reporte', msg)
-      return { error: msg }
-    }
-    const { reporte } = data1 as any
-
-    let res2: Response
-    try {
-      res2 = await fetch(new URL(apiPath('/api/auditorias'), req.url), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          cookie: req.headers.get('cookie') ?? '',
-        },
-        body: JSON.stringify({ reporteId: reporte.id }),
-      })
-    } catch (err) {
       logger.error(req, 'Error de red al crear auditoría', err)
       return { error: 'Error de red al crear auditoría' }
     }
-    const data2 = await res2
+    const data = await res
       .json()
       .catch(() => ({ error: 'No se pudo crear auditoría' }))
-    if (!res2.ok) {
-      const msg = data2?.error || 'No se pudo crear auditoría'
+    if (!res.ok) {
+      const msg = data?.error || 'No se pudo crear auditoría'
       logger.error(req, 'Fallo al crear auditoría', msg)
       return { error: msg }
     }
-    const { auditoria } = data2 as any
+    const { auditoria } = data as any
     return { auditoria }
   } catch (err) {
     logger.error(req, 'Error inesperado en registrarAuditoria', err)

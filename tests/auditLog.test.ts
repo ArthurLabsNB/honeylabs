@@ -23,7 +23,7 @@ describe('logAudit', () => {
     const { NextRequest } = await import('next/server')
     const req = new NextRequest('http://localhost/api/test')
     const result = await registrarAuditoria(req, 'almacen', 1, 'creacion', {})
-    expect(result).toEqual({ error: 'Error de red al crear reporte' })
+    expect(result).toEqual({ error: 'Error de red al crear auditoría' })
     vi.unstubAllGlobals()
   })
 })

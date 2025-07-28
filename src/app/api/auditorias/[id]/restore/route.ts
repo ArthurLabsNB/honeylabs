@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     const id = getAuditoriaId(req)
     if (!id) return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
 
-    const auditoria = await prisma.reporte.findUnique({ where: { id } })
+    const auditoria = await prisma.auditoria.findUnique({ where: { id } })
     if (!auditoria) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
 
     const datos = auditoria.observaciones ? JSON.parse(auditoria.observaciones) : {}

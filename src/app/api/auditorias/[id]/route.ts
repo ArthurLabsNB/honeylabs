@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const id = getAuditoriaId(req)
     if (!id) return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
-    const auditoria = await prisma.reporte.findUnique({
+    const auditoria = await prisma.auditoria.findUnique({
       where: { id },
       include: {
         usuario: { select: { nombre: true } },
