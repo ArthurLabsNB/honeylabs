@@ -5,6 +5,7 @@ import prisma from '@lib/prisma';
 import { getUsuarioFromSession } from '@lib/auth';
 import { hasManagePerms, hasPermission } from '@lib/permisos';
 import { logAudit } from '@/lib/audit';
+import { registrarAuditoria } from '@lib/reporter';
 import * as logger from '@lib/logger'
 
 function getAlmacenIdFromRequest(req: NextRequest): number | null {
@@ -62,7 +63,15 @@ export async function POST(req: NextRequest) {
       })
     })
 
-    return NextResponse.json({ success: true });
+    const { auditoria, error: auditError } = await registrarAuditoria(
+      req,
+      'almacen',
+      id,
+      'movimiento',
+      { tipo, cantidad: n, descripcion, contexto },
+    )
+
+    return NextResponse.json({ success: true, auditoria, auditError });
   } catch (err) {
     logger.error('POST /api/almacenes/[id]/movimientos', err);
     return NextResponse.json({ error: 'Error al registrar' }, { status: 500 });
