@@ -4,7 +4,7 @@ import fetcher from '@lib/swrFetcher'
 export interface Auditoria {
   id: number
   tipo: string
-  version: number
+  version?: number
   categoria?: string | null
   fecha: string
   observaciones?: string | null

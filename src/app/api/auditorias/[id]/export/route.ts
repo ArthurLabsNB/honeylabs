@@ -35,7 +35,8 @@ export async function GET(req: NextRequest) {
     const format = (url.searchParams.get('format') || 'json').toLowerCase()
     const baseData: any = {
       tipo: auditoria.tipo,
-      version: auditoria.version,
+      // "version" puede no estar disponible según la versión del cliente
+      version: auditoria.version ?? 1,
       categoria: auditoria.categoria,
       fecha: auditoria.fecha,
       observaciones: auditoria.observaciones,
