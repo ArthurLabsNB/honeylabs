@@ -5,9 +5,11 @@ import prisma from '@lib/prisma'
 import { Prisma } from '@prisma/client'
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
+import { ensureAuditoriaTables } from '@lib/auditoriaInit'
 
 export async function GET(req: NextRequest) {
   try {
+    await ensureAuditoriaTables()
     const tipo = req.nextUrl.searchParams.get('tipo') || undefined
     const categoria = req.nextUrl.searchParams.get('categoria') || undefined
     const almacenId = req.nextUrl.searchParams.get('almacenId') || undefined
@@ -69,6 +71,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    await ensureAuditoriaTables()
     const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
 
