@@ -6,6 +6,7 @@ import AuditoriasPanel from '../[id]/AuditoriasPanel';
 import MaterialForm from './MaterialForm';
 import UnidadForm from './UnidadForm';
 import { useBoard } from '../board/BoardProvider';
+import { useParams } from 'next/navigation';
 import useUnidades from '@/hooks/useUnidades';
 import { useToast } from '@/components/Toast';
 import { generarUUID } from '@/lib/uuid';
@@ -27,6 +28,8 @@ export default function WarehouseBoard() {
     duplicar,
     mutate,
   } = useBoard();
+  const { id } = useParams();
+  const almacenId = parseId(id);
   const toast = useToast();
 
   const material = materiales.find(m => m.id === selectedId) || null;
@@ -168,7 +171,7 @@ export default function WarehouseBoard() {
         <MaterialesTab />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <UnidadesPanel material={material} onChange={() => {}} onSelect={openUnidad} />
-          <AuditoriasPanel material={material} almacenId={0} onSelectHistorial={openAuditoria} />
+          <AuditoriasPanel material={material} almacenId={almacenId ?? undefined} onSelectHistorial={openAuditoria} />
         </div>
       </div>
     </div>
