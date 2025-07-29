@@ -24,6 +24,7 @@ const handler = NextAuth({
     }),
   ],
   session: { strategy: 'database' },
+  trustHost: true,
   secret: process.env.NEXTAUTH_SECRET,
 })
 
