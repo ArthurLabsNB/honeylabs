@@ -6,6 +6,7 @@ import Spinner from "@/components/Spinner";
 import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
 import AuditoriaDetailNavbar from "../components/AuditoriaDetailNavbar";
+import AuditoriaSummaryCard from "../components/AuditoriaSummaryCard";
 
 export default function AuditoriaPage() {
   const params = useParams<{ id: string }>();
@@ -99,14 +100,12 @@ export default function AuditoriaPage() {
     <>
       <AuditoriaDetailNavbar />
       <div className="p-4 space-y-4" style={{ paddingTop: 'var(--navbar-height)' }}>
+        <AuditoriaSummaryCard auditoria={data} />
         <div className="dashboard-card text-xs space-y-1">
-          <div>Tipo: {data.tipo}</div>
-          {data.version != null && <div>Versión: {data.version}</div>}
           {data.unidad?.nombre && <div>Unidad: {data.unidad.nombre}</div>}
           {data.material?.nombre && <div>Material: {data.material.nombre}</div>}
           {data.almacen?.nombre && <div>Almacén: {data.almacen.nombre}</div>}
           {data.observaciones && <div>{data.observaciones}</div>}
-          <div>{new Date(data.fecha).toLocaleString()}</div>
           <pre className="overflow-auto bg-black/20 p-2 rounded">
             {JSON.stringify(data, null, 2)}
           </pre>

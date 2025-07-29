@@ -46,3 +46,28 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Error' }, { status: 500 })
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const usuario = await getUsuarioFromSession(req)
+    if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
+    const id = getAuditoriaId(req)
+    if (!id) return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
+    await prisma.archivoAuditoria.deleteMany({ where: { auditoriaId: id } })
+    await prisma.auditoria.delete({ where: { id } })
+    return NextResponse.json({ ok: true })
+  } catch (err) {
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === 'P2021'
+    ) {
+      logger.error('DELETE /api/auditorias/[id]', err)
+      return NextResponse.json(
+        { error: 'Base de datos no inicializada.' },
+        { status: 500 },
+      )
+    }
+    logger.error('DELETE /api/auditorias/[id]', err)
+    return NextResponse.json({ error: 'Error' }, { status: 500 })
+  }
+}

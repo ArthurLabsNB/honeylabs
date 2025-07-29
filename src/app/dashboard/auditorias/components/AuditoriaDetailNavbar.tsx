@@ -1,5 +1,11 @@
 "use client";
-import { ArrowLeft, Download, FileText, RotateCcw } from "lucide-react";
+import {
+  ArrowLeft,
+  Download,
+  FileText,
+  RotateCcw,
+  Clock,
+} from "lucide-react";
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -16,14 +22,20 @@ export default function AuditoriaDetailNavbar() {
   const toast = useToast();
   const [title, setTitle] = useState<string>("Auditoría");
   const [openExport, setOpenExport] = useState(false);
+  const [info, setInfo] = useState<any | null>(null);
+  const [showUser, setShowUser] = useState(false);
 
   useEffect(() => {
     if (!id) return;
     apiFetch(`/api/auditorias/${id}`)
       .then(jsonOrNull)
       .then((d) => {
-        if (d?.auditoria?.id) {
-          setTitle(`Auditoría ${d.auditoria.id}`);
+        if (d?.auditoria) {
+          const a = d.auditoria;
+          setInfo(a);
+          const name =
+            a.almacen?.nombre || a.material?.nombre || a.unidad?.nombre || a.id;
+          setTitle(`Auditoría de ${a.tipo} - ${name}`);
         }
       })
       .catch(() => {});
@@ -83,6 +95,28 @@ export default function AuditoriaDetailNavbar() {
       <span className="flex-1 mx-4 text-center text-white text-lg font-semibold truncate">
         {title}
       </span>
+      {info && (
+        <div className="flex items-center gap-3 text-xs text-gray-300">
+          <Clock className="w-4 h-4" />
+          <span>{new Date(info.fecha).toLocaleString()}</span>
+          {info.usuario?.nombre && (
+            <div
+              onMouseEnter={() => setShowUser(true)}
+              onMouseLeave={() => setShowUser(false)}
+              className="relative"
+            >
+              <span className="ml-2 h-6 w-6 rounded-full bg-amber-600 flex items-center justify-center text-white text-xs font-semibold">
+                {info.usuario.nombre[0].toUpperCase()}
+              </span>
+              {showUser && (
+                <div className="absolute right-0 mt-1 px-2 py-1 text-xs rounded bg-black text-white whitespace-nowrap">
+                  {info.usuario.nombre}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
       <div className="flex items-center gap-2 relative">
         <div className="relative" onClick={(e) => e.stopPropagation()}>
           <button
