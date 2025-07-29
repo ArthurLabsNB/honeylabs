@@ -1,12 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
 import Spinner from "@/components/Spinner";
+import Badge from '@/components/Badge'
+import { parseObservaciones } from '@/lib/parseObservaciones'
 import { apiFetch } from "@lib/api";
 
 interface Evento {
   id: number;
   fecha: string;
   observaciones: string | null;
+  categoria?: string;
   version?: number;
   usuario?: { nombre: string } | null;
   almacen?: { nombre: string } | null;
@@ -56,7 +59,20 @@ export default function TimelinePage() {
             </div>
             {activo === e.id && (
               <div className="mt-1 text-xs space-y-1">
-                {e.observaciones && <div>{e.observaciones}</div>}
+                {e.observaciones && (
+                  <div className="flex flex-wrap items-center gap-1">
+                    {e.categoria === 'modificacion'
+                      ? (() => {
+                          const obj = parseObservaciones(e.observaciones)
+                          return obj
+                            ? Object.keys(obj).map((k) => (
+                                <Badge key={k}>{k}</Badge>
+                              ))
+                            : e.observaciones
+                        })()
+                      : e.observaciones}
+                  </div>
+                )}
                 {e.version != null && <div>Versión: {e.version}</div>}
                 {e.usuario?.nombre && <div>Usuario: {e.usuario.nombre}</div>}
               </div>

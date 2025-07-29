@@ -3,6 +3,8 @@ import { useState } from "react";
 import { FixedSizeList as VList } from "react-window";
 import { useRouter } from "next/navigation";
 import Spinner from "@/components/Spinner";
+import Badge from '@/components/Badge'
+import { parseObservaciones } from '@/lib/parseObservaciones'
 import useAuditorias from "@/hooks/useAuditorias";
 import useAuditoriasUpdates from "@/hooks/useAuditoriasUpdates";
 import useAdminUsuarios from "@/hooks/useAdminUsuarios";
@@ -171,7 +173,20 @@ export default function AuditoriasPage() {
                 {a.version != null && (
                   <span className="mr-2">v{a.version}</span>
                 )}
-                {a.observaciones && <span className="mr-2">{a.observaciones}</span>}
+                {a.observaciones && (
+                  <span className="mr-2">
+                    {a.categoria === 'modificacion'
+                      ? (() => {
+                          const obj = parseObservaciones(a.observaciones)
+                          return obj
+                            ? Object.keys(obj).map((k) => (
+                                <Badge key={k}>{k}</Badge>
+                              ))
+                            : a.observaciones
+                        })()
+                      : a.observaciones}
+                  </span>
+                )}
                 {a.usuario?.nombre && <span className="mr-2">{a.usuario.nombre}</span>}
               </div>
             </div>
@@ -185,7 +200,20 @@ export default function AuditoriasPage() {
           {detalle.unidad?.nombre && <div>Unidad: {detalle.unidad.nombre}</div>}
           {detalle.material?.nombre && <div>Material: {detalle.material.nombre}</div>}
           {detalle.almacen?.nombre && <div>Almacén: {detalle.almacen.nombre}</div>}
-          {detalle.observaciones && <div>{detalle.observaciones}</div>}
+          {detalle.observaciones && (
+            <div className="flex flex-wrap items-center gap-1">
+              {detalle.categoria === 'modificacion'
+                ? (() => {
+                    const obj = parseObservaciones(detalle.observaciones)
+                    return obj
+                      ? Object.keys(obj).map((k) => (
+                          <Badge key={k}>{k}</Badge>
+                        ))
+                      : detalle.observaciones
+                  })()
+                : detalle.observaciones}
+            </div>
+          )}
           <div>{new Date(detalle.fecha).toLocaleString()}</div>
           <button
             onClick={() => navigator.clipboard.writeText(JSON.stringify(detalle))}
