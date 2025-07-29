@@ -149,6 +149,12 @@ export async function DELETE(req: NextRequest) {
   if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
     }
+  let motivo = ''
+  try {
+    const body = await req.json()
+    motivo = String(body?.motivo ?? '').trim()
+  } catch {}
+
   await prisma.$transaction(async tx => {
       await snapshotAlmacen(tx, id, usuario.id, 'Eliminación')
       await tx.usuarioAlmacen.deleteMany({ where: { almacenId: id } })
@@ -174,7 +180,7 @@ export async function DELETE(req: NextRequest) {
     'almacen',
     id,
     'eliminacion',
-    {},
+    { motivo },
   )
     return NextResponse.json({ success: true, auditoria, auditError });
   } catch (err) {

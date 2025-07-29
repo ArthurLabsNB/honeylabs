@@ -192,6 +192,11 @@ export async function DELETE(req: NextRequest) {
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
     }
+    let motivo = ''
+    try {
+      const body = await req.json()
+      motivo = String(body?.motivo ?? '').trim()
+    } catch {}
     await snapshotUnidad(prisma, unidadId, usuario.id, 'Eliminación')
     await prisma.materialUnidad.delete({ where: { id: unidadId } })
     await logAudit(usuario.id, 'eliminacion_unidad', 'material', { materialId, unidadId })
@@ -201,7 +206,7 @@ export async function DELETE(req: NextRequest) {
       'unidad',
       unidadId,
       'eliminacion',
-      {},
+      { motivo },
     )
 
     return NextResponse.json({ success: true, auditoria, auditError })
