@@ -13,6 +13,7 @@ export function GET(req: NextRequest) {
     )
   }
 
-  const redirectUrl = new URL(`/api/auth/signin?provider=${provider}`, req.url)
+  const base = process.env.NEXT_PUBLIC_BASE_PATH || ''
+  const redirectUrl = new URL(`${base}/api/auth/signin?provider=${provider}`, req.url)
   return NextResponse.redirect(redirectUrl)
 }
