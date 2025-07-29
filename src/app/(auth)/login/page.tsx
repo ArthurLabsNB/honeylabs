@@ -215,6 +215,37 @@ export default function LoginPage() {
           </Link>
         </p>
 
+        <div className="mt-5 space-y-2">
+          <button
+            type="button"
+            onClick={() => (window.location.href = '/api/login/social?provider=google')}
+            className="w-full border border-gray-300 rounded-md py-2 px-4 text-sm hover:bg-gray-50 transition"
+          >
+            Continuar con Google
+          </button>
+          <button
+            type="button"
+            onClick={() => (window.location.href = '/api/login/social?provider=github')}
+            className="w-full border border-gray-300 rounded-md py-2 px-4 text-sm hover:bg-gray-50 transition"
+          >
+            Continuar con GitHub
+          </button>
+          <button
+            type="button"
+            onClick={() => (window.location.href = '/api/login/social?provider=gmail')}
+            className="w-full border border-gray-300 rounded-md py-2 px-4 text-sm hover:bg-gray-50 transition"
+          >
+            Continuar con Gmail
+          </button>
+          <button
+            type="button"
+            onClick={() => (window.location.href = '/api/login/social?provider=facebook')}
+            className="w-full border border-gray-300 rounded-md py-2 px-4 text-sm hover:bg-gray-50 transition"
+          >
+            Continuar con Facebook
+          </button>
+        </div>
+
         {/* 🧾 Mensaje */}
         {mensaje && (
           <div
