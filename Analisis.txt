@@ -1,81 +1,119 @@
-Arreglar la seleccion y formularios de Material y Unidad (Hecho)
+Interfaz visual de auditoria (Analiza que falta de aqui y completalo)
 
-Eliminar la tarjeta “Nuevo” vacía (Hecho)
+NavBar de auditoria
+Título dinámico: "Auditoría de {tipo} - {nombre}".
 
-Suprime la tarjeta placeholder y reemplázala por un botón flotante “＋ Añadir tarjeta” con tooltip contextual. (Hecho)
+Fecha + hora bien visible, en zona fija.
 
-Valida en el backend para impedir que se cree una entrada vacía en caso de llamadas directas a la API. (Hecho)
+Usuario responsable con avatar y tooltip (correo, rol).
 
-Corregir el error al seleccionar material o unidad (Hecho)
+Estado de la auditoría: exitoso, parcial, pendiente.
 
-Añade control de errores con boundaries React y logging centralizado (e.g. Sentry) para rastrear trazas completas. (Hecho)
+Botones con íconos:
 
-Persistir y restaurar el orden de tarjetas (Hecho)
+Restaurar backup
 
-Guarda el layout (posición + tamaño) en localStorage para respuesta instantánea y sincronízalo mediante WebSocket-Prisma al salir del tablero. (Hecho)
+Exportar como PDF
 
-Usa onbeforeunload para un guardado exprés y reconciliación de conflictos por timestamp del cliente. (Hecho)
+Comparar cambios
 
-Sistema de pestañas (“boards” dentro de un almacén)
+Eliminar auditoría
 
-Cada almacén contiene un TabGroup persistente con CRUD de pestañas; guarda su orden igualmente en la BD.
+Ver historial relacionado
 
-Implementa lazy-loading por pestaña para optimizar el first paint.
+2. 🧱 Resumen General en formato tarjeta (Top Card)
+Tipo (material, almacén, unidad)
 
-Permite duplicar pestañas y mover tarjetas entre ellas vía drag-and-drop con animaciones de framer-motion.
+Categoría (duplicación, eliminación, modificación, etc.)
 
-Render de pestañas debajo del navbar de almacenes
+Versión y origen de los datos
 
-Usa un StickyTabBar con scroll horizontal y auto-ocultamiento; tamaño de tab adaptativo y tooltips al hacer overflow.
+Número de elementos auditados
 
-Agrega un marcador visual de pestaña activa con transición suave y accesibilidad ARIA.
+Hash de integridad (opcional, para verificación)
 
-Formulario reactivo material → unidad
+3. 📁 Panel Visual de Contenido Recuperado (por tipo)
+a. Auditoría de un Almacén
+Grid visual tipo inventario
 
-El formulario principal se monta con el material seleccionado; al elegir una unidad, reutiliza el mismo componente y sólo actualiza el formState vía React Hook Form.
+Lista de materiales (como tarjetas)
 
-Añade breadcrumbs Material / Unidad para navegación rápida y botón de “volver al material”. (Hecho)
+Cada tarjeta incluye miniatura, cantidad, código, QR, estado
 
-Movimiento de tarjetas ultrasuave y adaptable
+Unidades asociadas
 
-Integra react-grid-layout con breakpoints; la tarjeta se auto-redimensiona al detectar colisiones.
+Panel colapsable por material
 
-Activa “shadow preview” durante el drag para mostrar la posición destino antes de soltar.
+Vista por tabla o tarjeta
 
-Menús contextuales (clic derecho)
+Archivos adjuntos (como planos, manuales)
 
-Navbar de almacenes: Renombrar, Duplicar almacén, Exportar CSV, Configuración de permisos, Historial de auditorías.
+Miniaturas clicables
 
-Tarjetas: Editar, Clonar, Fijar en todas las pestañas, Exportar a PDF, Ver historial de cambios.
+Previsualizador integrado (PDF/imagen)
 
-Pestañas: Renombrar, Duplicar, Mover a otro almacén, Ordenar tarjetas por…, Limpiar pestaña.
+Código QR general del almacén descargable
 
-Iconografía y controles de la tarjeta
+b. Auditoría de un Material
+Datos completos del material (tarjeta resumen con imagen y campos clave)
 
-Incrementa iconos a 1.25 rem; usa lucide-react para consistencia.
+Tabla de unidades asociadas:
 
-Anima acciones (borrar, minimizar, fijar, ampliar) con scale(0.95) y opacity transiciones de 150 ms.
+Estado, ubicación, código, fecha de caducidad, lote
 
-Añade “doble clic para editar” en la cabecera de la tarjeta.
+QR por unidad
 
-Board expandible e infinito
+Archivos adjuntos del material
 
-Implementa zoom con rueda del ratón (⌘/Ctrl + scroll) y pan con clic medio.
+c. Auditoría de una Unidad
+Tarjeta con todos los campos de la unidad
 
-Virtualiza el DOM con react-virtual para renderizar sólo las tarjetas en viewport y mantener FPS altos.
+Imagen y miniatura
 
-Espacio de trabajo sin límites
+Códigos de barras / QR
 
-Usa un Canvas absolute‐position con coordenadas BigInt y gestiona offsets en estado global para evitar overflow.
+Historial de movimientos si aplica
 
-Añade minimapa flotante para orientación rápida dentro del board infinito.
+4. 🧰 Herramientas de Gestión
+Restaurar como → posibilidad de restaurar con cambios personalizados
 
-Toggle que muestra una cuadrícula ligera; las tarjetas se alinean cuando el usuario mantiene ⇧ mientras arrastra.
+Comparar con versión actual → diff visual (verde/rojo) tipo GitHub
 
-Selección múltiple y atajos de teclado
+Exportar → PDF, JSON, CSV, Markdown
 
-Con ⇧ / ⌘ + clic se permite agrupar tarjetas para mover, clonar o borrar en lote.
+Ver cambios relacionados → auditorías encadenadas (si hubo dependencias)
 
-Atajos: N nueva tarjeta, T nueva pestaña, ⌘ + ← / → cambiar pestaña, ⌘ + S guardar layout.
+Ver contexto en sistema → redirigir al material/unidad/almacén en vivo
 
-Mejora el NavBar del almacen: 
+Registrar incidencia (si se detecta algo irregular)
+
+5. 📑 Panel de Metadatos Técnicos (colapsable)
+JSON bruto original
+
+Fecha de creación, actualización
+
+ID interno, relación con otros registros
+
+Firma de integridad (hash SHA o firma digital)
+
+6. 🌗 Diseño UI/UX
+Dark Mode elegante y claro
+
+Tarjetas con sombras suaves, íconos Lucide/Phosphor
+
+Colores por tipo de auditoría (rojo: eliminación, amarillo: duplicación, verde: creación)
+
+Layout flexible con soporte mobile y tablet
+
+Tooltips para todo lo sensible
+
+Animaciones suaves con framer-motion o tailwind animate
+
+7. 📊 Integraciones futuras opcionales
+Timeline visual de auditorías
+
+Botón “Crear ticket a soporte” desde una auditoría
+
+Auditorías encadenadas (cuando una acción afecta múltiples materiales)
+
+Sistema de etiquetas por categorías (urgente, revisión, etc.)
