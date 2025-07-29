@@ -139,11 +139,11 @@ export default function RegistroPage() {
           <option value="individual" data-oid="47wixu9">
             Usuario individual
           </option>
-          <option value="empresarial" data-oid="j47sjsj">
-            Empresa
+          <option value="empresarial" disabled data-oid="j47sjsj">
+            Empresa (Aún en proceso)
           </option>
-          <option value="institucional" data-oid="k8gx-.a">
-            Institución
+          <option value="institucional" disabled data-oid="k8gx-.a">
+            Institución (Aún en proceso)
           </option>
         </select>
 
