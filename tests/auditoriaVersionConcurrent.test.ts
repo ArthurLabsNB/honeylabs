@@ -10,6 +10,7 @@ describe('POST /api/auditorias concurrencia', () => {
   it('asigna versiones consecutivas', async () => {
     let count = 0
     const versions: number[] = []
+    let lock: Promise<any> = Promise.resolve()
     const prismaMock = {
       auditoria: {
         count: vi.fn(async () => count),
@@ -20,7 +21,11 @@ describe('POST /api/auditorias concurrencia', () => {
         }),
       },
       archivoAuditoria: { create: vi.fn() },
-      $transaction: vi.fn(async (cb: any) => cb(prismaMock)),
+      $transaction: vi.fn(async (cb: any) => {
+        const run = lock.then(() => cb(prismaMock))
+        lock = run.catch(() => {})
+        return run
+      }),
     }
     vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
     vi.doMock('../lib/auth', () => ({
@@ -29,7 +34,12 @@ describe('POST /api/auditorias concurrencia', () => {
     vi.doMock('../lib/auditoriaInit', () => ({ ensureAuditoriaTables: vi.fn() }))
 
     const { POST } = await import('../src/app/api/auditorias/route')
-    const body = JSON.stringify({ tipo: 'almacen', objetoId: '1' })
+    const body = JSON.stringify({
+      tipo: 'almacen',
+      objetoId: '1',
+      categoria: 'creacion',
+      observaciones: 'ok',
+    })
     const req = new NextRequest('http://localhost/api/auditorias', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

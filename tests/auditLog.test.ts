@@ -3,16 +3,17 @@ import { describe, it, expect, vi } from 'vitest'
 describe('logAudit', () => {
   it('ejecuta inserción en AuditLog', async () => {
     const spy = vi.fn()
-    vi.doMock('../lib/prisma', () => ({ default: { $executeRawUnsafe: spy } }))
+    vi.doMock('../lib/prisma', () => ({ default: { auditLog: { create: spy } } }))
     const { logAudit } = await import('../src/lib/audit')
     await logAudit(1, 'creacion', 'almacen', { foo: 'bar' })
-    expect(spy).toHaveBeenCalledWith(
-      expect.stringContaining('INSERT INTO "AuditLog"'),
-      1,
-      'creacion',
-      'almacen',
-      JSON.stringify({ foo: 'bar' })
-    )
+    expect(spy).toHaveBeenCalledWith({
+      data: {
+        usuarioId: 1,
+        accion: 'creacion',
+        entidad: 'almacen',
+        payload: { foo: 'bar' },
+      },
+    })
     vi.unmock('../lib/prisma')
   })
 
