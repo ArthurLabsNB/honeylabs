@@ -1,119 +1,97 @@
 Interfaz visual de auditoria (Analiza que falta de aqui y completalo)
 
+
 NavBar de auditoria
-Título dinámico: "Auditoría de {tipo} - {nombre}".
-
-Fecha + hora bien visible, en zona fija.
-
-Usuario responsable con avatar y tooltip (correo, rol).
-
-Estado de la auditoría: exitoso, parcial, pendiente.
+✅ Título dinámico: "Auditoría de {tipo} - {nombre}".
+✅ Fecha + hora bien visible, en zona fija.
+✅ Usuario responsable con avatar y tooltip (correo, rol).
+❌ Estado de la auditoría: exitoso, parcial, pendiente.
 
 Botones con íconos:
-
-Restaurar backup
-
-Exportar como PDF
-
-Comparar cambios
-
-Eliminar auditoría
-
-Ver historial relacionado
+✅ Restaurar backup
+✅ Exportar como PDF
+✅ Comparar cambios
+✅ Eliminar auditoría
+✅ Ver historial relacionado
 
 2. 🧱 Resumen General en formato tarjeta (Top Card)
-Tipo (material, almacén, unidad)
-
-Categoría (duplicación, eliminación, modificación, etc.)
-
-Versión y origen de los datos
-
-Número de elementos auditados
-
-Hash de integridad (opcional, para verificación)
+✅ Tipo (material, almacén, unidad)
+✅ Categoría (duplicación, eliminación, modificación, etc.)
+✅ Versión y origen de los datos
+❌ Número de elementos auditados
+✅ Hash de integridad (opcional, para verificación)
 
 3. 📁 Panel Visual de Contenido Recuperado (por tipo)
 a. Auditoría de un Almacén
-Grid visual tipo inventario
-
-Lista de materiales (como tarjetas)
-
-Cada tarjeta incluye miniatura, cantidad, código, QR, estado
-
-Unidades asociadas
-
-Panel colapsable por material
-
-Vista por tabla o tarjeta
-
-Archivos adjuntos (como planos, manuales)
-
-Miniaturas clicables
-
-Previsualizador integrado (PDF/imagen)
-
-Código QR general del almacén descargable
+❌ Grid visual tipo inventario
+❌ Lista de materiales (como tarjetas)
+❌ Cada tarjeta incluye miniatura, cantidad, código, QR, estado
+❌ Unidades asociadas
+❌ Panel colapsable por material
+❌ Vista por tabla o tarjeta
+✅ Archivos adjuntos (como planos, manuales)
+❌ Miniaturas clicables
+❌ Previsualizador integrado (PDF/imagen)
+❌ Código QR general del almacén descargable
 
 b. Auditoría de un Material
-Datos completos del material (tarjeta resumen con imagen y campos clave)
-
-Tabla de unidades asociadas:
-
-Estado, ubicación, código, fecha de caducidad, lote
-
-QR por unidad
-
-Archivos adjuntos del material
+❌ Datos completos del material (tarjeta resumen con imagen y campos clave)
+❌ Tabla de unidades asociadas:
+❌ Estado, ubicación, código, fecha de caducidad, lote
+❌ QR por unidad
+❌ Archivos adjuntos del material
 
 c. Auditoría de una Unidad
-Tarjeta con todos los campos de la unidad
-
-Imagen y miniatura
-
-Códigos de barras / QR
-
-Historial de movimientos si aplica
+❌ Tarjeta con todos los campos de la unidad
+❌ Imagen y miniatura
+❌ Códigos de barras / QR
+❌ Historial de movimientos si aplica
 
 4. 🧰 Herramientas de Gestión
-Restaurar como → posibilidad de restaurar con cambios personalizados
-
-Comparar con versión actual → diff visual (verde/rojo) tipo GitHub
-
-Exportar → PDF, JSON, CSV, Markdown
-
-Ver cambios relacionados → auditorías encadenadas (si hubo dependencias)
-
-Ver contexto en sistema → redirigir al material/unidad/almacén en vivo
-
-Registrar incidencia (si se detecta algo irregular)
+❌ Restaurar como → posibilidad de restaurar con cambios personalizados
+✅ Comparar con versión actual → diff visual (verde/rojo) tipo GitHub
+✅ Exportar → PDF, JSON, CSV, Markdown
+❌ Ver cambios relacionados → auditorías encadenadas (si hubo dependencias)
+❌ Ver contexto en sistema → redirigir al material/unidad/almacén en vivo
+❌ Registrar incidencia (si se detecta algo irregular)
 
 5. 📑 Panel de Metadatos Técnicos (colapsable)
-JSON bruto original
-
-Fecha de creación, actualización
-
-ID interno, relación con otros registros
-
-Firma de integridad (hash SHA o firma digital)
+✅ JSON bruto original
+❌ Fecha de creación, actualización
+❌ ID interno, relación con otros registros
+✅ Firma de integridad (hash SHA o firma digital)
 
 6. 🌗 Diseño UI/UX
-Dark Mode elegante y claro
+✅ Dark Mode elegante y claro
 
-Tarjetas con sombras suaves, íconos Lucide/Phosphor
+✅ Tarjetas con sombras suaves, íconos Lucide/Phosphor
 
-Colores por tipo de auditoría (rojo: eliminación, amarillo: duplicación, verde: creación)
+✅ Colores por tipo de auditoría (rojo: eliminación, amarillo: duplicación, verde: creación)
 
-Layout flexible con soporte mobile y tablet
+✅ Layout flexible con soporte mobile y tablet
 
-Tooltips para todo lo sensible
+✅ Tooltips para todo lo sensible
 
-Animaciones suaves con framer-motion o tailwind animate
+✅ Animaciones suaves con framer-motion o tailwind animate
 
 7. 📊 Integraciones futuras opcionales
 Timeline visual de auditorías
+❌ Botón “Crear ticket a soporte” desde una auditoría
 
-Botón “Crear ticket a soporte” desde una auditoría
+❌ Auditorías encadenadas (cuando una acción afecta múltiples materiales)
 
-Auditorías encadenadas (cuando una acción afecta múltiples materiales)
+❌ Sistema de etiquetas por categorías (urgente, revisión, etc.)
 
-Sistema de etiquetas por categorías (urgente, revisión, etc.)
+---
+
+## Recomendaciones
+
+- Implementar el campo `estado` en el modelo `Auditoria` para reflejar el resultado (exitoso, parcial, pendiente).
+- Mostrar número de elementos afectados calculando la longitud de las colecciones involucradas.
+- Agregar vistas detalladas para materiales y unidades con tablas y miniaturas.
+- Incluir historial encadenado para navegar entre auditorías relacionadas.
+
+## Propuestas
+
+- Añadir botón de ticket a soporte que abra un formulario rápido.
+- Soportar etiquetas personalizables en las auditorías para filtrado avanzado.

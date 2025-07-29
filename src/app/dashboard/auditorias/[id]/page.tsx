@@ -7,6 +7,7 @@ import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
 import AuditoriaDetailNavbar from "../components/AuditoriaDetailNavbar";
 import AuditoriaSummaryCard from "../components/AuditoriaSummaryCard";
+import { AUDIT_TOGGLE_DIFF_EVENT } from "@/lib/ui-events";
 
 export default function AuditoriaPage() {
   const params = useParams<{ id: string }>();
@@ -75,6 +76,12 @@ export default function AuditoriaPage() {
       setDiffData({ prev: historial[diffIndexA], current: historial[diffIndexB] });
     }
   }, [diffIndexA, diffIndexB, historial]);
+
+  useEffect(() => {
+    const handler = () => setShowDiff((v) => !v);
+    window.addEventListener(AUDIT_TOGGLE_DIFF_EVENT, handler);
+    return () => window.removeEventListener(AUDIT_TOGGLE_DIFF_EVENT, handler);
+  }, []);
 
   const goBack = () => {
     if (from) router.push(from);
