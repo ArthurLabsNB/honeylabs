@@ -9,6 +9,7 @@ import Spinner from "@/components/Spinner";
 import {
   Home,
   Boxes,
+  Box,
   Bell,
   Network,
   FileText,
@@ -48,6 +49,13 @@ const sidebarMenu = [
     label: "Almacenes",
     icon: <Boxes className="dashboard-sidebar-icon" data-oid="fhr-clw" />,
     path: "/dashboard/almacenes",
+    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
+  },
+  {
+    key: "inventario",
+    label: "Inventario",
+    icon: <Box className="dashboard-sidebar-icon" />,
+    path: "/dashboard/inventario",
     allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
   },
   {
