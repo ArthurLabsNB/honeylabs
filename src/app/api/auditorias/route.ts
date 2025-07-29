@@ -6,7 +6,7 @@ import { Prisma } from '@prisma/client'
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
 import { ensureAuditoriaTables } from '@lib/auditoriaInit'
-import { auditoriaSchema } from '@/lib/schemas/auditoria'
+import { emitEvent } from '@/lib/events'
 
 export async function GET(req: NextRequest) {
   try {
@@ -124,10 +124,13 @@ export async function POST(req: NextRequest) {
       data.unidad = { connect: { id: objId } }
       where.unidadId = objId
     }
-    const count = await prisma.auditoria.count({ where })
-    data.version = count + 1
-
-    const auditoria = await prisma.auditoria.create({ data, select: { id: true } })
+    const auditoria = await prisma.$transaction(async (tx) => {
+      const count = await tx.auditoria.count({ where })
+      return tx.auditoria.create({
+        data: { ...data, version: count + 1 },
+        select: { id: true },
+      })
+    })
 
     if (files.length > 0) {
       await Promise.all(
@@ -143,6 +146,7 @@ export async function POST(req: NextRequest) {
         })
       )
     }
+    emitEvent({ type: 'auditoria_new', payload: { id: auditoria.id } })
 
     return NextResponse.json({ auditoria })
   } catch (err) {
