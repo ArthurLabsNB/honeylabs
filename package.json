@@ -6,7 +6,7 @@
     "gen:dev": "node scripts/gen-dev.js",
     "prisma:gen:prod": "prisma generate --data-proxy",
     "dev": "pnpm gen:dev && next dev",
-    "postinstall": "prisma generate",
+    "postinstall": "pnpm gen:dev",
     "build": "pnpm prisma:gen:prod && next build",
     "start": "next start",
     "lint": "next lint",
