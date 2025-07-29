@@ -19,6 +19,7 @@ export async function ensureAuditoriaTables() {
         "almacenId" INTEGER,
         "materialId" INTEGER,
         "unidadId" INTEGER,
+        "version" INTEGER NOT NULL DEFAULT 1,
         "observaciones" TEXT,
         "categoria" TEXT,
         "fecha" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -41,6 +42,18 @@ export async function ensureAuditoriaTables() {
       await prisma.$executeRawUnsafe(`ALTER TABLE "Auditoria" ADD CONSTRAINT "Auditoria_unidadId_fkey" FOREIGN KEY ("unidadId") REFERENCES "MaterialUnidad"("id") ON DELETE SET NULL ON UPDATE CASCADE`)
       await prisma.$executeRawUnsafe(`ALTER TABLE "ArchivoAuditoria" ADD CONSTRAINT "ArchivoAuditoria_auditoriaId_fkey" FOREIGN KEY ("auditoriaId") REFERENCES "Auditoria"("id") ON DELETE CASCADE ON UPDATE CASCADE`)
       await prisma.$executeRawUnsafe(`ALTER TABLE "ArchivoAuditoria" ADD CONSTRAINT "ArchivoAuditoria_subidoPorId_fkey" FOREIGN KEY ("subidoPorId") REFERENCES "Usuario"("id") ON DELETE SET NULL ON UPDATE CASCADE`)
+    } else {
+      const col = await prisma.$queryRaw<{ exists: boolean }[]>`
+        SELECT EXISTS (
+          SELECT 1 FROM information_schema.columns
+          WHERE table_schema='public' AND table_name='Auditoria' AND column_name='version'
+        ) as "exists"
+      `
+      if (!col[0]?.exists) {
+        await prisma.$executeRawUnsafe(
+          'ALTER TABLE "Auditoria" ADD COLUMN "version" INTEGER NOT NULL DEFAULT 1'
+        )
+      }
     }
     checked = true
   } catch (err) {
