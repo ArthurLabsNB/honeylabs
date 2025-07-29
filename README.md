@@ -90,6 +90,9 @@ Configura las variables de entorno copiando `.env.example` a `.env`.
 Debes definir `DATABASE_URL` con la URL de Prisma Accelerate y
 `DIRECT_DB_URL` con la conexión directa usada en las migraciones.
 
+Tras modificar `prisma/schema.prisma` ejecuta `pnpm install` o
+`pnpm prisma generate` para actualizar el cliente de Prisma.
+
 ---
 
 ## Uso
