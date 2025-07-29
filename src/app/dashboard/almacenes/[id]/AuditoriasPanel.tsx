@@ -70,7 +70,7 @@ export default function AuditoriasPanel({ material, almacenId, unidadId, onSelec
         {auditorias.map((a) => (
           <li
             key={a.id}
-            className={`dashboard-card space-y-1 cursor-pointer transition-transform hover:scale-[1.02] ${
+            className={`dashboard-card space-y-2 cursor-pointer transition-transform hover:scale-[1.02] ${
               activo === a.id ? 'border-[var(--dashboard-accent)]' : 'hover:border-[var(--dashboard-accent)]'
             }`}
             onClick={() => {
@@ -80,24 +80,48 @@ export default function AuditoriasPanel({ material, almacenId, unidadId, onSelec
               onSelectHistorial && onSelectHistorial(a);
             }}
           >
-            <div className="flex justify-between items-start gap-2">
-              <div className="flex items-center gap-2">
-                <span className={`rounded p-1 text-white ${COLORS[a.categoria || a.tipo] || 'bg-gray-600'}`}>{ICONS[a.categoria || a.tipo] || <File className="w-4 h-4" />}</span>
-                <span className="font-medium">{a.almacen?.nombre || a.material?.nombre || a.unidad?.nombre || '-'}</span>
-              </div>
+            <div className="relative">
+              <h3 className="font-medium text-center">
+                {a.almacen?.nombre || a.material?.nombre || a.unidad?.nombre || '-'}
+              </h3>
               <button
-                className="p-1 hover:bg-white/10 rounded"
-                onClick={(e) => { e.stopPropagation(); setActivo(activo === a.id ? null : a.id); }}
+                className="absolute top-0 right-0 p-1 hover:bg-white/10 rounded"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActivo(activo === a.id ? null : a.id);
+                }}
               >
                 {activo === a.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               </button>
             </div>
-            <div className="text-xs mt-1">
-              <span className="mr-2 font-semibold">{a.categoria || a.tipo}</span>
-              {a.version != null && <span className="mr-2">v{a.version}</span>}
+            <div className="flex justify-between items-center text-xs">
               <span>{new Date(a.fecha).toLocaleString()}</span>
+              <span className={`px-2 py-0.5 rounded text-white ${COLORS[a.categoria || a.tipo] || 'bg-gray-600'}`}>
+                {a.categoria || a.tipo}
+              </span>
             </div>
-            {a.observaciones && <p className="text-xs text-[var(--dashboard-muted)]">{a.observaciones}</p>}
+            <div className="text-xs space-y-0.5">
+              <div>
+                <span className="font-semibold mr-1">ID:</span>
+                {a.id}
+              </div>
+              {a.observaciones && (
+                <div>
+                  <span className="font-semibold mr-1">Motivo:</span>
+                  {a.observaciones}
+                </div>
+              )}
+              {a.usuario?.nombre && (
+                <div>
+                  <span className="font-semibold mr-1">Autor:</span>
+                  {a.usuario.nombre}
+                </div>
+              )}
+              <div>
+                <span className="font-semibold mr-1">Tipo:</span>
+                {a.tipo}
+              </div>
+            </div>
             {activo === a.id && (
               <div className="mt-2 space-y-1 text-xs">
                 {a.archivos?.map((f: any) => (
