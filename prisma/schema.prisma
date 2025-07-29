@@ -659,6 +659,8 @@ model Auditoria {
   unidad    MaterialUnidad? @relation("AuditoriaUnidad", fields: [unidadId], references: [id])
 
   archivos  ArchivoAuditoria[] @relation("ArchivoDeAuditoria")
+
+  @@unique([tipo, almacenId, materialId, unidadId, version])
 }
 
 model ArchivoAuditoria {

@@ -124,10 +124,13 @@ export async function POST(req: NextRequest) {
       data.unidad = { connect: { id: objId } }
       where.unidadId = objId
     }
-    const count = await prisma.auditoria.count({ where })
-    data.version = count + 1
-
-    const auditoria = await prisma.auditoria.create({ data, select: { id: true } })
+    const auditoria = await prisma.$transaction(async (tx) => {
+      const count = await tx.auditoria.count({ where })
+      return tx.auditoria.create({
+        data: { ...data, version: count + 1 },
+        select: { id: true },
+      })
+    })
 
     if (files.length > 0) {
       await Promise.all(
