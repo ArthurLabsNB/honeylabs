@@ -13,11 +13,17 @@ export const triggerDownload = (blob: Blob, filename: string) => {
 
 export const fetchAuditoriaExport = async (
   id: string | number,
-  formato: 'pdf' | 'excel' | 'csv' | 'json'
+  formato: 'pdf' | 'excel' | 'csv' | 'json',
+  incluirArchivos = false,
 ) => {
-  const res = await apiFetch(`/api/auditorias/${id}/export?format=${formato}`)
-  if (!res.ok) throw new Error('Export failed')
+  const url = `/api/auditorias/${id}/export?format=${formato}${incluirArchivos ? '&files=1' : ''}`
+  const res = await apiFetch(url)
+  if (!res.ok) {
+    const msg = await res.text().catch(() => 'Export failed')
+    throw new Error(msg)
+  }
   const blob = await res.blob()
-  const ext = formato === 'excel' ? 'xlsx' : formato
+  const contentType = res.headers.get('Content-Type') || ''
+  const ext = contentType.includes('zip') ? 'zip' : formato === 'excel' ? 'xlsx' : formato
   triggerDownload(blob, `auditoria_${id}.${ext}`)
 }
