@@ -6,6 +6,7 @@ import { Prisma } from '@prisma/client'
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
 import { ensureAuditoriaTables } from '@lib/auditoriaInit'
+import { auditoriaSchema } from '@/lib/schemas/auditoria'
 
 export async function GET(req: NextRequest) {
   try {
@@ -78,30 +79,29 @@ export async function POST(req: NextRequest) {
     const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
 
-    let tipo: string | null = null
-    let objetoId: string | null = null
-    let observaciones: string | null = null
-    let categoria: string | null = null
     let files: File[] = []
+    let raw: any
 
     if (req.headers.get('content-type')?.includes('multipart/form-data')) {
       const form = await req.formData()
-      tipo = String(form.get('tipo') ?? '')
-      objetoId = String(form.get('objetoId') ?? '')
-      observaciones = String(form.get('observaciones') ?? '')
-      categoria = String(form.get('categoria') ?? '')
+      raw = {
+        tipo: form.get('tipo'),
+        objetoId: form.get('objetoId'),
+        categoria: form.get('categoria'),
+        observaciones: form.get('observaciones'),
+      }
       files = form.getAll('archivos') as File[]
     } else {
-      const body = await req.json()
-      tipo = body.tipo
-      objetoId = body.objetoId
-      observaciones = body.observaciones
-      categoria = body.categoria
+      raw = await req.json()
     }
 
-    if (!tipo || !objetoId) {
-      return NextResponse.json({ error: 'Datos incompletos' }, { status: 400 })
+    const parsed = auditoriaSchema.safeParse(raw)
+    if (!parsed.success) {
+      const msg = parsed.error.issues.map(i => i.message).join(', ')
+      return NextResponse.json({ error: `Datos inválidos: ${msg}` }, { status: 400 })
     }
+
+    const { tipo, objetoId, categoria, observaciones } = parsed.data
 
     const data: Prisma.AuditoriaCreateInput = {
       tipo,
@@ -111,7 +111,7 @@ export async function POST(req: NextRequest) {
     }
 
     const where: Prisma.AuditoriaWhereInput = { tipo }
-    const objId = Number(objetoId)
+    const objId = objetoId
     if (tipo === 'almacen') {
       data.almacen = { connect: { id: objId } }
       where.almacenId = objId
