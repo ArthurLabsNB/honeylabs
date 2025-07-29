@@ -1,11 +1,10 @@
 export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
-import * as logger from '@lib/logger'
 
-const ALLOWED = ['google', 'github', 'gmail', 'facebook'] as const
+const ALLOWED = ['google', 'github', 'facebook'] as const
 
-export async function GET(req: NextRequest) {
+export function GET(req: NextRequest) {
   const provider = req.nextUrl.searchParams.get('provider')?.toLowerCase() || ''
   if (!ALLOWED.includes(provider as any)) {
     return NextResponse.json(
@@ -14,9 +13,6 @@ export async function GET(req: NextRequest) {
     )
   }
 
-  logger.info(req, 'OAuth login', provider)
-  return NextResponse.json(
-    { success: false, error: 'OAuth no habilitado' },
-    { status: 501 },
-  )
+  const redirectUrl = new URL(`/api/auth/signin?provider=${provider}`, req.url)
+  return NextResponse.redirect(redirectUrl)
 }

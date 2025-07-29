@@ -10,6 +10,7 @@ import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 // SCHEMA VALIDACIÓN ZOD
 const loginSchema = z.object({
@@ -218,28 +219,21 @@ export default function LoginPage() {
         <div className="mt-5 space-y-2">
           <button
             type="button"
-            onClick={() => (window.location.href = '/api/login/social?provider=google')}
+            onClick={() => signIn('google')}
             className="w-full border border-gray-300 rounded-md py-2 px-4 text-sm hover:bg-gray-50 transition"
           >
             Continuar con Google
           </button>
           <button
             type="button"
-            onClick={() => (window.location.href = '/api/login/social?provider=github')}
+            onClick={() => signIn('github')}
             className="w-full border border-gray-300 rounded-md py-2 px-4 text-sm hover:bg-gray-50 transition"
           >
             Continuar con GitHub
           </button>
           <button
             type="button"
-            onClick={() => (window.location.href = '/api/login/social?provider=gmail')}
-            className="w-full border border-gray-300 rounded-md py-2 px-4 text-sm hover:bg-gray-50 transition"
-          >
-            Continuar con Gmail
-          </button>
-          <button
-            type="button"
-            onClick={() => (window.location.href = '/api/login/social?provider=facebook')}
+            onClick={() => signIn('facebook')}
             className="w-full border border-gray-300 rounded-md py-2 px-4 text-sm hover:bg-gray-50 transition"
           >
             Continuar con Facebook
