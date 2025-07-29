@@ -1,97 +1,98 @@
-Interfaz visual de auditoria (Analiza que falta de aqui y completalo)
+🔥 Cambios clave a implementar
+1. ❌ Eliminar la sección antigua
+Eliminar completamente la sección anterior de “Inventario” (tanto del sidebar como de rutas).
 
+Eliminar hooks, endpoints y vistas relacionadas si ya no son utilizados.
 
-NavBar de auditoria
-✅ Título dinámico: "Auditoría de {tipo} - {nombre}".
-✅ Fecha + hora bien visible, en zona fija.
-✅ Usuario responsable con avatar y tooltip (correo, rol).
-❌ Estado de la auditoría: exitoso, parcial, pendiente.
+2. 🧭 Crear nueva sección: Inventario
+Ubicación: Panel lateral principal (/dashboard/inventario).
 
-Botones con íconos:
-✅ Restaurar backup
-✅ Exportar como PDF
-✅ Comparar cambios
-✅ Eliminar auditoría
-✅ Ver historial relacionado
+Diseño a pantalla completa tipo panel dual (izquierda / derecha).
 
-2. 🧱 Resumen General en formato tarjeta (Top Card)
-✅ Tipo (material, almacén, unidad)
-✅ Categoría (duplicación, eliminación, modificación, etc.)
-✅ Versión y origen de los datos
-❌ Número de elementos auditados
-✅ Hash de integridad (opcional, para verificación)
+Nombre claro y profesional en navegación.
 
-3. 📁 Panel Visual de Contenido Recuperado (por tipo)
-a. Auditoría de un Almacén
-❌ Grid visual tipo inventario
-❌ Lista de materiales (como tarjetas)
-❌ Cada tarjeta incluye miniatura, cantidad, código, QR, estado
-❌ Unidades asociadas
-❌ Panel colapsable por material
-❌ Vista por tabla o tarjeta
-✅ Archivos adjuntos (como planos, manuales)
-❌ Miniaturas clicables
-❌ Previsualizador integrado (PDF/imagen)
-❌ Código QR general del almacén descargable
+🧩 Estructura general del layout
+🔹 Panel 1: Escáner principal (lado izquierdo)
+Botón central: “📷 Escanear código QR”
 
-b. Auditoría de un Material
-❌ Datos completos del material (tarjeta resumen con imagen y campos clave)
-❌ Tabla de unidades asociadas:
-❌ Estado, ubicación, código, fecha de caducidad, lote
-❌ QR por unidad
-❌ Archivos adjuntos del material
+Al dar clic:
 
-c. Auditoría de una Unidad
-❌ Tarjeta con todos los campos de la unidad
-❌ Imagen y miniatura
-❌ Códigos de barras / QR
-❌ Historial de movimientos si aplica
+Se activa el escáner (usando html5-qrcode, react-qr-reader o ZXing)
 
-4. 🧰 Herramientas de Gestión
-❌ Restaurar como → posibilidad de restaurar con cambios personalizados
-✅ Comparar con versión actual → diff visual (verde/rojo) tipo GitHub
-✅ Exportar → PDF, JSON, CSV, Markdown
-❌ Ver cambios relacionados → auditorías encadenadas (si hubo dependencias)
-❌ Ver contexto en sistema → redirigir al material/unidad/almacén en vivo
-❌ Registrar incidencia (si se detecta algo irregular)
+Interfaz responsiva para cámara móvil
 
-5. 📑 Panel de Metadatos Técnicos (colapsable)
-✅ JSON bruto original
-❌ Fecha de creación, actualización
-❌ ID interno, relación con otros registros
-✅ Firma de integridad (hash SHA o firma digital)
+Opción de subir imagen QR si no hay cámara
 
-6. 🌗 Diseño UI/UX
-✅ Dark Mode elegante y claro
+Mensajes visuales:
 
-✅ Tarjetas con sombras suaves, íconos Lucide/Phosphor
+“Escaneando...”
 
-✅ Colores por tipo de auditoría (rojo: eliminación, amarillo: duplicación, verde: creación)
+“QR leído correctamente” / “QR no reconocido”
 
-✅ Layout flexible con soporte mobile y tablet
+🔹 Panel 2: Resultado del escaneo (lado derecho)
+Renderizado dinámico según el tipo escaneado:
 
-✅ Tooltips para todo lo sensible
+🏢 Almacén
 
-✅ Animaciones suaves con framer-motion o tailwind animate
+📦 Material
 
-7. 📊 Integraciones futuras opcionales
-Timeline visual de auditorías
-❌ Botón “Crear ticket a soporte” desde una auditoría
+🔩 Unidad
 
-❌ Auditorías encadenadas (cuando una acción afecta múltiples materiales)
+🧠 Funcionalidades y herramientas en el panel de información
+Para cualquier tipo:
+Vista profesional con tarjeta o ficha de información.
 
-❌ Sistema de etiquetas por categorías (urgente, revisión, etc.)
+Título, descripción, ubicación, QR, código de barras, estado.
 
----
+Imagen miniatura (si existe).
 
-## Recomendaciones
+Botones visuales según el tipo:
 
-- Implementar el campo `estado` en el modelo `Auditoria` para reflejar el resultado (exitoso, parcial, pendiente).
-- Mostrar número de elementos afectados calculando la longitud de las colecciones involucradas.
-- Agregar vistas detalladas para materiales y unidades con tablas y miniaturas.
-- Incluir historial encadenado para navegar entre auditorías relacionadas.
+🔄 Recargar información
 
-## Propuestas
+📝 Editar (si tiene permisos)
 
-- Añadir botón de ticket a soporte que abra un formulario rápido.
-- Soportar etiquetas personalizables en las auditorías para filtrado avanzado.
+📤 Exportar
+
+📌 Anclar en pantalla / modo pantalla completa
+
+Si es un 🏢 Almacén:
+Lista de materiales (en tarjetas o tabla con scroll)
+
+Vista rápida de stock por material
+
+Botón para ver unidades completas del almacén
+
+Si es un 📦 Material:
+Ficha técnica
+
+Lista de unidades disponibles
+
+Umbrales de stock (min y max)
+
+Botón "Ver QR del material"
+
+Archivos adjuntos o ficha técnica PDF
+
+Si es una 🔩 Unidad:
+Datos completos: lote, estado, ubicación exacta
+
+Estado visual (ej. ✅ En stock / ❌ No disponible)
+
+Información de caducidad (si aplica)
+
+Historial de movimientos
+
+Botón "Ver material origen"
+
+🎯 Objetivos UX clave
+✅ Acceso inmediato a la información mediante escaneo
+
+✅ Visualización clara y adaptada al tipo escaneado
+
+✅ Interacción rápida con botones de acción útiles
+
+✅ Adaptación a móviles y tablets para uso en almacén
+
+✅ Evitar navegación innecesaria: todo aparece directamente al escanear
+
