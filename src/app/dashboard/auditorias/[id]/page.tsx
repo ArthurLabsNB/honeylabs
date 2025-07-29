@@ -98,7 +98,7 @@ export default function AuditoriaPage() {
   return (
     <>
       <AuditoriaDetailNavbar />
-      <div className="p-4 space-y-4" style={{ paddingTop: 'calc(var(--navbar-height) * 2)' }}>
+      <div className="p-4 space-y-4" style={{ paddingTop: 'var(--navbar-height)' }}>
         <div className="dashboard-card text-xs space-y-1">
           <div>Tipo: {data.tipo}</div>
           {data.version != null && <div>Versión: {data.version}</div>}
@@ -110,6 +110,32 @@ export default function AuditoriaPage() {
           <pre className="overflow-auto bg-black/20 p-2 rounded">
             {JSON.stringify(data, null, 2)}
           </pre>
+          {Array.isArray(data.archivos) && data.archivos.length > 0 && (
+            <div className="mt-2 space-y-1">
+              <h3 className="text-sm font-semibold">Archivos adjuntos</h3>
+              <div className="flex flex-wrap gap-2">
+                {data.archivos.map((a: any) => (
+                  <a
+                    key={a.id}
+                    href={`/api/auditorias/${id}/archivos/${a.id}`}
+                    className="border rounded p-1 text-xs hover:bg-white/10"
+                    download
+                    target="_blank"
+                  >
+                    {a.archivoNombre?.match(/\.(png|jpe?g|gif|webp)$/i) ? (
+                      <img
+                        src={`/api/auditorias/${id}/archivos/${a.id}`}
+                        alt={a.nombre}
+                        className="w-24 h-24 object-cover rounded"
+                      />
+                    ) : (
+                      a.nombre
+                    )}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
           <button
             onClick={() => navigator.clipboard.writeText(JSON.stringify(data))}
             className="px-2 py-1 rounded bg-white/10 text-xs"
