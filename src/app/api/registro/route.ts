@@ -5,6 +5,7 @@ import prisma from '@lib/prisma';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import { enviarCorreoValidacionEmpresa } from '@/lib/email/enviarRegistro';
+import { verifyRecaptcha } from '@lib/recaptcha'
 import * as logger from '@lib/logger'
 
 function respuestaError(error: string, detalle: string, status = 400) {
@@ -39,6 +40,10 @@ export async function POST(req: NextRequest) {
   try {
     logger.info('📥 Iniciando registro de usuario');
     const formData = await req.formData();
+    const captchaToken = formData.get('captchaToken') as string | null;
+    if (!(await verifyRecaptcha(captchaToken))) {
+      return respuestaError('Captcha inválido', 'Verificación fallida', 400);
+    }
 
     // Extracción y sanitización de campos
     const nombre = String(formData.get('nombre') ?? '').trim();

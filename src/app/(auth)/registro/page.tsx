@@ -6,12 +6,14 @@ import { apiFetch } from "@lib/api";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import useSession from "@/hooks/useSession";
+import Recaptcha from "@/components/Recaptcha";
 
 export default function RegistroPage() {
   const router = useRouter();
   const { usuario } = useSession();
   const [mensaje, setMensaje] = useState("");
   const [cargando, setCargando] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const nombreRef = useRef<HTMLInputElement>(null);
 
@@ -31,6 +33,13 @@ export default function RegistroPage() {
     setCargando(true);
 
     const formData = new FormData(e.currentTarget);
+
+    if (!captchaToken) {
+      setMensaje("Completa el captcha");
+      setCargando(false);
+      return;
+    }
+    formData.append("captchaToken", captchaToken);
 
     // Validación rápida en frontend
     if (
@@ -170,6 +179,8 @@ export default function RegistroPage() {
             data-oid="9ode.vn"
           />
         </div>
+
+        <Recaptcha onToken={setCaptchaToken} />
 
         <button
           type="submit"

@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import Recaptcha from "@/components/Recaptcha";
 
 const schema = z.object({
   correo: z.string().nonempty("Correo obligatorio").email("Correo inválido"),
@@ -16,6 +17,7 @@ type FormData = z.infer<typeof schema>;
 export default function OlvideContrasenaPage() {
   const [mensaje, setMensaje] = useState("");
   const [enviando, setEnviando] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -25,10 +27,15 @@ export default function OlvideContrasenaPage() {
   const onSubmit = async (data: FormData) => {
     setEnviando(true);
     setMensaje("");
+    if (!captchaToken) {
+      setMensaje("Completa el captcha");
+      setEnviando(false);
+      return;
+    }
     const res = await apiFetch("/api/recuperar-contrasena", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ ...data, captchaToken }),
     });
     if (res.ok) {
       setMensaje(
@@ -64,13 +71,14 @@ export default function OlvideContrasenaPage() {
             className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 ${errors.correo ? "border-red-400" : ""}`}
             aria-invalid={!!errors.correo}
           />
-          {errors.correo && (
-            <p className="text-sm text-red-500">{errors.correo.message}</p>
-          )}
-        </div>
-        <button
-          type="submit"
-          disabled={enviando}
+        {errors.correo && (
+          <p className="text-sm text-red-500">{errors.correo.message}</p>
+        )}
+      </div>
+      <Recaptcha onToken={setCaptchaToken} />
+      <button
+        type="submit"
+        disabled={enviando}
           className="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-md transition"
         >
           {enviando ? "Enviando..." : "Enviar correo"}
