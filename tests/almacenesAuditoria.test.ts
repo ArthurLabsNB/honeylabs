@@ -140,12 +140,19 @@ describe('DELETE /api/almacenes/[id]', () => {
     const registrarAuditoria = vi.fn().mockResolvedValue({ auditoria: { id: 9 } })
     vi.doMock('../lib/reporter', () => ({ registrarAuditoria }))
     const { DELETE } = await import('../src/app/api/almacenes/[id]/route')
-    const req = new NextRequest('http://localhost/api/almacenes/5', { method: 'DELETE' })
+    const body = JSON.stringify({ motivo: 'test' })
+    const req = new NextRequest('http://localhost/api/almacenes/5', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body })
     const res = await DELETE(req)
     expect(res.status).toBe(200)
     const data = await res.json()
     expect(data.auditoria).toEqual({ id: 9 })
-    expect(registrarAuditoria).toHaveBeenCalled()
+    expect(registrarAuditoria).toHaveBeenCalledWith(
+      expect.any(NextRequest),
+      'almacen',
+      5,
+      'eliminacion',
+      { motivo: 'test' },
+    )
   })
 
   it('propaga error de auditoria al eliminar', async () => {
@@ -177,7 +184,8 @@ describe('DELETE /api/almacenes/[id]', () => {
     const registrarAuditoria = vi.fn().mockResolvedValue({ error: 'fallo' })
     vi.doMock('../lib/reporter', () => ({ registrarAuditoria }))
     const { DELETE } = await import('../src/app/api/almacenes/[id]/route')
-    const req = new NextRequest('http://localhost/api/almacenes/5', { method: 'DELETE' })
+    const body = JSON.stringify({ motivo: 'test' })
+    const req = new NextRequest('http://localhost/api/almacenes/5', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body })
     const res = await DELETE(req)
     const data = await res.json()
     expect(data.auditError).toBe('fallo')

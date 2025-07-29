@@ -131,9 +131,14 @@ export default function useMateriales(almacenId?: number | string) {
     }
   }
 
-  const eliminar = async (materialId: number) => {
+  const eliminar = async (materialId: number, motivo?: string) => {
     try {
-      const res = await apiFetch(`/api/materiales/${materialId}`, { method: 'DELETE' })
+      const options: any = { method: 'DELETE' }
+      if (motivo) {
+        options.headers = { 'Content-Type': 'application/json' }
+        options.body = JSON.stringify({ motivo })
+      }
+      const res = await apiFetch(`/api/materiales/${materialId}`, options)
       const data = await jsonOrNull(res)
       if (res.ok) {
         mutate()

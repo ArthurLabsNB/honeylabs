@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import type { Material } from "../components/MaterialRow";
 import useUnidades, { type Unidad as UnidadAPI } from "@/hooks/useUnidades";
 import { useToast } from "@/components/Toast";
+import { usePrompt } from "@/hooks/usePrompt";
 import useObjectUrl from "@/hooks/useObjectUrl";
 import { apiPath } from "@lib/api";
 
@@ -23,6 +24,7 @@ export default function UnidadesPanel({
   const [busqueda, setBusqueda] = useState("");
   const { unidades, crear, eliminar } = useUnidades(material?.dbId);
   const toast = useToast();
+  const prompt = usePrompt();
 
   const add = async () => {
     const v = value.trim()
@@ -47,9 +49,9 @@ export default function UnidadesPanel({
   };
 
   const remove = async (id: number) => {
-    const ok = await toast.confirm('¿Eliminar unidad?')
-    if (!ok) return
-    const res = await eliminar(id)
+    const motivo = await prompt('Motivo de eliminación')
+    if (!motivo) return
+    const res = await eliminar(id, motivo)
     if (res.success) toast.show('Unidad eliminada', 'success')
     else if (res.error) toast.show(res.error, 'error')
   };

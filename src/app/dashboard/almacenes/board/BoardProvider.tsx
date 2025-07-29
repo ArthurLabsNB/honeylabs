@@ -17,7 +17,7 @@ interface BoardState {
   error: any;
   crear: (m: Material) => Promise<any>;
   actualizar: (m: Material) => Promise<any>;
-  eliminar: (id: number) => Promise<any>;
+  eliminar: (id: number, motivo?: string) => Promise<any>;
   duplicar: (id: number) => Promise<any>;
   mutate: () => void;
 }

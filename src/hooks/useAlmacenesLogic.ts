@@ -3,6 +3,7 @@ import { jsonOrNull } from '@lib/http'
 import { apiFetch } from '@lib/api'
 import { DragStartEvent, DragOverEvent, DragEndEvent } from '@dnd-kit/core'
 import { useToast } from '@/components/Toast'
+import { usePrompt } from '@/hooks/usePrompt'
 import useSession from '@/hooks/useSession'
 import useAlmacenes, { Almacen } from '@/hooks/useAlmacenes'
 import { getMainRole, normalizeTipoCuenta } from '@lib/permisos'
@@ -20,6 +21,7 @@ export default function useAlmacenesLogic() {
   const { usuario, loading: loadingUsuario } = useSession()
   const { filter, registerCreate } = useAlmacenesUI()
   const toast = useToast()
+  const prompt = usePrompt()
 
   const [almacenes, setAlmacenes] = useState<Almacen[]>([])
   const [error, setError] = useState('')
@@ -101,9 +103,13 @@ export default function useAlmacenesLogic() {
 
   const eliminar = useCallback(
     async (id: number) => {
-      const ok = await toast.confirm('¿Eliminar almacén?')
-      if (!ok) return
-      const res = await apiFetch(`/api/almacenes/${id}`, { method: 'DELETE' })
+      const motivo = await prompt('Motivo de eliminación')
+      if (!motivo) return
+      const res = await apiFetch(`/api/almacenes/${id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ motivo }),
+      })
       if (res.ok) {
         mutate()
         toast.show('Almacén eliminado', 'success')

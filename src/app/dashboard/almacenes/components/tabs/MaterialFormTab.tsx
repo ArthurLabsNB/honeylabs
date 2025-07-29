@@ -6,12 +6,14 @@ import { useCallback, useEffect, useState } from 'react'
 import { generarUUID } from '@/lib/uuid'
 import { useToast } from '@/components/Toast'
 import { parseId } from '@/lib/parseId'
+import { usePrompt } from '@/hooks/usePrompt'
 
 export default function MaterialFormTab({ tabId }: { tabId: string }) {
   const { selectedId, materiales, setSelectedId, eliminar, mutate, crear, actualizar } = useBoard()
   const baseMat = materiales.find(m => m.id === selectedId) || null
   const { close } = useTabStore()
   const toast = useToast()
+  const prompt = usePrompt()
   const [draft, setDraft] = useState(baseMat)
 
   useEffect(() => {
@@ -24,9 +26,9 @@ export default function MaterialFormTab({ tabId }: { tabId: string }) {
       toast.show('ID inválido', 'error')
       return
     }
-    const ok = await toast.confirm('¿Eliminar material?')
-    if (!ok) return
-    const res = await eliminar(id)
+    const motivo = await prompt('Motivo de eliminación')
+    if (!motivo) return
+    const res = await eliminar(id, motivo)
     if (res?.error) toast.show(res.error, 'error')
     else toast.show('Material eliminado', 'success')
     mutate()

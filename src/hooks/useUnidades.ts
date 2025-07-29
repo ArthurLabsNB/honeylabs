@@ -178,14 +178,17 @@ export default function useUnidades(materialId?: number | string) {
     }
   }
 
-  const eliminar = async (unidadId: number) => {
+  const eliminar = async (unidadId: number, motivo?: string) => {
     if (Number.isNaN(id) || id <= 0) return { success: false, error: 'ID inválido' }
     if (Number.isNaN(unidadId) || unidadId <= 0)
       return { success: false, error: 'ID de unidad inválido' }
     try {
-      const res = await apiFetch(`/api/materiales/${id}/unidades/${unidadId}`, {
-        method: 'DELETE',
-      })
+      const options: any = { method: 'DELETE' }
+      if (motivo) {
+        options.headers = { 'Content-Type': 'application/json' }
+        options.body = JSON.stringify({ motivo })
+      }
+      const res = await apiFetch(`/api/materiales/${id}/unidades/${unidadId}`, options)
       const result = await jsonOrNull(res)
       if (res.ok) {
         mutate()
