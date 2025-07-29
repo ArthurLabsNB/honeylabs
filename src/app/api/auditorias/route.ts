@@ -7,6 +7,7 @@ import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
 import { ensureAuditoriaTables } from '@lib/auditoriaInit'
 import { emitEvent } from '@/lib/events'
+import { auditoriaSchema } from '@/lib/schemas/auditoria'
 
 export async function GET(req: NextRequest) {
   try {

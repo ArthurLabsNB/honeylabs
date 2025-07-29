@@ -13,6 +13,7 @@ describe('POST /api/auditorias', () => {
     const prismaMock = {
       auditoria: { create: vi.fn().mockResolvedValue({ id: 3 }), count: vi.fn().mockResolvedValue(0) },
       archivoAuditoria: { create: vi.fn() },
+      $transaction: vi.fn(async (cb: any) => cb(prismaMock)),
     }
     vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
 

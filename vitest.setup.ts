@@ -42,4 +42,14 @@ class PrismaClient {
   $connect() {}
 }
 
-vi.mock('@prisma/client', () => ({ PrismaClient }))
+class PrismaClientKnownRequestError extends Error {
+  code?: string
+  constructor(message: string, code?: string) {
+    super(message)
+    this.code = code
+  }
+}
+
+const Prisma = { PrismaClientKnownRequestError }
+
+vi.mock('@prisma/client', () => ({ PrismaClient, Prisma }))

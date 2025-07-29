@@ -8,14 +8,20 @@ export async function logAudit(
 ) {
   try {
     const prisma = (await import('@lib/prisma')).default
-    await prisma.$executeRawUnsafe(
-      `INSERT INTO "AuditLog" ("usuarioId", accion, entidad, payload, fecha)
-       VALUES ($1,$2,$3,$4,NOW())`,
-      usuarioId,
-      accion,
-      entidad,
-      payload ? JSON.stringify(payload) : null,
-    )
+    if (prisma.auditLog?.create) {
+      await prisma.auditLog.create({
+        data: { usuarioId, accion, entidad, payload },
+      })
+    } else if (prisma.$executeRawUnsafe) {
+      await prisma.$executeRawUnsafe(
+        `INSERT INTO "AuditLog" ("usuarioId", accion, entidad, payload, fecha)
+         VALUES ($1,$2,$3,$4,NOW())`,
+        usuarioId,
+        accion,
+        entidad,
+        payload ? JSON.stringify(payload) : null,
+      )
+    }
   } catch (err) {
     logger.error('audit log error:', err)
   }
