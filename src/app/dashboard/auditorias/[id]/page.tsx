@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Spinner from "@/components/Spinner";
+import Badge from '@/components/Badge'
+import { parseObservaciones } from '@/lib/parseObservaciones'
 import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
 import AuditoriaDetailNavbar from "../components/AuditoriaDetailNavbar";
@@ -112,7 +114,20 @@ export default function AuditoriaPage() {
           {data.unidad?.nombre && <div>Unidad: {data.unidad.nombre}</div>}
           {data.material?.nombre && <div>Material: {data.material.nombre}</div>}
           {data.almacen?.nombre && <div>Almacén: {data.almacen.nombre}</div>}
-          {data.observaciones && <div>{data.observaciones}</div>}
+          {data.observaciones && (
+            <div className="flex flex-wrap items-center gap-1">
+              {data.categoria === 'modificacion'
+                ? (() => {
+                    const obj = parseObservaciones(data.observaciones)
+                    return obj
+                      ? Object.keys(obj).map((k) => (
+                          <Badge key={k}>{k}</Badge>
+                        ))
+                      : data.observaciones
+                  })()
+                : data.observaciones}
+            </div>
+          )}
           <pre className="overflow-auto bg-black/20 p-2 rounded">
             {JSON.stringify(data, null, 2)}
           </pre>

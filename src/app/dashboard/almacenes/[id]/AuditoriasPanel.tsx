@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import Badge from '@/components/Badge'
+import { parseObservaciones } from '@/lib/parseObservaciones'
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -106,9 +108,18 @@ export default function AuditoriasPanel({ material, almacenId, unidadId, onSelec
                 {a.id}
               </div>
               {a.observaciones && (
-                <div>
+                <div className="flex flex-wrap items-center gap-1">
                   <span className="font-semibold mr-1">Motivo:</span>
-                  {a.observaciones}
+                  {a.categoria === 'modificacion'
+                    ? (() => {
+                        const obj = parseObservaciones(a.observaciones)
+                        return obj
+                          ? Object.keys(obj).map((k) => (
+                              <Badge key={k}>{k}</Badge>
+                            ))
+                          : a.observaciones
+                      })()
+                    : a.observaciones}
                 </div>
               )}
               {a.usuario?.nombre && (
