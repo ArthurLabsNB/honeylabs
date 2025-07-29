@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
+import Recaptcha from "@/components/Recaptcha";
 
 // SCHEMA VALIDACIÓN ZOD
 const loginSchema = z.object({
@@ -27,6 +28,7 @@ export default function LoginPage() {
   const [verContrasena, setVerContrasena] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [cargando, setCargando] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const {
     register,
@@ -57,10 +59,15 @@ export default function LoginPage() {
     setCargando(true);
     try {
       clearSessionCache();
+      if (!captchaToken) {
+        setMensaje("Completa el captcha");
+        setCargando(false);
+        return;
+      }
       const res = await apiFetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(datos),
+        body: JSON.stringify({ ...datos, captchaToken }),
       });
 
       const data = await jsonOrNull(res);
@@ -162,19 +169,21 @@ export default function LoginPage() {
               <Eye className="w-5 h-5" data-oid="-29-q_o" />
             )}
           </button>
-          {errors.contrasena && (
-            <p
-              id="error-contrasena"
-              className="text-sm text-red-500"
-              data-oid="wzj_p49"
-            >
-              {errors.contrasena.message}
-            </p>
-          )}
-        </div>
+        {errors.contrasena && (
+          <p
+            id="error-contrasena"
+            className="text-sm text-red-500"
+            data-oid="wzj_p49"
+          >
+            {errors.contrasena.message}
+          </p>
+        )}
+      </div>
 
-        {/* 🔘 Botón */}
-        <button
+      <Recaptcha onToken={setCaptchaToken} />
+
+      {/* 🔘 Botón */}
+      <button
           type="submit"
           disabled={cargando}
           aria-busy={cargando}

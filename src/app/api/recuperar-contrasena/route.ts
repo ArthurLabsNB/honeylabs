@@ -5,6 +5,7 @@ import prisma from '@lib/prisma';
 import jwt from 'jsonwebtoken';
 import { enviarCorreoResetContrasena } from '@/lib/email/enviarResetContrasena';
 import { respuestaError } from '@lib/http';
+import { verifyRecaptcha } from '@lib/recaptcha';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
@@ -13,7 +14,10 @@ if (!JWT_SECRET) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { correo } = await req.json();
+    const { correo, captchaToken } = await req.json();
+    if (!(await verifyRecaptcha(captchaToken))) {
+      return respuestaError('Captcha inválido', '', 400);
+    }
     if (!correo) return respuestaError('Correo requerido', '', 400);
     const user = await prisma.usuario.findUnique({
       where: { correo: correo.toLowerCase().trim() },
