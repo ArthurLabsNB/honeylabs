@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import useAuditorias from "@/hooks/useAuditorias";
+import useAuditoriasUpdates from "@/hooks/useAuditoriasUpdates";
 
 interface Props {
   material: { dbId: number; nombre: string } | null;
@@ -17,7 +18,8 @@ export default function AuditoriasPanel({ material, almacenId, unidadId, onSelec
   if (tipo === 'material') opts.materialId = material?.dbId
   else if (tipo === 'unidad') opts.unidadId = unidadId
   else opts.almacenId = almacenId
-  const { auditorias } = useAuditorias(opts)
+  const { auditorias, mutate } = useAuditorias(opts)
+  useAuditoriasUpdates(mutate)
   const [activo, setActivo] = useState<number | null>(null);
   const router = useRouter();
 
