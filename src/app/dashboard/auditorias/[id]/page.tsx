@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Spinner from "@/components/Spinner";
 import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
 import AuditoriaDetailNavbar from "../components/AuditoriaDetailNavbar";
 import AuditoriaSummaryCard from "../components/AuditoriaSummaryCard";
+import MaterialForm from "@/app/dashboard/almacenes/components/MaterialForm";
+import UnidadForm from "@/app/dashboard/almacenes/components/UnidadForm";
+import AlmacenForm from "../components/AlmacenForm";
 import { AUDIT_TOGGLE_DIFF_EVENT } from "@/lib/ui-events";
 
 export default function AuditoriaPage() {
@@ -21,6 +24,15 @@ export default function AuditoriaPage() {
   const [diffIndexB, setDiffIndexB] = useState(-1);
   const [diffData, setDiffData] = useState<{ prev: any; current: any } | null>(null);
   const [showDiff, setShowDiff] = useState(false);
+  const estado = useMemo(() => {
+    if (!data?.observaciones) return null;
+    try {
+      return JSON.parse(data.observaciones);
+    } catch {
+      return null;
+    }
+  }, [data?.observaciones]);
+  const noop = () => {};
 
   const id = Array.isArray(params?.id) ? params.id[0] : params?.id;
 
@@ -113,9 +125,31 @@ export default function AuditoriaPage() {
           {data.material?.nombre && <div>Material: {data.material.nombre}</div>}
           {data.almacen?.nombre && <div>Almacén: {data.almacen.nombre}</div>}
           {data.observaciones && <div>{data.observaciones}</div>}
-          <pre className="overflow-auto bg-black/20 p-2 rounded">
-            {JSON.stringify(data, null, 2)}
-          </pre>
+          {estado && (
+            <div className="my-2">
+              {data.tipo === 'material' && (
+                <MaterialForm
+                  material={estado}
+                  onChange={noop}
+                  onGuardar={noop}
+                  onCancelar={noop}
+                  onDuplicar={noop}
+                  onEliminar={noop}
+                  readOnly
+                />
+              )}
+              {data.tipo === 'unidad' && (
+                <UnidadForm
+                  unidad={estado}
+                  onChange={noop}
+                  onGuardar={noop}
+                  onCancelar={noop}
+                  readOnly
+                />
+              )}
+              {data.tipo === 'almacen' && <AlmacenForm almacen={estado} />}
+            </div>
+          )}
           {Array.isArray(data.archivos) && data.archivos.length > 0 && (
             <div className="mt-2 space-y-1">
               <h3 className="text-sm font-semibold">Archivos adjuntos</h3>
