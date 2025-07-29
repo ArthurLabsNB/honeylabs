@@ -6,6 +6,7 @@ import { Prisma } from '@prisma/client'
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
 import { ensureAuditoriaTables } from '@lib/auditoriaInit'
+import { emitEvent } from '@/lib/events'
 
 export async function GET(req: NextRequest) {
   try {
@@ -146,6 +147,7 @@ export async function POST(req: NextRequest) {
         })
       )
     }
+    emitEvent({ type: 'auditoria_new', payload: { id: auditoria.id } })
 
     return NextResponse.json({ auditoria })
   } catch (err) {

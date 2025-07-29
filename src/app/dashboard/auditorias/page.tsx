@@ -4,6 +4,7 @@ import { FixedSizeList as VList } from "react-window";
 import { useRouter } from "next/navigation";
 import Spinner from "@/components/Spinner";
 import useAuditorias from "@/hooks/useAuditorias";
+import useAuditoriasUpdates from "@/hooks/useAuditoriasUpdates";
 import useAdminUsuarios from "@/hooks/useAdminUsuarios";
 import { apiFetch } from "@lib/api";
 
@@ -16,7 +17,7 @@ export default function AuditoriasPage() {
   const [hasta, setHasta] = useState('');
   const [usuarioId, setUsuarioId] = useState('todos');
   const { usuarios } = useAdminUsuarios();
-  const { auditorias, loading } = useAuditorias({
+  const { auditorias, loading, mutate } = useAuditorias({
     tipo,
     categoria,
     q: busqueda,
@@ -24,6 +25,7 @@ export default function AuditoriasPage() {
     hasta,
     usuarioId: usuarioId !== 'todos' ? Number(usuarioId) : undefined,
   });
+  useAuditoriasUpdates(mutate)
   const [detalle, setDetalle] = useState<any | null>(null);
   const [activo, setActivo] = useState<number | null>(null);
 
