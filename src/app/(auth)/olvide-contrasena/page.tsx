@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import Recaptcha from "@/components/Recaptcha";
+import { executeRecaptcha } from "@lib/recaptcha";
 
 const schema = z.object({
   correo: z.string().nonempty("Correo obligatorio").email("Correo inválido"),
@@ -17,7 +17,6 @@ type FormData = z.infer<typeof schema>;
 export default function OlvideContrasenaPage() {
   const [mensaje, setMensaje] = useState("");
   const [enviando, setEnviando] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -27,8 +26,9 @@ export default function OlvideContrasenaPage() {
   const onSubmit = async (data: FormData) => {
     setEnviando(true);
     setMensaje("");
+    const captchaToken = await executeRecaptcha("recuperar");
     if (!captchaToken) {
-      setMensaje("Completa el captcha");
+      setMensaje("Error al verificar captcha");
       setEnviando(false);
       return;
     }
@@ -75,7 +75,6 @@ export default function OlvideContrasenaPage() {
           <p className="text-sm text-red-500">{errors.correo.message}</p>
         )}
       </div>
-      <Recaptcha onToken={setCaptchaToken} />
       <button
         type="submit"
         disabled={enviando}

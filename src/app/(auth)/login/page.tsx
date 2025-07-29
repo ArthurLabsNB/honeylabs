@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
-import Recaptcha from "@/components/Recaptcha";
+import { executeRecaptcha } from "@lib/recaptcha";
 
 // SCHEMA VALIDACIÓN ZOD
 const loginSchema = z.object({
@@ -28,7 +28,6 @@ export default function LoginPage() {
   const [verContrasena, setVerContrasena] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [cargando, setCargando] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const {
     register,
@@ -59,8 +58,9 @@ export default function LoginPage() {
     setCargando(true);
     try {
       clearSessionCache();
+      const captchaToken = await executeRecaptcha("login");
       if (!captchaToken) {
-        setMensaje("Completa el captcha");
+        setMensaje("Error al verificar captcha");
         setCargando(false);
         return;
       }
@@ -179,8 +179,6 @@ export default function LoginPage() {
           </p>
         )}
       </div>
-
-      <Recaptcha onToken={setCaptchaToken} />
 
       {/* 🔘 Botón */}
       <button
