@@ -12,12 +12,12 @@ interface Props {
 }
 
 export default function AuditoriasPanel({ material, almacenId, unidadId, onSelectHistorial }: Props) {
-  const { auditorias } = useAuditorias({
-    tipo: material ? "material" : unidadId ? "unidad" : "almacen",
-    almacenId,
-    materialId: material?.dbId,
-    unidadId,
-  });
+  const tipo = material ? 'material' : unidadId ? 'unidad' : 'almacen'
+  const opts: any = { tipo }
+  if (tipo === 'material') opts.materialId = material?.dbId
+  else if (tipo === 'unidad') opts.unidadId = unidadId
+  else opts.almacenId = almacenId
+  const { auditorias } = useAuditorias(opts)
   const [activo, setActivo] = useState<number | null>(null);
   const router = useRouter();
 
