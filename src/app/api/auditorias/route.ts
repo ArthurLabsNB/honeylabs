@@ -103,15 +103,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Datos incompletos' }, { status: 400 })
     }
 
-    const data: any = { tipo, observaciones, categoria, usuarioId: usuario.id }
-    if (tipo === 'almacen') data.almacenId = Number(objetoId)
-    if (tipo === 'material') data.materialId = Number(objetoId)
-    if (tipo === 'unidad') data.unidadId = Number(objetoId)
+    const data: Prisma.AuditoriaCreateInput = {
+      tipo,
+      observaciones,
+      categoria,
+      usuario: { connect: { id: usuario.id } },
+    }
 
-    const where: any = { tipo }
-    if (data.almacenId) where.almacenId = data.almacenId
-    if (data.materialId) where.materialId = data.materialId
-    if (data.unidadId) where.unidadId = data.unidadId
+    const where: Prisma.AuditoriaWhereInput = { tipo }
+    const objId = Number(objetoId)
+    if (tipo === 'almacen') {
+      data.almacen = { connect: { id: objId } }
+      where.almacenId = objId
+    }
+    if (tipo === 'material') {
+      data.material = { connect: { id: objId } }
+      where.materialId = objId
+    }
+    if (tipo === 'unidad') {
+      data.unidad = { connect: { id: objId } }
+      where.unidadId = objId
+    }
     const count = await prisma.auditoria.count({ where })
     data.version = count + 1
 
