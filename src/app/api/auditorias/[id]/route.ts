@@ -22,7 +22,13 @@ export async function GET(req: NextRequest) {
     const auditoria = await prisma.auditoria.findUnique({
       where: { id },
       include: {
-        usuario: { select: { nombre: true } },
+        usuario: {
+          select: {
+            nombre: true,
+            correo: true,
+            roles: { select: { nombre: true } },
+          },
+        },
         almacen: { select: { nombre: true } },
         material: { select: { nombre: true } },
         unidad: { select: { nombre: true } },

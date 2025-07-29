@@ -4,6 +4,8 @@ import {
   Download,
   FileText,
   RotateCcw,
+  Trash2,
+  History,
   Clock,
 } from "lucide-react";
 import Image from "next/image";
@@ -14,6 +16,7 @@ import { jsonOrNull } from "@lib/http";
 import { fetchAuditoriaExport } from "@/app/dashboard/utils/auditoriaExport";
 import { useToast } from "@/components/Toast";
 import { NAVBAR_HEIGHT } from "../../constants";
+import { AUDIT_TOGGLE_DIFF_EVENT } from "@/lib/ui-events";
 
 export default function AuditoriaDetailNavbar() {
   const router = useRouter();
@@ -80,6 +83,17 @@ export default function AuditoriaDetailNavbar() {
     else toast.show("Error al restaurar", "error");
   };
 
+  const eliminar = async () => {
+    if (!id) return;
+    const ok = await toast.confirm("¿Eliminar auditoría?");
+    if (!ok) return;
+    const res = await apiFetch(`/api/auditorias/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      toast.show("Eliminada", "success");
+      router.back();
+    } else toast.show("Error al eliminar", "error");
+  };
+
   return (
     <header
       className="flex items-center justify-between h-[3.5rem] min-h-[3.5rem] px-3 md:px-4 border-b border-[var(--dashboard-border)] bg-[var(--dashboard-navbar)] fixed left-0 right-0 z-30"
@@ -109,8 +123,12 @@ export default function AuditoriaDetailNavbar() {
                 {info.usuario.nombre[0].toUpperCase()}
               </span>
               {showUser && (
-                <div className="absolute right-0 mt-1 px-2 py-1 text-xs rounded bg-black text-white whitespace-nowrap">
+                <div className="absolute right-0 mt-1 px-2 py-1 text-xs rounded bg-black text-white whitespace-pre">
                   {info.usuario.nombre}
+                  {info.usuario.correo && <div>{info.usuario.correo}</div>}
+                  {info.usuario.roles?.length && (
+                    <div>{info.usuario.roles.map((r: any) => r.nombre).join(', ')}</div>
+                  )}
                 </div>
               )}
             </div>
@@ -148,6 +166,12 @@ export default function AuditoriaDetailNavbar() {
         </button>
         <button onClick={restaurar} className="p-2 hover:bg-white/10 rounded-lg" title="Restaurar">
           <RotateCcw className="w-5 h-5" />
+        </button>
+        <button onClick={() => window.dispatchEvent(new Event(AUDIT_TOGGLE_DIFF_EVENT))} className="p-2 hover:bg-white/10 rounded-lg" title="Comparar cambios">
+          <History className="w-5 h-5" />
+        </button>
+        <button onClick={eliminar} className="p-2 hover:bg-white/10 rounded-lg" title="Eliminar auditoría">
+          <Trash2 className="w-5 h-5" />
         </button>
       </div>
     </header>
