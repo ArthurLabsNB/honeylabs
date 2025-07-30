@@ -1,5 +1,8 @@
 import { securityHeaders } from './lib/securityHeaders';
 import nextPWA from 'next-pwa';
+import validateEnv from './lib/validateEnv';
+
+validateEnv();
 
 /** @type {import('next').NextConfig} */
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''
