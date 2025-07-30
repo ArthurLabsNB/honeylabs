@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 import { Html5Qrcode } from "html5-qrcode";
 import { useRouter } from "next/navigation";
 import { decodeQRImageFile } from "@/lib/qrImage";
@@ -34,10 +35,16 @@ export default function InventarioPage() {
     };
   }, [useCameraScan]);
 
+  const fetchInfo = useDebouncedCallback((code: string) => {
+    fetchScanInfo(code)
+      .then((d) => setInfo(d))
+      .catch(() => setInfo(null));
+  }, 300);
+
   useEffect(() => {
     if (!codigo) return;
-    fetchScanInfo(codigo).then((d) => setInfo(d)).catch(() => setInfo(null));
-  }, [codigo]);
+    fetchInfo(codigo);
+  }, [codigo, fetchInfo]);
 
   const handleFile = async (files: FileList | null) => {
     const file = files?.[0];
