@@ -1,4 +1,5 @@
 export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@lib/prisma'
 import { createHash } from 'crypto'
@@ -16,7 +17,7 @@ const MIME_BY_EXT: Record<string, string> = {
 
 export async function GET(req: NextRequest) {
   try {
-    const url = new URL(req.url);
+    const url = req.nextUrl;
     const nombre = url.searchParams.get('nombre');
     const correo = url.searchParams.get('correo');
 
@@ -49,7 +50,8 @@ export async function GET(req: NextRequest) {
       : Buffer.from(usuario.fotoPerfil);
 
     const hash = createHash('sha1').update(buffer).digest('hex');
-    if (req.headers.get('if-none-match') === hash) {
+    const etag = `"${hash}"`;
+    if (req.headers.get('if-none-match') === etag) {
       return new NextResponse(null, { status: 304 });
     }
 
@@ -61,7 +63,7 @@ export async function GET(req: NextRequest) {
         'Content-Disposition': `inline; filename="${encodeURIComponent(fileName)}"`,
         'Cache-Control': 'public, max-age=0, must-revalidate',
         'Content-Length': buffer.length.toString(),
-        ETag: hash,
+        ETag: etag,
       }
     });
 
