@@ -29,8 +29,15 @@ export default function ClientLayout({
   const pathname = usePathname();
   const router = useRouter();
   const { usuario, loading } = useSession();
-  const ocultarNavbar = debeOcultarNavbarFooter(pathname);
-  const esRutaAuth = /^\/auth(\/|$)|^\/login$|^\/registro$/.test(pathname);
+
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+  const cleanPath =
+    basePath && pathname.startsWith(basePath)
+      ? pathname.slice(basePath.length) || "/"
+      : pathname;
+
+  const ocultarNavbar = debeOcultarNavbarFooter(cleanPath);
+  const esRutaAuth = /^\/auth(\/|$)|^\/login$|^\/registro$/.test(cleanPath);
 
   useEffect(() => {
     if (!loading && !usuario && !esRutaAuth) {
