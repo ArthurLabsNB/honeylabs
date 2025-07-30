@@ -12,7 +12,9 @@ export async function verifyRecaptcha(token: string | null): Promise<boolean> {
       body: params,
     })
     const data = (await res.json()) as { success?: boolean; score?: number }
-    return !!data.success && (data.score ?? 0) > 0.5
+    if (!data.success) return false
+    if (typeof data.score === 'number') return data.score > 0.5
+    return true
   } catch {
     return false
   }

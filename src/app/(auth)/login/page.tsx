@@ -11,7 +11,7 @@ import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { executeRecaptcha } from "@lib/recaptcha";
+import CaptchaModal from "@/components/CaptchaModal";
 
 // SCHEMA VALIDACIÓN ZOD
 const loginSchema = z.object({
@@ -53,21 +53,26 @@ export default function LoginPage() {
     if (usuario) router.replace("/");
   }, [usuario, router]);
 
-  const onSubmit = async (datos: LoginData) => {
+  const [captchaOpen, setCaptchaOpen] = useState(false);
+  const [pendingData, setPendingData] = useState<LoginData | null>(null);
+
+  const onSubmit = (datos: LoginData) => {
     setMensaje("");
+    setPendingData(datos);
+    setCaptchaOpen(true);
+  };
+
+  const handleCaptcha = async (token: string | null) => {
+    setCaptchaOpen(false);
+    if (!pendingData) return;
     setCargando(true);
     try {
       clearSessionCache();
-      const captchaToken = await executeRecaptcha("login");
-      if (!captchaToken) {
-        setMensaje("Error al verificar captcha");
-        setCargando(false);
-        return;
-      }
+      if (!token) throw new Error("Error al verificar captcha");
       const res = await apiFetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...datos, captchaToken }),
+        body: JSON.stringify({ ...pendingData, captchaToken: token }),
       });
 
       const data = await jsonOrNull(res);
@@ -101,6 +106,7 @@ export default function LoginPage() {
   };
 
   return (
+    <>
     <main
       className="min-h-screen w-full flex items-center justify-center"
       data-oid="s53qcho"
@@ -277,5 +283,9 @@ export default function LoginPage() {
         )}
       </form>
     </main>
+    {captchaOpen && (
+      <CaptchaModal action="login" onSuccess={handleCaptcha} onClose={() => setCaptchaOpen(false)} />
+    )}
+    </>
   );
 }
