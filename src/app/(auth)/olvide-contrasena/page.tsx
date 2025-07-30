@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { executeRecaptcha } from "@lib/recaptcha";
+import { executeRecaptcha, isRecaptchaEnabled } from "@lib/recaptcha";
 
 const schema = z.object({
   correo: z.string().nonempty("Correo obligatorio").email("Correo inválido"),
@@ -17,6 +17,7 @@ type FormData = z.infer<typeof schema>;
 export default function OlvideContrasenaPage() {
   const [mensaje, setMensaje] = useState("");
   const [enviando, setEnviando] = useState(false);
+  const captchaEnabled = isRecaptchaEnabled();
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -26,11 +27,14 @@ export default function OlvideContrasenaPage() {
   const onSubmit = async (data: FormData) => {
     setEnviando(true);
     setMensaje("");
-    const captchaToken = await executeRecaptcha("recuperar");
-    if (!captchaToken) {
-      setMensaje("Error al verificar captcha");
-      setEnviando(false);
-      return;
+    let captchaToken: string | null = null;
+    if (captchaEnabled) {
+      captchaToken = await executeRecaptcha("recuperar");
+      if (!captchaToken) {
+        setMensaje("Error al verificar captcha");
+        setEnviando(false);
+        return;
+      }
     }
     const res = await apiFetch("/api/recuperar-contrasena", {
       method: "POST",

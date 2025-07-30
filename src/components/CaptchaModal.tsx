@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
-import { executeRecaptcha } from "@lib/recaptcha";
-import Spinner from "./Spinner";
+import { useEffect } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { isRecaptchaEnabled } from "@lib/recaptcha";
 
 interface Props {
   action: string;
@@ -10,7 +10,6 @@ interface Props {
 }
 
 export default function CaptchaModal({ action, onSuccess, onClose }: Props) {
-  const [status, setStatus] = useState<"loading" | "error">("loading");
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -24,27 +23,15 @@ export default function CaptchaModal({ action, onSuccess, onClose }: Props) {
     };
   }, [onClose]);
 
+  const enabled = isRecaptchaEnabled();
+  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
   useEffect(() => {
-    async function verify() {
-      setStatus("loading");
-      const token = await executeRecaptcha(action);
-      if (token) {
-        onSuccess(token);
-      } else {
-        setStatus("error");
-      }
-    }
-    verify();
-  }, [action, onSuccess]);
+    if (!enabled) onSuccess(null);
+  }, [enabled, onSuccess]);
+  if (!enabled || !siteKey) return null;
 
-  const retry = async () => {
-    setStatus("loading");
-    const token = await executeRecaptcha(action);
-    if (token) {
-      onSuccess(token);
-    } else {
-      setStatus("error");
-    }
+  const handleChange = (token: string | null) => {
+    if (token) onSuccess(token);
   };
 
   return (
@@ -58,22 +45,7 @@ export default function CaptchaModal({ action, onSuccess, onClose }: Props) {
         className="bg-white dark:bg-zinc-800 p-6 rounded-md w-72 text-center"
         onClick={(e) => e.stopPropagation()}
       >
-        {status === "loading" ? (
-          <div className="flex flex-col items-center gap-3">
-            <Spinner className="h-8 w-8" />
-            <p>Verificando captcha...</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            <p>Error al verificar captcha</p>
-            <button
-              onClick={retry}
-              className="px-3 py-1 bg-amber-600 text-white rounded-md"
-            >
-              Reintentar
-            </button>
-          </div>
-        )}
+        <ReCAPTCHA sitekey={siteKey} onChange={handleChange} />
       </div>
     </div>
   );

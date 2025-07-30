@@ -1,4 +1,11 @@
+const DISABLED = process.env.NEXT_PUBLIC_DISABLE_RECAPTCHA === 'true'
+
+export function isRecaptchaEnabled(): boolean {
+  return !DISABLED
+}
+
 export async function verifyRecaptcha(token: string | null): Promise<boolean> {
+  if (DISABLED) return true
   const secret = process.env.RECAPTCHA_SECRET_KEY
   if (!secret) return true
   if (!token) return false
@@ -21,6 +28,7 @@ export async function verifyRecaptcha(token: string | null): Promise<boolean> {
 }
 
 export async function executeRecaptcha(action: string): Promise<string | null> {
+  if (DISABLED) return null
   if (typeof window === 'undefined') return null
   const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
   if (!siteKey || !window.grecaptcha) return null
