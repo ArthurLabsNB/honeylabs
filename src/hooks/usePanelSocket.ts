@@ -4,6 +4,11 @@ import type { PanelUpdate } from '@/types/panel'
 
 export default function usePanelSocket(panelId?: string | null, onUpdate?: (data: PanelUpdate) => void) {
   const socketRef = useRef<WebSocket | null>(null)
+  const updateRef = useRef(onUpdate)
+
+  useEffect(() => {
+    updateRef.current = onUpdate
+  }, [onUpdate])
 
   useEffect(() => {
     if (!panelId) return
@@ -14,7 +19,7 @@ export default function usePanelSocket(panelId?: string | null, onUpdate?: (data
     const handleMessage = (e: MessageEvent) => {
       try {
         const data = JSON.parse(e.data)
-        if (data.panelId === panelId && onUpdate) onUpdate(data)
+        if (data.panelId === panelId && updateRef.current) updateRef.current(data)
       } catch {}
     }
 
@@ -31,7 +36,7 @@ export default function usePanelSocket(panelId?: string | null, onUpdate?: (data
       socket.close()
       socketRef.current = null
     }
-  }, [panelId, onUpdate])
+  }, [panelId])
 
   const sendUpdate = (data: PanelUpdate) => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
