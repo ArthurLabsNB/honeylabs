@@ -8,7 +8,9 @@ describe('GET /api/login/social', () => {
     const req = new NextRequest('http://localhost/api/login/social?provider=google')
     const res = GET(req)
     expect(res.status).toBe(307)
-    expect(res.headers.get('location')).toBe('http://localhost/api/auth/signin?provider=google')
+    expect(res.headers.get('location')).toBe(
+      'http://localhost/api/auth/callback/google',
+    )
   })
 
   it('retorna 400 si provider invalido', () => {

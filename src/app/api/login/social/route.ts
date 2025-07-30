@@ -14,6 +14,9 @@ export function GET(req: NextRequest) {
   }
 
   const base = process.env.NEXT_PUBLIC_BASE_PATH || ''
-  const redirectUrl = new URL(`${base}/api/auth/signin?provider=${provider}`, req.url)
+  const redirectUrl = new URL(
+    `${base}/api/auth/callback/${provider}`,
+    req.url,
+  )
   return NextResponse.redirect(redirectUrl)
 }
