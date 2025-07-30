@@ -1,4 +1,7 @@
-const DISABLED = process.env.NEXT_PUBLIC_DISABLE_RECAPTCHA === 'true'
+const RECAPTCHA_MAINTENANCE = true // Cambiar a false al reactivar
+const DISABLED =
+  RECAPTCHA_MAINTENANCE ||
+  process.env.NEXT_PUBLIC_DISABLE_RECAPTCHA === 'true'
 
 export function isRecaptchaEnabled(): boolean {
   return !DISABLED
