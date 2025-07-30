@@ -163,7 +163,7 @@ export default function UserMenu({
       }
       setFotoPerfil(null);
     }
-  }, [usuario]);
+  }, [usuario?.imagen, usuario?.correo]);
 
   useEffect(() => {
     return () => {
