@@ -209,6 +209,9 @@ importers:
       react-game-kit:
         specifier: ^1.0.6
         version: 1.0.6
+      react-google-recaptcha:
+        specifier: ^2.1.0
+        version: 2.1.0(react@19.1.0)
       react-grid-layout:
         specifier: ^1.5.1
         version: 1.5.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -5507,6 +5510,9 @@ packages:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
 
+  hoist-non-react-statics@3.3.2:
+    resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
+
   hosted-git-info@7.0.2:
     resolution: {integrity: sha512-puUZAUKT5m8Zzvs72XWy3HtvVbTWljRE66cP60bxJzAqf2DgICo7lYTY2IHUmLnNpjYvw5bvmoHvPc0QO2a62w==}
     engines: {node: ^16.14.0 || >=18.0.0}
@@ -7287,6 +7293,11 @@ packages:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
       react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
 
+  react-async-script@1.2.0:
+    resolution: {integrity: sha512-bCpkbm9JiAuMGhkqoAiC0lLkb40DJ0HOEJIku+9JDjxX3Rcs+ztEOG13wbrOskt3n2DTrjshhaQ/iay+SnGg5Q==}
+    peerDependencies:
+      react: '>=16.4.1'
+
   react-chartjs-2@5.3.0:
     resolution: {integrity: sha512-UfZZFnDsERI3c3CZGxzvNJd02SHjaSJ8kgW1djn65H1KK8rehwTjyrRKOG3VTMG8wtHZ5rgAO5oTHtHi9GCCmw==}
     peerDependencies:
@@ -7312,6 +7323,11 @@ packages:
 
   react-game-kit@1.0.6:
     resolution: {integrity: sha512-EUeGBG3h6B3M+yWv7wQaPttrhjNOp5cKgH+UUTT1yFZihvjNG1PX3k3Cs1Exwelnvy28uZUz9DullS1O14kvCA==}
+
+  react-google-recaptcha@2.1.0:
+    resolution: {integrity: sha512-K9jr7e0CWFigi8KxC3WPvNqZZ47df2RrMAta6KmRoE4RUi7Ys6NmNjytpXpg4HI/svmQJLKR+PncEPaNJ98DqQ==}
+    peerDependencies:
+      react: '>=16.4.1'
 
   react-grid-layout@1.5.2:
     resolution: {integrity: sha512-vT7xmQqszTT+sQw/LfisrEO4le1EPNnSEMVHy6sBZyzS3yGkMywdOd+5iEFFwQwt0NSaGkxuRmYwa1JsP6OJdw==}
@@ -15651,6 +15667,10 @@ snapshots:
 
   he@1.2.0: {}
 
+  hoist-non-react-statics@3.3.2:
+    dependencies:
+      react-is: 16.13.1
+
   hosted-git-info@7.0.2:
     dependencies:
       lru-cache: 10.4.3
@@ -17509,6 +17529,12 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
+  react-async-script@1.2.0(react@19.1.0):
+    dependencies:
+      hoist-non-react-statics: 3.3.2
+      prop-types: 15.8.1
+      react: 19.1.0
+
   react-chartjs-2@5.3.0(chart.js@4.5.0)(react@19.1.0):
     dependencies:
       chart.js: 4.5.0
@@ -17536,6 +17562,12 @@ snapshots:
   react-game-kit@1.0.6:
     dependencies:
       matter-js: 0.14.2
+
+  react-google-recaptcha@2.1.0(react@19.1.0):
+    dependencies:
+      prop-types: 15.8.1
+      react: 19.1.0
+      react-async-script: 1.2.0(react@19.1.0)
 
   react-grid-layout@1.5.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:

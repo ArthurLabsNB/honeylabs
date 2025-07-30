@@ -6,13 +6,14 @@ import { apiFetch } from "@lib/api";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import useSession from "@/hooks/useSession";
-import { executeRecaptcha } from "@lib/recaptcha";
+import { executeRecaptcha, isRecaptchaEnabled } from "@lib/recaptcha";
 
 export default function RegistroPage() {
   const router = useRouter();
   const { usuario } = useSession();
   const [mensaje, setMensaje] = useState("");
   const [cargando, setCargando] = useState(false);
+  const captchaEnabled = isRecaptchaEnabled();
 
   const nombreRef = useRef<HTMLInputElement>(null);
 
@@ -33,13 +34,16 @@ export default function RegistroPage() {
 
     const formData = new FormData(e.currentTarget);
 
-    const captchaToken = await executeRecaptcha("registro");
-    if (!captchaToken) {
-      setMensaje("Error al verificar captcha");
-      setCargando(false);
-      return;
+    let captchaToken: string | null = null;
+    if (captchaEnabled) {
+      captchaToken = await executeRecaptcha("registro");
+      if (!captchaToken) {
+        setMensaje("Error al verificar captcha");
+        setCargando(false);
+        return;
+      }
+      formData.append("captchaToken", captchaToken);
     }
-    formData.append("captchaToken", captchaToken);
 
     // Validación rápida en frontend
     if (

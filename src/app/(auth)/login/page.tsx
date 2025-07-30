@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import Link from "next/link";
 import CaptchaModal from "@/components/CaptchaModal";
+import { isRecaptchaEnabled } from "@lib/recaptcha";
 
 // SCHEMA VALIDACIÓN ZOD
 const loginSchema = z.object({
@@ -28,6 +29,7 @@ export default function LoginPage() {
   const [verContrasena, setVerContrasena] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [cargando, setCargando] = useState(false);
+  const captchaEnabled = isRecaptchaEnabled();
 
   const {
     register,
@@ -56,23 +58,14 @@ export default function LoginPage() {
   const [captchaOpen, setCaptchaOpen] = useState(false);
   const [pendingData, setPendingData] = useState<LoginData | null>(null);
 
-  const onSubmit = (datos: LoginData) => {
-    setMensaje("");
-    setPendingData(datos);
-    setCaptchaOpen(true);
-  };
-
-  const handleCaptcha = async (token: string | null) => {
-    setCaptchaOpen(false);
-    if (!pendingData) return;
+  const submitLogin = async (datos: LoginData, token: string | null) => {
     setCargando(true);
     try {
       clearSessionCache();
-      if (!token) throw new Error("Error al verificar captcha");
       const res = await apiFetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...pendingData, captchaToken: token }),
+        body: JSON.stringify({ ...datos, captchaToken: token }),
       });
 
       const data = await jsonOrNull(res);
@@ -87,6 +80,26 @@ export default function LoginPage() {
     } finally {
       setCargando(false);
     }
+  };
+
+  const onSubmit = (datos: LoginData) => {
+    setMensaje("");
+    if (captchaEnabled) {
+      setPendingData(datos);
+      setCaptchaOpen(true);
+    } else {
+      submitLogin(datos, null);
+    }
+  };
+
+  const handleCaptcha = (token: string | null) => {
+    setCaptchaOpen(false);
+    if (!pendingData) return;
+    if (!token) {
+      setMensaje("❌ Error al verificar captcha");
+      return;
+    }
+    submitLogin(pendingData, token);
   };
 
   const handleSocialLogin = async (
@@ -287,7 +300,7 @@ export default function LoginPage() {
         )}
       </form>
     </main>
-    {captchaOpen && (
+    {captchaOpen && captchaEnabled && (
       <CaptchaModal action="login" onSuccess={handleCaptcha} onClose={() => setCaptchaOpen(false)} />
     )}
     </>

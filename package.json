@@ -82,6 +82,7 @@
     "react-dom": "^19.0.0",
     "react-dropzone": "^14.3.8",
     "react-game-kit": "^1.0.6",
+    "react-google-recaptcha": "^2.1.0",
     "react-grid-layout": "^1.5.1",
     "react-hook-form": "^7.56.4",
     "react-hot-toast": "^2.5.2",
