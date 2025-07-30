@@ -1,4 +1,6 @@
-export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+// Normaliza base path removiendo cualquier '/' final para evitar
+// rutas duplicadas como '/base//api/perfil'
+export const BASE_PATH = (process.env.NEXT_PUBLIC_BASE_PATH ?? '').replace(/\/+$/, '');
 
 export function apiPath(path: string): string {
   if (!path.startsWith('/')) path = '/' + path;
