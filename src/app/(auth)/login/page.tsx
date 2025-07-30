@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
-import { apiFetch, apiPath } from "@lib/api";
+import { apiFetch } from "@lib/api";
+import { signIn } from "next-auth/react";
 import useSession, { clearSessionCache } from "@/hooks/useSession";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -83,8 +84,20 @@ export default function LoginPage() {
     }
   };
 
-  const handleSocialLogin = (provider: 'google' | 'github' | 'facebook') => {
-    window.location.href = apiPath(`/api/login/social?provider=${provider}`);
+  const handleSocialLogin = async (
+    provider: 'google' | 'github' | 'facebook',
+  ) => {
+    const result = await signIn(provider, {
+      redirect: false,
+      callbackUrl: '/',
+    });
+    if (result?.ok) {
+      router.replace(result.url || '/');
+    } else if (result?.error) {
+      setMensaje(`❌ ${result.error}`);
+    } else {
+      setMensaje('❌ Error al iniciar sesión');
+    }
   };
 
   return (
