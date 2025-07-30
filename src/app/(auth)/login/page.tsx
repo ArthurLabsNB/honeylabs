@@ -240,26 +240,30 @@ export default function LoginPage() {
         </p>
 
         <div className="mt-5 space-y-2">
+          {/* TODO: habilitar login social cuando OAuth esté listo */}
           <button
             type="button"
+            disabled
             onClick={() => handleSocialLogin('google')}
-            className="w-full border border-gray-300 rounded-md py-2 px-4 text-sm hover:bg-gray-50 transition"
+            className="w-full border border-gray-300 rounded-md py-2 px-4 text-sm transition opacity-70 cursor-not-allowed"
           >
-            Continuar con Google
+            En Mantenimiento
           </button>
           <button
             type="button"
+            disabled
             onClick={() => handleSocialLogin('github')}
-            className="w-full border border-gray-300 rounded-md py-2 px-4 text-sm hover:bg-gray-50 transition"
+            className="w-full border border-gray-300 rounded-md py-2 px-4 text-sm transition opacity-70 cursor-not-allowed"
           >
-            Continuar con GitHub
+            En Mantenimiento
           </button>
           <button
             type="button"
+            disabled
             onClick={() => handleSocialLogin('facebook')}
-            className="w-full border border-gray-300 rounded-md py-2 px-4 text-sm hover:bg-gray-50 transition"
+            className="w-full border border-gray-300 rounded-md py-2 px-4 text-sm transition opacity-70 cursor-not-allowed"
           >
-            Continuar con Facebook
+            En Mantenimiento
           </button>
         </div>
 
