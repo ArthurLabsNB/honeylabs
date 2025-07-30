@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
-import { apiFetch } from "@lib/api";
+import { apiFetch, apiPath } from "@lib/api";
 import useSession, { clearSessionCache } from "@/hooks/useSession";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,7 +10,6 @@ import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
 import { executeRecaptcha } from "@lib/recaptcha";
 
 // SCHEMA VALIDACIÓN ZOD
@@ -82,6 +81,10 @@ export default function LoginPage() {
     } finally {
       setCargando(false);
     }
+  };
+
+  const handleSocialLogin = (provider: 'google' | 'github' | 'facebook') => {
+    window.location.href = apiPath(`/api/login/social?provider=${provider}`);
   };
 
   return (
@@ -226,21 +229,21 @@ export default function LoginPage() {
         <div className="mt-5 space-y-2">
           <button
             type="button"
-            onClick={() => signIn('google')}
+            onClick={() => handleSocialLogin('google')}
             className="w-full border border-gray-300 rounded-md py-2 px-4 text-sm hover:bg-gray-50 transition"
           >
             Continuar con Google
           </button>
           <button
             type="button"
-            onClick={() => signIn('github')}
+            onClick={() => handleSocialLogin('github')}
             className="w-full border border-gray-300 rounded-md py-2 px-4 text-sm hover:bg-gray-50 transition"
           >
             Continuar con GitHub
           </button>
           <button
             type="button"
-            onClick={() => signIn('facebook')}
+            onClick={() => handleSocialLogin('facebook')}
             className="w-full border border-gray-300 rounded-md py-2 px-4 text-sm hover:bg-gray-50 transition"
           >
             Continuar con Facebook
