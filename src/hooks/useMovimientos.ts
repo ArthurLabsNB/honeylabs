@@ -16,8 +16,9 @@ export default function useMovimientos(almacenId?: number | string) {
   const id = Number(almacenId)
   const url = !Number.isNaN(id) ? `/api/almacenes/${id}/movimientos` : null
   const { data, error, isLoading, mutate } = useSWR(url, fetcher, {
-    refreshInterval: 3000,
-    revalidateOnFocus: true,
+    // Menor frecuencia para evitar peticiones excesivas
+    refreshInterval: 10000,
+    revalidateOnFocus: false,
   })
 
   return {
