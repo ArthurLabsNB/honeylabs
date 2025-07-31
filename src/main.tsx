@@ -4,5 +4,5 @@ Updater.addListener('downloadComplete', () => {
   Updater.reload()
 })
 
-// Verificamos actualizaciones OTA al iniciar la app
+// Verificamos actualizaciones OTA al iniciar la ap
 Updater.check().catch(() => {})
