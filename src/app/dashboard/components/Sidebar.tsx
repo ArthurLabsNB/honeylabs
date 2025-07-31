@@ -59,13 +59,6 @@ const sidebarMenu = [
     allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
   },
   {
-    key: "auditorias",
-    label: "Auditorías",
-    icon: <FileStack className="dashboard-sidebar-icon" data-oid="audits" />,
-    path: "/dashboard/auditorias",
-    allowed: ["admin", "administrador", "institucional", "empresarial", "individual"],
-  },
-  {
     key: "paneles",
     label: "Paneles",
     icon: <Bell className="dashboard-sidebar-icon" data-oid="piz-ico" />,
