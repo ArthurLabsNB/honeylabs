@@ -148,8 +148,15 @@ export default function PanelPage() {
 
   useTouchZoom(containerRef, z => setZoom(z))
 
-  const { subboards, activeSub, addSubboard, switchSubboard, saveCurrentSub } =
-    useSubboards(panelId, widgets, layout, setWidgets, setLayout)
+  const {
+    subboards,
+    activeSub,
+    addSubboard,
+    switchSubboard,
+    saveCurrentSub,
+    setSubboards,
+    setActiveSub,
+  } = useSubboards(panelId, widgets, layout, setWidgets, setLayout)
 
   usePanelSync(panelId, widgets, layout, setWidgets, setLayout)
   const { save: saveLayout } = useLayoutPersistence(
