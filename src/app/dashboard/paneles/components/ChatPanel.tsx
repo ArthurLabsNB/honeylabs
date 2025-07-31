@@ -32,9 +32,10 @@ export default function ChatPanel({ canalId }: { canalId: number }) {
     setTimeout(() => listRef.current?.scrollTo(0, listRef.current.scrollHeight), 50)
   }, [texto, canalId, mutate])
   useEffect(() => {
+    if (!canalId) return
     const id = setInterval(() => mutate(), 4000)
     return () => clearInterval(id)
-  }, [canalId, mutate])
+  }, [canalId])
 
   useEffect(() => {
     const el = listRef.current
