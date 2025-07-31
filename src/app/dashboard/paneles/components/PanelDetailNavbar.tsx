@@ -63,6 +63,19 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   } = usePanelOps();
   const router = useRouter();
 
+  const guardarNombre = async () => {
+    if (!panelId) return;
+    setSaving("saving");
+    await apiFetch(`/api/paneles/${panelId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nombre }),
+    });
+    setSaving("saved");
+    setTimeout(() => setSaving("idle"), 2000);
+  };
+
+
   useEffect(() => {
     const close = () => {
       setOpenExport(false);
@@ -131,17 +144,6 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
       .catch(() => {});
   }, [panelId]);
 
-  const guardarNombre = async () => {
-    if (!panelId) return;
-    setSaving("saving");
-    await apiFetch(`/api/paneles/${panelId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nombre }),
-    });
-    setSaving("saved");
-    setTimeout(() => setSaving("idle"), 2000);
-  };
 
   const exportar = async (formato: string) => {
     if (!panelId) return;
