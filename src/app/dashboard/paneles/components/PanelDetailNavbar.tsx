@@ -8,7 +8,7 @@ import { useParams, useRouter } from "next/navigation";
 import useSession from "@/hooks/useSession";
 import { apiFetch } from "@lib/api";
 import html2canvas from 'html2canvas';
-import { jsonOrNull } from "@lib/http";
+import { usePanelData } from "../PanelDataContext";
 import { usePanelOps } from "../PanelOpsContext";
 import usePanelPresence from "@/hooks/usePanelPresence";
 import { buildEventoICS } from '@/lib/calendar';
@@ -20,7 +20,8 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   const plan = usuario?.plan?.nombre || "Free";
   const params = useParams();
   const panelId = Array.isArray(params?.id) ? params.id[0] : (params as any)?.id;
-  const [nombre, setNombre] = useState("");
+  const { panel, mutate } = usePanelData();
+  const [nombre, setNombre] = useState(panel?.nombre || "");
   const [edit, setEdit] = useState(false);
   const [saving, setSaving] = useState<"idle" | "saving" | "saved">("idle");
   const toast = useToast();
@@ -63,6 +64,10 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   } = usePanelOps();
   const router = useRouter();
 
+  useEffect(() => {
+    setNombre(panel?.nombre || "Sin título");
+  }, [panel?.nombre]);
+
   const guardarNombre = async () => {
     if (!panelId) return;
     setSaving("saving");
@@ -71,6 +76,7 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nombre }),
     });
+    mutate();
     setSaving("saved");
     setTimeout(() => setSaving("idle"), 2000);
   };
@@ -136,23 +142,14 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
     return () => document.removeEventListener('keydown', handler)
   }, [toggleFullscreen, setZoom, guardar, guardarNombre, setUnsaved])
 
-  useEffect(() => {
-    if (!panelId) return;
-    apiFetch(`/api/paneles/${panelId}`)
-      .then(jsonOrNull)
-      .then((d) => setNombre(d.panel?.nombre || "Sin título"))
-      .catch(() => {});
-  }, [panelId]);
 
 
   const exportar = async (formato: string) => {
     if (!panelId) return;
     if (formato === "json") {
-      const res = await apiFetch(`/api/paneles/${panelId}`);
-      const data = await jsonOrNull(res);
-      if (!data?.panel) return;
+      if (!panel) return;
       const blob = new Blob([
-        JSON.stringify(data.panel, null, 2),
+        JSON.stringify(panel, null, 2),
       ], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");

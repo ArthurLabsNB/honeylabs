@@ -10,6 +10,7 @@ import type { Usuario } from "@/types/usuario";
 import useSession from "@/hooks/useSession";
 import { useParams } from "next/navigation";
 import { usePanelOps } from "../PanelOpsContext";
+import { usePanelData } from "../PanelDataContext";
 
 import CommentsPanel from "../components/CommentsPanel";
 import ChatPanel from "../components/ChatPanel";
@@ -69,6 +70,7 @@ export default function PanelPage() {
   const prompt = usePrompt();
   const params = useParams();
   const panelId = Array.isArray(params?.id) ? params.id[0] : (params as any)?.id;
+  const { panel } = usePanelData();
 
   const [catalogo, setCatalogo] = useState<WidgetMeta[]>([]);
   interface PanelState { widgets: string[]; layout: LayoutItem[] }
@@ -250,29 +252,23 @@ export default function PanelPage() {
         });
         setComponentes(mapa);
 
-        let saved: { widgets: string[]; layout: LayoutItem[]; permiso?: string } | null = null;
-        try {
-          const resLayout = await apiFetch(`/api/paneles/${panelId}`);
-          if (resLayout.ok) saved = (await jsonOrNull(resLayout)).panel;
-        } catch {}
-
         if (
-          saved &&
-          Array.isArray(saved.widgets) &&
-          Array.isArray(saved.layout)
+          panel &&
+          Array.isArray(panel.widgets) &&
+          Array.isArray(panel.layout)
         ) {
-          const lay = saved.layout.map(it => ({ locked: false, ...it }))
-          const wid = saved.widgets
+          const lay = panel.layout.map(it => ({ locked: false, ...it }))
+          const wid = panel.widgets
           setWidgets(wid)
           setLayout(lay)
           reset({ widgets: wid, layout: lay })
           setReadyHistory(true)
-          if (saved.permiso && setReadOnly) {
-            setReadOnly(saved.permiso !== 'edicion')
+          if (panel.permiso && setReadOnly) {
+            setReadOnly(panel.permiso !== 'edicion')
           }
-          setSubboards([{ id: 'main', nombre: 'Principal', permiso: saved.permiso || 'edicion', widgets: wid, layout: lay }])
+          setSubboards([{ id: 'main', nombre: 'Principal', permiso: panel.permiso || 'edicion', widgets: wid, layout: lay }])
           setActiveSub('main')
-          localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify([{ id: 'main', nombre: 'Principal', permiso: saved.permiso || 'edicion', widgets: wid, layout: lay }]))
+          localStorage.setItem(`panel-subboards-${panelId}`, JSON.stringify([{ id: 'main', nombre: 'Principal', permiso: panel.permiso || 'edicion', widgets: wid, layout: lay }]))
         } else {
           const lay: LayoutItem[] = []
           const wid: string[] = []
@@ -291,7 +287,7 @@ export default function PanelPage() {
     }
 
     loadWidgets();
-  }, [usuario, panelId]);
+  }, [usuario, panelId, panel]);
 
   const guardar = useCallback(async () => {
     if (!usuario || !panelId) return;
