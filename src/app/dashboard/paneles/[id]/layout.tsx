@@ -1,11 +1,12 @@
 "use client";
 import { useEffect } from "react";
 import { useDashboardUI } from "../../ui";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import PanelDetailNavbar from "../components/PanelDetailNavbar";
 import { PanelOpsProvider, usePanelOps } from "../PanelOpsContext";
 import Spinner from "@/components/Spinner";
 import useSession from "@/hooks/useSession";
+import { PanelDataProvider } from "../PanelDataContext";
 
 function ProtectedPanel({ children }: { children: React.ReactNode }) {
   const { fullscreen, setFullscreen } = useDashboardUI();
@@ -47,9 +48,13 @@ function ProtectedPanel({ children }: { children: React.ReactNode }) {
 }
 
 export default function PanelLayout({ children }: { children: React.ReactNode }) {
+  const params = useParams();
+  const panelId = Array.isArray(params?.id) ? params.id[0] : (params as any)?.id;
   return (
-    <PanelOpsProvider>
-      <ProtectedPanel>{children}</ProtectedPanel>
-    </PanelOpsProvider>
+    <PanelDataProvider panelId={panelId}>
+      <PanelOpsProvider>
+        <ProtectedPanel>{children}</ProtectedPanel>
+      </PanelOpsProvider>
+    </PanelDataProvider>
   );
 }
