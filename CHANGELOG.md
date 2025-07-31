@@ -1,3 +1,6 @@
+## 0.8.29
+- Desconectamos por completo las llamadas de inventario, dejando solo la interfaz.
+
 ## 0.8.0
 - Persistimos tableros del dashboard en servidor y los sincronizamos al iniciar.
 
