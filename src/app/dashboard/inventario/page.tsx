@@ -1,10 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { Html5Qrcode } from "html5-qrcode";
 import { useRouter } from "next/navigation";
 import { decodeQRImageFile } from "@/lib/qrImage";
-import { fetchScanInfo, hasCamera } from "@/lib/scanUtils";
+import { hasCamera } from "@/lib/scanUtils";
+import * as logger from "@lib/logger";
 import { triggerDownload } from "@/app/dashboard/utils/auditoriaExport";
 import ScanInfo from "./ScanInfo";
 import { useDashboardUI } from "../ui";
@@ -17,6 +18,11 @@ export default function InventarioPage() {
   const [info, setInfo] = useState<any | null>(null);
   const [camera, setCamera] = useState(false);
   const [useCameraScan, setUseCameraScan] = useState(false);
+  const prevCodigo = useRef<string | null>(null);
+
+  useEffect(() => {
+    logger.debug('InventarioPage mounted')
+  }, [])
 
   useEffect(() => {
     hasCamera().then((v) => {
@@ -35,14 +41,15 @@ export default function InventarioPage() {
     };
   }, [useCameraScan]);
 
+  // Temporalmente se deshabilita la consulta a /api/qr/importar
   const fetchInfo = useDebouncedCallback((code: string) => {
-    fetchScanInfo(code)
-      .then((d) => setInfo(d))
-      .catch(() => setInfo(null));
-  }, 300);
+    logger.debug('fetchInfo disabled', code)
+    setInfo(null)
+  }, 300)
 
   useEffect(() => {
-    if (!codigo) return;
+    if (!codigo || codigo === prevCodigo.current) return;
+    prevCodigo.current = codigo;
     fetchInfo(codigo);
   }, [codigo, fetchInfo]);
 
