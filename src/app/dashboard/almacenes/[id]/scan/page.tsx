@@ -4,7 +4,7 @@ import { Html5Qrcode } from "html5-qrcode";
 import { useParams } from "next/navigation";
 import { decodeQR } from "@/lib/qr";
 import { decodeQRImageFile } from "@/lib/qrImage";
-import { apiFetch } from "@lib/api";
+// Se eliminan las llamadas a la API para usar únicamente el lado del cliente
 
 export default function ScanAlmacenPage() {
   const { id } = useParams()
@@ -50,41 +50,10 @@ export default function ScanAlmacenPage() {
 
   useEffect(() => {
     if (!codigo) return
-    apiFetch('/api/qr/importar', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ codigo }),
-    })
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.tipo) setInfo(d)
-        else setInfo(decodeQR(codigo))
-      })
-      .catch(() => setInfo(null))
+    setInfo(decodeQR(codigo))
   }, [codigo])
 
-  useEffect(() => {
-    if (!info?.tipo) return
-    const original = decodeQR(codigo || '')
-    if (!original || typeof original !== 'object') return
-    const obj = info[info.tipo]
-    if (!obj) return
-    Object.entries(original).forEach(([k, v]) => {
-      if (k !== 'id' && obj[k] != null && obj[k] !== v) {
-        apiFetch('/api/discrepancias', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            tipo: info.tipo,
-            objetoId: obj.id,
-            campo: k,
-            actual: obj[k],
-            escaneado: v,
-          }),
-        })
-      }
-    })
-  }, [info])
+
 
   useEffect(() => {
     if (!info?.tipo) return
@@ -110,68 +79,20 @@ export default function ScanAlmacenPage() {
 
   const guardar = async () => {
     if (!info?.tipo) return
-    const objetoId = info[info.tipo]?.id
-    if (!objetoId) return
-    const form = new FormData()
-    form.append('tipo', info.tipo)
-    form.append('objetoId', String(objetoId))
-    form.append('observaciones', observaciones)
-    form.append('categoria', 'verificacion')
-    archivos.forEach(a => form.append('archivos', a))
-    const res = await apiFetch('/api/reportes', {
-      method: 'POST',
-      body: form,
-    })
-    if (res.ok) {
-      const json = await res.json()
-      await apiFetch('/api/auditorias', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reporteId: json.reporte.id }),
-      })
-      setMensaje('Reporte guardado')
-      setObservaciones('')
-    } else {
-      setMensaje('Error al guardar')
-    }
+    setMensaje('Función deshabilitada')
   }
 
   const guardarYActualizar = async () => {
     if (!info?.tipo || !data) return
     await guardar()
-    const objetoId = info[info.tipo]?.id
-    if (!objetoId) return
-    let url = ''
-    if (info.tipo === 'almacen') url = `/api/almacenes/${objetoId}`
-    if (info.tipo === 'material') url = `/api/materiales/${objetoId}`
-    if (info.tipo === 'unidad') {
-      const mid = info.material?.id
-      if (!mid) return
-      url = `/api/materiales/${mid}/unidades/${objetoId}`
-    }
-    if (!url) return
-    await apiFetch(url, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    })
-    setMensaje('Reporte y objeto actualizados')
+    setMensaje('Actualización deshabilitada')
   }
 
   const ajustarStock = async () => {
     if (!info?.tipo || info.tipo !== 'material') return
     const objetoId = info.material?.id
     if (!objetoId) return
-    const res = await apiFetch(`/api/materiales/${objetoId}/ajuste`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ cantidad: Number(nuevoStock) })
-    })
-    if (res.ok) {
-      setMensaje('Stock ajustado')
-    } else {
-      setMensaje('Error al ajustar')
-    }
+    setMensaje('Ajuste de stock deshabilitado')
   }
 
   const confirmarUnidad = async () => {
@@ -179,12 +100,7 @@ export default function ScanAlmacenPage() {
     const uid = info.unidad?.id
     const mid = info.material?.id
     if (!uid || !mid) return
-    await apiFetch(`/api/materiales/${mid}/unidades/${uid}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ estado: 'confirmado' })
-    })
-    setMensaje('Unidad confirmada')
+    setMensaje('Confirmación deshabilitada')
   }
 
   return (
