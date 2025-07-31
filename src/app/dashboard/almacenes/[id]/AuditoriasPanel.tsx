@@ -2,8 +2,7 @@
 import { useState } from "react";
 import Badge from '@/components/Badge'
 import { parseObservaciones } from '@/lib/parseObservaciones'
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+
 import {
   File,
   PlusCircle,
@@ -35,7 +34,6 @@ export default function AuditoriasPanel({ material, almacenId, unidadId, onSelec
   const { auditorias, mutate } = useAuditorias(opts)
   useAuditoriasUpdates(mutate)
   const [activo, setActivo] = useState<number | null>(null);
-  const router = useRouter();
 
   const COLORS: Record<string, string> = {
     creacion: 'bg-green-600',
@@ -64,9 +62,6 @@ export default function AuditoriasPanel({ material, almacenId, unidadId, onSelec
     <div className="p-4 border rounded-md space-y-2 mt-4">
       <div className="flex items-center justify-between">
         <h2 className="font-semibold">Auditorías</h2>
-        <Link href="/dashboard/auditorias" className="text-sm underline">
-          Ver todas
-        </Link>
       </div>
       <ul className="space-y-2 max-h-96 overflow-y-auto">
         {auditorias.map((a) => (
@@ -77,8 +72,6 @@ export default function AuditoriasPanel({ material, almacenId, unidadId, onSelec
             }`}
             onClick={() => {
               setActivo(a.id);
-              const from = encodeURIComponent(location.pathname);
-              router.push(`/dashboard/auditorias/${a.id}?from=${from}`);
               onSelectHistorial && onSelectHistorial(a);
             }}
           >
