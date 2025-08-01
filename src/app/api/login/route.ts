@@ -2,8 +2,6 @@ export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { prisma } from '@lib/db/prisma'
-import { Prisma } from '@prisma/client'
 import { getDb } from '@lib/db'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import bcrypt from 'bcryptjs'
@@ -35,6 +33,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (process.env.DB_PROVIDER === 'prisma') {
+      const { prisma } = await import('@lib/db/prisma')
       let usuario = await prisma.usuario.findUnique({
         where: { correo: correo.toLowerCase().trim() },
         select: {
@@ -235,21 +234,24 @@ export async function POST(req: NextRequest) {
 
     return res
   } catch (error) {
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2021'
-    ) {
-      logger.error('[ERROR_LOGIN_DB]', error)
-      return NextResponse.json(
-        { success: false, error: 'Base de datos no inicializada.' },
-        { status: 500 },
-      )
+    if (process.env.DB_PROVIDER === 'prisma') {
+      const { Prisma } = await import('@prisma/client')
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2021'
+      ) {
+        logger.error('[ERROR_LOGIN_DB]', error)
+        return NextResponse.json(
+          { success: false, error: 'Base de datos no inicializada.' },
+          { status: 500 },
+        )
+      }
     }
-    logger.error('[ERROR_LOGIN]', error);
+    logger.error('[ERROR_LOGIN]', error)
     return NextResponse.json(
       { success: false, error: 'Error interno.' },
       { status: 500 },
-    );
+    )
   }
 }
 
@@ -279,10 +281,19 @@ export async function DELETE(req: NextRequest) {
     try {
       const decoded = jwt.verify(token, JWT_SECRET) as { sid?: number }
       if (decoded.sid) {
-        await prisma.sesionUsuario.update({
-          where: { id: decoded.sid },
-          data: { activa: false, fechaUltima: new Date() },
-        })
+        if (process.env.DB_PROVIDER === 'prisma') {
+          const { prisma } = await import('@lib/db/prisma')
+          await prisma.sesionUsuario.update({
+            where: { id: decoded.sid },
+            data: { activa: false, fechaUltima: new Date() },
+          })
+        } else {
+          const db = getDb().client as SupabaseClient
+          await db
+            .from('sesionUsuario')
+            .update({ activa: false, fechaUltima: new Date().toISOString() })
+            .eq('id', decoded.sid)
+        }
       }
     } catch {}
   }
