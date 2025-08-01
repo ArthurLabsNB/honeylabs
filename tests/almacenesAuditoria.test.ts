@@ -15,7 +15,7 @@ describe('POST /api/almacenes', () => {
     const hist = vi.fn().mockResolvedValue({})
     const tx = { almacen: { create, findUnique }, historialAlmacen: { create: hist } }
     const prismaMock = { $transaction: vi.fn().mockImplementation(async (cb:any)=> cb(tx)) }
-    vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
+    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
     vi.doMock('../src/lib/audit', () => ({ logAudit: vi.fn() }))
     const registrarAuditoria = vi.fn().mockResolvedValue({ auditoria: { id: 9 } })
     vi.doMock('../lib/reporter', () => ({ registrarAuditoria }))
@@ -41,7 +41,7 @@ describe('POST /api/almacenes', () => {
     const hist = vi.fn().mockResolvedValue({})
     const tx = { almacen: { create, findUnique }, historialAlmacen: { create: hist } }
     const prismaMock = { $transaction: vi.fn().mockImplementation(async (cb:any)=> cb(tx)) }
-    vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
+    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
     vi.doMock('../src/lib/audit', () => ({ logAudit: vi.fn() }))
     const registrarAuditoria = vi.fn().mockResolvedValue({ error: 'fallo' })
     vi.doMock('../lib/reporter', () => ({ registrarAuditoria }))
@@ -68,7 +68,7 @@ describe('PUT /api/almacenes/[id]', () => {
     const hist = vi.fn().mockResolvedValue({})
     const tx = { almacen: { update, findUnique }, historialAlmacen: { create: hist } }
     const prismaMock = { usuarioAlmacen: { findFirst: vi.fn().mockResolvedValue({ id: 1 }) }, $transaction: vi.fn().mockImplementation(async (cb:any)=> cb(tx)) }
-    vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
+    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
     vi.doMock('../src/lib/audit', () => ({ logAudit: vi.fn() }))
     const registrarAuditoria = vi.fn().mockResolvedValue({ auditoria: { id: 9 } })
     vi.doMock('../lib/reporter', () => ({ registrarAuditoria }))
@@ -93,7 +93,7 @@ describe('PUT /api/almacenes/[id]', () => {
     const hist = vi.fn().mockResolvedValue({})
     const tx = { almacen: { update, findUnique }, historialAlmacen: { create: hist } }
     const prismaMock = { usuarioAlmacen: { findFirst: vi.fn().mockResolvedValue({ id: 1 }) }, $transaction: vi.fn().mockImplementation(async (cb:any)=> cb(tx)) }
-    vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
+    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
     vi.doMock('../src/lib/audit', () => ({ logAudit: vi.fn() }))
     const registrarAuditoria = vi.fn().mockResolvedValue({ error: 'fallo' })
     vi.doMock('../lib/reporter', () => ({ registrarAuditoria }))
@@ -135,7 +135,7 @@ describe('DELETE /api/almacenes/[id]', () => {
       usuarioAlmacen: { findFirst: vi.fn().mockResolvedValue({ id: 1 }) },
       $transaction: vi.fn().mockImplementation(async (cb:any)=> cb(tx))
     }
-    vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
+    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
     vi.doMock('../src/lib/audit', () => ({ logAudit: vi.fn() }))
     const registrarAuditoria = vi.fn().mockResolvedValue({ auditoria: { id: 9 } })
     vi.doMock('../lib/reporter', () => ({ registrarAuditoria }))
@@ -179,7 +179,7 @@ describe('DELETE /api/almacenes/[id]', () => {
       usuarioAlmacen: { findFirst: vi.fn().mockResolvedValue({ id: 1 }) },
       $transaction: vi.fn().mockImplementation(async (cb:any)=> cb(tx))
     }
-    vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
+    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
     vi.doMock('../src/lib/audit', () => ({ logAudit: vi.fn() }))
     const registrarAuditoria = vi.fn().mockResolvedValue({ error: 'fallo' })
     vi.doMock('../lib/reporter', () => ({ registrarAuditoria }))

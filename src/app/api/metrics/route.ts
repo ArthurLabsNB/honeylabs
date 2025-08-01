@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@lib/prisma'; // Asegúrate que el alias es correcto
+import { prisma } from '@lib/db/prisma'; // Asegúrate que el alias es correcto
 import * as logger from '@lib/logger'
 
 // Función auxiliar para obtener usuario desde JWT (por implementar)

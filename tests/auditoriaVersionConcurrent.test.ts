@@ -27,7 +27,7 @@ describe('POST /api/auditorias concurrencia', () => {
         return run
       }),
     }
-    vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
+    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
     vi.doMock('../lib/auth', () => ({
       getUsuarioFromSession: vi.fn().mockResolvedValue({ id: 1 }),
     }))

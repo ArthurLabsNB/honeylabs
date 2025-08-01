@@ -2,7 +2,7 @@ export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import prisma from '@lib/prisma'
+import { prisma } from '@lib/db/prisma'
 import { Prisma } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'

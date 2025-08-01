@@ -17,7 +17,7 @@ describe('DELETE /api/materiales/[id]/unidades/[unidadId]', () => {
       usuarioAlmacen: { findFirst: vi.fn().mockResolvedValue({ id: 1 }) },
       materialUnidad: { delete: vi.fn() },
     }
-    vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
+    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
     vi.doMock('../src/lib/snapshot', () => ({ snapshotUnidad: vi.fn() }))
     vi.doMock('../src/lib/audit', () => ({ logAudit: vi.fn() }))
     const registrarAuditoria = vi.fn().mockResolvedValue({ auditoria: { id: 9 } })

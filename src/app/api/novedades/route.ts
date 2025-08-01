@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@lib/prisma'
+import { prisma } from '@lib/db/prisma'
 import jwt from 'jsonwebtoken'
 import { SESSION_COOKIE } from '@lib/constants'
 import * as logger from '@lib/logger'

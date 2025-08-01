@@ -2,7 +2,7 @@ import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
 import { POST } from '../src/app/api/almacenes/[id]/materiales/route'
 import * as reporter from '../lib/reporter'
 import { NextRequest } from 'next/server'
-import prisma from '../lib/prisma'
+import { prisma } from '@lib/db/prisma'
 import * as auth from '../lib/auth'
 import * as permisos from '../lib/permisos'
 
@@ -70,12 +70,12 @@ describe('validaciones de materiales', () => {
   it('acepta decimales y campos vacios', async () => {
     const authMod = await import('../lib/auth')
     const permsMod = await import('../lib/permisos')
-    const prismaMod = await import('../lib/prisma')
+    const prismaMod = await import('@lib/db/prisma')
     vi.spyOn(authMod, 'getUsuarioFromSession').mockResolvedValue({ id: 1 } as any)
     vi.spyOn(permsMod, 'hasManagePerms').mockReturnValue(true)
-    vi.spyOn(prismaMod.default.usuarioAlmacen, 'findFirst').mockResolvedValue({ id: 1 } as any)
+    vi.spyOn(prismaMod.prisma.usuarioAlmacen, 'findFirst').mockResolvedValue({ id: 1 } as any)
     const createMaterial = vi.fn().mockResolvedValue({ id: 3 })
-    vi.spyOn(prismaMod.default, '$transaction').mockImplementation(async (cb: any) =>
+    vi.spyOn(prismaMod.prisma, '$transaction').mockImplementation(async (cb: any) =>
       cb({
         material: { create: createMaterial, findUnique: vi.fn().mockResolvedValue(null) },
         usuarioAlmacen: { upsert: vi.fn().mockResolvedValue({}) },

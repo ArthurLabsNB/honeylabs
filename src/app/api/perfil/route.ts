@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { SESSION_COOKIE, sessionCookieOptions } from '@lib/constants';
-import prisma from '@lib/prisma';
+import { prisma } from '@lib/db/prisma';
 import * as logger from '@lib/logger'
 import { respuestaError } from '@lib/http'
 

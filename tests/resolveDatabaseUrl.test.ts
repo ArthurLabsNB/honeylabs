@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from 'vitest'
-import { resolveDatabaseUrl } from '../lib/prisma'
+import { resolveDatabaseUrl } from '@lib/db/prisma'
 
 const clean = () => {
   delete process.env.PRISMA_DATA_PROXY

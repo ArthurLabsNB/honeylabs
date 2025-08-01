@@ -15,7 +15,7 @@ describe('POST /api/auditorias', () => {
       archivoAuditoria: { create: vi.fn() },
       $transaction: vi.fn(async (cb: any) => cb(prismaMock)),
     }
-    vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
+    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
 
     const { POST } = await import('../src/app/api/auditorias/route')
     const body = JSON.stringify({ tipo: 'almacen', objetoId: 2, categoria: 'creacion', observaciones: '{}' })
@@ -30,7 +30,7 @@ describe('POST /api/auditorias', () => {
   it('retorna 400 cuando datos inválidos', async () => {
     vi.doMock('../lib/auth', () => ({ getUsuarioFromSession: vi.fn().mockResolvedValue({ id: 1 }) }))
     vi.doMock('../lib/auditoriaInit', () => ({ ensureAuditoriaTables: vi.fn() }))
-    vi.doMock('../lib/prisma', () => ({ default: {} }))
+    vi.doMock('@lib/db/prisma', () => ({ prisma: {} }))
     const { POST } = await import('../src/app/api/auditorias/route')
     const req = new NextRequest('http://localhost/api/auditorias', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' })
     const res = await POST(req)
@@ -40,7 +40,7 @@ describe('POST /api/auditorias', () => {
   it('retorna 400 con form-data inválido', async () => {
     vi.doMock('../lib/auth', () => ({ getUsuarioFromSession: vi.fn().mockResolvedValue({ id: 1 }) }))
     vi.doMock('../lib/auditoriaInit', () => ({ ensureAuditoriaTables: vi.fn() }))
-    vi.doMock('../lib/prisma', () => ({ default: {} }))
+    vi.doMock('@lib/db/prisma', () => ({ prisma: {} }))
     const { POST } = await import('../src/app/api/auditorias/route')
     const form = new FormData()
     form.set('tipo', 'almacen')

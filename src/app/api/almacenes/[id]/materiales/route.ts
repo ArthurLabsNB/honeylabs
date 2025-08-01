@@ -1,7 +1,7 @@
 export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@lib/prisma'
+import { prisma } from '@lib/db/prisma'
 import type { Prisma } from '@prisma/client'
 import { materialSchema } from '@/lib/validators/material'
 import { getUsuarioFromSession } from '@lib/auth'

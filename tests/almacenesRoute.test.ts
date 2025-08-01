@@ -3,7 +3,7 @@ import { GET } from '../src/app/api/almacenes/route'
 import { NextRequest } from 'next/server'
 import * as auth from '../lib/auth'
 import * as permisos from '../lib/permisos'
-import prisma from '../lib/prisma'
+import { prisma } from '@lib/db/prisma'
 
 afterEach(() => vi.restoreAllMocks())
 
