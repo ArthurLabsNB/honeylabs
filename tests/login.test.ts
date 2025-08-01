@@ -4,6 +4,7 @@ import { prisma } from '@lib/db/prisma'
 import bcrypt from 'bcryptjs'
 
 process.env.JWT_SECRET = 'test-secret'
+process.env.DB_PROVIDER = 'prisma'
 
 const { POST } = await import('../src/app/api/login/route')
 
