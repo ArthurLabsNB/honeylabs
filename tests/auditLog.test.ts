@@ -2,11 +2,18 @@ import { describe, it, expect, vi } from 'vitest'
 
 describe('logAudit', () => {
   it('ejecuta inserción en AuditLog', async () => {
-    const spy = vi.fn()
-    vi.doMock('../lib/prisma', () => ({ default: { auditLog: { create: spy } } }))
+    const create = vi.fn()
+    vi.doMock('@lib/db', () => ({
+      getDb: () => ({
+        client: { auditLog: { create } },
+        transaction: async (fn: any) => fn({}),
+      }),
+    }))
+
     const { logAudit } = await import('../src/lib/audit')
     await logAudit(1, 'creacion', 'almacen', { foo: 'bar' })
-    expect(spy).toHaveBeenCalledWith({
+
+    expect(create).toHaveBeenCalledWith({
       data: {
         usuarioId: 1,
         accion: 'creacion',
@@ -14,7 +21,8 @@ describe('logAudit', () => {
         payload: { foo: 'bar' },
       },
     })
-    vi.unmock('../lib/prisma')
+
+    vi.unmock('@lib/db')
   })
 
   it('retorna error cuando fetch falla', async () => {
