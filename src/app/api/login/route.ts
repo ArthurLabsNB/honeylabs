@@ -22,20 +22,27 @@ const COOKIE_EXPIRES = 60 * 60 * 24 * 7; // 7 días
 export async function POST(req: NextRequest) {
   try {
     const { correo, contrasena, captchaToken } = await req.json();
+    const correoStr =
+      typeof correo === 'string' ? correo.toLowerCase().trim() : '';
+    const contrasenaStr =
+      typeof contrasena === 'string' ? contrasena : '';
     if (!(await verifyRecaptcha(captchaToken))) {
-      return NextResponse.json({ success: false, error: 'Captcha inválido.' }, { status: 400 });
+      return NextResponse.json(
+        { success: false, error: 'Captcha inválido.' },
+        { status: 400 },
+      );
     }
-    if (!correo || !contrasena) {
+    if (!correoStr || !contrasenaStr) {
       return NextResponse.json(
         { success: false, error: 'Correo y contraseña requeridos.' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (process.env.DB_PROVIDER === 'prisma') {
       const { prisma } = await import('@lib/db/prisma')
       let usuario = await prisma.usuario.findUnique({
-        where: { correo: correo.toLowerCase().trim() },
+        where: { correo: correoStr },
         select: {
           id: true,
           nombre: true,
@@ -56,7 +63,7 @@ export async function POST(req: NextRequest) {
         },
       })
 
-      if (!usuario || !(await bcrypt.compare(contrasena, usuario.contrasena))) {
+      if (!usuario || !(await bcrypt.compare(contrasenaStr, usuario.contrasena))) {
         return NextResponse.json(
           { success: false, error: 'Credenciales inválidas.' },
           { status: 401 }
@@ -153,9 +160,9 @@ export async function POST(req: NextRequest) {
       .select(
         `id,nombre,correo,contrasena,tipoCuenta,estado,entidad:entidadId(id,nombre,tipo,planId),roles:rol(id,nombre,descripcion,permisos,_RolToUsuario!inner(usuarioId)),suscripciones:suscripcion(id,plan:planId(nombre,limites),fechaFin,activo)`
       )
-      .eq('correo', correo.toLowerCase().trim())
+      .eq('correo', correoStr)
       .maybeSingle()
-    if (error || !usuario || !(await bcrypt.compare(contrasena, usuario.contrasena))) {
+    if (error || !usuario || !(await bcrypt.compare(contrasenaStr, usuario.contrasena))) {
       return NextResponse.json(
         { success: false, error: 'Credenciales inválidas.' },
         { status: 401 }
