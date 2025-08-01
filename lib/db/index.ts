@@ -1,6 +1,3 @@
-import { PrismaAdapter } from './prisma'
-import { SupabaseAdapter } from './supabase'
-
 export type DbTransaction = unknown
 
 export interface DbClient {
@@ -8,10 +5,16 @@ export interface DbClient {
   transaction<T>(fn: (tx: DbTransaction) => Promise<T>): Promise<T>
 }
 
-export function getDb(): DbClient {
-  return process.env.DB_PROVIDER === 'prisma'
-    ? PrismaAdapter
-    : SupabaseAdapter
+let dbClient: DbClient
+
+if (process.env.DB_PROVIDER === 'prisma') {
+  const { PrismaAdapter } = await import('./prisma')
+  dbClient = PrismaAdapter
+} else {
+  const { SupabaseAdapter } = await import('./supabase')
+  dbClient = SupabaseAdapter
 }
 
-export { PrismaAdapter, SupabaseAdapter }
+export function getDb(): DbClient {
+  return dbClient
+}
