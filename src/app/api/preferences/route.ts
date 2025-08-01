@@ -1,9 +1,11 @@
 export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@lib/db/prisma';
+import { getDb } from '@lib/db';
+import type { SupabaseClient } from '@supabase/supabase-js';
+
 import { getUsuarioFromSession } from '@lib/auth';
-import * as logger from '@lib/logger'
+import * as logger from '@lib/logger';
 
 export async function GET() {
   try {
@@ -31,10 +33,12 @@ export async function PUT(req: NextRequest) {
     }
     const prefs = usuario.preferencias ? JSON.parse(usuario.preferencias) : {};
     const merged = { ...prefs, ...update };
-    await prisma.usuario.update({
-      where: { id: usuario.id },
-      data: { preferencias: JSON.stringify(merged) },
-    });
+    const db = getDb().client as SupabaseClient;
+    const { error } = await db
+      .from('usuario')
+      .update({ preferencias: JSON.stringify(merged) })
+      .eq('id', usuario.id);
+    if (error) throw error;
     return NextResponse.json({ ok: true });
   } catch (err) {
     logger.error('PUT /api/preferences', err);
