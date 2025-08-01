@@ -2,6 +2,7 @@ export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@lib/db/prisma'
+
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
 
@@ -22,8 +23,15 @@ export async function PUT(req: NextRequest) {
     if (typeof contenido !== 'string') {
       return NextResponse.json({ error: 'Datos inválidos' }, { status: 400 })
     }
-    const nota = await (prisma as any).nota.update({ where: { id }, data: { contenido } })
-    return NextResponse.json({ nota })
+    const db = getDb().client as SupabaseClient
+    const { data, error } = await db
+      .from('nota')
+      .update({ contenido })
+      .eq('id', id)
+      .select()
+      .single()
+    if (error) throw error
+    return NextResponse.json({ nota: data })
   } catch (err) {
     logger.error('PUT /api/notas/[id]', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
@@ -36,7 +44,9 @@ export async function DELETE(req: NextRequest) {
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const id = getNotaId(req)
     if (!id) return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
-    await (prisma as any).nota.delete({ where: { id } })
+    const db = getDb().client as SupabaseClient
+    const { error } = await db.from('nota').delete().eq('id', id)
+    if (error) throw error
     return NextResponse.json({ ok: true })
   } catch (err) {
     logger.error('DELETE /api/notas/[id]', err)

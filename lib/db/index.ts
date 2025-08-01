@@ -9,9 +9,9 @@ export interface DbClient {
 }
 
 export function getDb(): DbClient {
-  return process.env.DB_PROVIDER === 'supabase'
-    ? SupabaseAdapter
-    : PrismaAdapter
+  return process.env.DB_PROVIDER === 'prisma'
+    ? PrismaAdapter
+    : SupabaseAdapter
 }
 
 export { PrismaAdapter, SupabaseAdapter }

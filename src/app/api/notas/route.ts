@@ -2,6 +2,7 @@ export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@lib/db/prisma'
+
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
 
@@ -11,8 +12,14 @@ export async function GET(req: NextRequest) {
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const tabId = req.nextUrl.searchParams.get('tabId')
     if (!tabId) return NextResponse.json({ error: 'tabId requerido' }, { status: 400 })
-    const notas = await (prisma as any).nota.findMany({ where: { tabId }, orderBy: { id: 'asc' } })
-    return NextResponse.json({ notas })
+    const db = getDb().client as SupabaseClient
+    const { data, error } = await db
+      .from('nota')
+      .select('*')
+      .eq('tabId', tabId)
+      .order('id', { ascending: true })
+    if (error) throw error
+    return NextResponse.json({ notas: data })
   } catch (err) {
     logger.error('GET /api/notas', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
@@ -48,8 +55,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Datos incompletos' }, { status: 400 })
     }
 
-    const nota = await (prisma as any).nota.create({ data: { tabId, tipo, contenido } })
-    return NextResponse.json({ nota }, { status: 201 })
+    const db = getDb().client as SupabaseClient
+    const { data, error } = await db
+      .from('nota')
+      .insert({ tabId, tipo, contenido })
+      .select()
+      .single()
+    if (error) throw error
+    return NextResponse.json({ nota: data }, { status: 201 })
   } catch (err) {
     logger.error('POST /api/notas', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
