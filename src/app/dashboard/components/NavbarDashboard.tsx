@@ -1,11 +1,9 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { apiFetch } from "@lib/api";
 import Link from "next/link";
 import { Home, Bell, Menu } from "lucide-react";
 import ToolsMenu from "./ToolsMenu";
-import UserMenu from "@/components/UserMenu";
 import { useDashboardUI } from "../ui";
 import type { Usuario } from "@/types/usuario";
 
@@ -16,11 +14,6 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
   const navRef = useRef<HTMLDivElement>(null);
   const { toggleSidebarVisible: toggleSidebar } = useDashboardUI();
   const [search, setSearch] = useState("");
-
-  const logout = async (redirectUrl?: string) => {
-    await apiFetch("/api/login", { method: "DELETE" });
-    if (redirectUrl) window.location.href = redirectUrl;
-  };
 
   return (
     <header
@@ -74,16 +67,6 @@ export default function NavbarDashboard({ usuario }: { usuario: Usuario }) {
         >
           <Bell data-oid="s9c-u68" />
         </button>
-        <div className="ml-2" data-oid="lce8ecp">
-          <UserMenu
-            usuario={{
-              nombre: usuario.nombre,
-              correo: (usuario as any).correo ?? "",
-              imagen: usuario.avatarUrl ?? undefined,
-              plan: usuario.plan?.nombre,
-            }}
-          />
-        </div>
       </div>
     </header>
   );

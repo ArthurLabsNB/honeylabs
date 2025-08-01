@@ -3,8 +3,6 @@ import { ArrowLeft, Save, QrCode, ChevronUp, ChevronDown, Share2 } from "lucide-
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import useSession from "@/hooks/useSession";
-import UserMenu from "@/components/UserMenu";
 import AlmacenTools from "./AlmacenTools";
 import TabsMenu from "./TabsMenu";
 import ShareAlmacenModal from "./ShareAlmacenModal";
@@ -25,7 +23,6 @@ export default function AlmacenDetailNavbar() {
   const router = useRouter();
   const { id } = useParams();
   const { fullscreen } = useDashboardUI();
-  const { usuario } = useSession();
   const { collapsed, toggleCollapsed } = useDetalleUI();
   const toast = useToast();
   const [auditActive, setAuditActive] = useState(false);
@@ -154,9 +151,6 @@ export default function AlmacenDetailNavbar() {
             className="ml-1 w-2 h-2 rounded-full bg-red-500 animate-pulse"
             title="Cambios sin guardar"
           />
-        )}
-        {usuario && (
-          <UserMenu usuario={usuario} />
         )}
         <button onClick={toggleCollapsed} className="p-2 hover:bg-white/10 rounded-lg ml-2" title={collapsed ? 'Expandir barra' : 'Ocultar barra'}>
           {collapsed ? <ChevronDown className="w-5 h-5" /> : <ChevronUp className="w-5 h-5" />}
