@@ -41,4 +41,45 @@ describe('login', () => {
     const res = await POST(req)
     expect(res.status).toBe(403)
   })
+
+  it('retorna 401 si la contraseña es incorrecta', async () => {
+    vi.spyOn(prisma.usuario, 'findUnique').mockResolvedValue({
+      id: 1,
+      nombre: 'Test',
+      correo: 'test@user.com',
+      contrasena: 'hash',
+      tipoCuenta: 'individual',
+      estado: 'activo',
+      entidad: null,
+      roles: [],
+      suscripciones: [],
+    } as any)
+    vi.spyOn(bcrypt, 'compare').mockResolvedValue(false as any)
+    const req = new NextRequest('http://localhost/api/login', {
+      method: 'POST',
+      body: JSON.stringify({ correo: 'test@user.com', contrasena: 'wrong' }),
+    })
+    const res = await POST(req)
+    expect(res.status).toBe(401)
+  })
+
+  it('retorna 401 si el usuario no tiene contraseña', async () => {
+    vi.spyOn(prisma.usuario, 'findUnique').mockResolvedValue({
+      id: 1,
+      nombre: 'Test',
+      correo: 'test@user.com',
+      contrasena: null,
+      tipoCuenta: 'individual',
+      estado: 'activo',
+      entidad: null,
+      roles: [],
+      suscripciones: [],
+    } as any)
+    const req = new NextRequest('http://localhost/api/login', {
+      method: 'POST',
+      body: JSON.stringify({ correo: 'test@user.com', contrasena: 'pass' }),
+    })
+    const res = await POST(req)
+    expect(res.status).toBe(401)
+  })
 })

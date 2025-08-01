@@ -56,7 +56,11 @@ export async function POST(req: NextRequest) {
         },
       })
 
-      if (!usuario || !(await bcrypt.compare(contrasena, usuario.contrasena))) {
+      if (
+        !usuario ||
+        !usuario.contrasena ||
+        !(await bcrypt.compare(contrasena, usuario.contrasena))
+      ) {
         return NextResponse.json(
           { success: false, error: 'Credenciales inválidas.' },
           { status: 401 }
@@ -155,7 +159,12 @@ export async function POST(req: NextRequest) {
       )
       .eq('correo', correo.toLowerCase().trim())
       .maybeSingle()
-    if (error || !usuario || !(await bcrypt.compare(contrasena, usuario.contrasena))) {
+    if (
+      error ||
+      !usuario ||
+      !usuario.contrasena ||
+      !(await bcrypt.compare(contrasena, usuario.contrasena))
+    ) {
       return NextResponse.json(
         { success: false, error: 'Credenciales inválidas.' },
         { status: 401 }
