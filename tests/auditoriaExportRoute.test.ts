@@ -27,7 +27,7 @@ describe('GET /api/auditorias/[id]/export', () => {
       auditoria: { findUnique: vi.fn().mockResolvedValue(auditoria) },
       historialLote: { findFirst: vi.fn().mockResolvedValue({ estado: { snap: true } }) },
     }
-    vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
+    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
     const { GET } = await import('../src/app/api/auditorias/[id]/export/route')
     const req = new NextRequest('http://localhost/api/auditorias/1/export?format=csv&files=1')
     const res = await GET(req)

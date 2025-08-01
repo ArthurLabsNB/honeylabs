@@ -1,7 +1,7 @@
 export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@lib/prisma';
+import { prisma } from '@lib/db/prisma';
 import jwt from 'jsonwebtoken';
 import { enviarCorreoResetContrasena } from '@/lib/email/enviarResetContrasena';
 import { respuestaError } from '@lib/http';

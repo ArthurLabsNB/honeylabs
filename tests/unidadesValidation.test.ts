@@ -18,7 +18,7 @@ describe('POST /api/materiales/[id]/unidades', () => {
       },
       historialUnidad: { create: vi.fn().mockResolvedValue({}) },
     }
-    vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
+    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
     vi.doMock('../src/lib/audit', () => ({ logAudit: vi.fn() }))
     const registrarAuditoria = vi.fn().mockResolvedValue({})
     vi.doMock('../lib/reporter', () => ({ registrarAuditoria }))

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { NextRequest } from 'next/server'
-import prisma from '../lib/prisma'
+import { prisma } from '@lib/db/prisma'
 import * as auth from '../lib/auth'
 import * as permisos from '../lib/permisos'
 

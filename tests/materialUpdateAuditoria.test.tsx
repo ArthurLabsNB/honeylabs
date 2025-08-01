@@ -26,7 +26,7 @@ describe('PUT /api/materiales/[id]', () => {
       historialLote: { create: hist },
       $transaction: vi.fn().mockImplementation(async (cb: any) => cb(prismaMock)),
     }
-    vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
+    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
     vi.doMock('../src/lib/audit', () => ({ logAudit: vi.fn() }))
     const registrarAuditoria = vi.fn().mockResolvedValue({ auditoria: { id: 9 } })
     vi.doMock('../lib/reporter', () => ({ registrarAuditoria }))

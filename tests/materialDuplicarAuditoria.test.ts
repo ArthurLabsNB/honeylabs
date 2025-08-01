@@ -42,7 +42,7 @@ describe('POST /api/materiales/[id]/duplicar', () => {
       usuarioAlmacen: { findFirst: vi.fn().mockResolvedValue({ id: 1 }) },
       $transaction: vi.fn().mockImplementation(async (cb: any) => cb(tx)),
     }
-    vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
+    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
     const registrarAuditoria = vi.fn().mockResolvedValue({ auditoria: { id: 9 } })
     vi.doMock('../lib/reporter', () => ({ registrarAuditoria }))
     const { POST } = await import('../src/app/api/materiales/[id]/duplicar/route')

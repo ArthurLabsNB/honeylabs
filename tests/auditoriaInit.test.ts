@@ -10,7 +10,7 @@ describe('ensureAuditoriaTables', () => {
     const query = vi.fn().mockResolvedValue([{ exists: false }])
     const exec = vi.fn()
     const prismaMock = { $queryRaw: query, $executeRawUnsafe: exec }
-    vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
+    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
     const { ensureAuditoriaTables } = await import('../lib/auditoriaInit')
 
     await ensureAuditoriaTables()
@@ -18,6 +18,6 @@ describe('ensureAuditoriaTables', () => {
     expect(exec).toHaveBeenCalledWith(
       expect.stringContaining('"version" INTEGER NOT NULL DEFAULT 1')
     )
-    vi.unmock('../lib/prisma')
+    vi.unmock('@lib/db/prisma')
   })
 })

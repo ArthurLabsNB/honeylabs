@@ -1,6 +1,6 @@
 export const runtime = 'nodejs'
 import { NextResponse } from 'next/server'
-import prisma from '@lib/prisma'
+import { prisma } from '@lib/db/prisma'
 import * as logger from '@lib/logger'
 
 export async function GET() {

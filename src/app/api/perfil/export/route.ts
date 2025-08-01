@@ -3,7 +3,7 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import { SESSION_COOKIE } from '@lib/constants';
-import prisma from '@lib/prisma';
+import { prisma } from '@lib/db/prisma';
 import * as logger from '@lib/logger'
 
 const JWT_SECRET = process.env.JWT_SECRET;

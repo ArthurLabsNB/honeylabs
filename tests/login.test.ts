@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { NextRequest } from 'next/server'
-import prisma from '../lib/prisma'
+import { prisma } from '@lib/db/prisma'
 import bcrypt from 'bcryptjs'
 
 process.env.JWT_SECRET = 'test-secret'

@@ -23,7 +23,7 @@ describe('DELETE /api/materiales/[id]', () => {
       usuarioAlmacen: { findFirst: vi.fn().mockResolvedValue({ id: 1 }) },
       $transaction: vi.fn().mockImplementation(async (cb:any)=> cb(tx))
     }
-    vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
+    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
     vi.doMock('../src/lib/snapshot', () => ({ snapshotMaterial: vi.fn() }))
     vi.doMock('../src/lib/audit', () => ({ logAudit: vi.fn() }))
     const registrarAuditoria = vi.fn().mockResolvedValue({ auditoria: { id: 9 } })

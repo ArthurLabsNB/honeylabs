@@ -28,7 +28,7 @@ describe('POST /api/almacenes/[id]/duplicar', () => {
         create: vi.fn().mockResolvedValue({ id: 6, nombre: 'A copia' }),
       },
     }
-    vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
+    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
     const registrarAuditoria = vi.fn().mockResolvedValue({ auditoria: { id: 9 } })
     vi.doMock('../lib/reporter', () => ({ registrarAuditoria }))
     const { POST } = await import('../src/app/api/almacenes/[id]/duplicar/route')

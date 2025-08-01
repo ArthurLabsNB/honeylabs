@@ -12,7 +12,7 @@ describe('DELETE /api/auditorias/[id]', () => {
       archivoAuditoria: { deleteMany: vi.fn().mockResolvedValue(undefined) },
       auditoria: { delete: vi.fn().mockResolvedValue(undefined) },
     }
-    vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
+    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
     vi.doMock('../lib/auth', () => ({ getUsuarioFromSession: vi.fn().mockResolvedValue({ id: 1 }) }))
     const { DELETE } = await import('../src/app/api/auditorias/[id]/route')
     const req = new NextRequest('http://localhost/api/auditorias/4', { method: 'DELETE' })

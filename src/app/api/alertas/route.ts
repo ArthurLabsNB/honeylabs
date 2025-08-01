@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@lib/prisma"; // Ajusta el import si tu alias es diferente
+import { prisma } from '@lib/db/prisma'; // Ajusta el import si tu alias es diferente
 import * as logger from '@lib/logger'
 
 export async function GET(req: NextRequest) {
