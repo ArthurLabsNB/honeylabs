@@ -1,9 +1,106 @@
-import type { Prisma, PrismaClient } from '@prisma/client'
-
-export type DB = Prisma.TransactionClient | PrismaClient
+export interface SnapshotDb {
+  almacen: {
+    findUnique(args: {
+      where: { id: number }
+      select: {
+        nombre: true
+        descripcion: true
+        imagen: true
+        imagenNombre: true
+        imagenUrl: true
+        codigoUnico: true
+      }
+    }): Promise<{
+      nombre: string
+      descripcion: string | null
+      imagen: Buffer | null
+      imagenNombre: string | null
+      imagenUrl: string | null
+      codigoUnico: string | null
+    } | null>
+  }
+  historialAlmacen: {
+    create(args: {
+      data: {
+        almacenId: number
+        usuarioId: number
+        descripcion: string
+        estado: any
+      }
+    }): Promise<void>
+  }
+  material: {
+    findUnique(args: {
+      where: { id: number }
+      include: {
+        archivos: {
+          select: {
+            nombre: true
+            archivoNombre: true
+            archivo: true
+          }
+        }
+      }
+    }): Promise<{
+      miniatura: Buffer | null
+      archivos: {
+        nombre: string
+        archivoNombre: string
+        archivo: Buffer | null
+      }[]
+      lote: string | null
+      ubicacion: string | null
+      cantidad: number | null
+    } | null>
+  }
+  historialLote: {
+    create(args: {
+      data: {
+        materialId: number
+        usuarioId: number
+        descripcion: string
+        lote: string | null
+        ubicacion: string | null
+        cantidad: number | null
+        estado: any
+      }
+    }): Promise<void>
+  }
+  materialUnidad: {
+    findUnique(args: {
+      where: { id: number }
+      include: {
+        archivos: {
+          select: {
+            nombre: true
+            archivoNombre: true
+            archivo: true
+          }
+        }
+      }
+    }): Promise<{
+      imagen: Buffer | null
+      archivos: {
+        nombre: string
+        archivoNombre: string
+        archivo: Buffer | null
+      }[]
+    } | null>
+  }
+  historialUnidad: {
+    create(args: {
+      data: {
+        unidadId: number
+        usuarioId: number
+        descripcion: string
+        estado: any
+      }
+    }): Promise<void>
+  }
+}
 
 export async function snapshotAlmacen(
-  db: DB,
+  db: SnapshotDb,
   almacenId: number,
   usuarioId: number,
   descripcion: string,
@@ -33,7 +130,7 @@ export async function snapshotAlmacen(
 }
 
 export async function snapshotMaterial(
-  db: DB,
+  db: SnapshotDb,
   materialId: number,
   usuarioId: number,
   descripcion: string,
@@ -74,7 +171,7 @@ export async function snapshotMaterial(
 }
 
 export async function snapshotUnidad(
-  db: DB,
+  db: SnapshotDb,
   unidadId: number,
   usuarioId: number,
   descripcion: string,
@@ -98,7 +195,6 @@ export async function snapshotUnidad(
         })),
       }
     : null
-  // @ts-ignore
   await db.historialUnidad.create({
     data: { unidadId, usuarioId, descripcion, estado },
   })
