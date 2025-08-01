@@ -162,7 +162,14 @@ export async function POST(req: NextRequest) {
       )
       .eq('correo', correoStr)
       .maybeSingle()
-    if (error || !usuario || !(await bcrypt.compare(contrasenaStr, usuario.contrasena))) {
+    if (error) {
+      logger.error('[LOGIN_DB_ERROR]', error)
+      return NextResponse.json(
+        { success: false, error: 'Error de base de datos.' },
+        { status: 500 }
+      )
+    }
+    if (!usuario || !(await bcrypt.compare(contrasenaStr, usuario.contrasena))) {
       return NextResponse.json(
         { success: false, error: 'Credenciales inválidas.' },
         { status: 401 }
