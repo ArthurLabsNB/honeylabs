@@ -92,6 +92,12 @@ Debes definir `DATABASE_URL` con la URL de Prisma Accelerate y
 Si el sistema de reCAPTCHA está en mantenimiento asigna
 `NEXT_PUBLIC_DISABLE_RECAPTCHA=true`.
 
+Si deseas usar Supabase como proveedor de base de datos, copia
+`.env.supabase` a `.env` y completa las variables `POSTGRES_URL`,
+`SUPABASE_URL`, `SUPABASE_ANON_KEY` y `SUPABASE_SERVICE_ROLE_KEY`.
+Este archivo establece `DB_PROVIDER=supabase` para activar el adaptador
+correspondiente en `lib/db/index.ts`.
+
 Tras modificar `prisma/schema.prisma` ejecuta `pnpm install` o
 `pnpm prisma generate` para actualizar el cliente de Prisma.
 
