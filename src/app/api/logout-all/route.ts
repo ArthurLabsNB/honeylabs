@@ -3,7 +3,7 @@ export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server'
 import { SESSION_COOKIE, sessionCookieOptions } from '@lib/constants'
 import { getUsuarioFromSession } from '@lib/auth'
-import prisma from '@lib/prisma'
+import { prisma } from '@lib/db/prisma'
 import * as logger from '@lib/logger'
 
 export async function POST(req: NextRequest) {

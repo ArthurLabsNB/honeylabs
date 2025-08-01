@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { POST } from '../src/app/api/almacenes/compartir/route'
 import { NextRequest } from 'next/server'
-import prisma from '../lib/prisma'
+import { prisma } from '@lib/db/prisma'
 import * as auth from '../lib/auth'
 import * as email from '../src/lib/email/enviarInvitacionAlmacen'
 

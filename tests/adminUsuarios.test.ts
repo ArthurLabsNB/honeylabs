@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { GET } from '../src/app/api/admin/usuarios/route'
 import { NextRequest } from 'next/server'
-import prisma from '../lib/prisma'
+import { prisma } from '@lib/db/prisma'
 
 afterEach(() => vi.restoreAllMocks())
 

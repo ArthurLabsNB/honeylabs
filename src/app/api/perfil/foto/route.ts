@@ -1,7 +1,7 @@
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@lib/prisma'
+import { prisma } from '@lib/db/prisma'
 import { createHash } from 'crypto'
 import * as logger from '@lib/logger'
 import { respuestaError } from '@lib/http'

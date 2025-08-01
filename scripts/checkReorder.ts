@@ -1,4 +1,4 @@
-import prisma from '../lib/prisma'
+import { prisma } from '@lib/db/prisma'
 import { emitEvent } from '../src/lib/events'
 
 async function run() {

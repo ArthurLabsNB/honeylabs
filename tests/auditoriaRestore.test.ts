@@ -13,7 +13,7 @@ describe('POST /api/auditorias/[id]/restore', () => {
       auditoria: { findUnique: vi.fn().mockResolvedValue(auditoria) },
       material: { create: vi.fn().mockResolvedValue({ id: 8 }) },
     }
-    vi.doMock('../lib/prisma', () => ({ default: prismaMock }))
+    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
     vi.doMock('../lib/auth', () => ({ getUsuarioFromSession: vi.fn().mockResolvedValue({ id: 1 }) }))
     const registrarAuditoria = vi.fn().mockResolvedValue({ auditoria: { id: 9 } })
     vi.doMock('../lib/reporter', () => ({ registrarAuditoria }))

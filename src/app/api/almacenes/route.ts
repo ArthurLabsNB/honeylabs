@@ -2,7 +2,7 @@
 export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@lib/prisma";
+import { prisma } from '@lib/db/prisma';
 import type { Prisma } from '@prisma/client'
 import crypto from "node:crypto";
 import { getUsuarioFromSession } from "@lib/auth";
