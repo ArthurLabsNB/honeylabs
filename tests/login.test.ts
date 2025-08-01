@@ -41,4 +41,13 @@ describe('login', () => {
     const res = await POST(req)
     expect(res.status).toBe(403)
   })
+
+  it('retorna 400 si los campos no son válidos', async () => {
+    const req = new NextRequest('http://localhost/api/login', {
+      method: 'POST',
+      body: JSON.stringify({ correo: 123, contrasena: {} }),
+    })
+    const res = await POST(req)
+    expect(res.status).toBe(400)
+  })
 })
