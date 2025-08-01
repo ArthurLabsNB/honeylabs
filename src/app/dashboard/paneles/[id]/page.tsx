@@ -289,9 +289,17 @@ export default function PanelPage() {
     loadWidgets();
   }, [usuario, panelId, panel]);
 
+  const widgetsRef = useRef(widgets);
+  const layoutRef = useRef(layout);
+
+  useEffect(() => {
+    widgetsRef.current = widgets;
+    layoutRef.current = layout;
+  }, [widgets, layout]);
+
   const guardar = useCallback(async () => {
     if (!usuario || !panelId) return;
-    const data = { widgets, layout };
+    const data = { widgets: widgetsRef.current, layout: layoutRef.current };
     if (!navigator.onLine) {
       localStorage.setItem(`panel-offline-${panelId}`, JSON.stringify(data));
       return;
@@ -302,16 +310,21 @@ export default function PanelPage() {
       body: JSON.stringify(data),
     }).catch(() => {});
     setUnsaved(false);
-  }, [usuario, panelId, widgets, layout, setUnsaved]);
+  }, [usuario, panelId, setUnsaved]);
+
+  const recordRef = useRef(record);
+  useEffect(() => { recordRef.current = record }, [record]);
+  const saveCurrentSubRef = useRef(saveCurrentSub);
+  useEffect(() => { saveCurrentSubRef.current = saveCurrentSub }, [saveCurrentSub]);
 
   // Guardar en DB y registrar historial local
   useEffect(() => {
     if (!readyHistory) return
     guardar()
-    saveCurrentSub()
-    record({ widgets, layout })
+    saveCurrentSubRef.current()
+    recordRef.current({ widgets, layout })
     setUnsaved(true)
-  }, [widgets, layout])
+  }, [widgets, layout, readyHistory, guardar, setUnsaved])
 
   useEffect(() => {
     setGuardar(() => guardar);
