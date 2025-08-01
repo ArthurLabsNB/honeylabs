@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { prisma } from '@lib/db/prisma'
 import { Prisma } from '@prisma/client'
+import { getDb } from '@lib/db'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { SESSION_COOKIE, sessionCookieOptions } from '@lib/constants'
@@ -32,92 +34,179 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    let usuario = await prisma.usuario.findUnique({
-      where: { correo: correo.toLowerCase().trim() },
-      select: {
-        id: true,
-        nombre: true,
-        correo: true,
-        contrasena: true,
-        tipoCuenta: true,
-        estado: true,
-        entidad: { select: { id: true, nombre: true, tipo: true, planId: true } },
-        roles: { select: { id: true, nombre: true, descripcion: true, permisos: true } },
-        suscripciones: {
-          where: { activo: true },
-          select: {
-            id: true,
-            plan: { select: { nombre: true, limites: true } },
-            fechaFin: true,
+    if (process.env.DB_PROVIDER === 'prisma') {
+      let usuario = await prisma.usuario.findUnique({
+        where: { correo: correo.toLowerCase().trim() },
+        select: {
+          id: true,
+          nombre: true,
+          correo: true,
+          contrasena: true,
+          tipoCuenta: true,
+          estado: true,
+          entidad: { select: { id: true, nombre: true, tipo: true, planId: true } },
+          roles: { select: { id: true, nombre: true, descripcion: true, permisos: true } },
+          suscripciones: {
+            where: { activo: true },
+            select: {
+              id: true,
+              plan: { select: { nombre: true, limites: true } },
+              fechaFin: true,
+            },
           },
         },
-      },
-    });
+      })
 
-    if (!usuario || !(await bcrypt.compare(contrasena, usuario.contrasena))) {
+      if (!usuario || !(await bcrypt.compare(contrasena, usuario.contrasena))) {
+        return NextResponse.json(
+          { success: false, error: 'Credenciales inválidas.' },
+          { status: 401 }
+        )
+      }
+
+      // Actualizar datos legacy si existen
+      const updates: any = {}
+      if (usuario.tipoCuenta === 'estandar') {
+        updates.tipoCuenta = 'individual'
+        usuario.tipoCuenta = 'individual'
+      }
+      if (usuario.tipoCuenta === 'administrador') {
+        updates.tipoCuenta = 'admin'
+        usuario.tipoCuenta = 'admin'
+      }
+      const roles: { id: number; nombre: string; descripcion: string | null; permisos: any }[] = []
+      for (const r of usuario.roles) {
+        let perms = r.permisos as any
+        if (typeof perms === 'string') {
+          try {
+            perms = JSON.parse(perms)
+            await prisma.rol.update({ where: { id: r.id }, data: { permisos: perms } })
+          } catch {
+            perms = {}
+          }
+        }
+        roles.push({ id: r.id, nombre: r.nombre, descripcion: r.descripcion, permisos: perms || {} })
+      }
+      if (Object.keys(updates).length > 0) {
+        await prisma.usuario.update({ where: { id: usuario.id }, data: updates })
+      }
+
+      if ((usuario.estado ?? 'activo') !== 'activo') {
+        return NextResponse.json(
+          { success: false, error: 'Cuenta suspendida o pendiente.' },
+          { status: 403 }
+        )
+      }
+
+      const suscripcionActiva = usuario.suscripciones[0]
+        ? {
+            id: usuario.suscripciones[0].id,
+            plan: usuario.suscripciones[0].plan?.nombre,
+            limites: usuario.suscripciones[0].plan?.limites
+              ? JSON.parse(usuario.suscripciones[0].plan.limites)
+              : {},
+            fechaFin: usuario.suscripciones[0].fechaFin,
+          }
+        : null
+
+      const session = await prisma.sesionUsuario.create({
+        data: {
+          usuarioId: usuario.id,
+          userAgent: req.headers.get('user-agent') || null,
+          ip:
+            req.headers.get('x-real-ip') ||
+            req.headers.get('x-forwarded-for') ||
+            null,
+        },
+      })
+
+      const payload = {
+        id: usuario.id,
+        nombre: usuario.nombre,
+        correo: usuario.correo,
+        esSuperAdmin: false,
+        tipoCuenta: usuario.tipoCuenta,
+        entidad: usuario.entidad,
+        roles,
+        plan: suscripcionActiva,
+      }
+
+      const token = jwt.sign({ id: usuario.id, sid: session.id }, JWT_SECRET, {
+        expiresIn: COOKIE_EXPIRES,
+      })
+
+      const res = NextResponse.json(
+        { success: true, usuario: payload },
+        { status: 200 }
+      )
+
+      res.cookies.set(SESSION_COOKIE, token, {
+        ...sessionCookieOptions,
+        maxAge: COOKIE_EXPIRES,
+      })
+
+      return res
+    }
+
+    const db = getDb().client as SupabaseClient
+    const { data: usuario, error } = await db
+      .from('usuario')
+      .select(
+        `id,nombre,correo,contrasena,tipoCuenta,estado,entidad:entidadId(id,nombre,tipo,planId),roles:rol(id,nombre,descripcion,permisos,_RolToUsuario!inner(usuarioId)),suscripciones:suscripcion(id,plan:planId(nombre,limites),fechaFin,activo)`
+      )
+      .eq('correo', correo.toLowerCase().trim())
+      .maybeSingle()
+    if (error || !usuario || !(await bcrypt.compare(contrasena, usuario.contrasena))) {
       return NextResponse.json(
         { success: false, error: 'Credenciales inválidas.' },
         { status: 401 }
-      );
-    }
-
-    // Actualizar datos legacy si existen
-    const updates: any = {};
-    if (usuario.tipoCuenta === 'estandar') {
-      updates.tipoCuenta = 'individual';
-      usuario.tipoCuenta = 'individual';
-    }
-    if (usuario.tipoCuenta === 'administrador') {
-      updates.tipoCuenta = 'admin';
-      usuario.tipoCuenta = 'admin';
-    }
-    const roles: { id: number; nombre: string; descripcion: string | null; permisos: any }[] = [];
-    for (const r of usuario.roles) {
-      let perms = r.permisos as any;
-      if (typeof perms === 'string') {
-        try {
-          perms = JSON.parse(perms);
-          await prisma.rol.update({ where: { id: r.id }, data: { permisos: perms } });
-        } catch {
-          perms = {};
-        }
-      }
-      roles.push({ id: r.id, nombre: r.nombre, descripcion: r.descripcion, permisos: perms || {} });
-    }
-    if (Object.keys(updates).length > 0) {
-      await prisma.usuario.update({ where: { id: usuario.id }, data: updates });
+      )
     }
 
     if ((usuario.estado ?? 'activo') !== 'activo') {
       return NextResponse.json(
         { success: false, error: 'Cuenta suspendida o pendiente.' },
         { status: 403 }
-      );
+      )
     }
 
-
-
-    const suscripcionActiva = usuario.suscripciones[0]
-      ? {
-          id: usuario.suscripciones[0].id,
-          plan: usuario.suscripciones[0].plan?.nombre,
-          limites: usuario.suscripciones[0].plan?.limites
-            ? JSON.parse(usuario.suscripciones[0].plan.limites)
-            : {},
-          fechaFin: usuario.suscripciones[0].fechaFin,
+    const roles: { id: number; nombre: string; descripcion: string | null; permisos: any }[] = []
+    for (const r of usuario.roles ?? []) {
+      let perms: any = r.permisos
+      if (typeof perms === 'string') {
+        try {
+          perms = JSON.parse(perms)
+        } catch {
+          perms = {}
         }
-      : null;
+      }
+      roles.push({ id: r.id, nombre: r.nombre, descripcion: r.descripcion, permisos: perms || {} })
+    }
 
-    const session = await prisma.sesionUsuario.create({
-      data: {
+    const susActiva = (usuario.suscripciones ?? []).find((s: any) => s.activo)
+    const suscripcionActiva = susActiva
+      ? {
+          id: susActiva.id,
+          plan: susActiva.plan?.nombre,
+          limites: susActiva.plan?.limites
+            ? JSON.parse(susActiva.plan.limites)
+            : {},
+          fechaFin: susActiva.fechaFin,
+        }
+      : null
+
+    const { data: session } = await db
+      .from('sesionUsuario')
+      .insert({
         usuarioId: usuario.id,
         userAgent: req.headers.get('user-agent') || null,
         ip:
           req.headers.get('x-real-ip') ||
           req.headers.get('x-forwarded-for') ||
           null,
-      },
-    })
+      })
+      .select('id')
+      .single()
 
     const payload = {
       id: usuario.id,
@@ -137,14 +226,14 @@ export async function POST(req: NextRequest) {
     const res = NextResponse.json(
       { success: true, usuario: payload },
       { status: 200 }
-    );
+    )
 
     res.cookies.set(SESSION_COOKIE, token, {
       ...sessionCookieOptions,
       maxAge: COOKIE_EXPIRES,
-    });
+    })
 
-    return res;
+    return res
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
