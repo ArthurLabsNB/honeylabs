@@ -75,7 +75,6 @@ pnpm install
 # Este paso instala dependencias esenciales como `@dnd-kit/modifiers`.
 # Sin ellas, Next.js mostrará errores de "Module not found" al compilar.
 pnpm prisma migrate dev
-DATABASE_URL=$DIRECT_DB_URL pnpm prisma migrate deploy
 vercel --prod
 ```
 
@@ -87,14 +86,13 @@ pnpm prisma migrate deploy
 ```
 
 Configura las variables de entorno copiando `.env.example` a `.env`.
-Debes definir `DATABASE_URL` con la URL de Prisma Accelerate y
-`DIRECT_DB_URL` con la conexión directa usada en las migraciones.
+Debes definir `DATABASE_URL` con la URL de Prisma Accelerate.
 Si el sistema de reCAPTCHA está en mantenimiento asigna
 `NEXT_PUBLIC_DISABLE_RECAPTCHA=true`.
 
 Si deseas usar Supabase como proveedor de base de datos, copia
-`.env.supabase` a `.env` y completa las variables `POSTGRES_URL`,
-`SUPABASE_URL`, `SUPABASE_ANON_KEY` y `SUPABASE_SERVICE_ROLE_KEY`.
+`.env.supabase` a `.env` y completa `SUPABASE_URL`,
+`SUPABASE_ANON_KEY` y `SUPABASE_SERVICE_ROLE_KEY`.
 Este archivo establece `DB_PROVIDER=supabase` para activar el adaptador
 correspondiente en `lib/db/index.ts`.
 
