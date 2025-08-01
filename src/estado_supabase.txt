@@ -1,0 +1,8 @@
+Migración a Supabase - estado actual
+
+- Adaptador de base de datos configurado para usar Supabase por defecto; Prisma queda reservado para la estructura y generación de tipos.
+- Endpoints de notas (`/api/notas` y `/api/notas/[id]`) ya operan con el cliente de Supabase.
+- Aún existen numerosas rutas y utilidades que consumen Prisma directamente; requieren migración gradual.
+- Faltan transacciones reales y manejo de errores específico para Supabase.
+- Los tests dependen de mocks de Prisma; es necesario reemplazarlos progresivamente por stubs de Supabase.
+- Revisar rendimiento y límites de seguridad antes de deshabilitar Prisma por completo.
