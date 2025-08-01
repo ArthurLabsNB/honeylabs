@@ -10,7 +10,6 @@ import { apiFetch } from "@lib/api";
 import html2canvas from 'html2canvas';
 import { usePanelData } from "../PanelDataContext";
 import { usePanelOps } from "../PanelOpsContext";
-import usePanelPresence from "@/hooks/usePanelPresence";
 import { buildEventoICS } from '@/lib/calendar';
 import { useToast } from "@/components/Toast";
 import { useDashboardUI } from "../../ui";
@@ -41,7 +40,6 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
   const [openHelp, setOpenHelp] = useState(false);
   const [openWiki, setOpenWiki] = useState(false);
   const [openTools, setOpenTools] = useState(false);
-  const conectados = usePanelPresence(panelId, usuario);
   const { toggleFullscreen } = useDashboardUI();
   const {
     guardar,
@@ -225,27 +223,6 @@ export default function PanelDetailNavbar({ onShowHistory }: { onShowHistory?: (
             </span>
           )}
           <span className="absolute left-0 -bottom-4 text-xs text-gray-400">{plan}</span>
-          <div className="flex -space-x-2 ml-2">
-            {conectados.map((u) => (
-              u.avatar ? (
-                <img
-                  key={u.id}
-                  src={u.avatar}
-                  alt={u.nombre || ''}
-                  className="w-6 h-6 rounded-full border-2 border-white"
-                  title={u.nombre}
-                />
-              ) : (
-                <div
-                  key={u.id}
-                  className="w-6 h-6 rounded-full bg-gray-400 text-white flex items-center justify-center text-xs border-2 border-white"
-                  title={u.nombre}
-                >
-                  {u.nombre?.[0] || '?'}
-                </div>
-              )
-            ))}
-          </div>
           <input
             type="text"
             placeholder="Buscar..."
