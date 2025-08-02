@@ -62,9 +62,9 @@ CREATE TABLE "usuario" (
     "codigo2FASecret" TEXT,
     "fotoPerfil" BYTEA,
     "fotoPerfilNombre" TEXT,
-    "metodo2FA" TEXT,
+    "metodo2_fa" TEXT,
     "preferencias" TEXT,
-    "tiene2FA" BOOLEAN DEFAULT false,
+    "tiene2_fa" BOOLEAN DEFAULT false,
     "esSuperAdmin" BOOLEAN DEFAULT false,
 
     CONSTRAINT "Usuario_pkey" PRIMARY KEY ("id")

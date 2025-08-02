@@ -74,7 +74,7 @@ model Usuario {
   codigo2FASecret      String?
   fotoPerfil           Bytes?
   fotoPerfilNombre     String?               @map("foto_perfil_nombre")
-  metodo2FA            String?
+  metodo2FA            String?               @map("metodo2_fa")
   preferencias         String?
   tiene2FA             Boolean?               @default(false) @map("tiene2_fa")
   esSuperAdmin         Boolean?               @default(false)
