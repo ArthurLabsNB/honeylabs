@@ -29,6 +29,13 @@ async function tryInsert<T = any>(
   let last: any = null;
   for (const body of payloads) {
     const { data, error } = await db.from(table).insert(body).select(select).single();
+    if (error)
+      logger.error(`[ALM_CREATE] insert ${table}`, {
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+        message: error.message,
+      });
     if (!error && data) return data as T;
     last = error;
     // si es columna o tabla inexistente, probamos siguiente variante
@@ -49,6 +56,13 @@ async function tryUpdate(
     const q = db.from(table).update(body);
     Object.entries(match).forEach(([k, v]) => (q as any).eq(k, v));
     const { error } = await q;
+    if (error)
+      logger.error(`[ALM_UPDATE] update ${table}`, {
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+        message: error.message,
+      });
     if (!error) return;
     last = error;
     if (['PGRST204', '42P01', '42703'].includes(error?.code)) continue;
