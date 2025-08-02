@@ -10,7 +10,7 @@ function getClient() {
   if (!url || !key) {
     throw new Error('Supabase no configurado')
   }
-  client = createClient(url, key)
+  client = createClient(url, key, { auth: { persistSession: false } })
   return client
 }
 
