@@ -169,9 +169,8 @@ export async function POST(req: NextRequest) {
     });
     if (rpcErr || !rpcId) {
       return NextResponse.json({ error: msg(rpcErr, 'No se pudo crear almacén') }, { status: 500 });
-    }
 
-    const creadoId = rpcId as number;
+    }
 
     // side-effects no críticos
     snapshotAlmacen(db as any, creadoId, usuario.id, 'Creación').catch((e) =>
