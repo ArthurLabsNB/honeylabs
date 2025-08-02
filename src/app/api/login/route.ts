@@ -11,7 +11,8 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import {
   SESSION_COOKIE,
-  sessionCookieOptions
+  sessionCookieOptions,
+  SESSION_MAX_AGE
 } from '@lib/constants'
 import { getUsuarioFromSession } from '@lib/auth'
 import { verifyRecaptcha } from '@lib/recaptcha'
@@ -19,7 +20,6 @@ import * as logger from '@lib/logger'
 
 /* ──────────────── CONSTANTES ──────────────── */
 const JWT_SECRET = process.env.JWT_SECRET!
-const COOKIE_EXPIRES = 60 * 60 * 24 * 7 // 7 días
 
 /* ────────────────── POST /login ────────────────── */
 export async function POST (req: NextRequest) {
@@ -95,7 +95,7 @@ export async function POST (req: NextRequest) {
     }
 
     /* 6) JWT + cookie + respuesta */
-    const token = jwt.sign({ id: usuario.id, sid: sesionId }, JWT_SECRET, { expiresIn: COOKIE_EXPIRES })
+    const token = jwt.sign({ id: usuario.id, sid: sesionId }, JWT_SECRET, { expiresIn: SESSION_MAX_AGE })
 
     const payload = {
       id: usuario.id,
@@ -109,7 +109,7 @@ export async function POST (req: NextRequest) {
     }
 
     const res = NextResponse.json({ success: true, usuario: payload })
-    res.cookies.set(SESSION_COOKIE, token, { ...sessionCookieOptions, maxAge: COOKIE_EXPIRES })
+    res.cookies.set(SESSION_COOKIE, token, { ...sessionCookieOptions, maxAge: SESSION_MAX_AGE })
     return res
   } catch (err) {
     logger.error('[LOGIN_ERROR]', err)

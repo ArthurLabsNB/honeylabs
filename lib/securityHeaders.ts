@@ -1,24 +1,17 @@
 const dev = process.env.NODE_ENV !== 'production';
 
-export const ContentSecurityPolicy = dev
-  ? `
-    default-src 'self' http://localhost:*;
-    script-src 'self' 'unsafe-inline' 'unsafe-eval' vitals.vercel-insights.com va.vercel-scripts.com http://localhost:*;
-    style-src 'self' 'unsafe-inline';
-    img-src 'self' http: https: data: blob:;
-    connect-src 'self' http://localhost:* ws://localhost:*;
-    frame-src 'self' https://www.google.com http://localhost:*;
-    object-src 'none';
-  `
-  : `
-    default-src 'self';
-    script-src 'self' 'unsafe-inline' vitals.vercel-insights.com va.vercel-scripts.com;
-    style-src 'self' 'unsafe-inline';
-    img-src 'self' https: data: blob:;
-    connect-src 'self';
-    frame-src 'self' https://www.google.com;
-    object-src 'none';
-  `;
+const csp = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com https://www.gstatic.com vitals.vercel-insights.com va.vercel-scripts.com${dev ? ' http://localhost:*' : ''}`,
+  `frame-src 'self' https://www.google.com https://www.gstatic.com${dev ? ' http://localhost:*' : ''}`,
+  `connect-src 'self' https://*.googleapis.com https://www.google.com https://www.gstatic.com${dev ? ' http://localhost:*' : ''}`,
+  "img-src 'self' data: https:",
+  "style-src 'self' 'unsafe-inline'",
+  "font-src 'self' data:",
+].join('; ');
+
+export const ContentSecurityPolicy = csp;
 
 export const securityHeaders = [
   {
