@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
+import * as logger from '@lib/logger'
 import type { DbClient, DbTransaction } from './index'
 
 let client: SupabaseClient | undefined
@@ -14,26 +15,38 @@ function getClient() {
   return client
 }
 
+// Se verifica una vez si Supabase expone RPCs de transacción; si no,
+// las operaciones se ejecutan secuencialmente y los rollbacks son manuales.
+let supportsTxRpc: boolean | undefined
+
 async function runTransaction<T>(fn: (tx: SupabaseClient) => Promise<T>): Promise<T> {
   const db = getClient()
-  try {
-    await db.rpc('tx_begin')
-  } catch {
-    /* transacciones no soportadas; continuar sin BEGIN */
+  if (supportsTxRpc !== false) {
+    try {
+      await db.rpc('tx_begin')
+      supportsTxRpc = true
+    } catch {
+      supportsTxRpc = false
+      logger.warn('tx_* RPC no disponibles; operaciones secuenciales')
+    }
   }
   try {
     const res = await fn(db)
-    try {
-      await db.rpc('tx_commit')
-    } catch {
-      /* ignore commit error when rpc missing */
+    if (supportsTxRpc) {
+      try {
+        await db.rpc('tx_commit')
+      } catch {
+        /* ignora fallos de commit */
+      }
     }
     return res
   } catch (err) {
-    try {
-      await db.rpc('tx_rollback')
-    } catch {
-      /* ignore rollback error */
+    if (supportsTxRpc) {
+      try {
+        await db.rpc('tx_rollback')
+      } catch {
+        /* ignora fallos de rollback */
+      }
     }
     throw err
   }
