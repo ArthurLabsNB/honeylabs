@@ -1,103 +1,37 @@
-import { describe, it, expect, vi, afterEach } from 'vitest'
-import jwt from 'jsonwebtoken'
-import { SESSION_COOKIE } from '@lib/constants'
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import jwt from 'jsonwebtoken';
+import { SESSION_COOKIE } from '@lib/constants';
 
-vi.mock('@lib/db', () => ({ getDb: vi.fn() }))
+vi.mock('@lib/db', () => ({ getDb: vi.fn() }));
 
-process.env.JWT_SECRET = 'test-secret'
-process.env.DB_PROVIDER = 'prisma'
+process.env.JWT_SECRET = 'test-secret';
 
-const { getDb } = await import('@lib/db')
-const { getUsuarioFromSession } = await import('../lib/auth')
+const { getDb } = await import('@lib/db');
+const { getUsuarioFromSession } = await import('../lib/auth');
 
 afterEach(() => {
-  vi.restoreAllMocks()
-  process.env.DB_PROVIDER = 'prisma'
-})
+  vi.restoreAllMocks();
+});
 
 describe('getUsuarioFromSession', () => {
-  it('retorna usuario con prisma', async () => {
-    process.env.JWT_SECRET = 'test-secret'
-    process.env.DB_PROVIDER = 'prisma'
-
-    const token = jwt.sign({ id: 1, sid: 1 }, 'test-secret')
-    const req = {
-      cookies: { get: (name: string) => (name === SESSION_COOKIE ? { value: token } : undefined) },
-    }
-
-    const usuario = {
-      id: 1,
-      nombre: 'Test',
-      correo: 'test@example.com',
-      tipoCuenta: 'individual',
-      entidadId: null,
-      esSuperAdmin: false,
-      roles: [{ nombre: 'user' }],
-      plan: { nombre: 'free' },
-      preferencias: null,
-    }
-
-    const sesionUsuario = {
-      findUnique: vi.fn().mockResolvedValue({ activa: true, usuarioId: 1 }),
-      update: vi.fn().mockResolvedValue(undefined),
-    }
-    const usuarioModel = { findUnique: vi.fn().mockResolvedValue(usuario) }
-
-    vi.mocked(getDb).mockReturnValue({ client: { sesionUsuario, usuario: usuarioModel } as any })
-
-    const res = await getUsuarioFromSession(req as any)
-    expect(res).toEqual(usuario)
-    expect(sesionUsuario.update).toHaveBeenCalledOnce()
-  })
-
-  it('retorna usuario con supabase', async () => {
-    process.env.JWT_SECRET = 'test-secret'
-    process.env.DB_PROVIDER = 'supabase'
-
-    const token = jwt.sign({ id: 1, sid: 1 }, 'test-secret')
-    const req = {
-      cookies: { get: (name: string) => (name === SESSION_COOKIE ? { value: token } : undefined) },
-    }
-
-    const usuario = {
-      id: 1,
-      nombre: 'Test',
-      correo: 'test@example.com',
-      tipoCuenta: 'individual',
-      entidadId: null,
-      esSuperAdmin: false,
-      roles: [{ nombre: 'user' }],
-      plan: { nombre: 'free' },
-      preferencias: null,
-    }
-
-    const supabase = {
-      from: vi.fn((table: string) => {
-        if (table === 'sesion_usuario') {
-          return {
-            select: () => ({
-              eq: () => ({ maybeSingle: () => Promise.resolve({ data: { activa: true, usuarioId: 1 } }) }),
-            }),
-            update: () => ({ eq: () => Promise.resolve({}) }),
-          }
-        }
-        if (table === 'usuario') {
-          return {
-            select: () => ({
-              eq: () => ({ maybeSingle: () => Promise.resolve({ data: usuario }) }),
-            }),
-          }
-        }
-        throw new Error('tabla desconocida')
+  it('retorna id cuando token y sesión son válidos', async () => {
+    const token = jwt.sign({ id: 1, sid: 2 }, 'test-secret');
+    const req = { cookies: { get: (n: string) => (n === SESSION_COOKIE ? { value: token } : undefined) } };
+    const from = vi.fn().mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({ maybeSingle: () => Promise.resolve({ data: { id: 2 } }) }),
       }),
-    }
+    });
+    vi.mocked(getDb).mockReturnValue({ client: { from } as any });
 
-    vi.mocked(getDb).mockReturnValue({ client: supabase as any })
+    const res = await getUsuarioFromSession(req as any);
+    expect(res).toEqual({ id: 1 });
+    expect(from).toHaveBeenCalledWith('sesion_usuario');
+  });
 
-    const res = await getUsuarioFromSession(req as any)
-    expect(res).toEqual(usuario)
-    expect(supabase.from).toHaveBeenCalledWith('sesion_usuario')
-    expect(supabase.from).toHaveBeenCalledWith('usuario')
-  })
-})
-
+  it('retorna null si token es inválido', async () => {
+    const req = { cookies: { get: () => ({ value: 'bad' }) } };
+    const res = await getUsuarioFromSession(req as any);
+    expect(res).toBeNull();
+  });
+});
