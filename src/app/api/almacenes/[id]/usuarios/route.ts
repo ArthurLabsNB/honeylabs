@@ -26,8 +26,8 @@ export async function GET(req: NextRequest) {
     const { data: pertenece } = await db
       .from('usuario_almacen')
       .select('id')
-      .eq('usuarioId', usuario.id)
-      .eq('almacenId', almacenId)
+      .eq('usuario_id', usuario.id)
+      .eq('almacen_id', almacenId)
       .maybeSingle()
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
     const { data: registros, error } = await db
       .from('usuario_almacen')
       .select('rolEnAlmacen,usuario:usuario(correo,nombre)')
-      .eq('almacenId', almacenId)
+      .eq('almacen_id', almacenId)
     if (error) throw error
     const usuarios = registros.map((r) => ({
       correo: r.usuario.correo,
@@ -62,8 +62,8 @@ export async function DELETE(req: NextRequest) {
     const { data: pertenece } = await db
       .from('usuario_almacen')
       .select('id')
-      .eq('usuarioId', usuario.id)
-      .eq('almacenId', almacenId)
+      .eq('usuario_id', usuario.id)
+      .eq('almacen_id', almacenId)
       .maybeSingle()
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
@@ -77,7 +77,7 @@ export async function DELETE(req: NextRequest) {
     await db
       .from('usuario_almacen')
       .delete()
-      .match({ usuarioId: u.id, almacenId })
+      .match({ usuario_id: u.id, almacen_id: almacenId })
     emitEvent({ type: 'usuarios_update', payload: { almacenId } })
     return NextResponse.json({ ok: true })
   } catch (err) {

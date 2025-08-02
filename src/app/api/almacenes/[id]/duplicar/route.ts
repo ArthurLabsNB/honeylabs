@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
     if (createErr) throw createErr
     await db
       .from('usuario_almacen')
-      .insert({ usuarioId: usuario.id, almacenId: nuevo.id, rolEnAlmacen: 'propietario' })
+      .insert({ usuario_id: usuario.id, almacen_id: nuevo.id, rolEnAlmacen: 'propietario' })
 
     const { auditoria, error: auditError } = await registrarAuditoria(
       req,

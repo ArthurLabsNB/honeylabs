@@ -41,12 +41,12 @@ export async function POST(req: NextRequest) {
       .from('usuario_almacen')
       .upsert(
         {
-          usuarioId: usuario.id,
-          almacenId: cod.almacenId,
+          usuario_id: usuario.id,
+          almacen_id: cod.almacenId,
           rolEnAlmacen: cod.rolAsignado,
           permisosExtra: cod.permisos,
         },
-        { onConflict: 'usuarioId,almacenId' },
+        { onConflict: 'usuario_id,almacen_id' },
       )
 
     emitEvent({ type: 'usuarios_update', payload: { almacenId: cod.almacenId } })
