@@ -4,6 +4,15 @@ import { NextRequest } from 'next/server'
 const levels = ['debug', 'info', 'warn', 'error'] as const
 export type LogLevel = (typeof levels)[number]
 
+// Capturamos métodos originales para evitar reintercepción
+const baseConsole = {
+  debug: console.debug.bind(console),
+  info: console.info.bind(console),
+  warn: console.warn.bind(console),
+  error: console.error.bind(console),
+  log: console.log.bind(console),
+}
+
 const envLevel = process.env.LOG_LEVEL?.toLowerCase() as LogLevel | undefined
 const currentLevel = envLevel && levels.includes(envLevel) ? envLevel : 'info'
 
@@ -33,7 +42,7 @@ function baseLog(level: LogLevel, args: any[]) {
   }
 
   const prefix = formatPrefix(req)
-  const fn = console[level] || console.log
+  const fn = baseConsole[level] || baseConsole.log
   fn(prefix, ...args)
 }
 
