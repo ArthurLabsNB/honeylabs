@@ -23,7 +23,16 @@ export default function useSession() {
     revalidateOnFocus: true,
   })
 
-  const usuario = data?.success ? (data.usuario as Usuario) : null
+  const raw = data?.success ? (data.usuario as any) : null
+  const usuario: Usuario | null = raw
+    ? {
+        ...raw,
+        // Normaliza nombre/correo cuando la sesión usa campos en inglés
+        nombre: raw.nombre || raw.name,
+        correo: raw.correo || raw.email,
+        email: raw.email || raw.correo,
+      }
+    : null
 
   return { usuario, loading: isLoading }
 }

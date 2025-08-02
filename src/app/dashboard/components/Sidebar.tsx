@@ -55,7 +55,9 @@ export default function Sidebar({ usuario }: { usuario: Usuario | null | undefin
       ? sidebarMenu
       : sidebarMenu.filter(i => i.allowed.includes(tipo));
 
-  const displayName = usuario?.nombre?.trim() || usuario?.correo || "Usuario";
+  // Acepta sesiones que sólo aportan email
+  const displayName =
+    usuario?.nombre?.trim() || usuario?.correo || usuario?.email || "";
 
   return (
     <aside
