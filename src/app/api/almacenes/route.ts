@@ -149,8 +149,19 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ almacenes });
   } catch (err) {
-    logger.error('GET /api/almacenes', err);
-    return NextResponse.json({ error: msg(err, 'Error al obtener almacenes') }, { status: 500 });
+    const errorId = crypto.randomUUID();
+    const e: any = err;
+    logger.error('GET /api/almacenes', err, {
+      errorId,
+      message: e?.message,
+      code: e?.code,
+      hint: e?.hint,
+      details: e?.details,
+    });
+    return NextResponse.json(
+      { error: msg(err, 'Error al obtener almacenes'), errorId },
+      { status: 500 },
+    );
   }
 }
 
@@ -280,7 +291,18 @@ export async function POST(req: NextRequest) {
       auditError,
     });
   } catch (err) {
-    logger.error('POST /api/almacenes', err);
-    return NextResponse.json({ error: msg(err, 'Error al crear almacén') }, { status: 500 });
+    const errorId = crypto.randomUUID();
+    const e: any = err;
+    logger.error('POST /api/almacenes', err, {
+      errorId,
+      message: e?.message,
+      code: e?.code,
+      hint: e?.hint,
+      details: e?.details,
+    });
+    return NextResponse.json(
+      { error: msg(err, 'Error al crear almacén'), errorId },
+      { status: 500 },
+    );
   }
 }
