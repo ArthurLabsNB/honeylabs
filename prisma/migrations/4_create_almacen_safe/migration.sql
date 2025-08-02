@@ -1,7 +1,10 @@
 -- create function to insert almacen and link usuario atomically
 CREATE OR REPLACE FUNCTION public.create_almacen_safe(
   p_usuario_id int,
-  p_entidad_id int,
+  p_entidad_id int DEFAULT NULL,
+  p_entidad_nombre text DEFAULT NULL,
+  p_entidad_tipo text DEFAULT NULL,
+  p_entidad_correo text DEFAULT NULL,
   p_nombre text,
   p_descripcion text,
   p_codigo_unico text,
@@ -15,9 +18,24 @@ SECURITY DEFINER
 AS $$
 DECLARE
   v_id int;
+  v_entidad_id int;
 BEGIN
+  v_entidad_id := COALESCE(p_entidad_id, (SELECT entidad_id FROM public.usuario WHERE id = p_usuario_id));
+
+  IF v_entidad_id IS NULL THEN
+    INSERT INTO public.entidad(nombre, tipo, correo_contacto)
+    VALUES (
+      COALESCE(p_entidad_nombre, 'Entidad de ' || (SELECT nombre FROM public.usuario WHERE id = p_usuario_id)),
+      COALESCE(p_entidad_tipo, (SELECT tipo_cuenta FROM public.usuario WHERE id = p_usuario_id)),
+      COALESCE(p_entidad_correo, (SELECT correo FROM public.usuario WHERE id = p_usuario_id))
+    )
+    RETURNING id INTO v_entidad_id;
+
+    UPDATE public.usuario SET entidad_id = v_entidad_id WHERE id = p_usuario_id;
+  END IF;
+
   INSERT INTO public.almacen(nombre, descripcion, codigo_unico, imagen, imagen_nombre, imagen_url, entidad_id)
-  VALUES (p_nombre, p_descripcion, p_codigo_unico, p_imagen, p_imagen_nombre, p_imagen_url, p_entidad_id)
+  VALUES (p_nombre, p_descripcion, p_codigo_unico, p_imagen, p_imagen_nombre, p_imagen_url, v_entidad_id)
   RETURNING id INTO v_id;
 
   INSERT INTO public.usuario_almacen(usuario_id, almacen_id, rol_en_almacen)

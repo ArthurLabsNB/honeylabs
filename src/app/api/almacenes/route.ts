@@ -20,59 +20,6 @@ const toByteaHex = (buf: Buffer | null) => (buf ? '\\x' + buf.toString('hex') : 
 /* ---------- HELPERS ---------- */
 const msg = (e: any, d = 'Error') => String(e?.message || e?.hint || e?.details || e?.code || d);
 
-async function tryInsert<T = any>(
-  db: SupabaseClient,
-  table: string,
-  payloads: Array<Record<string, any>>,
-  select = '*',
-): Promise<T> {
-  let last: any = null;
-  for (const body of payloads) {
-    const { data, error } = await db.from(table).insert(body).select(select).single();
-    if (error)
-      logger.error('[ALM_CREATE] insert', {
-        table,
-        code: error.code,
-        details: error.details,
-        hint: error.hint,
-        message: error.message,
-      });
-    if (!error && data) return data as T;
-    last = error;
-    // si es columna o tabla inexistente, probamos siguiente variante
-    if (['PGRST204', '42P01', '42703'].includes(error?.code)) continue;
-    break; // otros errores: salir
-  }
-  throw last ?? new Error('insert failed');
-}
-
-async function tryUpdate(
-  db: SupabaseClient,
-  table: string,
-  payloads: Array<Record<string, any>>,
-  match: Record<string, any>,
-) {
-  let last: any = null;
-  for (const body of payloads) {
-    const q = db.from(table).update(body);
-    Object.entries(match).forEach(([k, v]) => (q as any).eq(k, v));
-    const { error } = await q;
-    if (error)
-      logger.error('[ALM_UPDATE] update', {
-        table,
-        code: error.code,
-        details: error.details,
-        hint: error.hint,
-        message: error.message,
-      });
-    if (!error) return;
-    last = error;
-    if (['PGRST204', '42P01', '42703'].includes(error?.code)) continue;
-    break;
-  }
-  throw last ?? new Error('update failed');
-}
-
 /* ---------- GET (lista) ---------- */
 export async function GET(req: NextRequest) {
   try {
@@ -203,24 +150,6 @@ export async function POST(req: NextRequest) {
 
     if (!nombre) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 });
 
-    // asegurar entidad
-    if (!usuario.entidadId) {
-      const ent = await tryInsert<{ id: number }>(
-        db,
-        'entidad',
-        [
-          { nombre: `Entidad de ${usuario.nombre}`, tipo: normalizeTipoCuenta(usuario.tipoCuenta), correoContacto: usuario.correo ?? '' },
-          { nombre: `Entidad de ${usuario.nombre}`, tipo: normalizeTipoCuenta(usuario.tipoCuenta), correo_contacto: usuario.correo ?? '' },
-          { nombre: `Entidad de ${usuario.nombre}`, tipo: normalizeTipoCuenta(usuario.tipoCuenta) },
-        ],
-        'id',
-      );
-      await tryUpdate(db, 'usuario', [{ entidad_id: ent.id }, { entidadId: ent.id }], { id: usuario.id }).catch((e) =>
-        logger.warn?.('update usuario.entidad_id', e),
-      );
-      usuario.entidadId = ent.id;
-    }
-
     const codigoUnico = crypto.randomUUID().split('-')[0];
     const bytea = toByteaHex(imagenBuf);
 
@@ -228,6 +157,9 @@ export async function POST(req: NextRequest) {
     const { data: rpcId, error: rpcErr } = await db.rpc('create_almacen_safe', {
       p_usuario_id: usuario.id,
       p_entidad_id: usuario.entidadId,
+      p_entidad_nombre: usuario.entidadId ? null : `Entidad de ${usuario.nombre}`,
+      p_entidad_tipo: usuario.entidadId ? null : normalizeTipoCuenta(usuario.tipoCuenta),
+      p_entidad_correo: usuario.entidadId ? null : usuario.correo ?? '',
       p_nombre: nombre,
       p_descripcion: descripcion,
       p_codigo_unico: codigoUnico,
