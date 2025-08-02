@@ -1,23 +1,19 @@
 "use client";
 import { Menu, Settings, Download, FileText, Lock, RefreshCcw } from "lucide-react";
 import Link from "next/link";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import {
   GESTIONAR_PERMISOS_EVENT,
   SINCRONIZAR_ALMACEN_EVENT,
 } from "@/lib/ui-events";
+import useOutsideClick from "@/hooks/useOutsideClick";
 
 export default function AlmacenTools({ id }: { id: string | number }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
+  const close = useCallback(() => setOpen(false), []);
+  useOutsideClick(ref, close);
 
   return (
     <div className="relative" ref={ref}>

@@ -1,5 +1,5 @@
 "use client"
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useMemo } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { generarUUID } from '@/lib/uuid'
 import MediaWidget from '../../../components/widgets/MediaWidget'
@@ -17,9 +17,9 @@ export default function NotasTab({ tabId }: { tabId: string }) {
   const [urlOrder, setUrlOrder] = useState<number[]>([])
   const [docOrder, setDocOrder] = useState<number[]>([])
 
-  const images = notas.filter(n => n.tipo === 'imagen')
-  const urls = notas.filter(n => n.tipo === 'url')
-  const docs = notas.filter(n => n.tipo === 'doc') as DocItem[]
+  const images = useMemo(() => notas.filter(n => n.tipo === 'imagen'), [notas])
+  const urls = useMemo(() => notas.filter(n => n.tipo === 'url'), [notas])
+  const docs = useMemo(() => notas.filter(n => n.tipo === 'doc') as DocItem[], [notas])
   const stickies = notas.filter(n => n.tipo === 'sticky')
 
   useEffect(() => {

@@ -1,11 +1,12 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Plus } from "lucide-react";
 import { useTabStore } from "@/hooks/useTabs";
 import { useToast } from "@/components/Toast";
 import { tabOptions } from "./tabOptions";
 import { useCreateTab } from "@/hooks/useCreateTab";
 import type { TabType } from "@/hooks/useTabs";
+import useOutsideClick from "@/hooks/useOutsideClick";
 
 export default function TabsMenu() {
   const [open, setOpen] = useState(false);
@@ -14,13 +15,8 @@ export default function TabsMenu() {
   const toast = useToast();
   const { create: createHook, disabled } = useCreateTab();
 
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
+  const close = useCallback(() => setOpen(false), []);
+  useOutsideClick(ref, close);
 
   const create = async (type: TabType, label: string) => {
     await createHook(type, label)

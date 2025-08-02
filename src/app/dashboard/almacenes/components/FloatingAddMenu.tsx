@@ -1,21 +1,15 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { Plus, QrCode, FileUp, Copy } from "lucide-react";
+import useOutsideClick from "@/hooks/useOutsideClick";
 
 export default function FloatingAddMenu() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const onClick = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("click", onClick);
-    return () => document.removeEventListener("click", onClick);
-  }, []);
+  const close = useCallback(() => setOpen(false), []);
+  useOutsideClick(ref, close);
 
   return (
     <div ref={ref} className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50">
