@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { SESSION_COOKIE, sessionCookieOptions } from '@lib/constants';
-import { prisma } from '@lib/db/prisma';
+import { getDb } from '@lib/db'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import * as logger from '@lib/logger'
 import { respuestaError } from '@lib/http'
 
@@ -22,6 +23,8 @@ const bloqueos = new Map<string, { intentos: number; timestamp: number }>();
 const MAX_INTENTOS = 5;
 const TIEMPO_BLOQUEO_MS = 5 * 60 * 1000;
 
+const supabase = getDb().client as SupabaseClient;
+
 function esCorreoValido(correo: string): boolean {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(correo);
@@ -29,12 +32,10 @@ function esCorreoValido(correo: string): boolean {
 
 async function guardarBitacoraCambio(usuarioId: number, cambios: any) {
   try {
-    await prisma.bitacoraCambioPerfil.create({
-      data: {
-        usuarioId,
-        cambios: JSON.stringify(cambios),
-        fecha: new Date(),
-      },
+    await supabase.from('BitacoraCambioPerfil').insert({
+      usuarioId,
+      cambios: JSON.stringify(cambios),
+      fecha: new Date().toISOString(),
     });
   } catch {
     // Silencioso
@@ -43,13 +44,11 @@ async function guardarBitacoraCambio(usuarioId: number, cambios: any) {
 
 async function crearNotificacion(usuarioId: number, mensaje: string) {
   try {
-    await prisma.notificacion.create({
-      data: {
-        usuarioId,
-        mensaje,
-        tipo: 'perfil',
-        leida: false,
-      },
+    await supabase.from('Notificacion').insert({
+      usuarioId,
+      mensaje,
+      tipo: 'perfil',
+      leida: false,
     });
   } catch {
     // Silencioso
@@ -72,25 +71,22 @@ export async function GET(req: NextRequest) {
     }
 
     logger.debug(req, 'Buscando perfil del usuario')
-    const usuario = await prisma.usuario.findUnique({
-      where: { id: payload.id },
-      select: {
-        id: true,
-        nombre: true,
-        apellidos: true,
-        correo: true,
-        tipoCuenta: true,
-        entidadId: true,
-        estado: true,
-        fechaRegistro: true,
-        fotoPerfilNombre: true,
-        preferencias: true,
-        tiene2FA: true,
-        metodo2FA: true,
-      },
-    });
+    const { data, error } = await supabase
+      .from('usuario')
+      .select('id,nombre,apellidos,correo,tipo_cuenta,entidad_id,estado,fechaRegistro,fotoPerfilNombre,preferencias,tiene2FA,metodo2FA')
+      .eq('id', payload.id)
+      .maybeSingle()
 
-    if (!usuario) return respuestaError('Usuario no encontrado.', 'ID inexistente', 404)
+    if (error) throw error
+    if (!data) return respuestaError('Usuario no encontrado.', 'ID inexistente', 404)
+
+    const usuario = {
+      ...data,
+      tipoCuenta: (data as any).tipo_cuenta,
+      entidadId: (data as any).entidad_id,
+    }
+    delete (usuario as any).tipo_cuenta
+    delete (usuario as any).entidad_id
 
     logger.info(req, 'Perfil recuperado correctamente')
     return NextResponse.json({ success: true, usuario }, { status: 200 })
@@ -159,10 +155,12 @@ export async function PUT(req: NextRequest) {
     }
 
     // Verificar si el correo está en uso
-    const correoExistente = await prisma.usuario.findUnique({
-      where: { correo },
-      select: { id: true },
-    });
+    const { data: correoExistente, error: correoError } = await supabase
+      .from('usuario')
+      .select('id')
+      .eq('correo', correo)
+      .maybeSingle()
+    if (correoError) throw correoError
     if (correoExistente && correoExistente.id !== usuarioId) {
       return respuestaError('Ese correo ya está registrado en otra cuenta.', correo, 409)
     }
@@ -180,11 +178,12 @@ export async function PUT(req: NextRequest) {
       if (reg.intentos >= MAX_INTENTOS && now - reg.timestamp < TIEMPO_BLOQUEO_MS) {
         return respuestaError('Demasiados intentos fallidos. Intenta de nuevo en unos minutos.', '', 429)
       }
-      const usuarioActual = await prisma.usuario.findUnique({
-        where: { id: usuarioId },
-        select: { contrasena: true },
-      });
-      if (!usuarioActual || !(await bcrypt.compare(contrasenaActual, usuarioActual.contrasena))) {
+      const { data: usuarioActual, error: usuarioError } = await supabase
+        .from('usuario')
+        .select('contrasena')
+        .eq('id', usuarioId)
+        .single()
+      if (usuarioError || !usuarioActual || !(await bcrypt.compare(contrasenaActual, usuarioActual.contrasena))) {
         bloqueos.set(key, { intentos: reg.intentos + 1, timestamp: now });
         return respuestaError('Contraseña actual incorrecta.', '', 401)
       }
@@ -201,10 +200,11 @@ export async function PUT(req: NextRequest) {
     if (preferencias !== undefined) data.preferencias = preferencias;
 
     logger.debug(req, 'Actualizando datos del usuario')
-    await prisma.usuario.update({
-      where: { id: usuarioId },
-      data,
-    });
+    const { error: updateError } = await supabase
+      .from('usuario')
+      .update(data)
+      .eq('id', usuarioId)
+    if (updateError) throw updateError
 
     await guardarBitacoraCambio(usuarioId, data);
     await crearNotificacion(usuarioId, 'Has actualizado tu perfil.');
@@ -256,13 +256,14 @@ export async function POST(req: NextRequest) {
       return respuestaError('Parámetros de 2FA inválidos.', '', 400)
     }
 
-    await prisma.usuario.update({
-      where: { id: usuarioId },
-      data: {
+    const { error } = await supabase
+      .from('usuario')
+      .update({
         tiene2FA: activar2FA,
         metodo2FA: activar2FA ? metodo2FA : null,
-      }
-    });
+      })
+      .eq('id', usuarioId)
+    if (error) throw error
 
     logger.info(req, activar2FA ? '2FA activado' : '2FA desactivado')
     return NextResponse.json({
