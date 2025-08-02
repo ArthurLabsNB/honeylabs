@@ -41,22 +41,26 @@ export async function POST (req: NextRequest) {
       .from('usuario')
       .select(`
         id, nombre, correo, contrasena, tipo_cuenta, estado,
-        entidad:entidad_id ( id, nombre, tipo, plan_id ),
-        roles:rol_usuario!inner(
-          rol:Rol ( id, nombre, descripcion, permisos )
+        entidad ( id, nombre, tipo, plan_id ),
+        roles:rol_usuario (
+          rol:rol ( id, nombre, descripcion, permisos )
         )
       `)
-      .eq('correo', email)
+      .ilike('correo', email)
+      .limit(1)
       .maybeSingle()
 
     if (error) {
-      logger.error('[LOGIN_DB]', error)
+      logger.error('[LOGIN_DB]', { error })
       return jsonError('Error de base de datos', 500)
     }
-    if (
-      !usuario ||
-      !(await bcrypt.compare(contrasena, usuario.contrasena))
-    ) {
+    if (!usuario) {
+      logger.warn('[LOGIN] Usuario no encontrado o sin join', { email })
+      return jsonError('Credenciales inválidas', 401)
+    }
+    const ok = await bcrypt.compare(contrasena, usuario.contrasena ?? '')
+    if (!ok) {
+      logger.warn('[LOGIN] Password mismatch', { id: usuario.id })
       return jsonError('Credenciales inválidas', 401)
     }
     if ((usuario.estado ?? 'activo') !== 'activo') {

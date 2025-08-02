@@ -15,7 +15,8 @@ describe('login', () => {
   it('retorna 401 si el usuario no existe', async () => {
     const from = vi.fn().mockReturnValue({
       select: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
+      ilike: vi.fn().mockReturnThis(),
+      limit: vi.fn().mockReturnThis(),
       maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
     })
     vi.mocked(getDb).mockReturnValue({ client: { from } } as any)
@@ -30,7 +31,8 @@ describe('login', () => {
   it('retorna 403 si la cuenta no está activa', async () => {
     const from = vi.fn().mockReturnValue({
       select: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
+      ilike: vi.fn().mockReturnThis(),
+      limit: vi.fn().mockReturnThis(),
       maybeSingle: vi.fn().mockResolvedValue({
         data: {
           id: 1,
