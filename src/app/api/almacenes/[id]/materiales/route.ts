@@ -42,9 +42,9 @@ export async function GET(req: NextRequest) {
     }
 
     const cols =
-      'id,nombre,descripcion,cantidad,unidad,lote,fechaCaducidad,ubicacion,proveedor,estado,observaciones,codigoBarra,codigoQR,minimo,maximo,fecha_registro,fechaActualizacion, unidades:material_unidad(id)'
-    const camel = `miniaturaNombre,${cols}`
-    const snake = `miniatura_nombre:miniaturaNombre,${cols}`
+      'id,nombre,descripcion,cantidad,unidad,lote,fechaCaducidad,ubicacion,proveedor,estado,observaciones,codigoBarra,codigoQR,minimo,maximo,fecha_registro,unidades:material_unidad(id)'
+    const camel = `miniaturaNombre,fechaActualizacion,${cols}`
+    const snake = `miniatura_nombre:miniaturaNombre,fecha_actualizacion:fechaActualizacion,${cols}`
     let { data: rows, error } = await db
       .from('material')
       .select(camel)
@@ -78,7 +78,7 @@ export async function GET(req: NextRequest) {
       minimo: m.minimo,
       maximo: m.maximo,
       fechaRegistro: (m as any).fecha_registro,
-      fechaActualizacion: m.fechaActualizacion,
+      fechaActualizacion: m.fechaActualizacion ?? (m as any).fecha_actualizacion,
       _count: { unidades: (m as any).unidades?.length ?? 0 },
     }))
 
