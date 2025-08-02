@@ -73,7 +73,7 @@ export async function GET(req: NextRequest) {
     logger.debug(req, 'Buscando perfil del usuario')
     const { data, error } = await supabase
       .from('usuario')
-      .select('id,nombre,apellidos,correo,tipo_cuenta,entidad_id,estado,fechaRegistro,fotoPerfilNombre,preferencias,tiene2FA,metodo2FA')
+      .select('id,nombre,apellidos,correo,tipo_cuenta,entidad_id,estado,fecha_registro,fotoPerfilNombre,preferencias,tiene2FA,metodo2FA')
       .eq('id', payload.id)
       .maybeSingle()
 
@@ -84,9 +84,11 @@ export async function GET(req: NextRequest) {
       ...data,
       tipoCuenta: (data as any).tipo_cuenta,
       entidadId: (data as any).entidad_id,
+      fechaRegistro: (data as any).fecha_registro,
     }
     delete (usuario as any).tipo_cuenta
     delete (usuario as any).entidad_id
+    delete (usuario as any).fecha_registro
 
     logger.info(req, 'Perfil recuperado correctamente')
     return NextResponse.json({ success: true, usuario }, { status: 200 })
