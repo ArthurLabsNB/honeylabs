@@ -1,7 +1,8 @@
 export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@lib/db/prisma';
+import type { SupabaseClient } from '@supabase/supabase-js'
+import { getDb } from '@lib/db'
 import { getUsuarioFromSession } from '@lib/auth';
 import { hasManagePerms } from '@lib/permisos';
 import { registrarAuditoria } from '@lib/reporter';
@@ -27,15 +28,22 @@ export async function POST(req: NextRequest) {
     const id = getId(req);
     if (!id) return NextResponse.json({ error: 'ID inválido' }, { status: 400 });
 
-    const almacen = await prisma.almacen.findUnique({ where: { id } });
+    const db = getDb().client as SupabaseClient
+    const { data: almacen, error } = await db
+      .from('almacen')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle()
+    if (error) throw error
     if (!almacen) {
       return NextResponse.json({ error: 'No encontrado' }, { status: 404 });
     }
 
     const codigoUnico = crypto.randomUUID().split('-')[0];
 
-    const nuevo = await prisma.almacen.create({
-      data: {
+    const { data: nuevo, error: createErr } = await db
+      .from('almacen')
+      .insert({
         nombre: `${almacen.nombre} copia`,
         descripcion: almacen.descripcion,
         funciones: almacen.funciones,
@@ -45,10 +53,13 @@ export async function POST(req: NextRequest) {
         imagen: almacen.imagen as any,
         codigoUnico,
         entidadId: almacen.entidadId,
-        usuario_almacen: { create: { usuarioId: usuario.id, rolEnAlmacen: 'propietario' } },
-      },
-      select: { id: true, nombre: true },
-    });
+      })
+      .select('id,nombre')
+      .single()
+    if (createErr) throw createErr
+    await db
+      .from('usuario_almacen')
+      .insert({ usuarioId: usuario.id, almacenId: nuevo.id, rolEnAlmacen: 'propietario' })
 
     const { auditoria, error: auditError } = await registrarAuditoria(
       req,

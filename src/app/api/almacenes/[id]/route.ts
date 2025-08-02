@@ -1,7 +1,7 @@
 export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from '@lib/db/prisma';
+import { getDb } from '@lib/db';
 import type { Prisma } from '@prisma/client';
 import { getUsuarioFromSession } from "@lib/auth";
 import { hasManagePerms } from "@lib/permisos";
@@ -30,6 +30,7 @@ const IMAGE_TYPES = [
 
 
 export async function GET(req: NextRequest) {
+  const prisma = getDb().client as any
   logger.debug(req, 'GET /api/almacenes/[id]')
   try {
     const usuario = await getUsuarioFromSession(req);
@@ -133,6 +134,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const prisma = getDb().client as any
   try {
     const usuario = await getUsuarioFromSession(req);
     if (!usuario) {
@@ -190,6 +192,7 @@ export async function DELETE(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
+  const prisma = getDb().client as any
   try {
     const usuario = await getUsuarioFromSession(req);
     if (!usuario) {

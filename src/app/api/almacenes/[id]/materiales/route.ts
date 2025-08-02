@@ -1,7 +1,7 @@
 export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@lib/db/prisma'
+import { getDb } from '@lib/db'
 import type { Prisma } from '@prisma/client'
 import { materialSchema } from '@/lib/validators/material'
 import { getUsuarioFromSession } from '@lib/auth'
@@ -13,7 +13,6 @@ import { registrarAuditoria } from '@lib/reporter'
 import { snapshotMaterial } from '@/lib/snapshot'
 import { emitEvent } from '@/lib/events'
 
-
 function getAlmacenIdFromRequest(req: NextRequest): number | null {
   const parts = req.nextUrl.pathname.split('/')
   const idx = parts.findIndex((p) => p === 'almacenes')
@@ -22,6 +21,7 @@ function getAlmacenIdFromRequest(req: NextRequest): number | null {
 }
 
 export async function GET(req: NextRequest) {
+  const prisma = getDb().client as any
   logger.debug(req, 'GET /api/almacenes/[id]/materiales')
   try {
     const usuario = await getUsuarioFromSession(req)
@@ -74,6 +74,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const prisma = getDb().client as any
   logger.debug(req, 'POST /api/almacenes/[id]/materiales')
   try {
     const usuario = await getUsuarioFromSession(req)

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@lib/db/prisma'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import { getDb } from '@lib/db'
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
 
@@ -26,10 +27,11 @@ export async function POST(req: NextRequest) {
     }
     const prefs = usuario.preferencias ? JSON.parse(usuario.preferencias) : {}
     prefs.ordenAlmacenes = ids
-    await prisma.usuario.update({
-      where: { id: usuario.id },
-      data: { preferencias: JSON.stringify(prefs) },
-    })
+    const db = getDb().client as SupabaseClient
+    await db
+      .from('usuario')
+      .update({ preferencias: JSON.stringify(prefs) })
+      .eq('id', usuario.id)
     return NextResponse.json({ ok: true })
   } catch (err) {
     logger.error('POST /api/almacenes/orden', err)

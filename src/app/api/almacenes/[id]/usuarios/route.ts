@@ -1,7 +1,8 @@
 export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@lib/db/prisma'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import { getDb } from '@lib/db'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import { emitEvent } from '@/lib/events'
@@ -21,20 +22,21 @@ export async function GET(req: NextRequest) {
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const almacenId = getAlmacenId(req)
     if (!almacenId) return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
-    const pertenece = await prisma.usuarioAlmacen.findFirst({
-      where: { usuarioId: usuario.id, almacenId },
-      select: { id: true },
-    })
+    const db = getDb().client as SupabaseClient
+    const { data: pertenece } = await db
+      .from('usuario_almacen')
+      .select('id')
+      .eq('usuarioId', usuario.id)
+      .eq('almacenId', almacenId)
+      .maybeSingle()
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
     }
-    const registros = await prisma.usuarioAlmacen.findMany({
-      where: { almacenId },
-      select: {
-        rolEnAlmacen: true,
-        usuario: { select: { correo: true, nombre: true } },
-      },
-    })
+    const { data: registros, error } = await db
+      .from('usuario_almacen')
+      .select('rolEnAlmacen,usuario:usuario(correo,nombre)')
+      .eq('almacenId', almacenId)
+    if (error) throw error
     const usuarios = registros.map((r) => ({
       correo: r.usuario.correo,
       nombre: r.usuario.nombre,
@@ -56,18 +58,26 @@ export async function DELETE(req: NextRequest) {
     if (!almacenId) return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
     const correo = req.nextUrl.searchParams.get('correo') || ''
     if (!correo) return NextResponse.json({ error: 'Correo requerido' }, { status: 400 })
-    const pertenece = await prisma.usuarioAlmacen.findFirst({
-      where: { usuarioId: usuario.id, almacenId },
-      select: { id: true },
-    })
+    const db = getDb().client as SupabaseClient
+    const { data: pertenece } = await db
+      .from('usuario_almacen')
+      .select('id')
+      .eq('usuarioId', usuario.id)
+      .eq('almacenId', almacenId)
+      .maybeSingle()
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
     }
-    const u = await prisma.usuario.findUnique({ where: { correo } })
+    const { data: u } = await db
+      .from('usuario')
+      .select('id')
+      .eq('correo', correo)
+      .maybeSingle()
     if (!u) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
-    await prisma.usuarioAlmacen.delete({
-      where: { usuarioId_almacenId: { usuarioId: u.id, almacenId } },
-    })
+    await db
+      .from('usuario_almacen')
+      .delete()
+      .match({ usuarioId: u.id, almacenId })
     emitEvent({ type: 'usuarios_update', payload: { almacenId } })
     return NextResponse.json({ ok: true })
   } catch (err) {

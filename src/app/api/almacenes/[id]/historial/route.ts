@@ -1,7 +1,8 @@
 export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@lib/db/prisma'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import { getDb } from '@lib/db'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
 import * as logger from '@lib/logger'
@@ -20,24 +21,22 @@ export async function GET(req: NextRequest) {
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const id = getAlmacenId(req)
     if (!id) return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
-    const pertenece = await prisma.usuarioAlmacen.findFirst({
-      where: { usuarioId: usuario.id, almacenId: id },
-      select: { id: true },
-    })
+    const db = getDb().client as SupabaseClient
+    const { data: pertenece } = await db
+      .from('usuario_almacen')
+      .select('id')
+      .eq('usuarioId', usuario.id)
+      .eq('almacenId', id)
+      .maybeSingle()
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
     }
-    const historial = await prisma.historialAlmacen.findMany({
-      where: { almacenId: id },
-      orderBy: { fecha: 'desc' },
-      select: {
-        id: true,
-        descripcion: true,
-        fecha: true,
-        estado: true,
-        usuario: { select: { nombre: true } },
-      },
-    })
+    const { data: historial, error } = await db
+      .from('historial_almacen')
+      .select('id,descripcion,fecha,estado,usuario:usuario(nombre)')
+      .eq('almacenId', id)
+      .order('fecha', { ascending: false })
+    if (error) throw error
     return NextResponse.json({ historial })
   } catch (err) {
     logger.error('GET /api/almacenes/[id]/historial', err)
@@ -52,15 +51,18 @@ export async function POST(req: NextRequest) {
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const id = getAlmacenId(req)
     if (!id) return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
-    const pertenece = await prisma.usuarioAlmacen.findFirst({
-      where: { usuarioId: usuario.id, almacenId: id },
-      select: { id: true },
-    })
+    const db = getDb().client as SupabaseClient
+    const { data: pertenece } = await db
+      .from('usuario_almacen')
+      .select('id')
+      .eq('usuarioId', usuario.id)
+      .eq('almacenId', id)
+      .maybeSingle()
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
     }
     const body = await req.json()
-    await snapshotAlmacen(prisma, id, usuario.id, body.descripcion || 'Modificación')
+    await snapshotAlmacen(db, id, usuario.id, body.descripcion || 'Modificación')
     return NextResponse.json({ success: true })
   } catch (err) {
     logger.error('POST /api/almacenes/[id]/historial', err)
