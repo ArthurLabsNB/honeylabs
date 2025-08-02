@@ -43,7 +43,7 @@ export async function POST (req: NextRequest) {
         id, nombre, correo, contrasena, tipo_cuenta, estado,
         entidad:entidad_id ( id, nombre, tipo, plan_id ),
         roles:rol_usuario!inner(
-          rol:rol_id ( id, nombre, descripcion, permisos )
+          rol:Rol ( id, nombre, descripcion, permisos )
         ),
         suscripciones!inner(
           id, activo, fecha_fin,
