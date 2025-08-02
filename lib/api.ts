@@ -7,17 +7,19 @@ export function apiPath(path: string): string {
   return `${BASE_PATH}${path}`;
 }
 
-export function apiFetch(
-  path: string,
-  options: RequestInit = {},
+export async function apiFetch(
+  input: RequestInfo | URL,
+  init: RequestInit = {},
 ): Promise<Response> {
+  const url = typeof input === 'string' ? apiPath(input) : input;
   const headers: HeadersInit = {
-    ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
-    ...(options.headers || {}),
+    ...(init.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
+    ...(init.headers || {}),
   };
-  return fetch(apiPath(path), {
-    credentials: 'same-origin',
-    ...options,
+  return fetch(url, {
+    credentials: 'include',
+    cache: 'no-store',
+    ...init,
     headers,
   });
 }

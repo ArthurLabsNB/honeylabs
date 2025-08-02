@@ -121,11 +121,14 @@ export async function POST (req: NextRequest) {
 export async function GET () {
   try {
     const usuario = await getUsuarioFromSession({ cookies: await cookies() })
-    if (!usuario) return jsonError('No autenticado', 401)
-    return NextResponse.json({ success: true, usuario })
+    const headers = { 'Cache-Control': 'no-store, max-age=0' } as Record<string, string>
+    if (!usuario) return NextResponse.json({ success: false, error: 'No autenticado' }, { status: 401, headers })
+    return NextResponse.json({ success: true, usuario }, { headers })
   } catch (err) {
-    logger.error('[SESSION_ERROR]', err)
-    return jsonError('Error interno', 500)
+    return NextResponse.json(
+      { success: false, error: 'Error interno' },
+      { status: 500, headers: { 'Cache-Control': 'no-store' } },
+    )
   }
 }
 
