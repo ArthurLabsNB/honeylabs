@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
 
     const { data: rows, error } = await db
       .from('material')
-      .select('id,nombre,descripcion,miniaturaNombre,cantidad,unidad,lote,fechaCaducidad,ubicacion,proveedor,estado,observaciones,codigoBarra,codigoQR,minimo,maximo,fechaRegistro,fechaActualizacion, unidades:material_unidad(id)')
+      .select('id,nombre,descripcion,miniaturaNombre,cantidad,unidad,lote,fechaCaducidad,ubicacion,proveedor,estado,observaciones,codigoBarra,codigoQR,minimo,maximo,fecha_registro,fechaActualizacion, unidades:material_unidad(id)')
       .eq('almacenId', almacenId)
       .order('id', { ascending: false })
     if (error) throw error
@@ -64,7 +64,7 @@ export async function GET(req: NextRequest) {
       codigoQR: m.codigoQR,
       minimo: m.minimo,
       maximo: m.maximo,
-      fechaRegistro: m.fechaRegistro,
+      fechaRegistro: (m as any).fecha_registro,
       fechaActualizacion: m.fechaActualizacion,
       _count: { unidades: (m as any).unidades?.length ?? 0 },
     }))
