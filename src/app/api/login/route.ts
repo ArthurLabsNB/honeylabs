@@ -42,8 +42,8 @@ export async function POST (req: NextRequest) {
       .select(`
         id, nombre, correo, contrasena, tipo_cuenta, estado,
         entidad ( id, nombre, tipo, plan_id ),
-        roles:_RolToUsuario (
-          rol:Rol ( id, nombre, descripcion, permisos )
+        roles:"_RolToUsuario" (
+          rol:"Rol" ( id, nombre, descripcion, permisos )
         )
       `)
       .ilike('correo', email)
@@ -96,18 +96,24 @@ export async function POST (req: NextRequest) {
         : null
 
     /* 4. Crear sesión */
-    const { data: sesion } = await db
+    const { data: sesion, error: sesErr } = await db
       .from('sesion_usuario')
       .insert({
         usuario_id: usuario.id,
         user_agent: req.headers.get('user-agent') ?? null,
-        ip:
+        ip: (
           req.headers.get('x-real-ip') ??
           req.headers.get('x-forwarded-for') ??
-          null,
+          null
+        ),
       })
       .select('id')
       .single()
+
+    if (sesErr || !sesion?.id) {
+      logger.error('[LOGIN_SESSION_INSERT]', { sesErr })
+      return jsonError('No se pudo crear la sesión', 500)
+    }
 
     /* 5. Firmar JWT + cookie */
     const token = jwt.sign(
