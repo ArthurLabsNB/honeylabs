@@ -18,35 +18,38 @@ model Plan {
   entidades     Entidad[]
   suscripciones Suscripcion[]
   usuarios      Usuario[]
+  @@map("plan")
 }
 
 model Suscripcion {
   id          Int       @id @default(autoincrement())
-  usuarioId   Int?
-  entidadId   Int?
-  planId      Int
-  fechaInicio DateTime  @default(now())
-  fechaFin    DateTime?
+  usuarioId   Int?      @map("usuario_id")
+  entidadId   Int?      @map("entidad_id")
+  planId      Int       @map("plan_id")
+  fechaInicio DateTime  @default(now()) @map("fecha_inicio")
+  fechaFin    DateTime? @map("fecha_fin")
   activo      Boolean   @default(true)
   entidad     Entidad?  @relation(fields: [entidadId], references: [id])
   plan        Plan      @relation(fields: [planId], references: [id])
   usuario     Usuario?  @relation(fields: [usuarioId], references: [id])
+  @@map("suscripcion")
 }
 
 model Entidad {
   id             Int           @id @default(autoincrement())
   nombre         String
   tipo           String
-  correoContacto String
+  correoContacto String        @map("correo_contacto")
   telefono       String?
   direccion      String?
-  fechaCreacion  DateTime      @default(now())
-  planId         Int?
+  fechaCreacion  DateTime      @default(now()) @map("fecha_creacion")
+  planId         Int?          @map("plan_id")
   almacenes      Almacen[]
   plan           Plan?         @relation(fields: [planId], references: [id])
   roles          Rol[]
   suscripciones  Suscripcion[]
   usuarios       Usuario[]
+  @@map("entidad")
 }
 
 model Usuario {
@@ -55,22 +58,22 @@ model Usuario {
   apellidos            String
   correo               String                 @unique
   contrasena           String
-  googleId             String?
-  tipoCuenta           String
+  googleId             String?                @map("google_id")
+  tipoCuenta           String                 @map("tipo_cuenta")
   estado               String                 @default("pendiente")
-  fechaRegistro        DateTime               @default(now())
+  fechaRegistro        DateTime               @default(now()) @map("fecha_registro")
   entidadId            Int?                   @map("entidad_id")
-  archivoBuffer        Bytes?
-  archivoNombre        String?
-  codigoUsado          String?
-  planId               Int?
-  codigo2FASecret      String?
-  fotoPerfil           Bytes?
-  fotoPerfilNombre     String?
-  metodo2FA            String?
+  archivoBuffer        Bytes?                 @map("archivo_buffer")
+  archivoNombre        String?                @map("archivo_nombre")
+  codigoUsado          String?                @map("codigo_usado")
+  planId               Int?                   @map("plan_id")
+  codigo2FASecret      String?                @map("codigo_2fa_secret")
+  fotoPerfil           Bytes?                 @map("foto_perfil")
+  fotoPerfilNombre     String?                @map("foto_perfil_nombre")
+  metodo2FA            String?                @map("metodo_2fa")
   preferencias         String?
-  tiene2FA             Boolean?               @default(false)
-  esSuperAdmin         Boolean?               @default(false)
+  tiene2FA             Boolean?               @default(false) @map("tiene_2fa")
+  esSuperAdmin         Boolean?               @default(false) @map("es_super_admin")
   archivosMaterial     ArchivoMaterial[]
   archivosUnidad       ArchivoUnidad[]
   auditLogs            AuditLog[]
@@ -108,6 +111,7 @@ model Usuario {
   plan                 Plan?                  @relation(fields: [planId], references: [id])
   almacenes            UsuarioAlmacen[]
   roles                Rol[]                  @relation("RolToUsuario")
+  @@map("usuario")
 }
 
 model BitacoraCambioPerfil {
@@ -120,13 +124,14 @@ model BitacoraCambioPerfil {
 
 model SesionUsuario {
   id          Int      @id @default(autoincrement())
-  usuarioId   Int
-  userAgent   String?
+  usuarioId   Int      @map("usuario_id")
+  userAgent   String?  @map("user_agent")
   ip          String?
-  fechaInicio DateTime @default(now())
-  fechaUltima DateTime @default(now())
+  fechaInicio DateTime @default(now()) @map("fecha_inicio")
+  fechaUltima DateTime @default(now()) @map("fecha_ultima")
   activa      Boolean  @default(true)
   usuario     Usuario  @relation(fields: [usuarioId], references: [id])
+  @@map("sesion_usuario")
 }
 
 model Rol {
