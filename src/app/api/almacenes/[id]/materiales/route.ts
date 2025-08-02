@@ -2,7 +2,7 @@ export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@lib/db'
-import type { Prisma } from '@prisma/client'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import { materialSchema } from '@/lib/validators/material'
 import { getUsuarioFromSession } from '@lib/auth'
 import { hasManagePerms } from '@lib/permisos'
@@ -21,7 +21,7 @@ function getAlmacenIdFromRequest(req: NextRequest): number | null {
 }
 
 export async function GET(req: NextRequest) {
-  const prisma = getDb().client as any
+  const db = getDb().client as SupabaseClient
   logger.debug(req, 'GET /api/almacenes/[id]/materiales')
   try {
     const usuario = await getUsuarioFromSession(req)
@@ -30,39 +30,44 @@ export async function GET(req: NextRequest) {
     if (!almacenId) {
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
     }
-    const pertenece = await prisma.usuarioAlmacen.findFirst({
-      where: { usuarioId: usuario.id, almacenId },
-      select: { id: true },
-    })
+    const { data: pertenece, error: perError } = await db
+      .from('usuario_almacen')
+      .select('id')
+      .eq('usuarioId', usuario.id)
+      .eq('almacenId', almacenId)
+      .maybeSingle()
+    if (perError) throw perError
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
     }
 
-    const materiales = await prisma.material.findMany({
-      where: { almacenId },
-      orderBy: { id: 'desc' },
-      select: {
-        id: true,
-        nombre: true,
-        descripcion: true,
-        miniaturaNombre: true,
-        cantidad: true,
-        unidad: true,
-        lote: true,
-        fechaCaducidad: true,
-        ubicacion: true,
-        proveedor: true,
-        estado: true,
-        observaciones: true,
-        codigoBarra: true,
-        codigoQR: true,
-        minimo: true,
-        maximo: true,
-        fechaRegistro: true,
-        fechaActualizacion: true,
-        _count: { select: { unidades: true } },
-      },
-    })
+    const { data: rows, error } = await db
+      .from('material')
+      .select('id,nombre,descripcion,miniaturaNombre,cantidad,unidad,lote,fechaCaducidad,ubicacion,proveedor,estado,observaciones,codigoBarra,codigoQR,minimo,maximo,fechaRegistro,fechaActualizacion, unidades:material_unidad(id)')
+      .eq('almacenId', almacenId)
+      .order('id', { ascending: false })
+    if (error) throw error
+    const materiales = (rows ?? []).map((m) => ({
+      id: m.id,
+      nombre: m.nombre,
+      descripcion: m.descripcion,
+      miniaturaNombre: m.miniaturaNombre,
+      cantidad: m.cantidad,
+      unidad: m.unidad,
+      lote: m.lote,
+      fechaCaducidad: m.fechaCaducidad,
+      ubicacion: m.ubicacion,
+      proveedor: m.proveedor,
+      estado: m.estado,
+      observaciones: m.observaciones,
+      codigoBarra: m.codigoBarra,
+      codigoQR: m.codigoQR,
+      minimo: m.minimo,
+      maximo: m.maximo,
+      fechaRegistro: m.fechaRegistro,
+      fechaActualizacion: m.fechaActualizacion,
+      _count: { unidades: (m as any).unidades?.length ?? 0 },
+    }))
 
     const res = NextResponse.json({ materiales })
     logger.info(req, `Listados ${materiales.length} materiales`)
@@ -74,7 +79,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const prisma = getDb().client as any
+  const db = getDb()
+  const client = db.client as SupabaseClient
   logger.debug(req, 'POST /api/almacenes/[id]/materiales')
   try {
     const usuario = await getUsuarioFromSession(req)
@@ -83,10 +89,13 @@ export async function POST(req: NextRequest) {
     if (!almacenId) {
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
     }
-    const pertenece = await prisma.usuarioAlmacen.findFirst({
-      where: { usuarioId: usuario.id, almacenId },
-      select: { id: true },
-    })
+    const { data: pertenece, error: perError } = await client
+      .from('usuario_almacen')
+      .select('id')
+      .eq('usuarioId', usuario.id)
+      .eq('almacenId', almacenId)
+      .maybeSingle()
+    if (perError) throw perError
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
     }
@@ -94,7 +103,6 @@ export async function POST(req: NextRequest) {
     let miniaturaNombre: string | null = null
     let miniaturaBuffer: Buffer | null = null
     let datos: any = {}
-
     let reportFiles: File[] = []
 
     if (req.headers.get('content-type')?.includes('multipart/form-data')) {
@@ -130,6 +138,7 @@ export async function POST(req: NextRequest) {
     } else {
       datos = await req.json()
     }
+
     const parsed = materialSchema.partial().safeParse(datos)
     if (!parsed.success) {
       const issue = parsed.error.issues[0]
@@ -164,9 +173,10 @@ export async function POST(req: NextRequest) {
 
     miniaturaNombre = parsed.data.miniaturaNombre ?? miniaturaNombre
 
-    const material = await prisma.$transaction(async (tx) => {
-      const creado = await tx.material.create({
-        data: {
+    const material = await db.transaction(async (tx) => {
+      const { data: creado, error } = await tx
+        .from('material')
+        .insert({
           nombre: nombre ?? '',
           descripcion,
           miniatura: miniaturaBuffer as any,
@@ -184,21 +194,26 @@ export async function POST(req: NextRequest) {
           minimo,
           maximo,
           reorderLevel,
-          almacen: { connect: { id: almacenId } },
-          usuario: { connect: { id: usuario.id } },
-        },
-        select: { id: true, nombre: true, miniaturaNombre: true },
-      })
-      await tx.usuarioAlmacen.upsert({
-        where: { usuarioId_almacenId: { usuarioId: usuario.id, almacenId } },
-        update: {},
-        create: { usuarioId: usuario.id, almacenId, rolEnAlmacen: 'creador' },
-      })
+          almacenId,
+          usuarioId: usuario.id,
+        })
+        .select('id, nombre, miniaturaNombre')
+        .single()
+      if (error) throw error
+      await tx
+        .from('usuario_almacen')
+        .upsert(
+          { usuarioId: usuario.id, almacenId, rolEnAlmacen: 'creador' },
+          { onConflict: 'usuarioId,almacenId' },
+        )
       await snapshotMaterial(tx, creado.id, usuario.id, 'Creación')
       return creado
     })
 
-    await logAudit(usuario.id, 'creacion_material', 'almacen', { almacenId, materialId: material.id })
+    await logAudit(usuario.id, 'creacion_material', 'almacen', {
+      almacenId,
+      materialId: material.id,
+    })
 
     const { auditoria, error: auditError } = await registrarAuditoria(
       req,
@@ -219,22 +234,33 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const db = getDb().client as SupabaseClient
   try {
     const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const almacenId = getAlmacenIdFromRequest(req)
     if (!almacenId) return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
-    const pertenece = await prisma.usuarioAlmacen.findFirst({
-      where: { usuarioId: usuario.id, almacenId },
-      select: { id: true },
-    })
+    const { data: pertenece, error: perError } = await db
+      .from('usuario_almacen')
+      .select('id')
+      .eq('usuarioId', usuario.id)
+      .eq('almacenId', almacenId)
+      .maybeSingle()
+    if (perError) throw perError
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
     }
-    await prisma.historialLote.deleteMany({ where: { material: { almacenId } } })
-    await prisma.materialUnidad.deleteMany({ where: { material: { almacenId } } })
-    await prisma.archivoMaterial.deleteMany({ where: { material: { almacenId } } })
-    await prisma.material.deleteMany({ where: { almacenId } })
+    const { data: mats } = await db
+      .from('material')
+      .select('id')
+      .eq('almacenId', almacenId)
+    const matIds = (mats ?? []).map((m) => m.id)
+    if (matIds.length > 0) {
+      await db.from('historial_lote').delete().in('materialId', matIds)
+      await db.from('material_unidad').delete().in('materialId', matIds)
+      await db.from('archivo_material').delete().in('materialId', matIds)
+    }
+    await db.from('material').delete().eq('almacenId', almacenId)
     await logAudit(usuario.id, 'eliminacion_materiales', 'almacen', { almacenId })
 
     const { auditoria, error: auditError } = await registrarAuditoria(
@@ -245,14 +271,12 @@ export async function DELETE(req: NextRequest) {
       { accion: 'vaciar_materiales' },
     )
 
-    await prisma.alerta.create({
-      data: {
-        titulo: 'Eliminación masiva de materiales',
-        mensaje: 'Se eliminaron todos los materiales del almacén',
-        prioridad: 'ALTA',
-        tipo: 'eliminacion_masiva',
-        almacenId,
-      },
+    await db.from('alerta').insert({
+      titulo: 'Eliminación masiva de materiales',
+      mensaje: 'Se eliminaron todos los materiales del almacén',
+      prioridad: 'ALTA',
+      tipo: 'eliminacion_masiva',
+      almacenId,
     })
     emitEvent({ type: 'alertas_update', payload: { almacenId } })
 

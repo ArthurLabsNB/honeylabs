@@ -6,6 +6,9 @@ import { prisma } from '@lib/db/prisma'
 import * as auth from '../lib/auth'
 import * as permisos from '../lib/permisos'
 import * as reporter from '../lib/reporter'
+import * as db from '../lib/db'
+import * as snapshot from '../src/lib/snapshot'
+import * as audit from '../src/lib/audit'
 
 afterEach(() => vi.restoreAllMocks())
 
@@ -26,20 +29,33 @@ describe('materiales orden y asociacion', () => {
   it('POST crea asociacion usuarioAlmacen', async () => {
     vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue({ id: 5 } as any)
     vi.spyOn(permisos, 'hasManagePerms').mockReturnValue(true)
-    vi.spyOn(prisma.usuarioAlmacen, 'findFirst').mockResolvedValue({ id: 1 } as any)
-
-    const createMaterial = vi.fn().mockResolvedValue({ id: 10 })
-    const upsertRel = vi.fn().mockResolvedValue({})
-    const findUnique = vi.fn().mockResolvedValue(null)
-    const createHist = vi.fn().mockResolvedValue({})
-
-    vi.spyOn(prisma, '$transaction').mockImplementation(async (cb: any) => {
-      return cb({
-        material: { create: createMaterial, findUnique: findUnique },
-        usuarioAlmacen: { upsert: upsertRel },
-        historialLote: { create: createHist },
-      })
-    })
+    const from = vi.fn(() => ({
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      maybeSingle: vi.fn().mockResolvedValue({ data: { id: 1 }, error: null }),
+    }))
+    const upsertRel = vi.fn().mockResolvedValue({ data: {}, error: null })
+    const txFrom = (table: string) => {
+      if (table === 'material') {
+        return {
+          insert: vi.fn().mockReturnValue({
+            select: vi.fn().mockReturnValue({
+              single: vi.fn().mockResolvedValue({ data: { id: 10, nombre: '', miniaturaNombre: null }, error: null }),
+            }),
+          }),
+        }
+      }
+      if (table === 'usuario_almacen') {
+        return { upsert: upsertRel }
+      }
+      return {}
+    }
+    vi.spyOn(db, 'getDb').mockReturnValue({
+      client: { from },
+      transaction: (cb: any) => cb({ from: txFrom }),
+    } as any)
+    vi.spyOn(snapshot, 'snapshotMaterial').mockResolvedValue(undefined as any)
+    vi.spyOn(audit, 'logAudit').mockResolvedValue(undefined as any)
 
     const form = new FormData()
     form.set('nombre', 'nuevo123')
