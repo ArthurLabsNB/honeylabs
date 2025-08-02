@@ -2,8 +2,9 @@
 export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from "next/server";
-import { getDb } from '@lib/db'
-import type { SupabaseClient } from '@supabase/supabase-js'
+import { getDb } from '@lib/db';
+import type { Prisma } from '@prisma/client'
+
 import crypto from "node:crypto";
 import { getUsuarioFromSession } from "@lib/auth";
 import { hasManagePerms, normalizeTipoCuenta } from "@lib/permisos";
@@ -24,6 +25,7 @@ const IMAGE_TYPES = [
 
 
 export async function GET(req: NextRequest) {
+  const prisma = getDb().client as any
   try {
     const usuario = await getUsuarioFromSession(req);
     if (!usuario) {
@@ -188,6 +190,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const prisma = getDb().client as any
   try {
     const usuario = await getUsuarioFromSession(req);
     if (!usuario) {

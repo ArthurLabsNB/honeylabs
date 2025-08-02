@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@lib/db/prisma'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import { getDb } from '@lib/db'
 import { createHash } from 'crypto'
 import * as logger from '@lib/logger'
 
@@ -17,19 +18,26 @@ export async function GET(req: NextRequest) {
     const nombre = url.searchParams.get('nombre')
     const idParam = url.searchParams.get('id')
 
-    let almacen: { imagen: Buffer | Uint8Array | null; imagenNombre: string | null } | null = null
+    const db = getDb().client as SupabaseClient
+    let almacen: { imagen: any | null; imagenNombre: string | null } | null = null
 
     if (nombre) {
-      almacen = await prisma.almacen.findFirst({
-        where: { imagenNombre: { equals: nombre, mode: 'insensitive' } },
-        select: { imagen: true, imagenNombre: true },
-      })
+      const { data, error } = await db
+        .from('almacen')
+        .select('imagen,imagenNombre')
+        .ilike('imagenNombre', nombre)
+        .maybeSingle()
+      if (error) throw error
+      almacen = data
     } else if (idParam) {
       const id = Number(idParam)
-      almacen = await prisma.almacen.findUnique({
-        where: { id },
-        select: { imagen: true, imagenNombre: true },
-      })
+      const { data, error } = await db
+        .from('almacen')
+        .select('imagen,imagenNombre')
+        .eq('id', id)
+        .maybeSingle()
+      if (error) throw error
+      almacen = data
     } else {
       return NextResponse.json({ error: 'Parámetros requeridos' }, { status: 400 })
     }

@@ -106,12 +106,34 @@ function isSupabase(db: any): db is SupabaseClient {
 }
 
 export async function snapshotAlmacen(
-  db: SnapshotDb,
+  db: SnapshotDb | SupabaseClient,
   almacenId: number,
   usuarioId: number,
   descripcion: string,
 ) {
-  const almacen = await db.almacen.findUnique({
+  if (isSupabase(db)) {
+    const { data: almacen } = await db
+      .from('almacen')
+      .select('nombre,descripcion,imagen,imagenNombre,imagenUrl,codigoUnico')
+      .eq('id', almacenId)
+      .single()
+    const estado = almacen
+      ? {
+          ...almacen,
+          imagen: almacen.imagen
+            ? Buffer.from(almacen.imagen as any).toString('base64')
+            : null,
+        }
+      : null
+    await db.from('historial_almacen').insert({
+      almacenId,
+      usuarioId,
+      descripcion,
+      estado,
+    })
+    return
+  }
+  const almacen = await (db as SnapshotDb).almacen.findUnique({
     where: { id: almacenId },
     select: {
       nombre: true,
@@ -130,7 +152,7 @@ export async function snapshotAlmacen(
           : null,
       }
     : null
-  await db.historialAlmacen.create({
+  await (db as SnapshotDb).historialAlmacen.create({
     data: { almacenId, usuarioId, descripcion, estado },
   })
 }

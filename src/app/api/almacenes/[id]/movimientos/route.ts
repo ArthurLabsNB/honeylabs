@@ -1,7 +1,8 @@
 export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@lib/db/prisma';
+import type { SupabaseClient } from '@supabase/supabase-js'
+import { getDb } from '@lib/db'
 import { getUsuarioFromSession } from '@lib/auth';
 import { hasManagePerms, hasPermission } from '@lib/permisos';
 import { logAudit } from '@/lib/audit';
@@ -25,10 +26,13 @@ export async function POST(req: NextRequest) {
     if (!id) {
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 });
     }
-    const pertenece = await prisma.usuarioAlmacen.findFirst({
-      where: { usuarioId: usuario.id, almacenId: id },
-      select: { id: true },
-    });
+    const db = getDb().client as SupabaseClient
+    const { data: pertenece } = await db
+      .from('usuario_almacen')
+      .select('id')
+      .eq('usuarioId', usuario.id)
+      .eq('almacenId', id)
+      .maybeSingle();
     if (
       !pertenece &&
       !hasManagePerms(usuario) &&
@@ -45,22 +49,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Cantidad inválida' }, { status: 400 });
     }
 
-    await prisma.$transaction(async (tx) => {
-      await tx.movimiento.create({
-        data: {
-          tipo,
-          cantidad: n,
-          descripcion: descripcion || undefined,
-          contexto: contexto ?? undefined,
-          almacenId: id,
-          usuarioId: usuario.id,
-        },
-      })
-      await logAudit(usuario.id, 'movimiento', 'almacen', {
-        tipo,
-        cantidad: n,
-        almacenId: id,
-      })
+    const { error } = await db.from('movimiento').insert({
+      tipo,
+      cantidad: n,
+      descripcion: descripcion || null,
+      contexto: contexto ?? null,
+      almacenId: id,
+      usuarioId: usuario.id,
+    })
+    if (error) throw error
+    await logAudit(usuario.id, 'movimiento', 'almacen', {
+      tipo,
+      cantidad: n,
+      almacenId: id,
     })
 
     const { auditoria, error: auditError } = await registrarAuditoria(
@@ -88,26 +89,23 @@ export async function GET(req: NextRequest) {
     if (!id) {
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 });
     }
-    const pertenece = await prisma.usuarioAlmacen.findFirst({
-      where: { usuarioId: usuario.id, almacenId: id },
-      select: { id: true },
-    });
+    const db = getDb().client as SupabaseClient
+    const { data: pertenece } = await db
+      .from('usuario_almacen')
+      .select('id')
+      .eq('usuarioId', usuario.id)
+      .eq('almacenId', id)
+      .maybeSingle();
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
     }
-    const movimientos = await prisma.movimiento.findMany({
-      where: { almacenId: id },
-      orderBy: { fecha: 'desc' },
-      take: 20,
-      select: {
-        id: true,
-        tipo: true,
-        cantidad: true,
-        fecha: true,
-        descripcion: true,
-        usuario: { select: { nombre: true } },
-      },
-    });
+    const { data: movimientos, error } = await db
+      .from('movimiento')
+      .select('id,tipo,cantidad,fecha,descripcion,usuario:usuario(nombre)')
+      .eq('almacenId', id)
+      .order('fecha', { ascending: false })
+      .limit(20)
+    if (error) throw error
     return NextResponse.json({ movimientos });
   } catch (err) {
     logger.error('GET /api/almacenes/[id]/movimientos', err);
