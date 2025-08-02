@@ -50,7 +50,9 @@ export async function GET(req: NextRequest) {
       .select(camel)
       .eq('almacenId', almacenId)
       .order('id', { ascending: false })
+
     if (error) {
+      // Fallback a snake_case cuando Supabase lanza error por columnas camel
       const fb = await db
         .from('material')
         .select(snake)
