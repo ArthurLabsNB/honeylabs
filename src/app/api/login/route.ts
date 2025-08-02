@@ -156,7 +156,7 @@ export async function POST(req: NextRequest) {
 
     const db = getDb().client as SupabaseClient
     const { data: usuario, error } = await db
-      .from('usuario')
+      .from('Usuario')
       .select(
         `id,nombre,correo,contrasena,tipoCuenta,estado,entidad:entidadId(id,nombre,tipo,planId),roles:rol(id,nombre,descripcion,permisos,_RolToUsuario!inner(usuarioId)),suscripciones:suscripcion(id,plan:planId(nombre,limites),fechaFin,activo)`
       )
