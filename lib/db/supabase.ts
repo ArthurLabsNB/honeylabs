@@ -14,9 +14,34 @@ function getClient() {
   return client
 }
 
+async function runTransaction<T>(fn: (tx: SupabaseClient) => Promise<T>): Promise<T> {
+  const db = getClient()
+  try {
+    await db.rpc('tx_begin')
+  } catch {
+    /* transacciones no soportadas; continuar sin BEGIN */
+  }
+  try {
+    const res = await fn(db)
+    try {
+      await db.rpc('tx_commit')
+    } catch {
+      /* ignore commit error when rpc missing */
+    }
+    return res
+  } catch (err) {
+    try {
+      await db.rpc('tx_rollback')
+    } catch {
+      /* ignore rollback error */
+    }
+    throw err
+  }
+}
+
 export const SupabaseAdapter: DbClient = {
   get client() {
     return getClient()
   },
-  transaction: async (fn) => fn(getClient() as DbTransaction),
+  transaction: runTransaction as unknown as DbClient['transaction'],
 }

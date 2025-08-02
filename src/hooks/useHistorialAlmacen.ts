@@ -20,7 +20,7 @@ export default function useHistorialAlmacen(almacenId?: number | string) {
   })
 
   return {
-    historial: (data?.historial as HistorialAlmacenEntry[]) ?? [],
+    historial: (data?.historial ?? data?.data ?? []) as HistorialAlmacenEntry[],
     loading: isLoading,
     error,
     mutate,
