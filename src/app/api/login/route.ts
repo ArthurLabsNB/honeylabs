@@ -44,10 +44,6 @@ export async function POST (req: NextRequest) {
         entidad:entidad_id ( id, nombre, tipo, plan_id ),
         roles:rol_usuario!inner(
           rol:Rol ( id, nombre, descripcion, permisos )
-        ),
-        suscripciones:suscripcion!inner(
-          id, activo, fecha_fin,
-          plan:plan_id ( nombre, limites )
         )
       `)
       .eq('correo', email)
@@ -75,7 +71,16 @@ export async function POST (req: NextRequest) {
       permisos: parseJson(rol.permisos),
     }))
 
-    const susActiva = (usuario.suscripciones ?? []).find(s => s.activo)
+    const { data: susActiva } = await db
+      .from('suscripcion')
+      .select(`
+        id, fecha_fin,
+        plan:plan_id ( nombre, limites )
+      `)
+      .eq('usuario_id', usuario.id)
+      .eq('activo', true)
+      .maybeSingle()
+
     const plan =
       susActiva && susActiva.plan
         ? {

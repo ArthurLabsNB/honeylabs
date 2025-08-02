@@ -1,18 +1,24 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { NextRequest } from 'next/server'
-import { prisma } from '@lib/db/prisma'
 import bcrypt from 'bcryptjs'
 
-process.env.JWT_SECRET = 'test-secret'
-process.env.DB_PROVIDER = 'prisma'
+vi.mock('@lib/db', () => ({ getDb: vi.fn() }))
 
+process.env.JWT_SECRET = 'test-secret'
+
+const { getDb } = await import('@lib/db')
 const { POST } = await import('../src/app/api/login/route')
 
 afterEach(() => vi.restoreAllMocks())
 
 describe('login', () => {
   it('retorna 401 si el usuario no existe', async () => {
-    vi.spyOn(prisma.usuario, 'findUnique').mockResolvedValue(null as any)
+    const from = vi.fn().mockReturnValue({
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
+    })
+    vi.mocked(getDb).mockReturnValue({ client: { from } } as any)
     const req = new NextRequest('http://localhost/api/login', {
       method: 'POST',
       body: JSON.stringify({ correo: 'no@user.com', contrasena: 'pass' }),
@@ -22,17 +28,24 @@ describe('login', () => {
   })
 
   it('retorna 403 si la cuenta no está activa', async () => {
-    vi.spyOn(prisma.usuario, 'findUnique').mockResolvedValue({
-      id: 1,
-      nombre: 'Test',
-      correo: 'test@user.com',
-      contrasena: 'hash',
-      tipoCuenta: 'individual',
-      estado: 'pendiente',
-      entidad: null,
-      roles: [],
-      suscripciones: [],
-    } as any)
+    const from = vi.fn().mockReturnValue({
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      maybeSingle: vi.fn().mockResolvedValue({
+        data: {
+          id: 1,
+          nombre: 'Test',
+          correo: 'test@user.com',
+          contrasena: 'hash',
+          tipo_cuenta: 'individual',
+          estado: 'pendiente',
+          entidad: null,
+          roles: [],
+        },
+        error: null,
+      }),
+    })
+    vi.mocked(getDb).mockReturnValue({ client: { from } } as any)
     vi.spyOn(bcrypt, 'compare').mockResolvedValue(true as any)
     const req = new NextRequest('http://localhost/api/login', {
       method: 'POST',
@@ -45,7 +58,7 @@ describe('login', () => {
   it('retorna 400 si los campos no son válidos', async () => {
     const req = new NextRequest('http://localhost/api/login', {
       method: 'POST',
-      body: JSON.stringify({ correo: 123, contrasena: {} }),
+      body: JSON.stringify({ correo: '', contrasena: '' }),
     })
     const res = await POST(req)
     expect(res.status).toBe(400)
