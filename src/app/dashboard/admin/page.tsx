@@ -18,7 +18,7 @@ import { apiFetch } from "@lib/api";
 import { jsonOrNull } from "@lib/http";
 import Spinner from "@/components/Spinner";
 import useSession from "@/hooks/useSession";
-import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
+import { getMainRole, normalizeRol, normalizeTipoCuenta } from "@lib/permisos";
 
 /* ---------------------------------- Types --------------------------------- */
 interface Stats {
@@ -38,9 +38,13 @@ function useAdminGuard() {
   if (loading) return { state: "loading" as const };
   if (!usuario) return { state: "unauthenticated" as const };
 
-  const role = getMainRole(usuario)?.toLowerCase();
+  const _role = getMainRole(usuario);
+  const role = normalizeRol(
+    typeof _role === "string" ? _role : _role?.nombre,
+  );
   const tipo = normalizeTipoCuenta(usuario.tipoCuenta);
-  const authorized = role === "admin" || role === "administrador" || allowedTipos.includes(tipo);
+  const authorized =
+    role === "admin" || role === "administrador" || allowedTipos.includes(tipo);
 
   return { state: authorized ? "authorized" : "forbidden" } as const;
 }

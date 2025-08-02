@@ -4,7 +4,7 @@ import { jsonOrNull } from "@lib/http";
 import { apiFetch } from "@lib/api";
 import type { Usuario } from "@/types/usuario";
 import useSession from "@/hooks/useSession";
-import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
+import { getMainRole, normalizeRol, normalizeTipoCuenta } from "@lib/permisos";
 import Spinner from "@/components/Spinner";
 
 interface Reporte {
@@ -29,7 +29,10 @@ export default function ReportesPage() {
       setError("Debes iniciar sesión");
       return;
     }
-    const rol = getMainRole(usuario)?.toLowerCase();
+    const _role = getMainRole(usuario);
+    const rol = normalizeRol(
+      typeof _role === "string" ? _role : _role?.nombre,
+    );
     const tipo = normalizeTipoCuenta(usuario.tipoCuenta);
     if (rol !== "admin" && rol !== "administrador" && !allowed.includes(tipo)) {
       setError("No autorizado");
