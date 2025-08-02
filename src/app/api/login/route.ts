@@ -209,7 +209,7 @@ export async function POST(req: NextRequest) {
       : null
 
     const { data: session } = await db
-      .from('sesionUsuario')
+      .from('SesionUsuario')
       .insert({
         usuarioId: usuario.id,
         userAgent: req.headers.get('user-agent') || null,
@@ -304,7 +304,7 @@ export async function DELETE(req: NextRequest) {
         } else {
           const db = getDb().client as SupabaseClient
           await db
-            .from('sesionUsuario')
+            .from('SesionUsuario')
             .update({ activa: false, fechaUltima: new Date().toISOString() })
             .eq('id', decoded.sid)
         }
