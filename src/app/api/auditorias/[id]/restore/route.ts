@@ -1,8 +1,8 @@
 export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@lib/db/prisma'
-import { Prisma } from '@prisma/client'
+import { getDb } from '@lib/db'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
 import { registrarAuditoria } from '@lib/reporter'
@@ -20,19 +20,29 @@ export async function POST(req: NextRequest) {
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const id = getAuditoriaId(req)
     if (!id) return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
-
-    const auditoria = await prisma.auditoria.findUnique({ where: { id } })
+    const db = getDb().client as SupabaseClient
+    const { data: auditoria, error } = await db
+      .from('auditoria')
+      .select('tipo,observaciones')
+      .eq('id', id)
+      .single()
+    if (error) throw error
     if (!auditoria) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
 
     const datos = auditoria.observaciones ? JSON.parse(auditoria.observaciones) : {}
     let creado: any
-
     if (auditoria.tipo === 'almacen') {
-      creado = await prisma.almacen.create({ data: datos, select: { id: true } })
+      const { data, error: e } = await db.from('almacen').insert(datos).select('id').single()
+      if (e) throw e
+      creado = data
     } else if (auditoria.tipo === 'material') {
-      creado = await prisma.material.create({ data: datos, select: { id: true } })
+      const { data, error: e } = await db.from('material').insert(datos).select('id').single()
+      if (e) throw e
+      creado = data
     } else if (auditoria.tipo === 'unidad') {
-      creado = await prisma.materialUnidad.create({ data: datos, select: { id: true } })
+      const { data, error: e } = await db.from('materialUnidad').insert(datos).select('id').single()
+      if (e) throw e
+      creado = data
     } else {
       return NextResponse.json({ error: 'Tipo desconocido' }, { status: 400 })
     }
@@ -47,16 +57,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, auditoria: nuevaAuditoria, auditError })
   } catch (err) {
-    if (
-      err instanceof Prisma.PrismaClientKnownRequestError &&
-      err.code === 'P2021'
-    ) {
-      logger.error('POST /api/auditorias/[id]/restore', err)
-      return NextResponse.json(
-        { error: 'Base de datos no inicializada.' },
-        { status: 500 },
-      )
-    }
     logger.error('POST /api/auditorias/[id]/restore', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
   }
