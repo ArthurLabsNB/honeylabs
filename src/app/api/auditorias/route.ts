@@ -66,6 +66,7 @@ export async function POST(req: NextRequest) {
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
 
     let raw: any
+    let files: File[] = []
     if (req.headers.get('content-type')?.includes('multipart/form-data')) {
       const form = await req.formData()
       raw = {
@@ -74,6 +75,7 @@ export async function POST(req: NextRequest) {
         categoria: form.get('categoria'),
         observaciones: form.get('observaciones'),
       }
+      files = form.getAll('files') as File[]
     } else {
       raw = await req.json()
     }
@@ -84,14 +86,6 @@ export async function POST(req: NextRequest) {
     }
 
     const { tipo, objetoId, categoria, observaciones } = parsed.data
-    const db = getDb()
-    const insert: any = { tipo, categoria, observaciones, usuarioId: usuario.id }
-    const where: any = { tipo }
-    const obj = Number(objetoId)
-    if (tipo === 'almacen') { insert.almacenId = obj; where.almacenId = obj }
-    if (tipo === 'material') { insert.materialId = obj; where.materialId = obj }
-    if (tipo === 'unidad') { insert.unidadId = obj; where.unidadId = obj }
-
     const db = getDb().client as SupabaseClient
     const where: Record<string, any> = { tipo }
     const data: Record<string, any> = {
@@ -100,18 +94,17 @@ export async function POST(req: NextRequest) {
       categoria,
       usuarioId: usuario.id,
     }
-    const objId = objetoId
     if (tipo === 'almacen') {
-      data.almacenId = objId
-      where.almacenId = objId
+      data.almacenId = objetoId
+      where.almacenId = objetoId
     }
     if (tipo === 'material') {
-      data.materialId = objId
-      where.materialId = objId
+      data.materialId = objetoId
+      where.materialId = objetoId
     }
     if (tipo === 'unidad') {
-      data.unidadId = objId
-      where.unidadId = objId
+      data.unidadId = objetoId
+      where.unidadId = objetoId
     }
 
     const auditoria = await getDb().transaction(async (tx: SupabaseClient) => {
