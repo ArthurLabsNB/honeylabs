@@ -143,9 +143,11 @@ export async function POST(req: NextRequest) {
   const db = getDb().client as SupabaseClient;
 
   try {
+    logger.info('[ALM_CREATE] hit', { ct: req.headers.get('content-type') });
     const usuario = await getUsuarioFromSession(req);
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     if (!hasManagePerms(usuario)) return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
+    logger.info('[ALM_CREATE] user', { id: usuario?.id, entidadId: usuario?.entidadId });
 
     // parse body
     let nombre = '';
