@@ -62,7 +62,8 @@ export async function PUT(req: NextRequest) {
     });
     paneles[idx] = { ...actual, ...data, fechaMod: new Date().toISOString(), historial };
     prefs.paneles = paneles;
-    const { error } = await supabase
+    const db = getDb().client as SupabaseClient;
+    const { error } = await db
       .from('usuario')
       .update({ preferencias: JSON.stringify(prefs) })
       .eq('id', usuario.id);
@@ -83,7 +84,9 @@ export async function DELETE(req: NextRequest) {
     const prefs = safeParse<Record<string, any>>(usuario.preferencias, {});
     const paneles = Array.isArray(prefs.paneles) ? prefs.paneles.filter((p: any) => p.id !== id) : [];
     prefs.paneles = paneles;
-    const { error } = await supabase
+    const db = getDb().client as SupabaseClient;
+    const { error } = await db
+
       .from('usuario')
       .update({ preferencias: JSON.stringify(prefs) })
       .eq('id', usuario.id);

@@ -59,7 +59,9 @@ export async function POST(req: NextRequest) {
     });
     prefs.paneles = paneles;
 
-    const { error } = await supabase
+    const db = getDb().client as SupabaseClient;
+    const { error } = await db
+
       .from('usuario')
       .update({ preferencias: JSON.stringify(prefs) })
       .eq('id', usuario.id);
