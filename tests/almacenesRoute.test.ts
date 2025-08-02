@@ -3,21 +3,33 @@ import { GET } from '../src/app/api/almacenes/route'
 import { NextRequest } from 'next/server'
 import * as auth from '../lib/auth'
 import * as permisos from '../lib/permisos'
-import { prisma } from '@lib/db/prisma'
 import * as db from '../lib/db'
+
+function createQuery(result: any) {
+  const builder: any = {
+    select: vi.fn().mockReturnThis(),
+    eq: vi.fn().mockReturnThis(),
+    in: vi.fn().mockReturnThis(),
+    order: vi.fn().mockReturnThis(),
+    limit: vi.fn().mockReturnThis(),
+    single: vi.fn().mockResolvedValue({ data: result, error: null }),
+    then: (resolve: any) => Promise.resolve({ data: result, error: null }).then(resolve),
+  }
+  return builder
+}
 
 afterEach(() => vi.restoreAllMocks())
 
 describe('GET /api/almacenes', () => {
-  const from = vi.fn()
-  vi.spyOn(db, 'getDb').mockReturnValue({ client: { from } } as any)
   it('requiere sesion', async () => {
+    vi.spyOn(db, 'getDb').mockReturnValue({ client: { from: vi.fn() } } as any)
     vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue(null as any)
     const res = await GET(new NextRequest('http://localhost/api/almacenes'))
     expect(res.status).toBe(401)
   })
 
   it('rechaza si no es el mismo usuario y no es admin', async () => {
+    vi.spyOn(db, 'getDb').mockReturnValue({ client: { from: vi.fn() } } as any)
     vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue({ id: 1 } as any)
     vi.spyOn(permisos, 'hasManagePerms').mockReturnValue(false)
     const req = new NextRequest('http://localhost/api/almacenes?usuarioId=2')
@@ -26,40 +38,60 @@ describe('GET /api/almacenes', () => {
   })
 
   it('filtra por usuario', async () => {
+    const eq = vi.fn().mockReturnThis()
+    const from = vi.fn(() => ({
+      select: vi.fn().mockReturnThis(),
+      eq,
+      order: vi.fn().mockReturnThis(),
+      limit: vi.fn().mockReturnThis(),
+      then: (resolve: any) => Promise.resolve({ data: [] as any[], error: null }).then(resolve),
+    }))
+    vi.spyOn(db, 'getDb').mockReturnValue({ client: { from } } as any)
     vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue({ id: 3 } as any)
     vi.spyOn(permisos, 'hasManagePerms').mockReturnValue(true)
-    const find = vi.spyOn(prisma.almacen, 'findMany').mockResolvedValue([] as any)
     const req = new NextRequest('http://localhost/api/almacenes?usuarioId=5')
     await GET(req)
-    expect(find).toHaveBeenCalledWith(expect.objectContaining({ where: { usuario_almacen: { some: { usuarioId: 5 } } } }))
+    expect(eq).toHaveBeenCalledWith('usuarioId', 5)
   })
 
   it('incluye total de unidades', async () => {
     vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue({ id: 1 } as any)
     vi.spyOn(permisos, 'hasManagePerms').mockReturnValue(true)
 
-    const almacenesData = [
+    const queries = [
+      { result: [{ almacenId: 2 }] },
       {
-        id: 2,
-        nombre: 'A',
-        descripcion: '',
-        imagenNombre: null,
-        imagenUrl: null,
-        fechaCreacion: new Date(),
-        codigoUnico: 'c',
-        usuario_almacen: [],
-        movimientos: [],
-        notificaciones: [],
+        result: [
+          {
+            id: 2,
+            nombre: 'A',
+            descripcion: '',
+            imagenNombre: null,
+            imagenUrl: null,
+            fechaCreacion: new Date(),
+            codigoUnico: 'c',
+          },
+        ],
       },
-    ] as any
+      { result: [] },
+      { result: [] },
+      { result: [] },
+      { result: [] },
+      { result: [] },
+      { result: Array(7).fill({ material: { almacenId: 2 } }) },
+      { result: { preferencias: null }, single: true },
+    ]
 
-    vi.spyOn(prisma.almacen, 'findMany').mockResolvedValue(almacenesData)
-    ;(prisma as any).movimiento = { groupBy: vi.fn().mockResolvedValue([]) }
-    ;(prisma.material as any).groupBy = vi.fn().mockResolvedValue([])
-    ;(prisma.material as any).findMany = vi
-      .spyOn(prisma.material, 'findMany')
-      .mockResolvedValue([{ almacenId: 2, _count: { unidades: 7 } }] as any)
-    vi.spyOn(prisma.usuario, 'findUnique').mockResolvedValue(null as any)
+    const from = vi.fn(() => {
+      const q = queries.shift()!
+      const builder = createQuery(q.result)
+      if (q.single) {
+        builder.single = vi.fn().mockResolvedValue({ data: q.result, error: null })
+      }
+      return builder
+    })
+
+    vi.spyOn(db, 'getDb').mockReturnValue({ client: { from } } as any)
 
     const res = await GET(new NextRequest('http://localhost/api/almacenes'))
     expect(res.status).toBe(200)
