@@ -9,11 +9,14 @@ afterEach(() => {
 describe('POST /api/auditorias/[id]/restore', () => {
   it('restaura y registra auditoria', async () => {
     const auditoria = { id: 5, tipo: 'material', observaciones: '{"nombre":"m"}' }
-    const prismaMock = {
-      auditoria: { findUnique: vi.fn().mockResolvedValue(auditoria) },
-      material: { create: vi.fn().mockResolvedValue({ id: 8 }) },
-    }
-    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
+    const maybeSingle = vi.fn().mockResolvedValue({ data: auditoria, error: null })
+    const materialSingle = vi.fn().mockResolvedValue({ data: { id: 8 }, error: null })
+    const from = vi.fn((table: string) => {
+      if (table === 'Auditoria') return { select: () => ({ eq: () => ({ maybeSingle }) }) }
+      if (table === 'Material') return { insert: () => ({ select: () => ({ single: materialSingle }) }) }
+      return {}
+    })
+    vi.doMock('@lib/db', () => ({ getDb: () => ({ client: { from } }) }))
     vi.doMock('../lib/auth', () => ({ getUsuarioFromSession: vi.fn().mockResolvedValue({ id: 1 }) }))
     const registrarAuditoria = vi.fn().mockResolvedValue({ auditoria: { id: 9 } })
     vi.doMock('../lib/reporter', () => ({ registrarAuditoria }))
@@ -24,7 +27,7 @@ describe('POST /api/auditorias/[id]/restore', () => {
     expect(res.status).toBe(200)
     const data = await res.json()
     expect(data.auditoria).toEqual({ id: 9 })
-    expect(prismaMock.material.create).toHaveBeenCalled()
+    expect(materialSingle).toHaveBeenCalled()
     expect(registrarAuditoria).toHaveBeenCalled()
   })
 })

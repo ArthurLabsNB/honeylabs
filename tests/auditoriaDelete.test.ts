@@ -8,11 +8,14 @@ afterEach(() => {
 
 describe('DELETE /api/auditorias/[id]', () => {
   it('elimina registros y devuelve ok', async () => {
-    const prismaMock = {
-      archivoAuditoria: { deleteMany: vi.fn().mockResolvedValue(undefined) },
-      auditoria: { delete: vi.fn().mockResolvedValue(undefined) },
-    }
-    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
+    const archivoEq = vi.fn().mockResolvedValue({ error: null })
+    const auditoriaEq = vi.fn().mockResolvedValue({ error: null })
+    const from = vi.fn((table: string) => {
+      if (table === 'ArchivoAuditoria') return { delete: () => ({ eq: archivoEq }) }
+      if (table === 'Auditoria') return { delete: () => ({ eq: auditoriaEq }) }
+      return {}
+    })
+    vi.doMock('@lib/db', () => ({ getDb: () => ({ client: { from } }) }))
     vi.doMock('../lib/auth', () => ({ getUsuarioFromSession: vi.fn().mockResolvedValue({ id: 1 }) }))
     const { DELETE } = await import('../src/app/api/auditorias/[id]/route')
     const req = new NextRequest('http://localhost/api/auditorias/4', { method: 'DELETE' })
@@ -20,7 +23,7 @@ describe('DELETE /api/auditorias/[id]', () => {
     expect(res.status).toBe(200)
     const data = await res.json()
     expect(data.ok).toBe(true)
-    expect(prismaMock.archivoAuditoria.deleteMany).toHaveBeenCalledWith({ where: { auditoriaId: 4 } })
-    expect(prismaMock.auditoria.delete).toHaveBeenCalledWith({ where: { id: 4 } })
+    expect(archivoEq).toHaveBeenCalledWith('auditoriaId', 4)
+    expect(auditoriaEq).toHaveBeenCalledWith('id', 4)
   })
 })

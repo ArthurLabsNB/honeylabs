@@ -9,8 +9,9 @@ afterEach(() => {
 describe('GET /api/auditorias/[id]/archivos/[archivoId]', () => {
   it('devuelve 200 con archivo', async () => {
     vi.doMock('../lib/auth', () => ({ getUsuarioFromSession: vi.fn().mockResolvedValue({ id: 1 }) }))
-    vi.doMock('@lib/db/prisma', () => ({ prisma: { archivoAuditoria: { findUnique: vi.fn().mockResolvedValue({ archivo: Buffer.from('data'), archivoNombre: 'a.txt' }) } }
-    }))
+    const maybeSingle = vi.fn().mockResolvedValue({ data: { archivo: Buffer.from('data'), archivoNombre: 'a.txt' }, error: null })
+    const from = vi.fn(() => ({ select: () => ({ eq: () => ({ maybeSingle }) }) }))
+    vi.doMock('@lib/db', () => ({ getDb: () => ({ client: { from } }) }))
     const { GET } = await import('../src/app/api/auditorias/[id]/archivos/[archivoId]/route')
     const req = new NextRequest('http://localhost/api/auditorias/1/archivos/2')
     const res = await GET(req)

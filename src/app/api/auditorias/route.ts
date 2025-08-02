@@ -1,8 +1,8 @@
 export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@lib/db/prisma'
-import { Prisma } from '@prisma/client'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import { getDb } from '@lib/db'
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
 import { ensureAuditoriaTables } from '@lib/auditoriaInit'
@@ -21,54 +21,38 @@ export async function GET(req: NextRequest) {
     const q = req.nextUrl.searchParams.get('q')?.toLowerCase() || undefined
     const desde = req.nextUrl.searchParams.get('desde') || undefined
     const hasta = req.nextUrl.searchParams.get('hasta') || undefined
-    const where: any = {}
-    if (tipo && ['almacen','material','unidad'].includes(tipo)) where.tipo = tipo
-    if (almacenId) where.almacenId = Number(almacenId)
-    if (materialId) where.materialId = Number(materialId)
-    if (unidadId) where.unidadId = Number(unidadId)
-    if (usuarioId) where.usuarioId = Number(usuarioId)
-    if (categoria) where.categoria = categoria
-    if (q) {
-      where.OR = [
-        { observaciones: { contains: q, mode: 'insensitive' } },
-        { almacen: { nombre: { contains: q, mode: 'insensitive' } } },
-        { material: { nombre: { contains: q, mode: 'insensitive' } } },
-        { unidad: { nombre: { contains: q, mode: 'insensitive' } } },
-        { usuario: { nombre: { contains: q, mode: 'insensitive' } } },
-      ]
-    }
-    if (desde) where.fecha = { gte: new Date(desde) }
-    if (hasta) where.fecha = { ...(where.fecha || {}), lte: new Date(hasta) }
 
-    const auditorias = await prisma.auditoria.findMany({
-      take: 50,
-      orderBy: { fecha: 'desc' },
-      where,
-      // "version" se excluye para compatibilidad con clientes antiguos
-      select: {
-        id: true,
-        tipo: true,
-        categoria: true,
-        fecha: true,
-        observaciones: true,
-        usuario: { select: { nombre: true } },
-        almacen: { select: { nombre: true } },
-        material: { select: { nombre: true } },
-        unidad: { select: { nombre: true } },
-      },
-    })
-    return NextResponse.json({ auditorias })
-  } catch (err) {
-    if (
-      err instanceof Prisma.PrismaClientKnownRequestError &&
-      err.code === 'P2021'
-    ) {
-      logger.error('GET /api/auditorias', err)
-      return NextResponse.json(
-        { error: 'Base de datos no inicializada.' },
-        { status: 500 },
+    const db = getDb().client as SupabaseClient
+    let query = db
+      .from('Auditoria')
+      .select(
+        `id, tipo, categoria, fecha, observaciones,
+        usuario:usuario ( nombre ),
+        almacen:Almacen ( nombre ),
+        material:Material ( nombre ),
+        unidad:MaterialUnidad ( nombre )`
+      )
+      .order('fecha', { ascending: false })
+      .limit(50)
+
+    if (tipo && ['almacen','material','unidad'].includes(tipo)) query = query.eq('tipo', tipo)
+    if (almacenId) query = query.eq('almacenId', Number(almacenId))
+    if (materialId) query = query.eq('materialId', Number(materialId))
+    if (unidadId) query = query.eq('unidadId', Number(unidadId))
+    if (usuarioId) query = query.eq('usuarioId', Number(usuarioId))
+    if (categoria) query = query.eq('categoria', categoria)
+    if (q) {
+      query = query.or(
+        `observaciones.ilike.%${q}%,usuario.nombre.ilike.%${q}%,Almacen.nombre.ilike.%${q}%,Material.nombre.ilike.%${q}%,MaterialUnidad.nombre.ilike.%${q}%`
       )
     }
+    if (desde) query = query.gte('fecha', desde)
+    if (hasta) query = query.lte('fecha', hasta)
+
+    const { data, error } = await query
+    if (error) throw error
+    return NextResponse.json({ auditorias: data })
+  } catch (err) {
     logger.error('GET /api/auditorias', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
   }
@@ -104,46 +88,52 @@ export async function POST(req: NextRequest) {
 
     const { tipo, objetoId, categoria, observaciones } = parsed.data
 
-    const data: Prisma.AuditoriaCreateInput = {
+    const db = getDb().client as SupabaseClient
+    const where: Record<string, any> = { tipo }
+    const data: Record<string, any> = {
       tipo,
       observaciones,
       categoria,
-      usuario: { connect: { id: usuario.id } },
+      usuarioId: usuario.id,
     }
-
-    const where: Prisma.AuditoriaWhereInput = { tipo }
     const objId = objetoId
     if (tipo === 'almacen') {
-      data.almacen = { connect: { id: objId } }
+      data.almacenId = objId
       where.almacenId = objId
     }
     if (tipo === 'material') {
-      data.material = { connect: { id: objId } }
+      data.materialId = objId
       where.materialId = objId
     }
     if (tipo === 'unidad') {
-      data.unidad = { connect: { id: objId } }
+      data.unidadId = objId
       where.unidadId = objId
     }
-    const auditoria = await prisma.$transaction(async (tx) => {
-      const count = await tx.auditoria.count({ where })
-      return tx.auditoria.create({
-        data: { ...data, version: count + 1 },
-        select: { id: true },
-      })
+
+    const auditoria = await getDb().transaction(async (tx: SupabaseClient) => {
+      const { count, error: countErr } = await tx
+        .from('Auditoria')
+        .select('id', { head: true, count: 'exact' })
+        .match(where)
+      if (countErr) throw countErr
+      const version = (count ?? 0) + 1
+      const { data: created, error: createErr } = await tx
+        .from('Auditoria')
+        .insert({ ...data, version })
+        .select('id')
+        .single()
+      if (createErr) throw createErr
+      return created
     })
 
     if (files.length > 0) {
       await Promise.all(
         files.map(async (f) => {
           const buffer = Buffer.from(await f.arrayBuffer())
-          await prisma.archivoAuditoria.create({
-            data: {
-              nombre: f.name,
-              archivo: buffer as any,
-              auditoriaId: auditoria.id,
-            },
-          })
+          const { error } = await db
+            .from('ArchivoAuditoria')
+            .insert({ nombre: f.name, archivo: buffer, auditoriaId: auditoria.id })
+          if (error) throw error
         })
       )
     }
@@ -151,16 +141,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ auditoria })
   } catch (err) {
-    if (
-      err instanceof Prisma.PrismaClientKnownRequestError &&
-      err.code === 'P2021'
-    ) {
-      logger.error('POST /api/auditorias', err)
-      return NextResponse.json(
-        { error: 'Base de datos no inicializada.' },
-        { status: 500 },
-      )
-    }
     logger.error('POST /api/auditorias', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
   }

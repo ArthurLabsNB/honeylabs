@@ -1,8 +1,8 @@
 export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@lib/db/prisma'
-import { Prisma } from '@prisma/client'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import { getDb } from '@lib/db'
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
 
@@ -19,35 +19,23 @@ export async function GET(req: NextRequest) {
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const id = getAuditoriaId(req)
     if (!id) return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
-    const auditoria = await prisma.auditoria.findUnique({
-      where: { id },
-      include: {
-        usuario: {
-          select: {
-            nombre: true,
-            correo: true,
-            roles: { select: { nombre: true } },
-          },
-        },
-        almacen: { select: { nombre: true } },
-        material: { select: { nombre: true } },
-        unidad: { select: { nombre: true } },
-        archivos: { select: { id: true, nombre: true, archivoNombre: true } },
-      },
-    })
-    if (!auditoria) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
-    return NextResponse.json({ auditoria })
-  } catch (err) {
-    if (
-      err instanceof Prisma.PrismaClientKnownRequestError &&
-      err.code === 'P2021'
-    ) {
-      logger.error('GET /api/auditorias/[id]', err)
-      return NextResponse.json(
-        { error: 'Base de datos no inicializada.' },
-        { status: 500 },
+    const db = getDb().client as SupabaseClient
+    const { data, error } = await db
+      .from('Auditoria')
+      .select(
+        `id, tipo, categoria, fecha, observaciones,
+        usuario:usuario ( nombre, correo ),
+        almacen:Almacen ( nombre ),
+        material:Material ( nombre ),
+        unidad:MaterialUnidad ( nombre ),
+        archivos:ArchivoAuditoria ( id, nombre, archivoNombre )`
       )
-    }
+      .eq('id', id)
+      .maybeSingle()
+    if (error) throw error
+    if (!data) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
+    return NextResponse.json({ auditoria: data })
+  } catch (err) {
     logger.error('GET /api/auditorias/[id]', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
   }
@@ -59,20 +47,11 @@ export async function DELETE(req: NextRequest) {
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const id = getAuditoriaId(req)
     if (!id) return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
-    await prisma.archivoAuditoria.deleteMany({ where: { auditoriaId: id } })
-    await prisma.auditoria.delete({ where: { id } })
+    const db = getDb().client as SupabaseClient
+    await db.from('ArchivoAuditoria').delete().eq('auditoriaId', id)
+    await db.from('Auditoria').delete().eq('id', id)
     return NextResponse.json({ ok: true })
   } catch (err) {
-    if (
-      err instanceof Prisma.PrismaClientKnownRequestError &&
-      err.code === 'P2021'
-    ) {
-      logger.error('DELETE /api/auditorias/[id]', err)
-      return NextResponse.json(
-        { error: 'Base de datos no inicializada.' },
-        { status: 500 },
-      )
-    }
     logger.error('DELETE /api/auditorias/[id]', err)
     return NextResponse.json({ error: 'Error' }, { status: 500 })
   }

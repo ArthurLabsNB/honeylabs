@@ -6,18 +6,13 @@ afterEach(() => {
 })
 
 describe('ensureAuditoriaTables', () => {
-  it('crea tablas con columna version', async () => {
-    const query = vi.fn().mockResolvedValue([{ exists: false }])
-    const exec = vi.fn()
-    const prismaMock = { $queryRaw: query, $executeRawUnsafe: exec }
-    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
+  it('invoca rpc para crear tablas', async () => {
+    const rpc = vi.fn().mockResolvedValue({ data: null, error: null })
+    vi.doMock('@lib/db', () => ({ getDb: () => ({ client: { rpc } }) }))
     const { ensureAuditoriaTables } = await import('../lib/auditoriaInit')
 
     await ensureAuditoriaTables()
 
-    expect(exec).toHaveBeenCalledWith(
-      expect.stringContaining('"version" INTEGER NOT NULL DEFAULT 1')
-    )
-    vi.unmock('@lib/db/prisma')
+    expect(rpc).toHaveBeenCalledWith('ensure_auditoria_tables')
   })
 })
