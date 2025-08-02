@@ -59,7 +59,7 @@ model Usuario {
   tipoCuenta           String
   estado               String                 @default("pendiente")
   fechaRegistro        DateTime               @default(now())
-  entidadId            Int?
+  entidadId            Int?                   @map("entidad_id")
   archivoBuffer        Bytes?
   archivoNombre        String?
   codigoUsado          String?
