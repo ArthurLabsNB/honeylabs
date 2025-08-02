@@ -87,18 +87,18 @@ export async function getUsuarioFromSession(
     const db = getDb().client as SupabaseClient
     if (decoded.sid) {
       const { data: sesion } = await db
-        .from('SesionUsuario')
+        .from('sesion_usuario')
         .select('activa,usuarioId')
         .eq('id', decoded.sid)
         .maybeSingle()
       if (!sesion || !sesion.activa || sesion.usuarioId !== decoded.id) return null
       await db
-        .from('SesionUsuario')
+        .from('sesion_usuario')
         .update({ fechaUltima: new Date().toISOString() })
         .eq('id', decoded.sid)
     }
     const { data: usuario } = await db
-      .from('Usuario')
+      .from('usuario')
       .select(
         'id,nombre,correo,tipoCuenta,entidadId,esSuperAdmin,' +
           'roles:rol(nombre,_RolToUsuario!inner(usuarioId)),plan:planId(nombre),preferencias',

@@ -73,7 +73,7 @@ describe('getUsuarioFromSession', () => {
 
     const supabase = {
       from: vi.fn((table: string) => {
-        if (table === 'SesionUsuario') {
+        if (table === 'sesion_usuario') {
           return {
             select: () => ({
               eq: () => ({ maybeSingle: () => Promise.resolve({ data: { activa: true, usuarioId: 1 } }) }),
@@ -81,7 +81,7 @@ describe('getUsuarioFromSession', () => {
             update: () => ({ eq: () => Promise.resolve({}) }),
           }
         }
-        if (table === 'Usuario') {
+        if (table === 'usuario') {
           return {
             select: () => ({
               eq: () => ({ maybeSingle: () => Promise.resolve({ data: usuario }) }),
@@ -96,8 +96,8 @@ describe('getUsuarioFromSession', () => {
 
     const res = await getUsuarioFromSession(req as any)
     expect(res).toEqual(usuario)
-    expect(supabase.from).toHaveBeenCalledWith('SesionUsuario')
-    expect(supabase.from).toHaveBeenCalledWith('Usuario')
+    expect(supabase.from).toHaveBeenCalledWith('sesion_usuario')
+    expect(supabase.from).toHaveBeenCalledWith('usuario')
   })
 })
 
