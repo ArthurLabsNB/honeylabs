@@ -96,6 +96,18 @@ export default function LoginForm() {
         autoComplete="current-password"
       />
 
+      <div className="flex justify-between text-sm">
+        <a
+          href="/olvide-contrasena"
+          className="text-amber-600 hover:underline"
+        >
+          Olvidé la contraseña
+        </a>
+        <a href="/registro" className="text-amber-600 hover:underline">
+          Crear cuenta
+        </a>
+      </div>
+
       {mensaje && (
         <p className="text-sm text-center text-red-600">{mensaje}</p>
       )}
@@ -109,6 +121,36 @@ export default function LoginForm() {
       >
         {loading ? "Entrando..." : "Entrar"}
       </button>
+
+      <div className="flex items-center text-xs text-amber-600 uppercase before:flex-1 before:border-t before:border-amber-200 before:me-2 after:flex-1 after:border-t after:border-amber-200 after:ms-2 mt-4">
+        Próximamente
+      </div>
+      <div className="grid gap-2 sm:grid-cols-3">
+        <button
+          type="button"
+          disabled
+          title="En mantenimiento"
+          className="w-full bg-gray-200 text-gray-500 font-semibold py-2 px-4 rounded cursor-not-allowed"
+        >
+          Google
+        </button>
+        <button
+          type="button"
+          disabled
+          title="En mantenimiento"
+          className="w-full bg-gray-200 text-gray-500 font-semibold py-2 px-4 rounded cursor-not-allowed"
+        >
+          Facebook
+        </button>
+        <button
+          type="button"
+          disabled
+          title="En mantenimiento"
+          className="w-full bg-gray-200 text-gray-500 font-semibold py-2 px-4 rounded cursor-not-allowed"
+        >
+          GitHub
+        </button>
+      </div>
     </form>
   );
 }
