@@ -22,7 +22,7 @@ export default function useMovimientos(almacenId?: number | string) {
   })
 
   return {
-    movimientos: (data?.movimientos as Movimiento[]) ?? [],
+    movimientos: (data?.movimientos ?? data?.data ?? []) as Movimiento[],
     loading: isLoading,
     error,
     mutate,
