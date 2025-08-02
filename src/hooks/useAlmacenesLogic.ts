@@ -28,8 +28,10 @@ export default function useAlmacenesLogic() {
   const [error, setError] = useState('')
   const [dragId, setDragId] = useState<number | null>(null)
   const [favoritos, setFavoritos] = useState<number[]>([])
-  const prevIds = useRef<string>('')           // 👈 comparación por firma de IDs
+  const prevSig = useRef<string>('')     // firma estable para evitar sincronización infinita
   const registered = useRef(false)
+  const creatingRef = useRef(false)      // evita doble submit crear
+
   const { prefs, mutate: mutatePrefs } = usePreferences(usuario?.id)
 
   const query = useMemo(
@@ -41,7 +43,7 @@ export default function useAlmacenesLogic() {
     almacenes: fetchedAlmacenes = [],
     loading: loadingAlmacenes,
     error: fetchError,
-    mutate,
+    mutate, // revalida lista desde el backend
   } = useAlmacenes(query)
 
   /* Auth / permisos */
@@ -57,32 +59,53 @@ export default function useAlmacenesLogic() {
     setError('')
   }, [usuario, loadingUsuario])
 
-  /* Registrar handler crear (una sola vez) */
-  const crearAlmacen = useCallback(async (nombre: string, descripcion: string) => {
-    try {
-      const res = await apiFetch('/api/almacenes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, descripcion }),
-      })
-      const data = await jsonOrNull(res)
-      const nuevo = data?.almacen ?? data?.data
-      if (res.ok && nuevo) { mutate(); toast.show('Almacén creado', 'success') }
-      else { toast.show(data?.error || 'Error al crear', 'error') }
-    } catch { toast.show('Error de red', 'error') }
-  }, [mutate, toast])
+  /* Crear almacén (devuelve ID para navegar si quieres) */
+  const crearAlmacen = useCallback(
+    async (nombre: string, descripcion: string): Promise<number | null> => {
+      if (creatingRef.current) return null
+      const nom = (nombre ?? '').toString().trim()
+      const desc = (descripcion ?? '').toString().trim()
+      if (!nom) { toast.show('Nombre requerido', 'error'); return null }
 
+      creatingRef.current = true
+      try {
+        const res = await apiFetch('/api/almacenes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nombre: nom, descripcion: desc }),
+        })
+        const data = await jsonOrNull(res)
+        const nuevo = data?.almacen ?? data?.data
+        if (res.ok && nuevo?.id) {
+          // Revalida desde servidor; no forzamos setState local para evitar firmas falsas
+          await mutate()
+          toast.show('Almacén creado', 'success')
+          return Number(nuevo.id)
+        }
+        toast.show(data?.error || 'Error al crear', 'error')
+        return null
+      } catch {
+        toast.show('Error de red', 'error')
+        return null
+      } finally {
+        creatingRef.current = false
+      }
+    },
+    [mutate, toast]
+  )
+
+  /* Registrar acción de crear una sola vez */
   useEffect(() => {
     if (registered.current) return
     registerCreate(crearAlmacen)
     registered.current = true
   }, [registerCreate, crearAlmacen])
 
-  /* ⛔ FIX del loop: sincroniza solo si cambió la firma de IDs */
+  /* Sincroniza con backend solo si cambió la firma */
   useEffect(() => {
     const signature = fetchedAlmacenes.map(a => `${a.id}:${a.nombre ?? ''}`).join('|')
-    if (signature !== prevIds.current) {
-      prevIds.current = signature
+    if (signature !== prevSig.current) {
+      prevSig.current = signature
       setAlmacenes(fetchedAlmacenes)
     }
   }, [fetchedAlmacenes])
@@ -103,7 +126,7 @@ export default function useAlmacenesLogic() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ motivo }),
     })
-    if (res.ok) { mutate(); toast.show('Almacén eliminado', 'success') }
+    if (res.ok) { await mutate(); toast.show('Almacén eliminado', 'success') }
     else { toast.show('Error al eliminar', 'error') }
   }, [mutate, prompt, toast])
 
@@ -146,9 +169,15 @@ export default function useAlmacenesLogic() {
       const res = await apiFetch(`/api/almacenes/${id}/duplicar`, { method: 'POST' })
       const data = await jsonOrNull(res)
       const nuevo = data?.almacen ?? data?.data
-      if (res.ok && nuevo) { mutate(); toast.show('Almacén duplicado', 'success'); return nuevo.id as number }
+      if (res.ok && nuevo?.id) {
+        await mutate()
+        toast.show('Almacén duplicado', 'success')
+        return Number(nuevo.id)
+      }
       toast.show(data?.error || 'Error al duplicar', 'error')
-    } catch { toast.show('Error al duplicar', 'error') }
+    } catch {
+      toast.show('Error al duplicar', 'error')
+    }
     return null
   }, [mutate, toast])
 
