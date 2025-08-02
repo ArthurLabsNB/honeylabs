@@ -30,7 +30,8 @@ async function tryInsert<T = any>(
   for (const body of payloads) {
     const { data, error } = await db.from(table).insert(body).select(select).single();
     if (error)
-      logger.error(`[ALM_CREATE] insert ${table}`, {
+      logger.error('[ALM_CREATE] insert', {
+        table,
         code: error.code,
         details: error.details,
         hint: error.hint,
@@ -57,7 +58,8 @@ async function tryUpdate(
     Object.entries(match).forEach(([k, v]) => (q as any).eq(k, v));
     const { error } = await q;
     if (error)
-      logger.error(`[ALM_UPDATE] update ${table}`, {
+      logger.error('[ALM_UPDATE] update', {
+        table,
         code: error.code,
         details: error.details,
         hint: error.hint,
