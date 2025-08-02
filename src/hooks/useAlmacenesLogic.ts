@@ -6,6 +6,7 @@ import { useToast } from '@/components/Toast'
 import { usePrompt } from '@/hooks/usePrompt'
 import useSession from '@/hooks/useSession'
 import useAlmacenes, { Almacen } from '@/hooks/useAlmacenes'
+import usePreferences from '@/hooks/usePreferences'
 import { getMainRole, normalizeRol, normalizeTipoCuenta } from '@lib/permisos'
 import { useAlmacenesUI } from '@/app/dashboard/almacenes/ui'
 
@@ -29,6 +30,7 @@ export default function useAlmacenesLogic() {
   const [favoritos, setFavoritos] = useState<number[]>([])
   const prevAlmacenes = useRef<Almacen[]>([])
   const registered = useRef(false)
+  const { prefs, mutate: mutatePrefs } = usePreferences(usuario?.id)
 
   const {
     almacenes: fetchedAlmacenes,
@@ -98,18 +100,10 @@ export default function useAlmacenesLogic() {
   }, [fetchError])
 
   useEffect(() => {
-    if (!usuario) return
-    const ctrl = new AbortController()
-    apiFetch('/api/preferences', { signal: ctrl.signal })
-      .then(jsonOrNull)
-      .then((prefs) => {
-        if (prefs && Array.isArray(prefs.favoritosAlmacenes)) {
-          setFavoritos(prefs.favoritosAlmacenes)
-        }
-      })
-      .catch(() => {})
-    return () => ctrl.abort()
-  }, [usuario])
+    if (Array.isArray(prefs?.favoritosAlmacenes)) {
+      setFavoritos(prefs.favoritosAlmacenes)
+    }
+  }, [prefs?.favoritosAlmacenes])
 
   const eliminar = useCallback(
     async (id: number) => {
@@ -195,18 +189,28 @@ export default function useAlmacenesLogic() {
     [mutate, toast],
   )
 
-  const toggleFavorito = useCallback((id: number) => {
-    setFavoritos((prev) => {
-      const exists = prev.includes(id)
-      const updated = exists ? prev.filter((f) => f !== id) : [...prev, id]
-      apiFetch('/api/preferences', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ favoritosAlmacenes: updated }),
-      }).catch(() => {})
-      return updated
-    })
-  }, [])
+  const toggleFavorito = useCallback(
+    (id: number) => {
+      setFavoritos((prev) => {
+        const exists = prev.includes(id)
+        const updated = exists ? prev.filter((f) => f !== id) : [...prev, id]
+        apiFetch('/api/preferences', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ favoritosAlmacenes: updated }),
+        })
+          .then(() =>
+            mutatePrefs(
+              (p) => ({ ...(p || {}), favoritosAlmacenes: updated }),
+              { revalidate: false },
+            ),
+          )
+          .catch(() => {})
+        return updated
+      })
+    },
+    [mutatePrefs],
+  )
 
   const loading = loadingAlmacenes || loadingUsuario
 

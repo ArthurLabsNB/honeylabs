@@ -22,6 +22,7 @@ import { jsonOrNull } from "@lib/http";
 import { apiPath, apiFetch } from "@lib/api";
 import { getMainRole, normalizeRol, normalizeTipoCuenta } from "@lib/permisos";
 import { clearSessionCache } from "@/hooks/useSession";
+import usePreferences from "@/hooks/usePreferences";
 
 interface UsuarioData {
   nombre: string;
@@ -53,40 +54,31 @@ export default function UserMenu({
   const [temaOscuro, setTemaOscuro] = useState(true);
   const refMenu = useRef<HTMLDivElement>(null);
   const [esAdmin, setEsAdmin] = useState(false);
+  const { prefs, mutate: mutatePrefs } = usePreferences(usuario?.id);
 
   // Avatar image url (si existe)
   const [fotoPerfil, setFotoPerfil] = useState<string | null>(null);
   const fotoPerfilRef = useRef<string | null>(null);
 
   useEffect(() => {
-    async function cargarTema() {
-      let temaGuardado = localStorage.getItem("tema");
-      if (usuario) {
-        try {
-          const res = await apiFetch("/api/preferences");
-          if (res.ok) {
-            const prefs = await res.json();
-            if (prefs.theme) temaGuardado = prefs.theme;
-          }
-        } catch {}
-      }
-      if (!temaGuardado) {
-        const preferenciaSistema = window.matchMedia(
-          "(prefers-color-scheme: light)",
-        ).matches
-          ? "light"
-          : "dark";
-        temaGuardado = preferenciaSistema || "dark";
-      }
-      setTemaOscuro(temaGuardado === "dark");
-      document.documentElement.classList.toggle("dark", temaGuardado === "dark");
-      document.documentElement.classList.toggle(
-        "light",
-        temaGuardado === "light",
-      );
+    let temaGuardado = localStorage.getItem("tema");
+    if (prefs?.theme) {
+      temaGuardado = prefs.theme;
+    } else if (!temaGuardado) {
+      const preferenciaSistema = window.matchMedia(
+        "(prefers-color-scheme: light)",
+      ).matches
+        ? "light"
+        : "dark";
+      temaGuardado = preferenciaSistema || "dark";
     }
-    cargarTema();
-  }, [usuario]);
+    setTemaOscuro(temaGuardado === "dark");
+    document.documentElement.classList.toggle("dark", temaGuardado === "dark");
+    document.documentElement.classList.toggle(
+      "light",
+      temaGuardado === "light",
+    );
+  }, [prefs?.theme]);
 
   useEffect(() => {
     async function checkAdmin() {
@@ -188,7 +180,11 @@ export default function UserMenu({
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ theme: tema }),
-        }).catch(() => {});
+        })
+          .then(() =>
+            mutatePrefs((p) => ({ ...(p || {}), theme: tema }), { revalidate: false }),
+          )
+          .catch(() => {});
       }
       return nextIsDark;
     });
