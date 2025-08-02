@@ -1,3 +1,6 @@
+## 0.8.31
+- Renombramos `usuario.tipoCuenta` a `tipo_cuenta` y aplicamos la migración `20250812000000_usuario_tipo_cuenta_snake`.
+
 ## 0.8.30
 - Normalizamos `Usuario.entidad_id` y declaramos la FK a `Entidad`.
 
