@@ -33,8 +33,8 @@ export async function GET(req: NextRequest) {
     const { data: pertenece, error: perError } = await db
       .from('usuario_almacen')
       .select('id')
-      .eq('usuarioId', usuario.id)
-      .eq('almacenId', almacenId)
+      .eq('usuario_id', usuario.id)
+      .eq('almacen_id', almacenId)
       .maybeSingle()
     if (perError) throw perError
     if (!pertenece && !hasManagePerms(usuario)) {
@@ -92,8 +92,8 @@ export async function POST(req: NextRequest) {
     const { data: pertenece, error: perError } = await client
       .from('usuario_almacen')
       .select('id')
-      .eq('usuarioId', usuario.id)
-      .eq('almacenId', almacenId)
+      .eq('usuario_id', usuario.id)
+      .eq('almacen_id', almacenId)
       .maybeSingle()
     if (perError) throw perError
     if (!pertenece && !hasManagePerms(usuario)) {
@@ -203,8 +203,8 @@ export async function POST(req: NextRequest) {
       await tx
         .from('usuario_almacen')
         .upsert(
-          { usuarioId: usuario.id, almacenId, rolEnAlmacen: 'creador' },
-          { onConflict: 'usuarioId,almacenId' },
+          { usuario_id: usuario.id, almacen_id: almacenId, rolEnAlmacen: 'creador' },
+          { onConflict: 'usuario_id,almacen_id' },
         )
       await snapshotMaterial(tx, creado.id, usuario.id, 'Creación')
       return creado
@@ -243,8 +243,8 @@ export async function DELETE(req: NextRequest) {
     const { data: pertenece, error: perError } = await db
       .from('usuario_almacen')
       .select('id')
-      .eq('usuarioId', usuario.id)
-      .eq('almacenId', almacenId)
+      .eq('usuario_id', usuario.id)
+      .eq('almacen_id', almacenId)
       .maybeSingle()
     if (perError) throw perError
     if (!pertenece && !hasManagePerms(usuario)) {

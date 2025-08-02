@@ -35,23 +35,22 @@ async function findMembership(
   usuarioId: number,
   almacenId: number,
 ): Promise<boolean> {
-  // 1) camelCase
+  // snake_case primero
   const q1 = await db
-    .from('usuario_almacen')
-    .select('id', { count: 'exact', head: true })
-    .eq('usuarioId', usuarioId)
-    .eq('almacenId', almacenId);
-  if (!q1.error && (q1.count ?? 0) > 0) return true;
-
-  // 2) snake_case
-  const q2 = await db
     .from('usuario_almacen')
     .select('id', { count: 'exact', head: true })
     .eq('usuario_id', usuarioId)
     .eq('almacen_id', almacenId);
+  if (!q1.error && (q1.count ?? 0) > 0) return true;
+
+  // fallback camelCase
+  const q2 = await db
+    .from('usuario_almacen')
+    .select('id', { count: 'exact', head: true })
+    .eq('usuarioId', usuarioId)
+    .eq('almacenId', almacenId);
   if (!q2.error && (q2.count ?? 0) > 0) return true;
 
-  // Si hubo errores de esquema en ambos, devuelve false (dejará pasar sólo admins)
   return false;
 }
 

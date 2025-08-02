@@ -25,8 +25,8 @@ export async function GET(req: NextRequest) {
     const { data: pertenece } = await db
       .from('usuario_almacen')
       .select('id')
-      .eq('usuarioId', usuario.id)
-      .eq('almacenId', id)
+      .eq('usuario_id', usuario.id)
+      .eq('almacen_id', id)
       .maybeSingle()
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
@@ -55,8 +55,8 @@ export async function POST(req: NextRequest) {
     const { data: pertenece } = await db
       .from('usuario_almacen')
       .select('id')
-      .eq('usuarioId', usuario.id)
-      .eq('almacenId', id)
+      .eq('usuario_id', usuario.id)
+      .eq('almacen_id', id)
       .maybeSingle()
     if (!pertenece && !hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })

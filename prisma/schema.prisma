@@ -73,7 +73,7 @@ model Usuario {
   planId               Int?                   @map("plan_id")
   codigo2FASecret      String?
   fotoPerfil           Bytes?
-  foto_perfil_nombre   String?
+  fotoPerfilNombre     String?               @map("foto_perfil_nombre")
   metodo2FA            String?
   preferencias         String?
   tiene2FA             Boolean?               @default(false) @map("tiene2_fa")
@@ -714,14 +714,14 @@ model rol_usuario {
 
 model usuario_almacen {
   id            Int     @id(map: "UsuarioAlmacen_pkey") @default(autoincrement())
-  usuarioId     Int
-  almacenId     Int
+  usuarioId     Int     @map("usuario_id")
+  almacenId     Int     @map("almacen_id")
   rolEnAlmacen  String  @db.VarChar(50)
   permisosExtra Json?
-  Almacen       Almacen @relation(fields: [almacenId], references: [id], map: "UsuarioAlmacen_almacenId_fkey")
-  usuario       Usuario @relation(fields: [usuarioId], references: [id], map: "UsuarioAlmacen_usuarioId_fkey")
+  Almacen       Almacen @relation(fields: [almacenId], references: [id], map: "UsuarioAlmacen_almacen_id_fkey")
+  usuario       Usuario @relation(fields: [usuarioId], references: [id], map: "UsuarioAlmacen_usuario_id_fkey")
 
-  @@unique([usuarioId, almacenId], map: "UsuarioAlmacen_usuarioId_almacenId_key")
+  @@unique([usuarioId, almacenId], map: "UsuarioAlmacen_usuario_id_almacen_id_key")
 }
 
 enum PrioridadAlerta {

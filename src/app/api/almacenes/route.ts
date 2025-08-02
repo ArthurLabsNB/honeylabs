@@ -36,9 +36,9 @@ export async function GET(req: NextRequest) {
 
     const { data: userAlmacenes, error: uaError } = await db
       .from('usuario_almacen')
-      .select('almacenId')
-      .eq('usuarioId', targetId)
-      .order('almacenId', { ascending: true })
+      .select('almacen_id:almacenId')
+      .eq('usuario_id', targetId)
+      .order('almacen_id', { ascending: true })
       .limit(20);
     if (uaError) throw uaError;
 
