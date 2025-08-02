@@ -11,5 +11,13 @@ export function apiFetch(
   path: string,
   options: RequestInit = {},
 ): Promise<Response> {
-  return fetch(apiPath(path), { credentials: 'include', ...options });
+  const headers: HeadersInit = {
+    ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
+    ...(options.headers || {}),
+  };
+  return fetch(apiPath(path), {
+    credentials: 'same-origin',
+    ...options,
+    headers,
+  });
 }

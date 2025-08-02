@@ -1,4 +1,4 @@
-import { cookies, type RequestCookies } from 'next/headers'
+import { cookies as getCookies, type RequestCookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
 import { getDb } from '@lib/db'
 import { SESSION_COOKIE } from '@lib/constants'
@@ -39,15 +39,13 @@ interface AuthDb {
   }
 }
 
-const JWT_SECRET = process.env.JWT_SECRET
+const JWT_SECRET = process.env.JWT_SECRET!
 
 export async function getUsuarioFromSession(
-  req?: { cookies: RequestCookies },
+  { cookies }: { cookies?: RequestCookies } = {},
 ): Promise<Usuario | null> {
-  if (!JWT_SECRET) return null
-
-  const cookieStore = req?.cookies ?? await cookies()
-  const token = cookieStore.get(SESSION_COOKIE)?.value
+  const jar = cookies ?? getCookies()
+  const token = jar.get(SESSION_COOKIE)?.value
 
   if (!token) return null
 
