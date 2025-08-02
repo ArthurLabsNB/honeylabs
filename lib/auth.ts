@@ -101,7 +101,7 @@ export async function getUsuarioFromSession(
       .from('usuario')
       .select(
         'id,nombre,correo,tipoCuenta,entidadId,esSuperAdmin,' +
-          'roles:rol(nombre,_RolToUsuario!inner(usuarioId)),plan:planId(nombre),preferencias',
+          'roles:rol(nombre,_RolToUsuario!inner(usuarioId)),plan:plan_id(nombre),preferencias',
       )
       .eq('id', decoded.id)
       .maybeSingle()
