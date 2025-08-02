@@ -5,7 +5,7 @@ import { render } from '@testing-library/react'
 
 ;(global as any).React = React
 
-import GlobalError from '../src/app/error'
+import GlobalError from '../src/app/global-error'
 
 describe('GlobalError page', () => {
   it('muestra mensaje y acciones', () => {
