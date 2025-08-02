@@ -1,10 +1,8 @@
 "use client";
-import { useEffect } from 'react';
-import { setupTracing } from '@/lib/tracing';
+import { useEffect } from "react";
+import { setupTracing } from "@lib/tracing";
 
 export default function TracingInit() {
-  useEffect(() => {
-    void setupTracing();
-  }, []);
+  useEffect(() => { setupTracing().catch(() => {}); }, []);
   return null;
 }
