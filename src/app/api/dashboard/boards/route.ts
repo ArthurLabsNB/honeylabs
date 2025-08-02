@@ -1,7 +1,8 @@
 export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@lib/db/prisma';
+import { getDb } from '@lib/db';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { getUsuarioFromSession } from '@lib/auth';
 import * as logger from '@lib/logger';
 
@@ -25,7 +26,12 @@ export async function POST(req: NextRequest) {
     const data = await req.json();
     const prefs = usuario.preferencias ? JSON.parse(usuario.preferencias) : {};
     prefs.dashboardBoards = data;
-    await prisma.usuario.update({ where: { id: usuario.id }, data: { preferencias: JSON.stringify(prefs) } });
+    const db = getDb().client as SupabaseClient;
+    const { error } = await db
+      .from('usuario')
+      .update({ preferencias: JSON.stringify(prefs) })
+      .eq('id', usuario.id);
+    if (error) throw error;
     return NextResponse.json({ ok: true });
   } catch (err) {
     logger.error('POST /api/dashboard/boards', err);

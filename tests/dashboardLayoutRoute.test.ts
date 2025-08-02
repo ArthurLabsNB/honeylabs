@@ -1,17 +1,18 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { NextRequest } from 'next/server'
-import { prisma } from '@lib/db/prisma'
 import * as auth from '../lib/auth'
 
-const { GET, POST } = await import('../src/app/api/dashboard/layout/route')
-
-afterEach(() => vi.restoreAllMocks())
+afterEach(() => {
+  vi.resetModules()
+  vi.restoreAllMocks()
+})
 
 describe('dashboard layout api', () => {
   it('returns stored layout', async () => {
     vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue({
       preferencias: JSON.stringify({ dashboardLayout: { b1: [{ id: 'a' }] } })
     } as any)
+    const { GET } = await import('../src/app/api/dashboard/layout/route')
     const res = await GET()
     const data = await res.json()
     expect(data.b1[0].id).toBe('a')
@@ -22,19 +23,28 @@ describe('dashboard layout api', () => {
       id: 1,
       preferencias: JSON.stringify({ dashboardLayout: { b1: [{ id: 'a' }] } })
     }
-    vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue(user as any)
-    const update = vi.spyOn(prisma.usuario, 'update').mockResolvedValue({} as any)
+
+    const eq = vi.fn().mockResolvedValue({ error: null })
+    const update = vi.fn().mockReturnValue({ eq })
+    const from = vi.fn().mockReturnValue({ update })
+
+    vi.doMock('../lib/auth', () => ({
+      getUsuarioFromSession: vi.fn().mockResolvedValue(user)
+    }))
+    vi.doMock('@lib/db', () => ({ getDb: () => ({ client: { from } }) }))
+
+    const { POST } = await import('../src/app/api/dashboard/layout/route')
     const body = JSON.stringify({ b2: [{ id: 'b' }] })
     const req = new NextRequest('http://localhost/api/dashboard/layout', { method: 'POST', body })
     const res = await POST(req)
     expect(res.status).toBe(200)
+    expect(from).toHaveBeenCalledWith('usuario')
     expect(update).toHaveBeenCalledWith({
-      where: { id: user.id },
-      data: {
-        preferencias: JSON.stringify({
-          dashboardLayout: { b1: [{ id: 'a' }], b2: [{ id: 'b' }] }
-        })
-      }
+      preferencias: JSON.stringify({
+        dashboardLayout: { b1: [{ id: 'a' }], b2: [{ id: 'b' }] }
+      })
     })
+    expect(eq).toHaveBeenCalledWith('id', user.id)
   })
 })
+
