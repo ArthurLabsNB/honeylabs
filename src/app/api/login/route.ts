@@ -45,7 +45,7 @@ export async function POST (req: NextRequest) {
         roles:rol_usuario!inner(
           rol:Rol ( id, nombre, descripcion, permisos )
         ),
-        suscripciones!inner(
+        suscripciones:suscripcion!inner(
           id, activo, fecha_fin,
           plan:plan_id ( nombre, limites )
         )
