@@ -1,7 +1,6 @@
 export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@lib/db/prisma'
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
 
