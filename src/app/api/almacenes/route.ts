@@ -256,7 +256,8 @@ export async function POST(req: NextRequest) {
       if (entErr) throw entErr
       const { error: updErr } = await client
         .from('usuario')
-        .update({ entidadId: nuevaEntidad.id })
+        // supabase usa snake_case para columnas
+        .update({ entidad_id: nuevaEntidad.id })
         .eq('id', usuario.id)
       if (updErr) throw updErr
       usuario.entidadId = nuevaEntidad.id
