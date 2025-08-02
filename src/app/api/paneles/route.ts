@@ -1,10 +1,13 @@
 export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@lib/db/prisma';
+import { getDb } from '@lib/db';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { getUsuarioFromSession } from '@lib/auth';
 import { randomUUID } from 'crypto';
 import * as logger from '@lib/logger';
+
+const supabase = getDb().client as SupabaseClient;
 
 /* Utils */
 function safeParse<T = any>(v: unknown, fallback: T = {} as T): T {
@@ -56,10 +59,11 @@ export async function POST(req: NextRequest) {
     });
     prefs.paneles = paneles;
 
-    await prisma.usuario.update({
-      where: { id: usuario.id },
-      data: { preferencias: JSON.stringify(prefs) },
-    });
+    const { error } = await supabase
+      .from('usuario')
+      .update({ preferencias: JSON.stringify(prefs) })
+      .eq('id', usuario.id);
+    if (error) throw error;
 
     return NextResponse.json({ id });
   } catch (err) {
