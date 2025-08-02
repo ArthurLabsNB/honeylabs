@@ -51,90 +51,32 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ almacenes: [] })
     }
 
+    type ResumenRow = {
+      id: number
+      nombre: string
+      descripcion: string | null
+      imagenUrl: string | null
+      imagenNombre: string | null
+      fechaCreacion: string
+      codigoUnico: string
+      encargado_nombre: string | null
+      encargado_correo: string | null
+      ultima_actualizacion: string | null
+      notificaciones: number | null
+      entradas: number | null
+      salidas: number | null
+      inventario: number | null
+      unidades: number | null
+    }
+
     const { data, error } = await db
-      .from('almacen')
-      .select('id, nombre, descripcion, imagenUrl, imagenNombre, fechaCreacion, codigoUnico')
+      .from<ResumenRow>('almacen_resumen')
+      .select(
+        'id, nombre, descripcion, imagenUrl, imagenNombre, fechaCreacion, codigoUnico, encargado_nombre, encargado_correo, ultima_actualizacion, notificaciones, entradas, salidas, inventario, unidades'
+      )
       .in('id', ids)
       .order('id', { ascending: true })
     if (error) throw error
-
-    const counts: Record<number, { entradas: number; salidas: number }> = {}
-    const materiales: Record<number, number> = {}
-    const unidades: Record<number, number> = {}
-    const ultima: Record<number, string | null> = {}
-    const notifs: Record<number, number> = {}
-    const encargados: Record<number, { nombre: string | null; correo: string | null }> = {}
-    ids.forEach((id) => {
-      counts[id] = { entradas: 0, salidas: 0 }
-      materiales[id] = 0
-      unidades[id] = 0
-      ultima[id] = null
-      notifs[id] = 0
-      encargados[id] = { nombre: null, correo: null }
-    })
-
-    const { data: encargadosData, error: encError } = await db
-      .from('usuario_almacen')
-      .select('almacenId, usuario:usuario(nombre, correo)')
-      .in('almacenId', ids)
-    if (encError) throw encError
-    for (const e of encargadosData ?? []) {
-      if (!encargados[e.almacenId].nombre) {
-        encargados[e.almacenId] = {
-          nombre: e.usuario?.nombre ?? null,
-          correo: e.usuario?.correo ?? null,
-        }
-      }
-    }
-
-    const { data: notifData, error: notifError } = await db
-      .from('notificacion')
-      .select('almacenId')
-      .eq('leida', false)
-      .in('almacenId', ids)
-    if (notifError) throw notifError
-    for (const n of notifData ?? []) {
-      notifs[n.almacenId] = (notifs[n.almacenId] ?? 0) + 1
-    }
-
-    const { data: movs, error: movError } = await db
-      .from('movimiento')
-      .select('almacenId, tipo, sum:cantidad', { group: 'almacenId,tipo' })
-      .in('almacenId', ids)
-    if (movError) throw movError
-    for (const m of movs ?? []) {
-      const sum = (m as any).sum ?? (m as any).sum_cantidad ?? (m as any).cantidad
-      if (m.tipo === 'entrada') counts[m.almacenId].entradas = sum ?? 0
-      if (m.tipo === 'salida') counts[m.almacenId].salidas = sum ?? 0
-    }
-
-    const { data: movFechas, error: fechaError } = await db
-      .from('movimiento')
-      .select('almacenId, max:fecha', { group: 'almacenId' })
-      .in('almacenId', ids)
-    if (fechaError) throw fechaError
-    for (const f of movFechas ?? []) {
-      ultima[f.almacenId] = (f as any).max ?? null
-    }
-
-    const { data: mats, error: matsError } = await db
-      .from('material')
-      .select('almacenId, count:id', { group: 'almacenId' })
-      .in('almacenId', ids)
-    if (matsError) throw matsError
-    for (const m of mats ?? []) {
-      materiales[m.almacenId] = (m as any).count ?? 0
-    }
-
-    const { data: unidadRows, error: uniError } = await db
-      .from('material_unidad')
-      .select('material:material(almacenId)')
-      .in('material.almacenId', ids)
-    if (uniError) throw uniError
-    for (const u of unidadRows ?? []) {
-      const id = (u as any).material?.almacenId
-      if (id != null) unidades[id] = (unidades[id] ?? 0) + 1
-    }
 
     let orden: number[] = []
     if (targetId) {
@@ -158,14 +100,14 @@ export async function GET(req: NextRequest) {
       imagenUrl: a.imagenNombre ? `/api/almacenes/foto?nombre=${encodeURIComponent(a.imagenNombre)}` : a.imagenUrl,
       codigoUnico: a.codigoUnico,
       fechaCreacion: a.fechaCreacion,
-      encargado: encargados[a.id].nombre,
-      correo: encargados[a.id].correo,
-      ultimaActualizacion: ultima[a.id],
-      notificaciones: notifs[a.id] ?? 0,
-      entradas: counts[a.id].entradas,
-      salidas: counts[a.id].salidas,
-      inventario: materiales[a.id],
-      unidades: unidades[a.id],
+      encargado: a.encargado_nombre,
+      correo: a.encargado_correo,
+      ultimaActualizacion: a.ultima_actualizacion,
+      notificaciones: a.notificaciones ?? 0,
+      entradas: a.entradas ?? 0,
+      salidas: a.salidas ?? 0,
+      inventario: a.inventario ?? 0,
+      unidades: a.unidades ?? 0,
     }))
 
     if (orden.length > 0) {
