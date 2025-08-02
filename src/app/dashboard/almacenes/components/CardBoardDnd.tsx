@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { DndContext, PointerSensor, useSensor, useSensors, DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, rectSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -66,11 +66,16 @@ export default function CardBoardDnd() {
   const colWidth = cols > 0 ? (width - marginX * (cols + 1)) / cols : 0;
 
   const safeCards = Array.isArray(cards) ? cards : [];
-  const current = safeCards.filter((t) => t.boardId === boardId);
+  const current = useMemo(
+    () => safeCards.filter((t) => t.boardId === boardId),
+    [safeCards, boardId],
+  );
 
-  const baseLayout = computeBoardLayout(current);
+  const baseLayout = useMemo(() => computeBoardLayout(current), [current]);
   const [layout, setLayout] = useState(baseLayout);
-  useEffect(() => setLayout(baseLayout), [baseLayout]);
+  useEffect(() => {
+    setLayout(baseLayout);
+  }, [baseLayout]);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: POINTER_ACTIVATION_DISTANCE } }));
 
