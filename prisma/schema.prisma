@@ -15,7 +15,7 @@ model Plan {
   precio        Float?
   periodicidad  String?
   limites       String?
-  entidades     Entidad[]
+  entidades     Entidad[]     @relation("EntidadesOnPlan")
   suscripciones Suscripcion[]
   usuarios      Usuario[]
   @@map("plan")
@@ -45,7 +45,7 @@ model Entidad {
   fechaCreacion  DateTime      @default(now()) @map("fecha_creacion")
   planId         Int?          @map("plan_id")
   almacenes      Almacen[]
-  plan           Plan?         @relation(fields: [planId], references: [id])
+  plan           Plan?         @relation("EntidadesOnPlan", fields: [planId], references: [id])
   roles          Rol[]
   suscripciones  Suscripcion[]
   usuarios       Usuario[]
