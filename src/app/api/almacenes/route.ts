@@ -208,87 +208,39 @@ export async function POST(req: NextRequest) {
     const codigoUnico = crypto.randomUUID().split('-')[0];
     const bytea = toByteaHex(imagenBuf);
 
-    // **Inserción progresiva**: empieza mínima y luego añade campos opcionales
-    const creado = await tryInsert<{
-      id: number; nombre: string; descripcion: string | null; imagenNombre?: string | null; imagen_nombre?: string | null;
-      imagenUrl?: string | null; imagen_url?: string | null; codigoUnico?: string; codigo_unico?: string;
-    }>(
-      db,
-      'almacen',
-      [
-        // mínima segura (evita columnas que quizá no existan)
-        {
-          nombre,
-          descripcion,
-          codigoUnico,
-          ...(bytea ? { imagen: bytea } : {}),
-          entidadId: usuario.entidadId,
-          imagenUrl,
-          imagenNombre,
-        },
-        // snake-case
-        {
-          nombre,
-          descripcion,
-          codigo_unico: codigoUnico,
-          ...(bytea ? { imagen: bytea } : {}),
-          entidad_id: usuario.entidadId,
-          imagen_url: imagenUrl,
-          imagen_nombre: imagenNombre,
-        },
-        // con campos opcionales (camel)
-        {
-          nombre,
-          descripcion,
-          funciones,
-          permisosPredeterminados,
-          codigoUnico,
-          ...(bytea ? { imagen: bytea } : {}),
-          entidadId: usuario.entidadId,
-          imagenUrl,
-          imagenNombre,
-        },
-        // con campos opcionales (snake)
-        {
-          nombre,
-          descripcion,
-          funciones,
-          permisos_predeterminados: permisosPredeterminados,
-          codigo_unico: codigoUnico,
-          ...(bytea ? { imagen: bytea } : {}),
-          entidad_id: usuario.entidadId,
-          imagen_url: imagenUrl,
-          imagen_nombre: imagenNombre,
-        },
-      ],
-      'id,nombre,descripcion,imagenNombre,imagenUrl,imagen_nombre,imagen_url,codigoUnico,codigo_unico',
-    );
-
-    // enlazar propietario
-    try {
-      await tryInsert(
-        db,
-        'usuario_almacen',
-        [
-          { usuarioId: usuario.id, almacenId: creado.id, rolEnAlmacen: 'propietario' },
-          { usuario_id: usuario.id, almacen_id: creado.id, rol_en_almacen: 'propietario' },
-        ],
-        'almacenId',
-      );
-    } catch (e) {
-      // rollback manual
-      await db.from('almacen').delete().eq('id', creado.id).catch(() => {});
-      return NextResponse.json({ error: msg(e, 'No se pudo asignar propietario') }, { status: 500 });
+    // Inserción atómica via RPC
+    const { data: rpcId, error: rpcErr } = await db.rpc('create_almacen_safe', {
+      p_usuario_id: usuario.id,
+      p_entidad_id: usuario.entidadId,
+      p_nombre: nombre,
+      p_descripcion: descripcion,
+      p_codigo_unico: codigoUnico,
+      p_imagen: bytea,
+      p_imagen_nombre: imagenNombre,
+      p_imagen_url: imagenUrl,
+    });
+    if (rpcErr || !rpcId) {
+      return NextResponse.json({ error: msg(rpcErr, 'No se pudo crear almacén') }, { status: 500 });
     }
 
-    // side-effects no críticos
-    snapshotAlmacen(db as any, creado.id, usuario.id, 'Creación').catch((e) => logger.warn?.('snapshotAlmacen', e));
-    logAudit(usuario.id, 'creacion', 'almacen', { almacenId: creado.id }).catch((e) => logger.warn?.('logAudit', e));
+    const creadoId = rpcId as number;
 
-    let auditoria = null, auditError = null as any;
+    // side-effects no críticos
+    snapshotAlmacen(db as any, creadoId, usuario.id, 'Creación').catch((e) =>
+      logger.warn?.('snapshotAlmacen', e),
+    );
+    logAudit(usuario.id, 'creacion', 'almacen', { almacenId: creadoId }).catch((e) =>
+      logger.warn?.('logAudit', e),
+    );
+
+    let auditoria = null,
+      auditError = null as any;
     try {
-      const r = await registrarAuditoria(req, 'almacen', creado.id, 'creacion', {
-        nombre, descripcion, funciones, permisosPredeterminados,
+      const r = await registrarAuditoria(req, 'almacen', creadoId, 'creacion', {
+        nombre,
+        descripcion,
+        funciones,
+        permisosPredeterminados,
       });
       auditoria = r.auditoria ?? null;
       auditError = r.error ?? null;
@@ -296,17 +248,17 @@ export async function POST(req: NextRequest) {
       auditError = msg(e);
     }
 
-    const imgNombre = (creado as any).imagenNombre ?? (creado as any).imagen_nombre ?? null;
-    const imgUrl = (creado as any).imagenUrl ?? (creado as any).imagen_url ?? null;
-    const cod = (creado as any).codigoUnico ?? (creado as any).codigo_unico;
+    const finalUrl = imagenNombre
+      ? `/api/almacenes/foto?nombre=${encodeURIComponent(imagenNombre)}`
+      : imagenUrl;
 
     return NextResponse.json({
       almacen: {
-        id: creado.id,
-        nombre: (creado as any).nombre,
-        descripcion: (creado as any).descripcion ?? null,
-        codigoUnico: cod,
-        imagenUrl: imgNombre ? `/api/almacenes/foto?nombre=${encodeURIComponent(imgNombre)}` : imgUrl,
+        id: creadoId,
+        nombre,
+        descripcion: descripcion || null,
+        codigoUnico: codigoUnico,
+        imagenUrl: finalUrl,
       },
       auditoria,
       auditError,
