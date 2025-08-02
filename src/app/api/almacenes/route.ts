@@ -180,11 +180,12 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ almacenes })
   } catch (err) {
-    logger.error("Error en /api/almacenes:", err);
-    return NextResponse.json(
-      { error: "Error al obtener almacenes" },
-      { status: 500 },
-    );
+    const message =
+      err && typeof err === 'object' && 'message' in err
+        ? String((err as any).message)
+        : 'Error al obtener almacenes';
+    logger.error('GET /api/almacenes', err);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -308,10 +309,11 @@ export async function POST(req: NextRequest) {
   }
   return NextResponse.json({ almacen: resp, auditoria, auditError })
   } catch (err) {
+    const message =
+      err && typeof err === 'object' && 'message' in err
+        ? String((err as any).message)
+        : 'Error al crear almacén';
     logger.error('POST /api/almacenes', err);
-    return NextResponse.json(
-      { error: 'Error al crear almacén' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
