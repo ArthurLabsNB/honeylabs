@@ -51,7 +51,7 @@ describe('GET /api/almacenes', () => {
     vi.spyOn(permisos, 'hasManagePerms').mockReturnValue(true)
     const req = new NextRequest('http://localhost/api/almacenes?usuarioId=5')
     await GET(req)
-    expect(eq).toHaveBeenCalledWith('usuarioId', 5)
+    expect(eq).toHaveBeenCalledWith('usuario_id', 5)
   })
 
   it('incluye total de unidades', async () => {
@@ -59,7 +59,7 @@ describe('GET /api/almacenes', () => {
     vi.spyOn(permisos, 'hasManagePerms').mockReturnValue(true)
 
     const queries = [
-      { result: [{ almacenId: 2 }] },
+      { result: [{ almacen_id: 2 }] },
       {
         result: [
           {

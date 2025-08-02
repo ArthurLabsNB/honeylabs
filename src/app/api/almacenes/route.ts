@@ -36,13 +36,13 @@ export async function GET(req: NextRequest) {
 
     const { data: userAlmacenes, error: uaError } = await db
       .from('usuario_almacen')
-      .select('almacen_id:almacenId')
+      .select('almacen_id')
       .eq('usuario_id', targetId)
       .order('almacen_id', { ascending: true })
       .limit(20);
     if (uaError) throw uaError;
 
-    const ids = (userAlmacenes ?? []).map((u) => u.almacenId);
+    const ids = (userAlmacenes ?? []).map((u) => u.almacen_id);
     if (ids.length === 0) return NextResponse.json({ almacenes: [] });
 
     type Row = {
