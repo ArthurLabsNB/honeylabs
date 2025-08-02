@@ -76,7 +76,7 @@ model Usuario {
   foto_perfil_nombre   String?
   metodo2FA            String?
   preferencias         String?
-  tiene2_FA            Boolean?               @default(false)
+  tiene2FA             Boolean?               @default(false) @map("tiene2_fa")
   esSuperAdmin         Boolean?               @default(false)
   archivosAuditorias   ArchivoAuditoria[]     @relation("ArchivoAuditoriaSubidoPor")
   archivosMaterial     ArchivoMaterial[]
