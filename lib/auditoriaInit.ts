@@ -9,7 +9,13 @@ export async function ensureAuditoriaTables() {
   try {
     const db = getDb().client as SupabaseClient
     const { error } = await db.rpc('ensure_auditoria_tables')
-    if (error) throw error
+    if (error) {
+      if ((error as any).code === 'PGRST202') {
+        logger.warn('RPC ensure_auditoria_tables no encontrada, se omite')
+      } else {
+        throw error
+      }
+    }
     checked = true
   } catch (err) {
     logger.error('ensureAuditoriaTables', err)

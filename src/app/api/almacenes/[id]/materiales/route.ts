@@ -41,17 +41,30 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
     }
 
-    const { data: rows, error } = await db
+    const cols =
+      'id,nombre,descripcion,cantidad,unidad,lote,fechaCaducidad,ubicacion,proveedor,estado,observaciones,codigoBarra,codigoQR,minimo,maximo,fecha_registro,fechaActualizacion, unidades:material_unidad(id)'
+    const camel = `miniaturaNombre,${cols}`
+    const snake = `miniatura_nombre:miniaturaNombre,${cols}`
+    let { data: rows, error } = await db
       .from('material')
-      .select('id,nombre,descripcion,miniaturaNombre,cantidad,unidad,lote,fechaCaducidad,ubicacion,proveedor,estado,observaciones,codigoBarra,codigoQR,minimo,maximo,fecha_registro,fechaActualizacion, unidades:material_unidad(id)')
+      .select(camel)
       .eq('almacenId', almacenId)
       .order('id', { ascending: false })
+    if (error) {
+      const fb = await db
+        .from('material')
+        .select(snake)
+        .eq('almacen_id', almacenId)
+        .order('id', { ascending: false })
+      rows = fb.data
+      error = fb.error
+    }
     if (error) throw error
     const materiales = (rows ?? []).map((m) => ({
       id: m.id,
       nombre: m.nombre,
       descripcion: m.descripcion,
-      miniaturaNombre: m.miniaturaNombre,
+      miniaturaNombre: m.miniaturaNombre ?? null,
       cantidad: m.cantidad,
       unidad: m.unidad,
       lote: m.lote,

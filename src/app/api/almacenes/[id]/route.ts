@@ -133,23 +133,31 @@ async function countMateriales(db: SupabaseClient, almacenId: number): Promise<n
 }
 
 async function listMateriales(db: SupabaseClient, almacenId: number) {
-  const cols =
-    'id,nombre,descripcion,miniaturaNombre,cantidad,unidad,lote,fechaCaducidad,ubicacion,proveedor,estado,observaciones,minimo,maximo,fecha_registro,fechaActualizacion';
-  const q1 = await db.from('material').select(cols).eq('almacenId', almacenId).order('id', { ascending: false });
+  const base =
+    'id,nombre,descripcion,cantidad,unidad,lote,fechaCaducidad,ubicacion,proveedor,estado,observaciones,minimo,maximo,fecha_registro,fechaActualizacion'
+  const q1 = await db
+    .from('material')
+    .select(`miniaturaNombre,${base}`)
+    .eq('almacenId', almacenId)
+    .order('id', { ascending: false })
   if (!q1.error)
     return (q1.data ?? []).map((m: any) => {
-      const { fecha_registro, ...rest } = m;
-      return { ...rest, fechaRegistro: fecha_registro };
-    });
+      const { fecha_registro, ...rest } = m
+      return { ...rest, fechaRegistro: fecha_registro }
+    })
 
-  const q2 = await db.from('material').select(cols).eq('almacen_id', almacenId).order('id', { ascending: false });
+  const q2 = await db
+    .from('material')
+    .select(`miniatura_nombre:miniaturaNombre,${base}`)
+    .eq('almacen_id', almacenId)
+    .order('id', { ascending: false })
   if (!q2.error)
     return (q2.data ?? []).map((m: any) => {
-      const { fecha_registro, ...rest } = m;
-      return { ...rest, fechaRegistro: fecha_registro };
-    });
+      const { fecha_registro, ...rest } = m
+      return { ...rest, fechaRegistro: fecha_registro }
+    })
 
-  throw q1.error ?? q2.error;
+  throw q1.error ?? q2.error
 }
 
 /* ───────── GET /api/almacenes/[id] ───────── */
