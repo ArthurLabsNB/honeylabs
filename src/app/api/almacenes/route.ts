@@ -183,18 +183,20 @@ export async function POST(req: NextRequest) {
 
     }
 
+    const creado_por_id = rpcId;
+
     // side-effects no críticos
-    snapshotAlmacen(db as any, creadoId, usuario.id, 'Creación').catch((e) =>
+    snapshotAlmacen(db as any, creado_por_id, usuario.id, 'Creación').catch((e) =>
       logger.warn?.('snapshotAlmacen', e),
     );
-    logAudit(usuario.id, 'creacion', 'almacen', { almacenId: creadoId }).catch((e) =>
+    logAudit(usuario.id, 'creacion', 'almacen', { almacenId: creado_por_id }).catch((e) =>
       logger.warn?.('logAudit', e),
     );
 
     let auditoria = null,
       auditError = null as any;
     try {
-      const r = await registrarAuditoria(req, 'almacen', creadoId, 'creacion', {
+      const r = await registrarAuditoria(req, 'almacen', creado_por_id, 'creacion', {
         nombre,
         descripcion,
         funciones,
@@ -212,7 +214,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       almacen: {
-        id: creadoId,
+        id: creado_por_id,
         nombre,
         descripcion: descripcion || null,
         codigoUnico: codigoUnico,
