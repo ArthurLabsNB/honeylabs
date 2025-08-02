@@ -1,10 +1,14 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { NextRequest } from 'next/server'
+import * as db from '../lib/db'
 
 afterEach(() => {
   vi.restoreAllMocks()
   vi.resetModules()
 })
+
+const from = vi.fn()
+vi.spyOn(db, 'getDb').mockReturnValue({ client: { from } } as any)
 
 describe('POST /api/almacenes', () => {
   it('retorna auditoria al crear', async () => {

@@ -4,10 +4,13 @@ import { NextRequest } from 'next/server'
 import * as auth from '../lib/auth'
 import * as permisos from '../lib/permisos'
 import { prisma } from '@lib/db/prisma'
+import * as db from '../lib/db'
 
 afterEach(() => vi.restoreAllMocks())
 
 describe('GET /api/almacenes', () => {
+  const from = vi.fn()
+  vi.spyOn(db, 'getDb').mockReturnValue({ client: { from } } as any)
   it('requiere sesion', async () => {
     vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue(null as any)
     const res = await GET(new NextRequest('http://localhost/api/almacenes'))

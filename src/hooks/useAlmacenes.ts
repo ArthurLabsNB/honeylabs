@@ -8,18 +8,38 @@ export interface Almacen {
   imagenUrl?: string | null
   fechaCreacion?: string | null
   ultimaActualizacion?: string | null
-  entradas?: number
-  salidas?: number
-  inventario?: number
-  unidades?: number
+  entradas: number
+  salidas: number
+  inventario: number
+  unidades: number
   encargado?: string | null
   correo?: string | null
-  notificaciones?: number
+  notificaciones: number
   codigoUnico?: string
 }
 
 
 const EMPTY_ALMACENES: Almacen[] = []
+
+function normalize(raw: any): Almacen {
+  return {
+    id: Number(raw.id),
+    nombre: String(raw.nombre),
+    descripcion: raw.descripcion ?? null,
+    imagenUrl: raw.imagenUrl ?? raw.imagen_url ?? null,
+    fechaCreacion: raw.fechaCreacion ?? raw.fecha_creacion ?? null,
+    ultimaActualizacion:
+      raw.ultimaActualizacion ?? raw.ultima_actualizacion ?? null,
+    entradas: Number(raw.entradas ?? raw.total_entradas ?? 0),
+    salidas: Number(raw.salidas ?? raw.total_salidas ?? 0),
+    inventario: Number(raw.inventario ?? raw.materiales ?? 0),
+    unidades: Number(raw.unidades ?? raw.total_unidades ?? 0),
+    encargado: raw.encargado ?? raw.encargado_nombre ?? null,
+    correo: raw.correo ?? raw.encargado_correo ?? null,
+    notificaciones: Number(raw.notificaciones ?? raw.notificaciones_count ?? 0),
+    codigoUnico: raw.codigoUnico ?? raw.codigo_unico ?? undefined,
+  }
+}
 
 export default function useAlmacenes(opts?: {
   usuarioId?: number
@@ -35,8 +55,10 @@ export default function useAlmacenes(opts?: {
     revalidateOnFocus: true,
   })
 
+  const raw = (data?.almacenes as any[]) ?? EMPTY_ALMACENES
+
   return {
-    almacenes: (data?.almacenes as Almacen[]) ?? EMPTY_ALMACENES,
+    almacenes: raw.map(normalize),
     loading: isLoading,
     error,
     mutate,
