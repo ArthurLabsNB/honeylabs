@@ -3,13 +3,13 @@ generator client {
 }
 
 datasource db {
- provider  = "postgresql"
+  provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
 model Plan {
-  id            Int           @id @default(autoincrement())
+  id            Int           @id(map: "Plan_pkey") @default(autoincrement())
   nombre        String
   descripcion   String?
   precio        Float?
@@ -18,69 +18,77 @@ model Plan {
   entidades     Entidad[]     @relation("EntidadesOnPlan")
   suscripciones Suscripcion[]
   usuarios      Usuario[]
+
   @@map("plan")
 }
 
 model Suscripcion {
-  id          Int       @id @default(autoincrement())
+  id          Int       @id(map: "Suscripcion_pkey") @default(autoincrement())
   usuarioId   Int?      @map("usuario_id")
   entidadId   Int?      @map("entidad_id")
   planId      Int       @map("plan_id")
-  fechaInicio DateTime  @default(now()) @map("fecha_inicio")
-  fechaFin    DateTime? @map("fecha_fin")
+  fechaInicio DateTime  @default(now())
+  fechaFin    DateTime?
   activo      Boolean   @default(true)
-  entidad     Entidad?  @relation(fields: [entidadId], references: [id])
-  plan        Plan      @relation(fields: [planId], references: [id])
-  usuario     Usuario?  @relation(fields: [usuarioId], references: [id])
+  entidad     Entidad?  @relation(fields: [entidadId], references: [id], map: "Suscripcion_entidadId_fkey")
+  plan        Plan      @relation(fields: [planId], references: [id], map: "Suscripcion_planId_fkey")
+  usuario     Usuario?  @relation(fields: [usuarioId], references: [id], map: "Suscripcion_usuarioId_fkey")
+
   @@map("suscripcion")
 }
 
 model Entidad {
-  id             Int           @id @default(autoincrement())
+  id             Int           @id(map: "Entidad_pkey") @default(autoincrement())
   nombre         String
   tipo           String
-  correoContacto String        @map("correo_contacto")
+  correoContacto String
   telefono       String?
   direccion      String?
-  fechaCreacion  DateTime      @default(now()) @map("fecha_creacion")
+  fechaCreacion  DateTime      @default(now())
   planId         Int?          @map("plan_id")
   almacenes      Almacen[]
-  plan           Plan?         @relation("EntidadesOnPlan", fields: [planId], references: [id])
   roles          Rol[]
+  plan           Plan?         @relation("EntidadesOnPlan", fields: [planId], references: [id], onUpdate: NoAction, map: "entidad_plan_fk")
   suscripciones  Suscripcion[]
   usuarios       Usuario[]
+
+  @@index([planId], map: "idx_entidad_plan_id")
   @@map("entidad")
 }
 
 model Usuario {
-  id                   Int                    @id @default(autoincrement())
+  id                   Int                    @id(map: "Usuario_pkey") @default(autoincrement())
   nombre               String
   apellidos            String
-  correo               String                 @unique
+  correo               String                 @unique(map: "Usuario_correo_key")
   contrasena           String
-  googleId             String?                @map("google_id")
+  googleId             String?
   tipoCuenta           String                 @map("tipo_cuenta")
   estado               String                 @default("pendiente")
-  fechaRegistro        DateTime               @default(now()) @map("fecha_registro")
+  fechaRegistro        DateTime               @default(now())
   entidadId            Int?                   @map("entidad_id")
-  archivoBuffer        Bytes?                 @map("archivo_buffer")
-  archivoNombre        String?                @map("archivo_nombre")
-  codigoUsado          String?                @map("codigo_usado")
+  archivoBuffer        Bytes?
+  archivoNombre        String?
+  codigoUsado          String?
   planId               Int?                   @map("plan_id")
-  codigo2FASecret      String?                @map("codigo_2fa_secret")
-  fotoPerfil           Bytes?                 @map("foto_perfil")
-  fotoPerfilNombre     String?                @map("foto_perfil_nombre")
-  metodo2FA            String?                @map("metodo_2fa")
+  codigo2FASecret      String?
+  fotoPerfil           Bytes?
+  fotoPerfilNombre     String?
+  metodo2FA            String?
   preferencias         String?
-  tiene2FA             Boolean?               @default(false) @map("tiene_2fa")
-  esSuperAdmin         Boolean?               @default(false) @map("es_super_admin")
+  tiene2FA             Boolean?               @default(false)
+  esSuperAdmin         Boolean?               @default(false)
+  archivosAuditorias   ArchivoAuditoria[]     @relation("ArchivoAuditoriaSubidoPor")
   archivosMaterial     ArchivoMaterial[]
+  archivosReportes     ArchivoReporte[]       @relation("ArchivoReporteSubidoPor")
   archivosUnidad       ArchivoUnidad[]
   auditLogs            AuditLog[]
+  auditorias           Auditoria[]            @relation("AuditoriaUsuario")
   bitacoraCambios      BitacoraCambioPerfil[]
   chatMensajes         ChatMensaje[]
   documentosSubidos    DocumentoAlmacen[]     @relation("DocumentosSubidos")
   eventosCreados       EventoAlmacen[]        @relation("EventosCreados")
+  facturas             Factura[]
   historialAlmacenes   HistorialAlmacen[]
   historialLotes       HistorialLote[]
   historialUnidades    HistorialUnidad[]
@@ -99,18 +107,16 @@ model Usuario {
   PuntajeSnake         PuntajeSnake[]
   PuntajeSpaceShooter  PuntajeSpaceShooter[]
   PuntajeTetris        PuntajeTetris[]
-  sesiones             SesionUsuario[]
-  suscripciones        Suscripcion[]
-  facturas             Factura[]
+  reportes             Reporte[]              @relation("ReporteUsuario")
   tickets              Ticket[]
-  reportes             Reporte[]       @relation("ReporteUsuario")
-  auditorias           Auditoria[]     @relation("AuditoriaUsuario")
-  archivosReportes     ArchivoReporte[] @relation("ArchivoReporteSubidoPor")
-  archivosAuditorias   ArchivoAuditoria[] @relation("ArchivoAuditoriaSubidoPor")
-  entidad              Entidad?               @relation(fields: [entidadId], references: [id])
-  plan                 Plan?                  @relation(fields: [planId], references: [id])
-  almacenes            UsuarioAlmacen[]
-  roles                Rol[]                  @relation("RolToUsuario")
+  rol_usuario          rol_usuario[]
+  sesion_usuario       SesionUsuario[]
+  suscripciones        Suscripcion[]
+  entidad              Entidad?               @relation(fields: [entidadId], references: [id], onUpdate: NoAction, map: "usuario_entidad_fk")
+  plan                 Plan?                  @relation(fields: [planId], references: [id], onUpdate: NoAction, map: "usuario_plan_fk")
+  usuario_almacen      usuario_almacen[]
+
+  @@index([entidadId], map: "idx_usuario_entidad_id")
   @@map("usuario")
 }
 
@@ -123,25 +129,26 @@ model BitacoraCambioPerfil {
 }
 
 model SesionUsuario {
-  id          Int      @id @default(autoincrement())
-  usuarioId   Int      @map("usuario_id")
-  userAgent   String?  @map("user_agent")
+  id          Int      @id(map: "SesionUsuario_pkey") @default(autoincrement())
+  usuarioId   Int
+  userAgent   String?
   ip          String?
-  fechaInicio DateTime @default(now()) @map("fecha_inicio")
-  fechaUltima DateTime @default(now()) @map("fecha_ultima")
+  fechaInicio DateTime @default(now())
+  fechaUltima DateTime @default(now())
   activa      Boolean  @default(true)
-  usuario     Usuario  @relation(fields: [usuarioId], references: [id])
+  usuario     Usuario  @relation(fields: [usuarioId], references: [id], map: "SesionUsuario_usuarioId_fkey")
+
   @@map("sesion_usuario")
 }
 
 model Rol {
-  id          Int       @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   nombre      String
   descripcion String?
   permisos    Json
   entidadId   Int?
-  entidad     Entidad?  @relation(fields: [entidadId], references: [id])
-  usuarios    Usuario[] @relation("RolToUsuario")
+  entidad     Entidad?      @relation(fields: [entidadId], references: [id])
+  rol_usuario rol_usuario[]
 }
 
 model Almacen {
@@ -158,6 +165,7 @@ model Almacen {
   imagenNombre            String?
   alertas                 Alerta[]
   entidad                 Entidad            @relation(fields: [entidadId], references: [id])
+  auditorias              Auditoria[]        @relation("AuditoriaAlmacen")
   codigos                 CodigoAlmacen[]
   documentos              DocumentoAlmacen[]
   eventos                 EventoAlmacen[]
@@ -167,21 +175,8 @@ model Almacen {
   movimientos             Movimiento[]
   notificaciones          Notificacion[]
   novedades               NovedadAlmacen[]
-  usuarios                UsuarioAlmacen[]
-  reportes               Reporte[]          @relation("ReporteAlmacen")
-  auditorias             Auditoria[]        @relation("AuditoriaAlmacen")
-}
-
-model UsuarioAlmacen {
-  id            Int     @id @default(autoincrement())
-  usuarioId     Int
-  almacenId     Int
-  rolEnAlmacen  String  @db.VarChar(50)
-  permisosExtra Json?
-  almacen       Almacen @relation(fields: [almacenId], references: [id])
-  usuario       Usuario @relation(fields: [usuarioId], references: [id])
-
-  @@unique([usuarioId, almacenId])
+  reportes                Reporte[]          @relation("ReporteAlmacen")
+  usuario_almacen         usuario_almacen[]
 }
 
 model CodigoAlmacen {
@@ -323,14 +318,14 @@ model Material {
   codigoQR            String?
   reorderLevel        Int?
   archivos            ArchivoMaterial[]
+  auditorias          Auditoria[]          @relation("AuditoriaMaterial")
+  facturaItems        FacturaItem[]
   historialLotes      HistorialLote[]
   almacen             Almacen              @relation(fields: [almacenId], references: [id])
   usuario             Usuario?             @relation(fields: [usuarioId], references: [id])
   unidades            MaterialUnidad[]
   movimientosMaterial MovimientoMaterial[]
-  facturaItems        FacturaItem[]
-  reportes            Reporte[]          @relation("ReporteMaterial")
-  auditorias          Auditoria[]        @relation("AuditoriaMaterial")
+  reportes            Reporte[]            @relation("ReporteMaterial")
 }
 
 model ArchivoMaterial {
@@ -419,11 +414,11 @@ model MaterialUnidad {
   imagen             Bytes?
   imagenNombre       String?
   archivos           ArchivoUnidad[]
-  historial          HistorialUnidad[]
+  auditorias         Auditoria[]       @relation("AuditoriaUnidad")
   facturaItems       FacturaItem[]
-  reportes           Reporte[]          @relation("ReporteUnidad")
-  auditorias         Auditoria[]        @relation("AuditoriaUnidad")
+  historial          HistorialUnidad[]
   material           Material          @relation(fields: [materialId], references: [id])
+  reportes           Reporte[]         @relation("ReporteUnidad")
 
   @@unique([materialId, nombre])
 }
@@ -545,12 +540,6 @@ model AuditLog {
   usuario   Usuario? @relation(fields: [usuarioId], references: [id])
 }
 
-enum PrioridadAlerta {
-  ALTA
-  MEDIA
-  BAJA
-}
-
 model Nota {
   id        Int      @id @default(autoincrement())
   tabId     String
@@ -558,49 +547,42 @@ model Nota {
   contenido String
 }
 
-enum NotaTipo {
-  imagen
-  url
-  doc
-  sticky
-}
-
 model Factura {
-  id            Int            @id @default(autoincrement())
-  folio         String         @unique
+  id            Int           @id @default(autoincrement())
+  folio         String        @unique
   clienteId     Int?
-  fechaEmision  DateTime       @default(now())
+  fechaEmision  DateTime      @default(now())
   total         Float
-  moneda        String         @default("MXN")
+  moneda        String        @default("MXN")
   pdf           Bytes?
   xml           Bytes?
   ublJson       Json?
-  cliente       Usuario?       @relation(fields: [clienteId], references: [id])
+  cliente       Usuario?      @relation(fields: [clienteId], references: [id])
   items         FacturaItem[]
-  transacciones Transaccion[]
   tickets       Ticket[]
+  transacciones Transaccion[]
 }
 
 model FacturaItem {
-  id         Int            @id @default(autoincrement())
+  id         Int             @id @default(autoincrement())
   facturaId  Int
   materialId Int?
   unidadId   Int?
   cantidad   Float
   precio     Float
-  factura    Factura        @relation(fields: [facturaId], references: [id], onDelete: Cascade)
-  material   Material?      @relation(fields: [materialId], references: [id])
+  factura    Factura         @relation(fields: [facturaId], references: [id], onDelete: Cascade)
+  material   Material?       @relation(fields: [materialId], references: [id])
   unidad     MaterialUnidad? @relation(fields: [unidadId], references: [id])
 }
 
 model Transaccion {
-  id        Int      @id @default(autoincrement())
-  facturaId Int
-  fecha     DateTime @default(now())
-  metodo    String
-  monto     Float
+  id         Int      @id @default(autoincrement())
+  facturaId  Int
+  fecha      DateTime @default(now())
+  metodo     String
+  monto      Float
   referencia String?
-  factura   Factura  @relation(fields: [facturaId], references: [id], onDelete: Cascade)
+  factura    Factura  @relation(fields: [facturaId], references: [id], onDelete: Cascade)
 }
 
 model Ticket {
@@ -613,26 +595,21 @@ model Ticket {
   usuario   Usuario  @relation(fields: [usuarioId], references: [id])
 }
 
-// ================================
-// Reportes generados por escaneos
-// ================================
 model Reporte {
-  id            Int      @id @default(autoincrement())
-  tipo          String   // 'almacen', 'material', 'unidad'
+  id            Int              @id @default(autoincrement())
+  tipo          String
   almacenId     Int?
   materialId    Int?
   unidadId      Int?
   observaciones String?
   categoria     String?
-  fecha         DateTime @default(now())
+  fecha         DateTime         @default(now())
   usuarioId     Int?
-
-  usuario   Usuario?        @relation("ReporteUsuario", fields: [usuarioId], references: [id])
-  almacen   Almacen?        @relation("ReporteAlmacen", fields: [almacenId], references: [id])
-  material  Material?       @relation("ReporteMaterial", fields: [materialId], references: [id])
-  unidad    MaterialUnidad? @relation("ReporteUnidad", fields: [unidadId], references: [id])
-
-  archivos  ArchivoReporte[] @relation("ArchivoDeReporte")
+  archivos      ArchivoReporte[] @relation("ArchivoDeReporte")
+  almacen       Almacen?         @relation("ReporteAlmacen", fields: [almacenId], references: [id])
+  material      Material?        @relation("ReporteMaterial", fields: [materialId], references: [id])
+  unidad        MaterialUnidad?  @relation("ReporteUnidad", fields: [unidadId], references: [id])
+  usuario       Usuario?         @relation("ReporteUsuario", fields: [usuarioId], references: [id])
 }
 
 model ArchivoReporte {
@@ -642,42 +619,40 @@ model ArchivoReporte {
   archivoNombre String?
   fecha         DateTime @default(now())
   reporteId     Int
-  reporte       Reporte  @relation("ArchivoDeReporte", fields: [reporteId], references: [id])
   subidoPorId   Int?
+  reporte       Reporte  @relation("ArchivoDeReporte", fields: [reporteId], references: [id])
   subidoPor     Usuario? @relation("ArchivoReporteSubidoPor", fields: [subidoPorId], references: [id])
 }
 
 model Auditoria {
-  id            Int      @id @default(autoincrement())
-  tipo          String   // 'almacen', 'material', 'unidad'
+  id            Int                @id @default(autoincrement())
+  tipo          String
   almacenId     Int?
   materialId    Int?
   unidadId      Int?
-  version       Int      @default(1)
   observaciones String?
   categoria     String?
-  fecha         DateTime @default(now())
+  fecha         DateTime           @default(now())
   usuarioId     Int?
-
-  usuario   Usuario?        @relation("AuditoriaUsuario", fields: [usuarioId], references: [id])
-  almacen   Almacen?        @relation("AuditoriaAlmacen", fields: [almacenId], references: [id])
-  material  Material?       @relation("AuditoriaMaterial", fields: [materialId], references: [id])
-  unidad    MaterialUnidad? @relation("AuditoriaUnidad", fields: [unidadId], references: [id])
-
-  archivos  ArchivoAuditoria[] @relation("ArchivoDeAuditoria")
+  version       Int                @default(1)
+  archivos      ArchivoAuditoria[] @relation("ArchivoDeAuditoria")
+  almacen       Almacen?           @relation("AuditoriaAlmacen", fields: [almacenId], references: [id])
+  material      Material?          @relation("AuditoriaMaterial", fields: [materialId], references: [id])
+  unidad        MaterialUnidad?    @relation("AuditoriaUnidad", fields: [unidadId], references: [id])
+  usuario       Usuario?           @relation("AuditoriaUsuario", fields: [usuarioId], references: [id])
 
   @@unique([tipo, almacenId, materialId, unidadId, version])
 }
 
 model ArchivoAuditoria {
-  id            Int      @id @default(autoincrement())
+  id            Int       @id @default(autoincrement())
   nombre        String
   archivo       Bytes?
   archivoNombre String?
-  fecha         DateTime @default(now())
+  fecha         DateTime  @default(now())
   auditoriaId   Int
-  auditoria     Auditoria @relation("ArchivoDeAuditoria", fields: [auditoriaId], references: [id])
   subidoPorId   Int?
+  auditoria     Auditoria @relation("ArchivoDeAuditoria", fields: [auditoriaId], references: [id])
   subidoPor     Usuario?  @relation("ArchivoAuditoriaSubidoPor", fields: [subidoPorId], references: [id])
 }
 
@@ -687,13 +662,12 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
-
-  accounts Account[]
-  sessions Session[]
+  accounts      Account[]
+  sessions      Session[]
 }
 
 model Account {
-  id                 Int    @id @default(autoincrement())
+  id                 Int     @id @default(autoincrement())
   userId             Int
   type               String
   provider           String
@@ -707,8 +681,7 @@ model Account {
   session_state      String?
   oauth_token_secret String?
   oauth_token        String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -718,8 +691,7 @@ model Session {
   sessionToken String   @unique
   userId       Int
   expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
@@ -728,4 +700,39 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model rol_usuario {
+  A       Int
+  B       Int
+  Rol     Rol     @relation(fields: [A], references: [id], onDelete: Cascade, map: "_RolToUsuario_A_fkey")
+  usuario Usuario @relation(fields: [B], references: [id], onDelete: Cascade, map: "_RolToUsuario_B_fkey")
+
+  @@id([A, B], map: "_RolToUsuario_AB_pkey")
+  @@index([B], map: "_RolToUsuario_B_index")
+}
+
+model usuario_almacen {
+  id            Int     @id(map: "UsuarioAlmacen_pkey") @default(autoincrement())
+  usuarioId     Int
+  almacenId     Int
+  rolEnAlmacen  String  @db.VarChar(50)
+  permisosExtra Json?
+  Almacen       Almacen @relation(fields: [almacenId], references: [id], map: "UsuarioAlmacen_almacenId_fkey")
+  usuario       Usuario @relation(fields: [usuarioId], references: [id], map: "UsuarioAlmacen_usuarioId_fkey")
+
+  @@unique([usuarioId, almacenId], map: "UsuarioAlmacen_usuarioId_almacenId_key")
+}
+
+enum PrioridadAlerta {
+  ALTA
+  MEDIA
+  BAJA
+}
+
+enum NotaTipo {
+  imagen
+  url
+  doc
+  sticky
 }

@@ -42,8 +42,8 @@ export async function POST (req: NextRequest) {
       .select(`
         id, nombre, correo, contrasena, tipo_cuenta, estado,
         entidad ( id, nombre, tipo, plan_id ),
-        roles:rol_usuario (
-          rol:rol ( id, nombre, descripcion, permisos )
+        roles:_RolToUsuario (
+          rol:Rol ( id, nombre, descripcion, permisos )
         )
       `)
       .ilike('correo', email)
