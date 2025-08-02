@@ -198,7 +198,8 @@ export async function POST(req: NextRequest) {
     if (!hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
     }
-    const db = getDb().client as SupabaseClient
+    const db = getDb()
+    const client = db.client as SupabaseClient
 
     let nombre = '';
     let descripcion = '';
@@ -243,7 +244,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (!usuario.entidadId) {
-      const { data: nuevaEntidad, error: entErr } = await db
+      const { data: nuevaEntidad, error: entErr } = await client
         .from('entidad')
         .insert({
           nombre: `Entidad de ${usuario.nombre}`,
@@ -253,7 +254,7 @@ export async function POST(req: NextRequest) {
         .select('id')
         .single()
       if (entErr) throw entErr
-      const { error: updErr } = await db
+      const { error: updErr } = await client
         .from('usuario')
         .update({ entidadId: nuevaEntidad.id })
         .eq('id', usuario.id)
@@ -263,7 +264,7 @@ export async function POST(req: NextRequest) {
 
     const codigoUnico = crypto.randomUUID().split('-')[0];
 
-    const almacen = await getDb().transaction(async (tx: SupabaseClient) => {
+    const almacen = await db.transaction(async (tx: SupabaseClient) => {
       const { data: creado, error: createErr } = await tx
         .from('almacen')
         .insert({
