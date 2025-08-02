@@ -1,8 +1,9 @@
 export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getDb } from '@lib/db'
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { getDb } from '@lib/db'
+
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
 import { registrarAuditoria } from '@lib/reporter'
@@ -20,29 +21,44 @@ export async function POST(req: NextRequest) {
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     const id = getAuditoriaId(req)
     if (!id) return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
+
     const db = getDb().client as SupabaseClient
     const { data: auditoria, error } = await db
-      .from('auditoria')
-      .select('tipo,observaciones')
+      .from('Auditoria')
+      .select('id, tipo, observaciones')
       .eq('id', id)
-      .single()
+      .maybeSingle()
+
     if (error) throw error
     if (!auditoria) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
 
     const datos = auditoria.observaciones ? JSON.parse(auditoria.observaciones) : {}
     let creado: any
     if (auditoria.tipo === 'almacen') {
-      const { data, error: e } = await db.from('almacen').insert(datos).select('id').single()
+      const { data: nuevo, error: e } = await db
+        .from('Almacen')
+        .insert(datos)
+        .select('id')
+        .single()
       if (e) throw e
-      creado = data
+      creado = nuevo
     } else if (auditoria.tipo === 'material') {
-      const { data, error: e } = await db.from('material').insert(datos).select('id').single()
+      const { data: nuevo, error: e } = await db
+        .from('Material')
+        .insert(datos)
+        .select('id')
+        .single()
       if (e) throw e
-      creado = data
+      creado = nuevo
     } else if (auditoria.tipo === 'unidad') {
-      const { data, error: e } = await db.from('materialUnidad').insert(datos).select('id').single()
+      const { data: nuevo, error: e } = await db
+        .from('MaterialUnidad')
+        .insert(datos)
+        .select('id')
+        .single()
       if (e) throw e
-      creado = data
+      creado = nuevo
+
     } else {
       return NextResponse.json({ error: 'Tipo desconocido' }, { status: 400 })
     }

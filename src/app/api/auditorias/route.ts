@@ -1,13 +1,63 @@
 export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getDb } from '@lib/db'
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { getDb } from '@lib/db'
+
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
 import { ensureAuditoriaTables } from '@lib/auditoriaInit'
 import { emitEvent } from '@/lib/events'
 import { auditoriaSchema } from '@/lib/schemas/auditoria'
+
+export async function GET(req: NextRequest) {
+  try {
+    await ensureAuditoriaTables()
+    const tipo = req.nextUrl.searchParams.get('tipo') || undefined
+    const categoria = req.nextUrl.searchParams.get('categoria') || undefined
+    const almacenId = req.nextUrl.searchParams.get('almacenId') || undefined
+    const materialId = req.nextUrl.searchParams.get('materialId') || undefined
+    const unidadId = req.nextUrl.searchParams.get('unidadId') || undefined
+    const usuarioId = req.nextUrl.searchParams.get('usuarioId') || undefined
+    const q = req.nextUrl.searchParams.get('q')?.toLowerCase() || undefined
+    const desde = req.nextUrl.searchParams.get('desde') || undefined
+    const hasta = req.nextUrl.searchParams.get('hasta') || undefined
+
+    const db = getDb().client as SupabaseClient
+    let query = db
+      .from('Auditoria')
+      .select(
+        `id, tipo, categoria, fecha, observaciones,
+        usuario:usuario ( nombre ),
+        almacen:Almacen ( nombre ),
+        material:Material ( nombre ),
+        unidad:MaterialUnidad ( nombre )`
+      )
+      .order('fecha', { ascending: false })
+      .limit(50)
+
+    if (tipo && ['almacen','material','unidad'].includes(tipo)) query = query.eq('tipo', tipo)
+    if (almacenId) query = query.eq('almacenId', Number(almacenId))
+    if (materialId) query = query.eq('materialId', Number(materialId))
+    if (unidadId) query = query.eq('unidadId', Number(unidadId))
+    if (usuarioId) query = query.eq('usuarioId', Number(usuarioId))
+    if (categoria) query = query.eq('categoria', categoria)
+    if (q) {
+      query = query.or(
+        `observaciones.ilike.%${q}%,usuario.nombre.ilike.%${q}%,Almacen.nombre.ilike.%${q}%,Material.nombre.ilike.%${q}%,MaterialUnidad.nombre.ilike.%${q}%`
+      )
+    }
+    if (desde) query = query.gte('fecha', desde)
+    if (hasta) query = query.lte('fecha', hasta)
+
+    const { data, error } = await query
+    if (error) throw error
+    return NextResponse.json({ auditorias: data })
+  } catch (err) {
+    logger.error('GET /api/auditorias', err)
+    return NextResponse.json({ error: 'Error' }, { status: 500 })
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -42,21 +92,55 @@ export async function POST(req: NextRequest) {
     if (tipo === 'material') { insert.materialId = obj; where.materialId = obj }
     if (tipo === 'unidad') { insert.unidadId = obj; where.unidadId = obj }
 
-    const auditoria = await db.transaction(async (tx: SupabaseClient) => {
-      const { count, error: cErr } = await tx
-        .from('auditoria')
-        .select('id', { count: 'exact', head: true })
+    const db = getDb().client as SupabaseClient
+    const where: Record<string, any> = { tipo }
+    const data: Record<string, any> = {
+      tipo,
+      observaciones,
+      categoria,
+      usuarioId: usuario.id,
+    }
+    const objId = objetoId
+    if (tipo === 'almacen') {
+      data.almacenId = objId
+      where.almacenId = objId
+    }
+    if (tipo === 'material') {
+      data.materialId = objId
+      where.materialId = objId
+    }
+    if (tipo === 'unidad') {
+      data.unidadId = objId
+      where.unidadId = objId
+    }
+
+    const auditoria = await getDb().transaction(async (tx: SupabaseClient) => {
+      const { count, error: countErr } = await tx
+        .from('Auditoria')
+        .select('id', { head: true, count: 'exact' })
         .match(where)
-      if (cErr) throw cErr
+      if (countErr) throw countErr
       const version = (count ?? 0) + 1
-      const { data, error: iErr } = await tx
-        .from('auditoria')
-        .insert({ ...insert, version })
+      const { data: created, error: createErr } = await tx
+        .from('Auditoria')
+        .insert({ ...data, version })
         .select('id')
         .single()
-      if (iErr) throw iErr
-      return data
+      if (createErr) throw createErr
+      return created
     })
+
+    if (files.length > 0) {
+      await Promise.all(
+        files.map(async (f) => {
+          const buffer = Buffer.from(await f.arrayBuffer())
+          const { error } = await db
+            .from('ArchivoAuditoria')
+            .insert({ nombre: f.name, archivo: buffer, auditoriaId: auditoria.id })
+          if (error) throw error
+        })
+      )
+    }
 
     emitEvent({ type: 'auditoria_new', payload: { id: auditoria.id } })
     return NextResponse.json({ auditoria })

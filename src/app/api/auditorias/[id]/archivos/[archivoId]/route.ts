@@ -1,7 +1,8 @@
 export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@lib/db/prisma'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import { getDb } from '@lib/db'
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
 
@@ -27,14 +28,17 @@ export async function GET(req: NextRequest) {
     if (!usuario) return new NextResponse('No autenticado', { status: 401 })
     const archivoId = getArchivoId(req)
     if (!archivoId) return new NextResponse('ID inválido', { status: 400 })
-    const archivo = await prisma.archivoAuditoria.findUnique({
-      where: { id: archivoId },
-      select: { archivo: true, archivoNombre: true },
-    })
-    if (!archivo || !archivo.archivo) return new NextResponse('No encontrado', { status: 404 })
-    const ext = archivo.archivoNombre?.split('.').pop()?.toLowerCase() ?? ''
+    const db = getDb().client as SupabaseClient
+    const { data, error } = await db
+      .from('ArchivoAuditoria')
+      .select('archivo, archivoNombre')
+      .eq('id', archivoId)
+      .maybeSingle()
+    if (error) throw error
+    if (!data || !data.archivo) return new NextResponse('No encontrado', { status: 404 })
+    const ext = data.archivoNombre?.split('.').pop()?.toLowerCase() ?? ''
     const mime = MIME_BY_EXT[ext] || 'application/octet-stream'
-    const buffer = Buffer.isBuffer(archivo.archivo) ? archivo.archivo : Buffer.from(archivo.archivo)
+    const buffer = Buffer.isBuffer(data.archivo) ? data.archivo : Buffer.from(data.archivo)
     return new NextResponse(buffer, { status: 200, headers: { 'Content-Type': mime } })
   } catch (err) {
     logger.error('GET /api/auditorias/[id]/archivos/[archivoId]', err)

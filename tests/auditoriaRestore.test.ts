@@ -9,14 +9,13 @@ afterEach(() => {
 describe('POST /api/auditorias/[id]/restore', () => {
   it('restaura y registra auditoria', async () => {
     const auditoria = { id: 5, tipo: 'material', observaciones: '{"nombre":"m"}' }
-    const auditoriaEq = vi.fn(() => ({ single: vi.fn().mockResolvedValue({ data: auditoria, error: null }) }))
-    const auditoriaSelect = vi.fn(() => ({ eq: auditoriaEq }))
-    const materialInsertSingle = vi.fn().mockResolvedValue({ data: { id: 8 }, error: null })
-    const materialInsert = vi.fn(() => ({ select: () => ({ single: materialInsertSingle }) }))
+    const maybeSingle = vi.fn().mockResolvedValue({ data: auditoria, error: null })
+    const materialSingle = vi.fn().mockResolvedValue({ data: { id: 8 }, error: null })
     const from = vi.fn((table: string) => {
-      if (table === 'auditoria') return { select: auditoriaSelect }
-      if (table === 'material') return { insert: materialInsert }
-      return {} as any
+      if (table === 'Auditoria') return { select: () => ({ eq: () => ({ maybeSingle }) }) }
+      if (table === 'Material') return { insert: () => ({ select: () => ({ single: materialSingle }) }) }
+      return {}
+
     })
     vi.doMock('@lib/db', () => ({ getDb: () => ({ client: { from } }) }))
     vi.doMock('../lib/auth', () => ({ getUsuarioFromSession: vi.fn().mockResolvedValue({ id: 1 }) }))
@@ -29,8 +28,8 @@ describe('POST /api/auditorias/[id]/restore', () => {
     expect(res.status).toBe(200)
     const data = await res.json()
     expect(data.auditoria).toEqual({ id: 9 })
-    expect(from).toHaveBeenCalledWith('material')
-    expect(materialInsert).toHaveBeenCalled()
+    expect(materialSingle).toHaveBeenCalled()
+
     expect(registrarAuditoria).toHaveBeenCalled()
   })
 })

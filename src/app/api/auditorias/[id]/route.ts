@@ -1,8 +1,9 @@
 export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getDb } from '@lib/db'
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { getDb } from '@lib/db'
+
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
 
@@ -20,7 +21,19 @@ export async function GET(req: NextRequest) {
     const id = getAuditoriaId(req)
     if (!id) return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
     const db = getDb().client as SupabaseClient
-    const { data, error } = await db.from('auditoria').select('*').eq('id', id).single()
+    const { data, error } = await db
+      .from('Auditoria')
+      .select(
+        `id, tipo, categoria, fecha, observaciones,
+        usuario:usuario ( nombre, correo ),
+        almacen:Almacen ( nombre ),
+        material:Material ( nombre ),
+        unidad:MaterialUnidad ( nombre ),
+        archivos:ArchivoAuditoria ( id, nombre, archivoNombre )`
+      )
+      .eq('id', id)
+      .maybeSingle()
+
     if (error) throw error
     if (!data) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
     return NextResponse.json({ auditoria: data })
@@ -37,10 +50,9 @@ export async function DELETE(req: NextRequest) {
     const id = getAuditoriaId(req)
     if (!id) return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
     const db = getDb().client as SupabaseClient
-    const { error: err1 } = await db.from('archivoAuditoria').delete().eq('auditoriaId', id)
-    if (err1) throw err1
-    const { error: err2 } = await db.from('auditoria').delete().eq('id', id)
-    if (err2) throw err2
+    await db.from('ArchivoAuditoria').delete().eq('auditoriaId', id)
+    await db.from('Auditoria').delete().eq('id', id)
+
     return NextResponse.json({ ok: true })
   } catch (err) {
     logger.error('DELETE /api/auditorias/[id]', err)
