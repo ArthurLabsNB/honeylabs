@@ -34,7 +34,7 @@ function HeroSection() {
       const timer = setTimeout(() => setShowDesc(true), 300);
       return () => clearTimeout(timer);
     }
-  }, [textoTyped, titulo.length]);
+  }, [textoTyped, titulo]);
 
   return (
     <section className="relative w-full min-h-[85vh] flex flex-col md:flex-row items-center justify-between px-4 md:px-16 py-16 md:py-24 overflow-hidden gap-10">

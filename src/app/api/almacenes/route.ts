@@ -3,7 +3,7 @@ export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from '@lib/db';
-import type { Prisma } from '@prisma/client'
+import type { SupabaseClient } from '@supabase/supabase-js'
 
 import crypto from "node:crypto";
 import { getUsuarioFromSession } from "@lib/auth";
@@ -25,7 +25,6 @@ const IMAGE_TYPES = [
 
 
 export async function GET(req: NextRequest) {
-  const prisma = getDb().client as any
   try {
     const usuario = await getUsuarioFromSession(req);
     if (!usuario) {
@@ -190,7 +189,6 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const prisma = getDb().client as any
   try {
     const usuario = await getUsuarioFromSession(req);
     if (!usuario) {
@@ -200,15 +198,15 @@ export async function POST(req: NextRequest) {
     if (!hasManagePerms(usuario)) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
     }
-    const prisma = getDb().client as any
+    const db = getDb().client as SupabaseClient
 
     let nombre = '';
     let descripcion = '';
     let funciones = '';
     let permisosPredeterminados = '';
-  let imagenNombre: string | null = null;
-  let imagenBuffer: Buffer | null = null;
-  let imagenUrl: string | null = null;
+    let imagenNombre: string | null = null;
+    let imagenBuffer: Buffer | null = null;
+    let imagenUrl: string | null = null;
 
     if (req.headers.get('content-type')?.includes('multipart/form-data')) {
       const formData = await req.formData();
@@ -245,25 +243,30 @@ export async function POST(req: NextRequest) {
     }
 
     if (!usuario.entidadId) {
-      const nuevaEntidad = await prisma.entidad.create({
-        data: {
+      const { data: nuevaEntidad, error: entErr } = await db
+        .from('entidad')
+        .insert({
           nombre: `Entidad de ${usuario.nombre}`,
           tipo: normalizeTipoCuenta(usuario.tipoCuenta),
           correoContacto: usuario.correo ?? '',
-        },
-      });
-      await prisma.usuario.update({
-        where: { id: usuario.id },
-        data: { entidadId: nuevaEntidad.id },
-      });
-      usuario.entidadId = nuevaEntidad.id;
+        })
+        .select('id')
+        .single()
+      if (entErr) throw entErr
+      const { error: updErr } = await db
+        .from('usuario')
+        .update({ entidadId: nuevaEntidad.id })
+        .eq('id', usuario.id)
+      if (updErr) throw updErr
+      usuario.entidadId = nuevaEntidad.id
     }
 
     const codigoUnico = crypto.randomUUID().split('-')[0];
 
-  const almacen = await prisma.$transaction(async tx => {
-      const creado = await tx.almacen.create({
-        data: {
+    const almacen = await getDb().transaction(async (tx: SupabaseClient) => {
+      const { data: creado, error: createErr } = await tx
+        .from('almacen')
+        .insert({
           nombre,
           descripcion,
           funciones,
@@ -273,22 +276,17 @@ export async function POST(req: NextRequest) {
           imagenNombre,
           imagen: imagenBuffer,
           entidadId: usuario.entidadId,
-          usuario_almacen: {
-            create: { usuarioId: usuario.id, rolEnAlmacen: 'propietario' },
-          },
-        },
-        select: {
-          id: true,
-          nombre: true,
-          descripcion: true,
-          imagenNombre: true,
-          imagenUrl: true,
-          codigoUnico: true,
-        },
-      })
+        })
+        .select('id, nombre, descripcion, imagenNombre, imagenUrl, codigoUnico')
+        .single()
+      if (createErr) throw createErr
+      const { error: uaErr } = await tx
+        .from('usuario_almacen')
+        .insert({ usuarioId: usuario.id, almacenId: creado.id, rolEnAlmacen: 'propietario' })
+      if (uaErr) throw uaErr
       await snapshotAlmacen(tx, creado.id, usuario.id, 'Creación')
       return creado
-  })
+    })
 
   await logAudit(usuario.id, 'creacion', 'almacen', { almacenId: almacen.id })
 
