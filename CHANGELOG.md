@@ -1,3 +1,6 @@
+## 0.8.30
+- Normalizamos `Usuario.entidad_id` y declaramos la FK a `Entidad`.
+
 ## 0.8.29
 - Desconectamos por completo las llamadas de inventario, dejando solo la interfaz.
 
