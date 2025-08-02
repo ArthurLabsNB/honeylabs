@@ -1,0 +1,233 @@
+Diagnóstico guiado – “Error al crear almacén (500 POST /api/almacenes)”
+
+0) Qué está pasando
+500 en POST /api/almacenes ⇒ el fallo está en el handler server o en DB/Supabase (RLS/columnas/constraints).
+
+Ya vimos variaciones camel/snake y bytea imagen: hay alto riesgo de RLS / columnas no coincidentes / políticas.
+
+Checklist de investigación (en orden)
+A. Backend (Next API)
+Asegura que el handler correcto responde
+
+Archivo: src/app/api/almacenes/route.ts (no [id]).
+
+Log temporal al inicio:
+
+ts
+Copiar
+Editar
+logger.info('[ALM_CREATE] hit', { ct: req.headers.get('content-type') })
+Verifica sesión y permisos
+
+Antes de tocar DB:
+
+ts
+Copiar
+Editar
+const u = await getUsuarioFromSession(req);
+logger.info('[ALM_CREATE] user', { id: u?.id, entidadId: u?.entidadId })
+Si u es null → revisar cookie, SESSION_COOKIE, dominio y SameSite.
+
+Confirma que Supabase usa SERVICE_ROLE
+
+En @lib/db imprime al arrancar (una sola vez):
+
+ts
+Copiar
+Editar
+logger.info('[DB] service url', process.env.NEXT_PUBLIC_SUPABASE_URL?.slice(0,30))
+logger.info('[DB] service key prefix', process.env.SUPABASE_SERVICE_ROLE_KEY?.slice(0,5))
+Si no hay SERVICE_ROLE → RLS bloqueará inserts.
+
+Log detallado del error de Supabase
+
+Rodea cada operación con logs:
+
+ts
+Copiar
+Editar
+const { data, error } = await client.from('almacen').insert(...).select('id').single()
+if (error) logger.error('[ALM_CREATE] insert almacen', { code: error.code, details: error.details, hint: error.hint, message: error.message })
+Haz lo mismo para usuario_almacen y para la creación de entidad cuando entidadId es null.
+
+Multipart vs JSON
+
+Confirma Content-Type:
+
+Si es multipart/form-data usa FormData y no envíes Content-Type manual.
+
+Si es JSON, que imagen* no vaya en el body (usa multipart).
+
+Límite de tamaño de request
+
+Si subes imagen, prueba con JSON sin imagen para descartar límite.
+
+Dev tools → Network → request size; si falla solo con imagen, reduce o sube a storage en vez de bytea.
+
+Quita cualquier “transacción JS” no soportada
+
+Supabase JS no tiene transacciones multi-op. Si necesitas atomicidad, usa RPC (ver sección D).
+
+B. Esquema y columnas (nombres y tipos)
+Ejecuta en SQL editor de Supabase:
+
+Tablas existen y en public
+
+sql
+Copiar
+Editar
+select relname, relrowsecurity from pg_class c join pg_namespace n on n.oid=c.relnamespace
+where n.nspname='public' and relname in ('almacen','usuario_almacen','entidad','usuario');
+Columnas reales (evitar camel/snake confusos)
+
+sql
+Copiar
+Editar
+select table_name, column_name, data_type
+from information_schema.columns
+where table_schema='public' and table_name in ('almacen','usuario_almacen','usuario','entidad')
+order by table_name, ordinal_position;
+Confirma exactamente cómo se llaman: imagen, imagen_url, imagenUrl, codigo_unico vs codigoUnico, entidad_id vs entidadId, usuario_id/almacen_id vs usuarioId/almacenId.
+
+FKs
+
+sql
+Copiar
+Editar
+select conname, pg_get_constraintdef(oid)
+from pg_constraint
+where conrelid='public.usuario_almacen'::regclass;
+Asegura que la FK apunte a usuario(id) y almacen(id).
+
+C. RLS (Row Level Security) y Policies
+RLS está activo y políticas existen
+
+sql
+Copiar
+Editar
+-- ¿RLS activado?
+select relname, relrowsecurity from pg_class c join pg_namespace n on n.oid=c.relnamespace
+where n.nspname='public' and relname in ('almacen','usuario_almacen');
+
+-- Políticas
+select schemaname, tablename, policyname, permissive, roles, cmd, qual, with_check
+from pg_policies
+where schemaname='public' and tablename in ('almacen','usuario_almacen','entidad');
+Política mínima para crear con service role o por usuario
+
+Si usas SERVICE_ROLE, RLS no aplica. Si no:
+
+sql
+Copiar
+Editar
+-- permitir inserts del usuario autenticado
+create policy p_ins_almacen on public.almacen
+as permissive for insert
+to authenticated
+with check (true);
+
+create policy p_ins_link on public.usuario_almacen
+as permissive for insert
+to authenticated
+with check (usuario_id = auth.uid()::int or usuarioId = auth.uid()::int);
+(Ajusta tipos; si tus IDs no son UUID de auth, diseña una política que relacione usuario.id con auth.uid() o usa service role.)
+
+D. Alternativa robusta: RPC (función SQL)
+Crea una función que haga todo atómico (SECURITY DEFINER)
+
+sql
+Copiar
+Editar
+create or replace function public.create_almacen_safe(
+  p_usuario_id int,
+  p_entidad_id int,
+  p_nombre text,
+  p_descripcion text,
+  p_codigo_unico text,
+  p_imagen bytea default null,
+  p_imagen_nombre text default null,
+  p_imagen_url text default null
+)
+returns int
+language plpgsql
+security definer
+as $$
+declare v_id int;
+begin
+  insert into public.almacen(nombre, descripcion, codigo_unico, imagen, imagen_nombre, imagen_url, entidad_id)
+  values (p_nombre, p_descripcion, p_codigo_unico, p_imagen, p_imagen_nombre, p_imagen_url, p_entidad_id)
+  returning id into v_id;
+
+  insert into public.usuario_almacen(usuario_id, almacen_id, rol_en_almacen)
+  values (p_usuario_id, v_id, 'propietario');
+
+  return v_id;
+end $$;
+Llamada desde el handler
+
+ts
+Copiar
+Editar
+const { data: rpc, error: rpcErr } = await client.rpc('create_almacen_safe', {
+  p_usuario_id: usuario.id,
+  p_entidad_id: usuario.entidadId,
+  p_nombre: nombre,
+  p_descripcion: descripcion,
+  p_codigo_unico: codigoUnico,
+  p_imagen: imagenBuf ? toByteaHex(imagenBuf) : null,
+  p_imagen_nombre: imagenNombre,
+  p_imagen_url: imagenUrl,
+});
+Si rpcErr existe → verás código SQL exacto (más claro que el insert REST).
+
+E. Comprobaciones rápidas desde el navegador
+Request real que estás enviando
+En la pantalla de Network → /api/almacenes → Request Payload revisa:
+
+JSON vs multipart/form-data.
+
+Tamaño del body.
+
+Verifica que no se esté enviando Content-Type: application/json cuando el body es FormData.
+
+Probar sin imagen ni descripción
+
+bash
+Copiar
+Editar
+curl -i -X POST http://localhost:3000/api/almacenes \
+  -H "Content-Type: application/json" \
+  --data '{"nombre":"Test A","descripcion":""}'
+Si esto pasa y con imagen falla ⇒ el problema es tamaño/bytea.
+
+F. Endpoints de salud (temporales)
+/api/_debug/almacenes-check (temporal)
+
+Crea un handler que haga:
+
+select 1 en cada tabla.
+
+select * from pg_policies ….
+
+Devuelva todo en JSON.
+Esto te confirma RLS/policies/columnas sin crear datos.
+
+G. Código cliente (formulario)
+Asegura envío correcto
+
+Para imagen: usa FormData y no añadas header de Content-Type.
+
+Para crear sin imagen: envía JSON.
+
+Después del 200: refresca lista via SWR mutate() (lo haces). Si la lista sigue vacía, es que no se insertó o la consulta GET filtra por usuario_almacen que no se creó (revisa el link).
+
+Qué tocar primero (prioridad)
+Logs en el handler ([ALM_CREATE] en cada paso) → obtén error.code/details/hint.
+
+Verifica SERVICE_ROLE y RLS (sección C #11).
+
+Columnas reales vs payload (sección B #9).
+
+Probar creación mínima sin imagen (#16).
+
+Si sigue fallando: mover la creación a RPC (#13–14) para atomicidad y mensajes claros.
