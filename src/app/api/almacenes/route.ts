@@ -224,22 +224,60 @@ export async function POST(req: NextRequest) {
     const codigoUnico = crypto.randomUUID().split('-')[0];
     const bytea = toByteaHex(imagenBuf);
 
-    // Inserción atómica via RPC
-    const { data: rpcId, error: rpcErr } = await db.rpc('create_almacen_safe', {
-      p_usuario_id: usuario.id,
-      p_entidad_id: usuario.entidadId,
-      p_nombre: nombre,
-      p_descripcion: descripcion,
-      p_codigo_unico: codigoUnico,
-      p_imagen: bytea,
-      p_imagen_nombre: imagenNombre,
-      p_imagen_url: imagenUrl,
-    });
-    if (rpcErr || !rpcId) {
-      return NextResponse.json({ error: msg(rpcErr, 'No se pudo crear almacén') }, { status: 500 });
+    let creadoId: number;
+    if (typeof (db as any).rpc === 'function') {
+      // Preferimos RPC para mantener atomicidad en Supabase
+      const { data: rpcId, error: rpcErr } = await db.rpc('create_almacen_safe', {
+        p_usuario_id: usuario.id,
+        p_entidad_id: usuario.entidadId,
+        p_nombre: nombre,
+        p_descripcion: descripcion,
+        p_codigo_unico: codigoUnico,
+        p_imagen: bytea,
+        p_imagen_nombre: imagenNombre,
+        p_imagen_url: imagenUrl,
+      });
+      if (rpcErr || !rpcId) {
+        return NextResponse.json({ error: msg(rpcErr, 'No se pudo crear almacén') }, { status: 500 });
+      }
+      creadoId = rpcId as number;
+    } else {
+      // Fallback genérico cuando RPC no está disponible
+      const insert = await tryInsert<{ id: number }>(
+        db,
+        'almacen',
+        [
+          {
+            nombre,
+            descripcion,
+            codigoUnico,
+            imagen: bytea,
+            imagenNombre,
+            imagenUrl,
+            entidadId: usuario.entidadId,
+          },
+          {
+            nombre,
+            descripcion,
+            codigo_unico: codigoUnico,
+            imagen: bytea,
+            imagen_nombre: imagenNombre,
+            imagen_url: imagenUrl,
+            entidad_id: usuario.entidadId,
+          },
+        ],
+        'id',
+      );
+      await tryInsert(
+        db,
+        'usuario_almacen',
+        [
+          { usuarioId: usuario.id, almacenId: insert.id },
+          { usuario_id: usuario.id, almacen_id: insert.id },
+        ],
+      );
+      creadoId = insert.id;
     }
-
-    const creadoId = rpcId as number;
 
     // side-effects no críticos
     snapshotAlmacen(db as any, creadoId, usuario.id, 'Creación').catch((e) =>
