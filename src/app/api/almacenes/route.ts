@@ -21,14 +21,14 @@ const toByteaHex = (buf: Buffer | null) => (buf ? '\\x' + buf.toString('hex') : 
 const msg = (e: any, d = 'Error') => String(e?.message || e?.hint || e?.details || e?.code || d);
 
 async function tryInsert<T = any>(
-  db: SupabaseClient,
+  client: SupabaseClient,
   table: string,
   payloads: Array<Record<string, any>>,
   select = '*',
 ): Promise<T> {
   let last: any = null;
   for (const body of payloads) {
-    const { data, error } = await db.from(table).insert(body).select(select).single();
+    const { data, error } = await client.from(table).insert(body).select(select).single();
     if (error)
       logger.error(`[ALM_CREATE] insert ${table}`, {
         code: error.code,
@@ -46,14 +46,14 @@ async function tryInsert<T = any>(
 }
 
 async function tryUpdate(
-  db: SupabaseClient,
+  client: SupabaseClient,
   table: string,
   payloads: Array<Record<string, any>>,
   match: Record<string, any>,
 ) {
   let last: any = null;
   for (const body of payloads) {
-    const q = db.from(table).update(body);
+    const q = client.from(table).update(body);
     Object.entries(match).forEach(([k, v]) => (q as any).eq(k, v));
     const { error } = await q;
     if (error)
@@ -154,7 +154,7 @@ export async function GET(req: NextRequest) {
 
 /* ---------- POST (crear) ---------- */
 export async function POST(req: NextRequest) {
-  const db = getDb().client as SupabaseClient;
+  const client = getDb().client as SupabaseClient;
 
   try {
     logger.info('[ALM_CREATE] hit', { ct: req.headers.get('content-type') });
@@ -204,7 +204,7 @@ export async function POST(req: NextRequest) {
     // asegurar entidad
     if (!usuario.entidadId) {
       const ent = await tryInsert<{ id: number }>(
-        db,
+        client,
         'entidad',
         [
           { nombre: `Entidad de ${usuario.nombre}`, tipo: normalizeTipoCuenta(usuario.tipoCuenta), correoContacto: usuario.correo ?? '' },
@@ -213,7 +213,7 @@ export async function POST(req: NextRequest) {
         ],
         'id',
       );
-      await tryUpdate(db, 'usuario', [{ entidad_id: ent.id }, { entidadId: ent.id }], { id: usuario.id }).catch((e) =>
+      await tryUpdate(client, 'usuario', [{ entidad_id: ent.id }, { entidadId: ent.id }], { id: usuario.id }).catch((e) =>
         logger.warn?.('update usuario.entidad_id', e),
       );
       usuario.entidadId = ent.id;
@@ -223,7 +223,7 @@ export async function POST(req: NextRequest) {
     const bytea = toByteaHex(imagenBuf);
 
     // Inserción atómica via RPC
-    const { data: rpcId, error: rpcErr } = await db.rpc('create_almacen_safe', {
+    const { data: rpcId, error: rpcErr } = await client.rpc('create_almacen_safe', {
       p_usuario_id: usuario.id,
       p_entidad_id: usuario.entidadId,
       p_nombre: nombre,
@@ -240,7 +240,7 @@ export async function POST(req: NextRequest) {
     const creadoId = rpcId as number;
 
     // side-effects no críticos
-    snapshotAlmacen(db as any, creadoId, usuario.id, 'Creación').catch((e) =>
+    snapshotAlmacen(client as any, creadoId, usuario.id, 'Creación').catch((e) =>
       logger.warn?.('snapshotAlmacen', e),
     );
     logAudit(usuario.id, 'creacion', 'almacen', { almacenId: creadoId }).catch((e) =>

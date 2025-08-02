@@ -66,6 +66,7 @@ export async function POST(req: NextRequest) {
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
 
     let raw: any
+    let files: File[] = []
     if (req.headers.get('content-type')?.includes('multipart/form-data')) {
       const form = await req.formData()
       raw = {
@@ -74,6 +75,8 @@ export async function POST(req: NextRequest) {
         categoria: form.get('categoria'),
         observaciones: form.get('observaciones'),
       }
+      // los adjuntos son opcionales
+      files = form.getAll('archivos') as File[]
     } else {
       raw = await req.json()
     }
@@ -84,15 +87,7 @@ export async function POST(req: NextRequest) {
     }
 
     const { tipo, objetoId, categoria, observaciones } = parsed.data
-    const db = getDb()
-    const insert: any = { tipo, categoria, observaciones, usuarioId: usuario.id }
-    const where: any = { tipo }
-    const obj = Number(objetoId)
-    if (tipo === 'almacen') { insert.almacenId = obj; where.almacenId = obj }
-    if (tipo === 'material') { insert.materialId = obj; where.materialId = obj }
-    if (tipo === 'unidad') { insert.unidadId = obj; where.unidadId = obj }
-
-    const db = getDb().client as SupabaseClient
+    const client = getDb().client as SupabaseClient
     const where: Record<string, any> = { tipo }
     const data: Record<string, any> = {
       tipo,
@@ -134,7 +129,7 @@ export async function POST(req: NextRequest) {
       await Promise.all(
         files.map(async (f) => {
           const buffer = Buffer.from(await f.arrayBuffer())
-          const { error } = await db
+          const { error } = await client
             .from('ArchivoAuditoria')
             .insert({ nombre: f.name, archivo: buffer, auditoriaId: auditoria.id })
           if (error) throw error
