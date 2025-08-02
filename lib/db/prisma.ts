@@ -1,11 +1,11 @@
 import { PrismaClient } from '@prisma/client'
+import * as logger from '@lib/logger'
 import type { DbClient, DbTransaction } from './index'
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient }
 
 export function resolveDatabaseUrl() {
-  let url = process.env.DATABASE_URL
-  if (!url) return undefined
+  let url = process.env.DATABASE_URL || 'prisma://localhost'
 
   if (url.startsWith('postgres://')) {
     url = url.replace('postgres://', 'postgresql://')
@@ -27,7 +27,7 @@ const logLevel =
     ? ['query', 'error', 'warn']
     : ['error']
 
-const options = dbUrl ? { datasources: { db: { url: dbUrl } }, log: logLevel } : { log: logLevel }
+const options = { datasources: { db: { url: dbUrl } }, log: logLevel }
 
 export const prisma =
   globalForPrisma.prisma ??
@@ -49,10 +49,10 @@ prisma.$use(async (params, next) => {
   return next(params)
 })
 
-if (dbUrl && !globalForPrisma.prisma && !process.env.VITEST) {
-  prisma.$connect().catch((e) =>
-    console.error('Prisma connection error:', e),
-  )
+if (process.env.DATABASE_URL && !globalForPrisma.prisma && !process.env.VITEST) {
+  prisma
+    .$connect()
+    .catch((e) => logger.error('Prisma connection error:', e))
 }
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
