@@ -1,3 +1,7 @@
+import { Html5Qrcode, Html5QrcodeScannerState } from 'html5-qrcode';
+import { apiFetch } from '@lib/api';
+import { jsonOrNull } from '@lib/http';
+
 export const hasCamera = async (): Promise<boolean> => {
   if (!navigator.mediaDevices?.enumerateDevices) return false;
   try {
@@ -8,9 +12,6 @@ export const hasCamera = async (): Promise<boolean> => {
   }
 };
 
-import { apiFetch } from '@lib/api';
-import { jsonOrNull } from '@lib/http';
-
 export const fetchScanInfo = async (codigo: string): Promise<any | null> => {
   const res = await apiFetch('/api/qr/importar', {
     method: 'POST',
@@ -18,4 +19,12 @@ export const fetchScanInfo = async (codigo: string): Promise<any | null> => {
     body: JSON.stringify({ codigo }),
   });
   return jsonOrNull(res);
+};
+
+export const stopScannerSafely = async (qr: Html5Qrcode): Promise<void> => {
+  try {
+    if (qr.getState() !== Html5QrcodeScannerState.NOT_STARTED) {
+      await qr.stop();
+    }
+  } catch {}
 };

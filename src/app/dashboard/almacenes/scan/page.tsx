@@ -4,6 +4,7 @@ import { Html5Qrcode } from "html5-qrcode";
 import { useRouter } from "next/navigation";
 import { decodeQR } from "@/lib/qr";
 import { decodeQRImageFile } from "@/lib/qrImage";
+import { stopScannerSafely } from "@/lib/scanUtils";
 
 export default function ScanPage() {
   const router = useRouter();
@@ -29,15 +30,19 @@ export default function ScanPage() {
   useEffect(() => {
     if (!useCamera) return;
     const qr = new Html5Qrcode("qr-reader-main");
-    qr
-      .start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: 250 },
-        (txt) => setCodigo(txt)
-      )
-      .catch(() => setUseCamera(false));
+    try {
+      qr
+        .start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: 250 },
+          (txt) => setCodigo(txt)
+        )
+        .catch(() => setUseCamera(false));
+    } catch {
+      setUseCamera(false);
+    }
     return () => {
-      qr.stop().catch(() => {});
+      stopScannerSafely(qr);
     };
   }, [useCamera]);
 
