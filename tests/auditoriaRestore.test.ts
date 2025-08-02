@@ -15,6 +15,7 @@ describe('POST /api/auditorias/[id]/restore', () => {
       if (table === 'Auditoria') return { select: () => ({ eq: () => ({ maybeSingle }) }) }
       if (table === 'Material') return { insert: () => ({ select: () => ({ single: materialSingle }) }) }
       return {}
+
     })
     vi.doMock('@lib/db', () => ({ getDb: () => ({ client: { from } }) }))
     vi.doMock('../lib/auth', () => ({ getUsuarioFromSession: vi.fn().mockResolvedValue({ id: 1 }) }))
@@ -28,6 +29,7 @@ describe('POST /api/auditorias/[id]/restore', () => {
     const data = await res.json()
     expect(data.auditoria).toEqual({ id: 9 })
     expect(materialSingle).toHaveBeenCalled()
+
     expect(registrarAuditoria).toHaveBeenCalled()
   })
 })

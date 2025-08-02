@@ -3,6 +3,7 @@ export const runtime = 'nodejs'
 import { NextRequest, NextResponse } from 'next/server'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { getDb } from '@lib/db'
+
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
 import { ensureAuditoriaTables } from '@lib/auditoriaInit'
@@ -64,9 +65,7 @@ export async function POST(req: NextRequest) {
     const usuario = await getUsuarioFromSession(req)
     if (!usuario) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
 
-    let files: File[] = []
     let raw: any
-
     if (req.headers.get('content-type')?.includes('multipart/form-data')) {
       const form = await req.formData()
       raw = {
@@ -75,11 +74,9 @@ export async function POST(req: NextRequest) {
         categoria: form.get('categoria'),
         observaciones: form.get('observaciones'),
       }
-      files = form.getAll('archivos') as File[]
     } else {
       raw = await req.json()
     }
-
     const parsed = auditoriaSchema.safeParse(raw)
     if (!parsed.success) {
       const msg = parsed.error.issues.map(i => i.message).join(', ')
@@ -87,6 +84,13 @@ export async function POST(req: NextRequest) {
     }
 
     const { tipo, objetoId, categoria, observaciones } = parsed.data
+    const db = getDb()
+    const insert: any = { tipo, categoria, observaciones, usuarioId: usuario.id }
+    const where: any = { tipo }
+    const obj = Number(objetoId)
+    if (tipo === 'almacen') { insert.almacenId = obj; where.almacenId = obj }
+    if (tipo === 'material') { insert.materialId = obj; where.materialId = obj }
+    if (tipo === 'unidad') { insert.unidadId = obj; where.unidadId = obj }
 
     const db = getDb().client as SupabaseClient
     const where: Record<string, any> = { tipo }
@@ -137,8 +141,8 @@ export async function POST(req: NextRequest) {
         })
       )
     }
-    emitEvent({ type: 'auditoria_new', payload: { id: auditoria.id } })
 
+    emitEvent({ type: 'auditoria_new', payload: { id: auditoria.id } })
     return NextResponse.json({ auditoria })
   } catch (err) {
     logger.error('POST /api/auditorias', err)

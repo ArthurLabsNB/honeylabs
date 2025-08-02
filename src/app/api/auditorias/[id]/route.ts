@@ -3,6 +3,7 @@ export const runtime = 'nodejs'
 import { NextRequest, NextResponse } from 'next/server'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { getDb } from '@lib/db'
+
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
 
@@ -32,6 +33,7 @@ export async function GET(req: NextRequest) {
       )
       .eq('id', id)
       .maybeSingle()
+
     if (error) throw error
     if (!data) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
     return NextResponse.json({ auditoria: data })
@@ -50,6 +52,7 @@ export async function DELETE(req: NextRequest) {
     const db = getDb().client as SupabaseClient
     await db.from('ArchivoAuditoria').delete().eq('auditoriaId', id)
     await db.from('Auditoria').delete().eq('id', id)
+
     return NextResponse.json({ ok: true })
   } catch (err) {
     logger.error('DELETE /api/auditorias/[id]', err)

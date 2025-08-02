@@ -34,6 +34,7 @@ describe('POST /api/auditorias concurrencia', () => {
     })
     const client = { from: txFrom }
     vi.doMock('@lib/db', () => ({ getDb: () => ({ client, transaction }) }))
+
     vi.doMock('../lib/auth', () => ({
       getUsuarioFromSession: vi.fn().mockResolvedValue({ id: 1 }),
     }))

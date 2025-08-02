@@ -13,7 +13,7 @@ describe('DELETE /api/auditorias/[id]', () => {
     const from = vi.fn((table: string) => {
       if (table === 'ArchivoAuditoria') return { delete: () => ({ eq: archivoEq }) }
       if (table === 'Auditoria') return { delete: () => ({ eq: auditoriaEq }) }
-      return {}
+
     })
     vi.doMock('@lib/db', () => ({ getDb: () => ({ client: { from } }) }))
     vi.doMock('../lib/auth', () => ({ getUsuarioFromSession: vi.fn().mockResolvedValue({ id: 1 }) }))
@@ -25,5 +25,6 @@ describe('DELETE /api/auditorias/[id]', () => {
     expect(data.ok).toBe(true)
     expect(archivoEq).toHaveBeenCalledWith('auditoriaId', 4)
     expect(auditoriaEq).toHaveBeenCalledWith('id', 4)
+
   })
 })
