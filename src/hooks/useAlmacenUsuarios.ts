@@ -72,8 +72,14 @@ export default function useAlmacenUsuarios(almacenId?: number | string) {
     mutate()
   }
 
+  const raw = (data?.usuarios as any[]) ?? []
+
   return {
-    usuarios: (data?.usuarios as AlmacenUsuario[]) ?? [],
+    usuarios: raw.map((u) => ({
+      correo: u.correo ?? u.email ?? '',
+      nombre: u.nombre ?? u.nombre_usuario ?? null,
+      rol: u.rol ?? u.rolEnAlmacen ?? u.rol_en_almacen ?? '',
+    })),
     loading: isLoading,
     error,
     revocar,

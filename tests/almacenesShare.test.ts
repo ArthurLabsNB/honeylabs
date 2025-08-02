@@ -4,8 +4,12 @@ import { NextRequest } from 'next/server'
 import { prisma } from '@lib/db/prisma'
 import * as auth from '../lib/auth'
 import * as email from '../src/lib/email/enviarInvitacionAlmacen'
+import * as db from '../lib/db'
 
 afterEach(() => vi.restoreAllMocks())
+
+const from = vi.fn()
+vi.spyOn(db, 'getDb').mockReturnValue({ client: { from } } as any)
 
 describe('POST /api/almacenes/compartir', () => {
   it('requiere sesion', async () => {

@@ -64,11 +64,12 @@ export default function useAlmacenesLogic() {
         body: JSON.stringify({ nombre, descripcion }),
       })
       const data = await jsonOrNull(res)
-      if (res.ok && data.almacen) {
+      const nuevo = data?.almacen ?? data?.data
+      if (res.ok && nuevo) {
         mutate()
         toast.show('Almacén creado', 'success')
       } else {
-        toast.show(data.error || 'Error al crear', 'error')
+        toast.show(data?.error || 'Error al crear', 'error')
       }
     } catch {
       toast.show('Error de red', 'error')
@@ -173,10 +174,11 @@ export default function useAlmacenesLogic() {
       try {
         const res = await apiFetch(`/api/almacenes/${id}/duplicar`, { method: 'POST' })
         const data = await jsonOrNull(res)
-        if (res.ok && data?.almacen) {
+        const nuevo = data?.almacen ?? data?.data
+        if (res.ok && nuevo) {
           mutate()
           toast.show('Almacén duplicado', 'success')
-          return data.almacen.id as number
+          return nuevo.id as number
         }
         toast.show(data?.error || 'Error al duplicar', 'error')
       } catch {
