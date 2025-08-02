@@ -28,6 +28,7 @@ export default function useAlmacenesLogic() {
   const [dragId, setDragId] = useState<number | null>(null)
   const [favoritos, setFavoritos] = useState<number[]>([])
   const prevAlmacenes = useRef<Almacen[]>([])
+  const registered = useRef(false)
 
   const {
     almacenes: fetchedAlmacenes,
@@ -56,29 +57,34 @@ export default function useAlmacenesLogic() {
     setError('')
   }, [usuario, loadingUsuario])
 
-  const crearAlmacen = async (nombre: string, descripcion: string) => {
-    try {
-      const res = await apiFetch('/api/almacenes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, descripcion }),
-      })
-      const data = await jsonOrNull(res)
-      const nuevo = data?.almacen ?? data?.data
-      if (res.ok && nuevo) {
-        mutate()
-        toast.show('Almacén creado', 'success')
-      } else {
-        toast.show(data?.error || 'Error al crear', 'error')
+  const crearAlmacen = useCallback(
+    async (nombre: string, descripcion: string) => {
+      try {
+        const res = await apiFetch('/api/almacenes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nombre, descripcion }),
+        })
+        const data = await jsonOrNull(res)
+        const nuevo = data?.almacen ?? data?.data
+        if (res.ok && nuevo) {
+          mutate()
+          toast.show('Almacén creado', 'success')
+        } else {
+          toast.show(data?.error || 'Error al crear', 'error')
+        }
+      } catch {
+        toast.show('Error de red', 'error')
       }
-    } catch {
-      toast.show('Error de red', 'error')
-    }
-  }
+    },
+    [mutate, toast],
+  )
 
   useEffect(() => {
+    if (registered.current) return
     registerCreate(crearAlmacen)
-  }, [registerCreate])
+    registered.current = true
+  }, [registerCreate, crearAlmacen])
 
   useEffect(() => {
     if (prevAlmacenes.current !== fetchedAlmacenes) {
