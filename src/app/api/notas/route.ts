@@ -1,8 +1,8 @@
 export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@lib/db/prisma'
-
+import { getDb } from '@lib/db'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import { getUsuarioFromSession } from '@lib/auth'
 import * as logger from '@lib/logger'
 

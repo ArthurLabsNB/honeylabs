@@ -19,5 +19,9 @@ describe('resolveDatabaseUrl', () => {
     process.env.PRISMA_DATA_PROXY = 'true'
     expect(resolveDatabaseUrl()).toBe('prisma+postgresql://db')
   })
+
+  it('usa url por defecto si no hay DATABASE_URL', () => {
+    expect(resolveDatabaseUrl()).toBe('prisma://localhost')
+  })
 })
 
