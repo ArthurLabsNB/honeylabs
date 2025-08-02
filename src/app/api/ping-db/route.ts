@@ -10,7 +10,7 @@ export async function GET() {
   try {
     // Consulta de prueba para validar conexión
     const db = getDb().client as SupabaseClient;
-    await db.from('usuario').select('id').limit(1);
+    await db.from('Usuario').select('id').limit(1);
 
     return NextResponse.json({ ok: true, mensaje: '✅ Conexión a la base de datos exitosa.' }, { status: 200 });
   } catch (error: any) {

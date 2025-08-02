@@ -35,7 +35,7 @@ export async function PUT(req: NextRequest) {
     const merged = { ...prefs, ...update };
     const db = getDb().client as SupabaseClient;
     const { error } = await db
-      .from('usuario')
+      .from('Usuario')
       .update({ preferencias: JSON.stringify(merged) })
       .eq('id', usuario.id);
     if (error) throw error;

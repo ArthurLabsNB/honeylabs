@@ -10,7 +10,7 @@ const EXTERNAL_URL = process.env.STATUS_SERVICE_URL
 export async function GET() {
   try {
     const db = getDb().client as SupabaseClient
-    await db.from('usuario').select('id').limit(1)
+    await db.from('Usuario').select('id').limit(1)
 
     if (EXTERNAL_URL) {
       const res = await fetch(EXTERNAL_URL, { method: 'HEAD' })
