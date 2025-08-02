@@ -56,7 +56,9 @@ export async function GET(req: NextRequest) {
 
     const { data, error } = await db
       .from<Row>('almacen_resumen')
-      .select('id,nombre,descripcion,imagenUrl,imagenNombre,fechaCreacion,codigoUnico,encargado_nombre,encargado_correo,ultima_actualizacion,notificaciones,entradas,salidas,inventario,unidades')
+      .select(
+        'id,nombre,descripcion,imagen_url:imagenUrl,imagen_nombre:imagenNombre,fecha_creacion:fechaCreacion,codigo_unico:codigoUnico,encargado_nombre,encargado_correo,ultima_actualizacion,notificaciones,entradas,salidas,inventario,unidades',
+      )
       .in('id', ids)
       .order('id', { ascending: true });
     if (error) throw error;
