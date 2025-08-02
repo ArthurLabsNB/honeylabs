@@ -31,7 +31,7 @@ describe('GET /api/almacenes', () => {
     const find = vi.spyOn(prisma.almacen, 'findMany').mockResolvedValue([] as any)
     const req = new NextRequest('http://localhost/api/almacenes?usuarioId=5')
     await GET(req)
-    expect(find).toHaveBeenCalledWith(expect.objectContaining({ where: { usuarios: { some: { usuarioId: 5 } } } }))
+    expect(find).toHaveBeenCalledWith(expect.objectContaining({ where: { usuario_almacen: { some: { usuarioId: 5 } } } }))
   })
 
   it('incluye total de unidades', async () => {
@@ -47,7 +47,7 @@ describe('GET /api/almacenes', () => {
         imagenUrl: null,
         fechaCreacion: new Date(),
         codigoUnico: 'c',
-        usuarios: [],
+        usuario_almacen: [],
         movimientos: [],
         notificaciones: [],
       },

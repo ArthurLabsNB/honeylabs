@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Sin permisos' }, { status: 403 });
     }
 
-    const where = { usuarios: { some: { usuarioId: targetId } } };
+    const where = { usuario_almacen: { some: { usuarioId: targetId } } };
 
     const data = await prisma.almacen.findMany({
       take: 20,
@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
         imagenNombre: true,
         fechaCreacion: true,
         codigoUnico: true,
-        usuarios: {
+        usuario_almacen: {
           take: 1,
           select: {
             usuario: { select: { nombre: true, correo: true } },
@@ -127,8 +127,8 @@ export async function GET(req: NextRequest) {
       imagenUrl: a.imagenNombre ? `/api/almacenes/foto?nombre=${encodeURIComponent(a.imagenNombre)}` : a.imagenUrl,
       codigoUnico: a.codigoUnico,
       fechaCreacion: a.fechaCreacion,
-      encargado: a.usuarios[0]?.usuario.nombre ?? null,
-      correo: a.usuarios[0]?.usuario.correo ?? null,
+      encargado: a.usuario_almacen[0]?.usuario.nombre ?? null,
+      correo: a.usuario_almacen[0]?.usuario.correo ?? null,
       ultimaActualizacion: a.movimientos[0]?.fecha ?? null,
       notificaciones: a.notificaciones.length,
       entradas: counts[a.id].entradas,
@@ -239,7 +239,7 @@ export async function POST(req: NextRequest) {
           imagenNombre,
           imagen: imagenBuffer,
           entidadId: usuario.entidadId,
-          usuarios: {
+          usuario_almacen: {
             create: { usuarioId: usuario.id, rolEnAlmacen: 'propietario' },
           },
         },
