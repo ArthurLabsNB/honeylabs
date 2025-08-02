@@ -109,9 +109,9 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
 
   return (
     <aside
-      className="dashboard-sidebar flex flex-col transition-all duration-200 shadow-xl fixed top-0 left-0 z-30 bg-[var(--dashboard-sidebar)] border-r border-[var(--dashboard-border)]"
+      className="dashboard-sidebar flex flex-col transition-all duration-200 shadow-xl bg-[var(--dashboard-sidebar)] border-r border-[var(--dashboard-border)]"
       style={{
-        minHeight: '100vh',
+        height: '100%',
         width: collapsed
           ? 'var(--sidebar-collapsed-width)'
           : 'var(--sidebar-width)',
