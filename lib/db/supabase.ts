@@ -3,6 +3,8 @@ import * as logger from '@lib/logger'
 import type { DbClient, DbTransaction } from './index'
 
 let client: SupabaseClient | undefined
+// Garantiza un único log de configuración
+let logged = false
 
 function getClient() {
   if (client) return client
@@ -10,6 +12,11 @@ function getClient() {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY
   if (!url || !key) {
     throw new Error('Supabase no configurado')
+  }
+  if (!logged) {
+    logger.info('[DB] service url', url.slice(0, 30))
+    logger.info('[DB] service key prefix', key.slice(0, 5))
+    logged = true
   }
   client = createClient(url, key, { auth: { persistSession: false } })
   return client
