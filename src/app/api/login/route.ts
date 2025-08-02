@@ -1,11 +1,11 @@
 /** /app/api/login/route.ts
- *  Ruta de login / sesión – Supabase-only
+ *  Ruta de login / sesión – Supabase-only (server-side)
  */
 export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { getDb } from '@lib/db'                         // crea cliente Supabase con SERVICE_ROLE
+import { getDb } from '@lib/db' // crea cliente Supabase con SERVICE_ROLE
 import type { SupabaseClient } from '@supabase/supabase-js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
@@ -26,14 +26,17 @@ export async function POST (req: NextRequest) {
   try {
     const { correo, contrasena, captchaToken } = await req.json()
 
-    /* 1. Validaciones */
+    /* 1) Validaciones */
     const email = (correo ?? '').toString().toLowerCase().trim()
-    if (!email || !contrasena) {
-      return jsonError('Correo y contraseña requeridos', 400)
-    }
-    if (!(await verifyRecaptcha(captchaToken))) {
-      return jsonError('Captcha inválido', 400)
-    }
+    if (!email || !contrasena) return jsonError('Correo y contraseña requeridos', 400)
+
+    // Bypass opcional en dev: RECAPTCHA_BYPASS=1 y token 'test'
+    let captchaOK = false
+    try {
+      if (process.env.RECAPTCHA_BYPASS === '1' && captchaToken === 'test') captchaOK = true
+      else captchaOK = await verifyRecaptcha(captchaToken)
+    } catch { captchaOK = false }
+    if (!captchaOK) return jsonError('Captcha inválido', 400)
 
     /* 2) Usuario base (sin embebidos) */
     const db = getDb().client as SupabaseClient
@@ -52,6 +55,7 @@ export async function POST (req: NextRequest) {
       logger.warn('[LOGIN] Usuario no encontrado', { email })
       return jsonError('Credenciales inválidas', 401)
     }
+
     const ok = await bcrypt.compare(contrasena, usuario.contrasena ?? '')
     if (!ok) {
       logger.warn('[LOGIN] Password mismatch', { id: usuario.id })
@@ -61,52 +65,37 @@ export async function POST (req: NextRequest) {
       return jsonError('Cuenta suspendida o pendiente', 403)
     }
 
-    /* 3) Roles (busca primero en rol_usuario; si no, intenta tablas con mayúsculas) */
+    /* 3) Roles (dos pasos, tolera tablas ausentes/diferentes) */
     const roles = await fetchRoles(db, usuario.id)
 
     /* 4) Suscripción activa */
     const { data: susActiva } = await db
       .from('suscripcion')
-      .select(`
-        id, fecha_fin,
-        plan:plan_id ( nombre, limites )
-      `)
+      .select('id, fecha_fin, plan:plan_id ( nombre, limites )')
       .eq('usuario_id', usuario.id)
       .eq('activo', true)
       .maybeSingle()
 
-    const plan =
-      susActiva && susActiva.plan
-        ? {
-            id: susActiva.id,
-            plan: susActiva.plan.nombre,
-            limites: parseJson(susActiva.plan.limites),
-            fechaFin: susActiva.fecha_fin,
-          }
-        : null
+    const plan = susActiva?.plan
+      ? {
+          id: susActiva.id,
+          plan: susActiva.plan.nombre,
+          limites: parseJson(susActiva.plan.limites),
+          fechaFin: susActiva.fecha_fin,
+        }
+      : null
 
-    /* 5) Crear sesión (con manejo de error) */
-    const { data: sesion, error: sesErr } = await db
-      .from('sesion_usuario')
-      .insert({
-        usuario_id: usuario.id,
-        user_agent: req.headers.get('user-agent') ?? null,
-        ip: req.headers.get('x-real-ip') ?? req.headers.get('x-forwarded-for') ?? null,
-      })
-      .select('id')
-      .single()
-
-    if (sesErr || !sesion?.id) {
-      logger.error('[LOGIN_SESSION_INSERT]', { sesErr })
+    /* 5) Crear sesión (multi-fallback de tabla/columnas) */
+    const sesionId = await insertSesionRobusta(db, usuario.id, {
+      userAgent: req.headers.get('user-agent') ?? null,
+      ip: req.headers.get('x-real-ip') ?? req.headers.get('x-forwarded-for') ?? null,
+    })
+    if (!sesionId) {
       return jsonError('No se pudo crear la sesión', 500)
     }
 
-    /* 6) JWT + respuesta */
-    const token = jwt.sign(
-      { id: usuario.id, sid: sesion.id },
-      JWT_SECRET,
-      { expiresIn: COOKIE_EXPIRES },
-    )
+    /* 6) JWT + cookie + respuesta */
+    const token = jwt.sign({ id: usuario.id, sid: sesionId }, JWT_SECRET, { expiresIn: COOKIE_EXPIRES })
 
     const payload = {
       id: usuario.id,
@@ -120,10 +109,7 @@ export async function POST (req: NextRequest) {
     }
 
     const res = NextResponse.json({ success: true, usuario: payload })
-    res.cookies.set(SESSION_COOKIE, token, {
-      ...sessionCookieOptions,
-      maxAge: COOKIE_EXPIRES,
-    })
+    res.cookies.set(SESSION_COOKIE, token, { ...sessionCookieOptions, maxAge: COOKIE_EXPIRES })
     return res
   } catch (err) {
     logger.error('[LOGIN_ERROR]', err)
@@ -153,56 +139,99 @@ export async function DELETE () {
       const { sid } = jwt.verify(token, JWT_SECRET) as { sid?: number }
       if (sid) {
         const db = getDb().client as SupabaseClient
-        await db
-          .from('sesion_usuario')
-          .update({ activa: false, fecha_ultima: new Date().toISOString() })
-          .eq('id', sid)
+        // Intenta actualizar y, si falla por columnas inexistentes, ignora.
+        try {
+          await db
+            .from('sesion_usuario')
+            .update({ activa: false, fecha_ultima: new Date().toISOString() })
+            .eq('id', sid)
+        } catch {}
+        try {
+          await db
+            .from('SesionUsuario')
+            .update({ activa: false, fecha_ultima: new Date().toISOString() })
+            .eq('id', sid)
+        } catch {}
       }
-    } catch (e) { /* token inválido o expirado */ }
+    } catch {
+      // token inválido o expirado
+    }
   }
 
   const res = NextResponse.json({ success: true })
-  res.cookies.set(SESSION_COOKIE, '', {
-    ...sessionCookieOptions,
-    expires: new Date(0),
-    maxAge: 0,
-  })
+  res.cookies.set(SESSION_COOKIE, '', { ...sessionCookieOptions, expires: new Date(0), maxAge: 0 })
   return res
 }
 
 /* ───────────────── helpers ───────────────── */
-async function fetchRoles (db: SupabaseClient, usuarioId: number) {
-  // 1) Intenta tabla normalizada
-  let roleIds: number[] = []
-  const link1 = await db.from('rol_usuario').select('rol_id').eq('usuario_id', usuarioId)
-  if (!link1.error) roleIds = (link1.data ?? []).map(r => r.rol_id)
 
+/** Inserta sesión probando distintas combinaciones de tabla/columnas. Devuelve id o null. */
+async function insertSesionRobusta(
+  db: SupabaseClient,
+  usuarioId: number,
+  extras: { userAgent: string | null, ip: string | null }
+): Promise<number | null> {
+  const tables = ['sesion_usuario', 'SesionUsuario']
+  const userCols = ['usuario_id', 'usuarioId', 'usuario', 'user_id']
+
+  // Combinaciones de columnas extra más comunes
+  const extraCombos: Array<Record<string, any>> = [
+    { user_agent: extras.userAgent, ip: extras.ip, activa: true, fecha_ultima: new Date().toISOString() },
+    { userAgent: extras.userAgent, ip: extras.ip, activa: true, fechaUltima: new Date().toISOString() },
+    { user_agent: extras.userAgent, ip: extras.ip },
+    {}, // mínima
+  ]
+
+  for (const table of tables) {
+    for (const ucol of userCols) {
+      for (const extra of extraCombos) {
+        const row: Record<string, any> = { [ucol]: usuarioId, ...extra }
+        const { data, error } = await db.from(table).insert(row).select('id').single()
+        if (!error && data?.id) return data.id
+
+        // Solo loguea errores de esquema ausente; otros podrían ser útiles
+        if (error?.code === 'PGRST204' || error?.code === '42P01') {
+          // columna o tabla inexistente → probar siguiente combinación
+          continue
+        }
+        // Si es otro error (por ejemplo RLS), sal y reporta
+        if (error) {
+          ;(console as any).error?.('[LOGIN_SESSION_INSERT]', { table, ucol, extraKeys: Object.keys(extra), error })
+        }
+      }
+    }
+  }
+  return null
+}
+
+async function fetchRoles (db: SupabaseClient, usuarioId: number) {
+  // 1) Intenta tabla normalizada rol_usuario → rol_id
+  let roleIds: number[] = []
+  const link = await db.from('rol_usuario').select('rol_id').eq('usuario_id', usuarioId)
+  if (!link.error) roleIds = (link.data ?? []).map(r => r.rol_id)
   if (roleIds.length === 0) return []
 
-  // 2) Detalle de roles: intenta "Rol" (mayúscula), luego "rol"
-  let roles: any[] = []
-  const q1 = await db
-    .from('Rol')
-    .select('id, nombre, descripcion, permisos')
-    .in('id', roleIds)
-  if (!q1.error) roles = q1.data ?? []
+  // 2) Detalle de roles: intenta "Rol" (mayúscula) y luego "rol" (minúscula)
+  let rows: any[] = []
+  const r1 = await db.from('Rol').select('id, nombre, descripcion, permisos').in('id', roleIds)
+  if (!r1.error) rows = r1.data ?? []
   else {
-    const q2 = await db
-      .from('rol')
-      .select('id, nombre, descripcion, permisos')
-      .in('id', roleIds)
-    if (!q2.error) roles = q2.data ?? []
+    const r2 = await db.from('rol').select('id, nombre, descripcion, permisos').in('id', roleIds)
+    if (!r2.error) rows = r2.data ?? []
   }
-  return (roles ?? []).map(rol => ({
+
+  return rows.map(rol => ({
     id: rol.id,
     nombre: rol.nombre,
     descripcion: rol.descripcion,
     permisos: parseJson(rol.permisos),
   }))
 }
+
 function jsonError (msg: string, status: number) {
   return NextResponse.json({ success: false, error: msg }, { status })
 }
+
 function parseJson (v: any) {
   try { return typeof v === 'string' ? JSON.parse(v) : v ?? {} }
   catch { return {} }
