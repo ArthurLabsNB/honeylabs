@@ -14,19 +14,35 @@ afterEach(() => {
 });
 
 describe('getUsuarioFromSession', () => {
-  it('retorna id cuando token y sesión son válidos', async () => {
+  it('retorna datos cuando token y sesión son válidos', async () => {
     const token = jwt.sign({ id: 1, sid: 2 }, 'test-secret');
     const req = { cookies: { get: (n: string) => (n === SESSION_COOKIE ? { value: token } : undefined) } };
-    const from = vi.fn().mockReturnValue({
-      select: vi.fn().mockReturnValue({
-        eq: vi.fn().mockReturnValue({ maybeSingle: () => Promise.resolve({ data: { id: 2 } }) }),
-      }),
+    const from = vi.fn((table: string) => {
+      if (table === 'sesion_usuario') {
+        return {
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({ maybeSingle: () => Promise.resolve({ data: { id: 2 } }) }),
+          }),
+        };
+      }
+      if (table === 'usuario') {
+        return {
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              maybeSingle: () =>
+                Promise.resolve({ data: { id: 1, nombre: 'u', correo: 'c', tipo_cuenta: 'admin', rol: 'admin', preferencias: '{}', plan: null, roles: [] } }),
+            }),
+          }),
+        };
+      }
+      return { select: vi.fn().mockReturnValue({ eq: vi.fn().mockReturnValue({ maybeSingle: () => Promise.resolve({ data: null }) }) }) };
     });
     vi.mocked(getDb).mockReturnValue({ client: { from } as any });
 
     const res = await getUsuarioFromSession(req as any);
-    expect(res).toEqual({ id: 1 });
+    expect(res).toMatchObject({ id: 1 });
     expect(from).toHaveBeenCalledWith('sesion_usuario');
+    expect(from).toHaveBeenCalledWith('usuario');
   });
 
   it('retorna null si token es inválido', async () => {
