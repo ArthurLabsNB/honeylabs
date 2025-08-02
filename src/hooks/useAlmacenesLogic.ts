@@ -6,7 +6,7 @@ import { useToast } from '@/components/Toast'
 import { usePrompt } from '@/hooks/usePrompt'
 import useSession from '@/hooks/useSession'
 import useAlmacenes, { Almacen } from '@/hooks/useAlmacenes'
-import { getMainRole, normalizeTipoCuenta } from '@lib/permisos'
+import { getMainRole, normalizeRol, normalizeTipoCuenta } from '@lib/permisos'
 import { useAlmacenesUI } from '@/app/dashboard/almacenes/ui'
 
 function arrayMove<T>(arr: T[], from: number, to: number): T[] {
@@ -44,7 +44,10 @@ export default function useAlmacenesLogic() {
       setError('Debes iniciar sesión')
       return
     }
-    const rol = getMainRole(usuario)?.toLowerCase()
+    const _role = getMainRole(usuario)
+    const rol = normalizeRol(
+      typeof _role === 'string' ? _role : _role?.nombre,
+    )
     const tipo = normalizeTipoCuenta(usuario.tipoCuenta)
     if (rol !== 'admin' && rol !== 'administrador' && !allowed.includes(tipo)) {
       setError('No autorizado')

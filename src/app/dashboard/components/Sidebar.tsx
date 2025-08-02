@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useDashboardUI } from "../ui";
 import type { Usuario } from "@/types/usuario";
-import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
+import { getMainRole, normalizeRol, normalizeTipoCuenta } from "@lib/permisos";
 import Spinner from "@/components/Spinner";
 import {
   Home,
@@ -92,7 +92,10 @@ export default function Sidebar({ usuario }: { usuario: Usuario }) {
     );
   }
 
-  const mainRole = getMainRole(usuario)?.toLowerCase();
+  const _role = getMainRole(usuario);
+  const mainRole = normalizeRol(
+    typeof _role === "string" ? _role : _role?.nombre,
+  );
   const tipo = normalizeTipoCuenta(
     mainRole === "admin" || mainRole === "administrador"
       ? "admin"

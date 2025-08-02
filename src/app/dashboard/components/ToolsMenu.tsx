@@ -19,7 +19,12 @@ import {
   Wrench,
 } from "lucide-react";
 import type { Usuario } from "@/types/usuario";
-import { getMainRole, normalizeTipoCuenta, hasManagePerms } from "@lib/permisos";
+import {
+  getMainRole,
+  normalizeRol,
+  normalizeTipoCuenta,
+  hasManagePerms,
+} from "@lib/permisos";
 
 const toolsMenu = [
   {
@@ -121,7 +126,10 @@ export default function ToolsMenu({ usuario }: { usuario: Usuario }) {
     setOpen(false);
   }, [pathname]);
 
-  const mainRole = getMainRole(usuario)?.toLowerCase();
+  const _role = getMainRole(usuario);
+  const mainRole = normalizeRol(
+    typeof _role === "string" ? _role : _role?.nombre,
+  );
   const tipo = normalizeTipoCuenta(
     mainRole === "admin" || mainRole === "administrador"
       ? "admin"

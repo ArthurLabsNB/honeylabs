@@ -20,7 +20,7 @@ import clsx from "clsx";
 import { usePathname, useRouter } from "next/navigation";
 import { jsonOrNull } from "@lib/http";
 import { apiPath, apiFetch } from "@lib/api";
-import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
+import { getMainRole, normalizeRol, normalizeTipoCuenta } from "@lib/permisos";
 import { clearSessionCache } from "@/hooks/useSession";
 
 interface UsuarioData {
@@ -94,7 +94,10 @@ export default function UserMenu({
         const res = await apiFetch("/api/login");
         const data = await jsonOrNull(res);
         if (data?.success && data.usuario) {
-          const rol = getMainRole(data.usuario)?.toLowerCase();
+          const _role = getMainRole(data.usuario);
+          const rol = normalizeRol(
+            typeof _role === "string" ? _role : _role?.nombre,
+          );
           const tipo = normalizeTipoCuenta(data.usuario.tipoCuenta);
           if (
             rol === "admin" ||

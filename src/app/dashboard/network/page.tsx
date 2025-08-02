@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { jsonOrNull } from "@lib/http";
 import { apiFetch } from "@lib/api";
 import type { Usuario } from "@/types/usuario";
-import { getMainRole, normalizeTipoCuenta } from "@lib/permisos";
+import { getMainRole, normalizeRol, normalizeTipoCuenta } from "@lib/permisos";
 import Spinner from "@/components/Spinner";
 
 interface Peer {
@@ -23,7 +23,10 @@ export default function NetworkPage() {
       .then(jsonOrNull)
       .then((data) => {
         if (!data?.success) throw new Error();
-        const rol = getMainRole(data.usuario)?.toLowerCase();
+        const _role = getMainRole(data.usuario);
+        const rol = normalizeRol(
+          typeof _role === "string" ? _role : _role?.nombre,
+        );
         const tipo = normalizeTipoCuenta(data.usuario.tipoCuenta);
         if (rol !== "admin" && rol !== "administrador" && !allowed.includes(tipo))
           throw new Error("No autorizado");

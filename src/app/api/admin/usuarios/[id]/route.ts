@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import { prisma } from '@lib/db/prisma'
 import { getUsuarioFromSession } from '@lib/auth'
-import { getMainRole, normalizeTipoCuenta } from '@lib/permisos'
+import { getMainRole, normalizeRol, normalizeTipoCuenta } from '@lib/permisos'
 import * as logger from '@lib/logger'
 
 function getUserId(req: NextRequest): number | null {
@@ -15,7 +15,10 @@ function getUserId(req: NextRequest): number | null {
 }
 
 function isAdmin(u: any): boolean {
-  const rol = getMainRole(u)?.toLowerCase()
+  const _role = getMainRole(u)
+  const rol = normalizeRol(
+    typeof _role === 'string' ? _role : _role?.nombre,
+  )
   const tipo = normalizeTipoCuenta(u?.tipoCuenta)
   return rol === 'admin' || rol === 'administrador' || tipo === 'admin'
 }

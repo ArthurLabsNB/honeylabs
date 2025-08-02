@@ -4,11 +4,10 @@ export function normalizeRol(rol?: string): string {
 
 export function getMainRole(
   u: { rol?: string; roles?: { nombre?: string }[] } | null | undefined,
-): string | undefined {
+): string | { nombre?: string } | undefined {
   if (!u) return undefined
-  if (u.rol) return normalizeRol(String(u.rol))
-  if (u.roles && u.roles.length > 0 && u.roles[0]?.nombre)
-    return normalizeRol(String(u.roles[0].nombre))
+  if (u.rol) return u.rol
+  if (u.roles && u.roles.length > 0) return u.roles[0]
   return undefined
 }
 
@@ -24,9 +23,12 @@ export function isAdminUser(u: {
   roles?: { nombre?: string }[];
   tipoCuenta?: string;
 } | null | undefined): boolean {
-  const rol = getMainRole(u)?.toLowerCase();
-  const tipo = normalizeTipoCuenta(u?.tipoCuenta);
-  return rol === 'admin' || rol === 'administrador' || tipo === 'admin';
+  const _role = getMainRole(u)
+  const rol = normalizeRol(
+    typeof _role === 'string' ? _role : _role?.nombre,
+  )
+  const tipo = normalizeTipoCuenta(u?.tipoCuenta)
+  return rol === 'admin' || rol === 'administrador' || tipo === 'admin'
 }
 
 export function hasManagePerms(
@@ -41,7 +43,10 @@ export function hasManagePerms(
   if (!u) return false;
   if (u.esSuperAdmin) return true;
 
-  const rol = getMainRole(u)?.toLowerCase();
+  const _role = getMainRole(u)
+  const rol = normalizeRol(
+    typeof _role === 'string' ? _role : _role?.nombre,
+  )
   if (rol === 'admin' || rol === 'administrador') return true;
 
   const tipo = normalizeTipoCuenta(u.tipoCuenta);
