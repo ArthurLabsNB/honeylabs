@@ -73,7 +73,7 @@ export async function GET(req: NextRequest) {
     logger.debug(req, 'Buscando perfil del usuario')
     const { data, error } = await supabase
       .from('usuario')
-      .select('id,nombre,apellidos,correo,tipo_cuenta,entidad_id,estado,fecha_registro,fotoPerfilNombre,preferencias,tiene2FA,metodo2FA')
+      .select('id,nombre,apellidos,correo,tipo_cuenta,entidad_id,estado,fecha_registro,foto_perfil_nombre,preferencias,tiene2_FA,metodo2FA')
       .eq('id', payload.id)
       .maybeSingle()
 
@@ -197,7 +197,7 @@ export async function PUT(req: NextRequest) {
     if (nuevoHash) data.contrasena = nuevoHash;
     if (fotoBuffer && fotoNombre) {
       data.fotoPerfil = fotoBuffer;
-      data.fotoPerfilNombre = fotoNombre;
+      data.foto_perfil_nombre = fotoNombre;
     }
     if (preferencias !== undefined) data.preferencias = preferencias;
 
@@ -261,7 +261,7 @@ export async function POST(req: NextRequest) {
     const { error } = await supabase
       .from('usuario')
       .update({
-        tiene2FA: activar2FA,
+        tiene2_FA: activar2FA,
         metodo2FA: activar2FA ? metodo2FA : null,
       })
       .eq('id', usuarioId)
