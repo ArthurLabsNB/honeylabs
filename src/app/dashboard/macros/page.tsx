@@ -15,7 +15,7 @@ export default function MacrosPage() {
   const [lista, setLista] = useState<Macro[]>([]);
   const [accion, setAccion] = useState(acciones[0]);
   const [intervalo, setIntervalo] = useState(60);
-  const toast = useToast();
+  const { show } = useToast();
 
   useEffect(() => {
     const saved = localStorage.getItem("macros");
@@ -28,10 +28,10 @@ export default function MacrosPage() {
 
   useEffect(() => {
     const timers = lista.map((m) =>
-      setInterval(() => toast.show(`Macro: ${m.accion}`, 'info'), m.intervalo * 1000),
+      setInterval(() => show(`Macro: ${m.accion}`, 'info'), m.intervalo * 1000),
     );
     return () => timers.forEach(clearInterval);
-  }, [lista, toast]);
+  }, [lista]);
 
   const agregar = () => {
     setLista([...lista, { id: nanoid(), accion, intervalo }]);
