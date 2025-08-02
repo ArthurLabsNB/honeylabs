@@ -2,9 +2,9 @@
 ALTER TABLE "Usuario" ADD COLUMN     "codigo2FASecret" TEXT,
 ADD COLUMN     "fotoPerfil" BYTEA,
 ADD COLUMN     "fotoPerfilNombre" TEXT,
-ADD COLUMN     "metodo2FA" TEXT,
+ADD COLUMN     "metodo2_fa" TEXT,
 ADD COLUMN     "preferencias" TEXT,
-ADD COLUMN     "tiene2FA" BOOLEAN DEFAULT false;
+ADD COLUMN     "tiene2_fa" BOOLEAN DEFAULT false;
 
 -- CreateTable
 CREATE TABLE "BitacoraCambioPerfil" (

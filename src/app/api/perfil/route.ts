@@ -73,7 +73,7 @@ export async function GET(req: NextRequest) {
     logger.debug(req, 'Buscando perfil del usuario')
     const { data, error } = await supabase
       .from('usuario')
-      .select('id,nombre,apellidos,correo,tipo_cuenta,entidad_id,estado,fecha_registro,foto_perfil_nombre,preferencias,tiene2_fa,metodo2FA')
+      .select('id,nombre,apellidos,correo,tipo_cuenta,entidad_id,estado,fecha_registro,foto_perfil_nombre,preferencias,tiene2_fa,metodo2_fa')
       .eq('id', payload.id)
       .maybeSingle()
 
@@ -86,11 +86,13 @@ export async function GET(req: NextRequest) {
       entidadId: (data as any).entidad_id,
       fechaRegistro: (data as any).fecha_registro,
       tiene2FA: (data as any).tiene2_fa,
+      metodo2FA: (data as any).metodo2_fa,
     }
     delete (usuario as any).tipo_cuenta
     delete (usuario as any).entidad_id
     delete (usuario as any).fecha_registro
     delete (usuario as any).tiene2_fa
+    delete (usuario as any).metodo2_fa
 
     logger.info(req, 'Perfil recuperado correctamente')
     return NextResponse.json({ success: true, usuario }, { status: 200 })
@@ -264,7 +266,7 @@ export async function POST(req: NextRequest) {
       .from('usuario')
       .update({
         tiene2_fa: activar2FA,
-        metodo2FA: activar2FA ? metodo2FA : null,
+        metodo2_fa: activar2FA ? metodo2FA : null,
       })
       .eq('id', usuarioId)
     if (error) throw error
