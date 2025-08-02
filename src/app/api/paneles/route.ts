@@ -7,6 +7,8 @@ import { getUsuarioFromSession } from '@lib/auth';
 import { randomUUID } from 'crypto';
 import * as logger from '@lib/logger';
 
+const supabase = getDb().client as SupabaseClient;
+
 /* Utils */
 function safeParse<T = any>(v: unknown, fallback: T = {} as T): T {
   try {
@@ -59,6 +61,7 @@ export async function POST(req: NextRequest) {
 
     const db = getDb().client as SupabaseClient;
     const { error } = await db
+
       .from('usuario')
       .update({ preferencias: JSON.stringify(prefs) })
       .eq('id', usuario.id);
