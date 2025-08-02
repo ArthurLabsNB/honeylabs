@@ -11,23 +11,21 @@ describe('POST /api/auditorias concurrencia', () => {
     let count = 0
     const versions: number[] = []
     let lock: Promise<any> = Promise.resolve()
-    const prismaMock = {
-      auditoria: {
-        count: vi.fn(async () => count),
-        create: vi.fn(async ({ data }: any) => {
-          count += 1
-          versions.push(data.version)
-          return { id: count }
-        }),
-      },
-      archivoAuditoria: { create: vi.fn() },
-      $transaction: vi.fn(async (cb: any) => {
-        const run = lock.then(() => cb(prismaMock))
-        lock = run.catch(() => {})
-        return run
-      }),
-    }
-    vi.doMock('@lib/db/prisma', () => ({ prisma: prismaMock }))
+    const match = vi.fn(async () => ({ count, error: null }))
+    const select = vi.fn(() => ({ match }))
+    const insertSelectSingle = vi.fn(async () => ({ data: { id: count }, error: null }))
+    const insert = vi.fn((data: any) => {
+      count += 1
+      versions.push(data.version)
+      return { select: () => ({ single: insertSelectSingle }) }
+    })
+    const from = vi.fn(() => ({ select, insert }))
+    const transaction = vi.fn(async (cb: any) => {
+      const run = lock.then(() => cb({ from }))
+      lock = run.catch(() => {})
+      return run
+    })
+    vi.doMock('@lib/db', () => ({ getDb: () => ({ client: { from }, transaction }) }))
     vi.doMock('../lib/auth', () => ({
       getUsuarioFromSession: vi.fn().mockResolvedValue({ id: 1 }),
     }))
