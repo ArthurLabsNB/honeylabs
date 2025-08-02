@@ -1,31 +1,30 @@
 -- required tables: public.usuario, public.entidad, public.almacen, public.usuario_almacen
--- drop obsolete create_almacen_safe signature and recreate with expected argument order
+-- remove previous version with parámetros opcionales antes de los obligatorios
 DROP FUNCTION IF EXISTS public.create_almacen_safe(
-  int,
-  int,
-  text,
-  text,
-  text,
-  text,
-  text,
-  text,
-  bytea,
-  text,
-  text
+  text,  -- p_codigo_unico
+  text,  -- p_descripcion
+  text,  -- p_entidad_correo
+  text,  -- p_entidad_nombre
+  text,  -- p_entidad_tipo
+  bytea, -- p_imagen
+  text,  -- p_imagen_nombre
+  text,  -- p_imagen_url
+  text,  -- p_nombre
+  integer -- p_usuario_id
 );
 
--- new signature matching application call order
+-- nueva firma con obligatorios antes de los que llevan DEFAULT
 CREATE OR REPLACE FUNCTION public.create_almacen_safe(
-  p_codigo_unico text,
-  p_descripcion text,
-  p_entidad_correo text DEFAULT NULL,
-  p_entidad_nombre text DEFAULT NULL,
-  p_entidad_tipo text DEFAULT NULL,
-  p_imagen bytea DEFAULT NULL,
-  p_imagen_nombre text DEFAULT NULL,
-  p_imagen_url text DEFAULT NULL,
-  p_nombre text,
-  p_usuario_id int
+  p_codigo_unico   text,
+  p_descripcion    text,
+  p_entidad_correo text,
+  p_entidad_nombre text,
+  p_entidad_tipo   text,
+  p_nombre         text,
+  p_usuario_id     int,
+  p_imagen         bytea    DEFAULT NULL,
+  p_imagen_nombre  text     DEFAULT NULL,
+  p_imagen_url     text     DEFAULT NULL
 )
 RETURNS int
 LANGUAGE plpgsql
