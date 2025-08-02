@@ -43,15 +43,20 @@ export default function InventarioPage() {
 
   // Temporalmente se deshabilita la consulta a /api/qr/importar
   const fetchInfo = useDebouncedCallback((code: string) => {
-    logger.debug('fetchInfo disabled', code)
-    setInfo(null)
-  }, 300)
+    logger.debug('fetchInfo disabled', code);
+    setInfo(null);
+  }, 300);
+
+  const fetchRef = useRef(fetchInfo);
+  useEffect(() => {
+    fetchRef.current = fetchInfo;
+  }, [fetchInfo]);
 
   useEffect(() => {
     if (!codigo || codigo === prevCodigo.current) return;
     prevCodigo.current = codigo;
-    fetchInfo(codigo);
-  }, [codigo, fetchInfo]);
+    fetchRef.current(codigo);
+  }, [codigo]);
 
   const handleFile = async (files: FileList | null) => {
     const file = files?.[0];

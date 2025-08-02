@@ -34,8 +34,8 @@ export default function Sidebar({ usuario }: { usuario: Usuario | null | undefin
   const { sidebarGlobalCollapsed: collapsed, toggleSidebarCollapsed } = useDashboardUI();
   const pathname = usePathname();
 
-  // Loading: sólo si no hay objeto/ID aún
-  if (!usuario || (usuario as any).id == null) {
+  // Loading: sólo mientras no exista usuario
+  if (!usuario) {
     return (
       <aside className="dashboard-sidebar flex flex-col w-[4.5rem] min-w-[4.5rem] h-screen fixed top-0 left-0 z-30 justify-center items-center bg-[var(--dashboard-sidebar)] shadow-xl">
         <Spinner className="text-[var(--dashboard-accent)]" />
@@ -55,10 +55,7 @@ export default function Sidebar({ usuario }: { usuario: Usuario | null | undefin
       ? sidebarMenu
       : sidebarMenu.filter(i => i.allowed.includes(tipo));
 
-  const displayName =
-    (usuario as any).nombre && String((usuario as any).nombre).trim().length > 0
-      ? String((usuario as any).nombre).trim()
-      : String((usuario as any).correo ?? "Usuario");
+  const displayName = usuario?.nombre?.trim() || usuario?.correo || "Usuario";
 
   return (
     <aside
