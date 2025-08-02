@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
         descripcion: true,
         imagenUrl: true,
         imagenNombre: true,
-        usuarios: {
+        usuario_almacen: {
           take: 1,
           select: {
             usuario: { select: { nombre: true, correo: true } },
@@ -115,8 +115,8 @@ export async function GET(req: NextRequest) {
         nombre: almacen.nombre,
         descripcion: almacen.descripcion,
         imagenUrl: almacen.imagenNombre ? `/api/almacenes/foto?nombre=${encodeURIComponent(almacen.imagenNombre)}` : almacen.imagenUrl,
-        encargado: almacen.usuarios[0]?.usuario.nombre ?? null,
-        correo: almacen.usuarios[0]?.usuario.correo ?? null,
+        encargado: almacen.usuario_almacen[0]?.usuario.nombre ?? null,
+        correo: almacen.usuario_almacen[0]?.usuario.correo ?? null,
         ultimaActualizacion: almacen.movimientos[0]?.fecha ?? null,
         entradas,
         salidas,

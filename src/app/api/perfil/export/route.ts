@@ -83,7 +83,7 @@ export async function GET(req: NextRequest) {
     // ======= 4. Almacenes creados por el usuario (no colaborador) =======
     if (secciones.includes('almacenes')) {
       const almacenes = await prisma.almacen.findMany({
-        where: { usuarios: { some: { usuarioId, rolEnAlmacen: 'creador' } } },
+        where: { usuario_almacen: { some: { usuarioId, rolEnAlmacen: 'creador' } } },
         select: {
           id: true,
           nombre: true,

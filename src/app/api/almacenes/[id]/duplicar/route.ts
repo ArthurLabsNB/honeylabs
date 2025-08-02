@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
         imagen: almacen.imagen as any,
         codigoUnico,
         entidadId: almacen.entidadId,
-        usuarios: { create: { usuarioId: usuario.id, rolEnAlmacen: 'propietario' } },
+        usuario_almacen: { create: { usuarioId: usuario.id, rolEnAlmacen: 'propietario' } },
       },
       select: { id: true, nombre: true },
     });
