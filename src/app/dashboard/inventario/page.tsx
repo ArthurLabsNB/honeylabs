@@ -4,7 +4,7 @@ import { useDebouncedCallback } from "use-debounce";
 import { Html5Qrcode } from "html5-qrcode";
 import { useRouter } from "next/navigation";
 import { decodeQRImageFile } from "@/lib/qrImage";
-import { hasCamera } from "@/lib/scanUtils";
+import { hasCamera, stopScannerSafely } from "@/lib/scanUtils";
 import * as logger from "@lib/logger";
 import { triggerDownload } from "@/app/dashboard/utils/auditoriaExport";
 import ScanInfo from "./ScanInfo";
@@ -34,10 +34,15 @@ export default function InventarioPage() {
   useEffect(() => {
     if (!useCameraScan) return;
     const qr = new Html5Qrcode("qr-reader-inv");
-    qr.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (txt) => setCodigo(txt))
-      .catch(() => setUseCameraScan(false));
+    try {
+      qr
+        .start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (txt) => setCodigo(txt))
+        .catch(() => setUseCameraScan(false));
+    } catch {
+      setUseCameraScan(false);
+    }
     return () => {
-      qr.stop().catch(() => {});
+      stopScannerSafely(qr);
     };
   }, [useCameraScan]);
 

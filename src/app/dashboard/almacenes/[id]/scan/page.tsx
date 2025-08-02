@@ -4,6 +4,7 @@ import { Html5Qrcode } from "html5-qrcode";
 import { useParams } from "next/navigation";
 import { decodeQR } from "@/lib/qr";
 import { decodeQRImageFile } from "@/lib/qrImage";
+import { stopScannerSafely } from "@/lib/scanUtils";
 // Se eliminan las llamadas a la API para usar únicamente el lado del cliente
 
 export default function ScanAlmacenPage() {
@@ -36,15 +37,19 @@ export default function ScanAlmacenPage() {
   useEffect(() => {
     if (!useCamera) return
     const qr = new Html5Qrcode('qr-reader')
-    qr
-      .start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: 250 },
-        (txt) => setCodigo(txt)
-      )
-      .catch(() => setUseCamera(false))
+    try {
+      qr
+        .start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: 250 },
+          (txt) => setCodigo(txt)
+        )
+        .catch(() => setUseCamera(false))
+    } catch {
+      setUseCamera(false)
+    }
     return () => {
-      qr.stop().catch(() => {})
+      stopScannerSafely(qr)
     }
   }, [useCamera])
 
