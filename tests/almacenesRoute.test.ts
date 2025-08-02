@@ -98,4 +98,25 @@ describe('GET /api/almacenes', () => {
     const data = await res.json()
     expect(data.almacenes[0].unidades).toBe(7)
   })
+
+  it('propaga errores de supabase', async () => {
+    vi.spyOn(auth, 'getUsuarioFromSession').mockResolvedValue({ id: 1 } as any)
+    vi.spyOn(permisos, 'hasManagePerms').mockReturnValue(true)
+
+    const from = vi.fn(() => ({
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      order: vi.fn().mockReturnThis(),
+      limit: vi.fn().mockReturnThis(),
+      then: (resolve: any) =>
+        Promise.resolve({ data: null, error: { message: 'fallo supabase' } }).then(resolve),
+    }))
+
+    vi.spyOn(db, 'getDb').mockReturnValue({ client: { from } } as any)
+
+    const res = await GET(new NextRequest('http://localhost/api/almacenes'))
+    expect(res.status).toBe(500)
+    const body = await res.json()
+    expect(body.error).toBe('fallo supabase')
+  })
 })

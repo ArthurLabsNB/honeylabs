@@ -96,6 +96,9 @@ Si deseas usar Supabase como proveedor de base de datos, copia
 Este archivo establece `DB_PROVIDER=supabase` para activar el adaptador
 correspondiente en `lib/db/index.ts`.
 
+El endpoint `/api/almacenes` depende de Supabase; asegúrate de definir
+`SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` antes de invocarlo.
+
 Tras modificar `prisma/schema.prisma` ejecuta `pnpm install` o
 `pnpm prisma generate` para actualizar el cliente de Prisma.
 
