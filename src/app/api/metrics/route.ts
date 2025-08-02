@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@lib/db/prisma'; // Asegúrate que el alias es correcto
+import { NextRequest, NextResponse } from 'next/server'
+import { getDb } from '@lib/db'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import * as logger from '@lib/logger'
 
 // Función auxiliar para obtener usuario desde JWT (por implementar)
@@ -11,29 +12,29 @@ async function getUsuarioFromRequest(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
-    // Puedes descomentar para filtrar según usuario o entidad
-    // const usuario = await getUsuarioFromRequest(req);
+    const db = getDb().client as SupabaseClient
 
-    // Conteos globales o con filtros según entidad/usuario
-    const [entradas, salidas, usuarios, almacenes] = await Promise.all([
-      prisma.movimiento.count({ where: { tipo: 'entrada' } }),
-      prisma.movimiento.count({ where: { tipo: 'salida' } }),
-      prisma.usuario.count(),
-      prisma.almacen.count(),
-    ]);
+    const [entradasRes, salidasRes, usuariosRes, almacenesRes] = await Promise.all([
+      db.from('movimiento').select('id', { count: 'exact', head: true }).eq('tipo', 'entrada'),
+      db.from('movimiento').select('id', { count: 'exact', head: true }).eq('tipo', 'salida'),
+      db.from('usuario').select('id', { count: 'exact', head: true }),
+      db.from('almacen').select('id', { count: 'exact', head: true }),
+    ])
+
+    const errors = [entradasRes.error, salidasRes.error, usuariosRes.error, almacenesRes.error].filter(Boolean)
+    if (errors.length) throw new Error(errors.map(e => e.message).join('; '))
 
     return NextResponse.json({
-      entradas,
-      salidas,
-      usuarios,
-      almacenes,
-      // advertencia: 'Límite alcanzado', // puedes añadir si quieres
-    });
+      entradas: entradasRes.count ?? 0,
+      salidas: salidasRes.count ?? 0,
+      usuarios: usuariosRes.count ?? 0,
+      almacenes: almacenesRes.count ?? 0,
+    })
   } catch (error) {
-    logger.error('[ERROR_METRICAS]', error);
+    logger.error('[ERROR_METRICAS]', error)
     return NextResponse.json(
       { error: 'No se pudieron recuperar las métricas', details: String(error) },
-      { status: 500 }
-    );
+      { status: 500 },
+    )
   }
 }
