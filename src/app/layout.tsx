@@ -6,6 +6,7 @@ import CapgoUpdater from "@/components/CapgoUpdater";
 import TracingInit from "@/components/TracingInit";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { isRecaptchaEnabled } from "@lib/recaptcha";
 export const metadata: Metadata = {
   title: "HoneyLabs",
   description: "Gestión inteligente de inventarios educativos y empresariales",
@@ -34,11 +35,12 @@ export default function RootLayout({
         />
         <meta name="theme-color" content="#ffe066" />
         <link rel="manifest" href="/manifest.json" />
-        {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && (
-          <script
-            src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`}
-          />
-        )}
+        {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY &&
+          isRecaptchaEnabled() && (
+            <script
+              src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`}
+            />
+          )}
 
         <link rel="icon" href="/favicon.ico" data-oid="oydwumc" />
       </head>
