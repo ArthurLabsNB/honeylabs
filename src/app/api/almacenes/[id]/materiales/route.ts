@@ -42,23 +42,15 @@ export async function GET(req: NextRequest) {
     }
 
     const cols =
-      'id,nombre,descripcion,cantidad,unidad,lote,fechaCaducidad,ubicacion,proveedor,estado,observaciones,codigoBarra,codigoQR,minimo,maximo,fecha_registro,fechaActualizacion, unidades:material_unidad(id)'
-    const camel = `miniaturaNombre,${cols}`
-    const snake = `miniatura_nombre:miniaturaNombre,${cols}`
+      'id,nombre,descripcion,cantidad,unidad,lote,fechaCaducidad,ubicacion,proveedor,estado,observaciones,codigoBarra,codigoQR,minimo,maximo,fecha_registro,unidades:material_unidad(id)'
+    const camel = `miniaturaNombre,fechaActualizacion,${cols}`
+    const snake = `miniatura_nombre:miniaturaNombre,fecha_actualizacion:fechaActualizacion,${cols}`
+    let { data: rows, error } = await db
+      .from('material')
+      .select(camel)
+      .eq('almacenId', almacenId)
+      .order('id', { ascending: false })
 
-    let rows: any[] | null = null
-    let error: any = null
-    try {
-      const res = await db
-        .from('material')
-        .select(camel)
-        .eq('almacenId', almacenId)
-        .order('id', { ascending: false })
-      rows = res.data
-      error = res.error
-    } catch (err) {
-      error = err
-    }
     if (error) {
       // Fallback a snake_case cuando Supabase lanza error por columnas camel
       const fb = await db
@@ -88,7 +80,7 @@ export async function GET(req: NextRequest) {
       minimo: m.minimo,
       maximo: m.maximo,
       fechaRegistro: (m as any).fecha_registro,
-      fechaActualizacion: m.fechaActualizacion,
+      fechaActualizacion: m.fechaActualizacion ?? (m as any).fecha_actualizacion,
       _count: { unidades: (m as any).unidades?.length ?? 0 },
     }))
 
